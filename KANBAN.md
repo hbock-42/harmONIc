@@ -150,6 +150,12 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E8-3b` **Mass-balance audit** — every process is checked for matter in versus matter
+  out. The game does not conserve mass, so the rule has exceptions, but each one is now
+  named and reasoned in a table that a test keeps honest in both directions: an unexplained
+  imbalance fails, and so does a stale entry describing a process that balances again.
+  Running it over the whole database found no errors, which after a day of corrections is
+  worth knowing
 - `E10-5` **Problems you can act on** — "not enough pins" now offers the free nodes as
   buttons that select them, instead of naming internal ids in a sentence and leaving you
   to find them. Nothing is silently dropped either: extra issues sit behind a count that
@@ -424,7 +430,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 |---|---|---|
 | E8-1 | P0 | Unit tests for every solver path (DAG, cycle, underdetermined, inconsistent, shortage, surplus) |
 | E8-2 | P1 | Golden real-world scenarios: SPOM, petroleum boiler, oxylite chain, coal farm — with hand-checked expected numbers |
-| E8-3 | P1 | Property test: any solved graph satisfies mass balance within ε |
+| E8-3 | ✅ | Property test: any solved graph satisfies mass balance within ε |
 | E8-4 | P2 | Widget/golden tests for the canvas |
 | E8-5 | P2 | Benchmarks in CI |
 
