@@ -502,6 +502,11 @@ class _PortRow extends StatelessWidget {
     }
     final unmet = balance != null && balance.isExternalInput;
     final spare = balance != null && balance.isSurplus;
+    final venting = node.ventsPort(port.id);
+    // Only worth offering where it changes anything: an output nothing pulls
+    // from already spills its excess.
+    final canVent =
+        port.isOutput && controller.portIsPulled(node.id, port.id);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
@@ -539,6 +544,20 @@ class _PortRow extends StatelessWidget {
                 style: OniType.numberSmall.copyWith(
                   color: unmet ? OniColors.warning : OniColors.textFaint,
                   fontSize: 9.5,
+                ),
+              ),
+            ),
+          if (canVent)
+            Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: OniButton(
+                label: venting ? 'venting' : 'vent',
+                compact: true,
+                tone: venting ? OniButtonTone.accent : OniButtonTone.neutral,
+                onPressed: () => controller.setPortVenting(
+                  node.id,
+                  port.id,
+                  venting: !venting,
                 ),
               ),
             ),

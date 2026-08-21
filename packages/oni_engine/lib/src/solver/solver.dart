@@ -100,6 +100,9 @@ class PipelineSolver {
             ? attached.any((e) => e.mode == EdgeMode.push)
             : attached.any((e) => e.mode == EdgeMode.pull);
         if (!drivenFromFarEnd) continue;
+        // A vented output port makes whatever it makes and the excess goes
+        // nowhere in particular, so it constrains nothing.
+        if (port.isOutput && node.ventsPort(port.id)) continue;
         addRow((row) {
           for (final edge in attached) {
             addFlowTerm(row, edge, 1);
@@ -288,11 +291,12 @@ List<PipelineIssue> _overCommittedOutputHints(Pipeline pipeline) {
       pulled.add(edge.fromPortId);
     }
     for (final portId in pulled) {
+      if (node.ventsPort(portId)) continue;
       hints.add(PipelineIssue(
         IssueSeverity.info,
         'Port ${node.id}.$portId must deliver exactly what it produces, because '
-        'everything drawing from it pulls. If some of it should vent or go to '
-        'storage, connect an output node to it.',
+        'everything drawing from it pulls. If the rest should go to waste, mark '
+        'the port as venting; if it should go somewhere, connect an output node.',
         nodeId: node.id,
       ));
     }

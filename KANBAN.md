@@ -89,8 +89,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
 - `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
-- `E3-7b` `allowSurplus` per output port, so a vented by-product does not need a
-  sink node just to keep the system consistent
 - `E3-4` Whole-building rounding as a first-class solver mode (currently only a
   per-node `wholeCount` / `utilisation` getter)
 - `E6-2` `spike`: state management (recommendation: riverpod over the pure-Dart engine)
@@ -136,6 +134,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E3-7b` **Vented output ports** — "I have a geyser *and* twelve dupes, what is spare?"
+  used to read as a contradiction, because a port something pulls from has to balance
+  exactly. Marking it vented drops that equation and reports the leftover instead. The
+  inspector offers it on exactly the ports where it changes anything, and the solver's
+  diagnostics name them when a build comes out inconsistent
 - `E7-9` **Auto-layout** — `Tidy` arranges the graph left to right: every node one column
   right of whatever feeds it, ordered within columns to keep the wires from crossing.
   Recycling loops are laid out by ignoring the edge that closes them, so a SPOM reads
@@ -268,7 +271,7 @@ _(empty)_
 | E3-5 | P1 | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | P1 | Bottleneck detection | which node caps the pipeline when a raw input is capped |
 | E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |
-| E3-7b | P1 | `allowSurplus` per output port | today a vented by-product needs a sink node, because a pulled output port must balance exactly |
+| E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | P2 | Sensitivity | "+1 Electrolyzer ⇒ +X g/s O₂, +Y W" |
 | E3-9 | P1 | Solver perf test | 500-node graph solves < 50 ms |
 

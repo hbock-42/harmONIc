@@ -16,6 +16,7 @@ class PipelineNode {
     this.y = 0,
     this.uptime = 1,
     this.outputScale = 1,
+    this.ventedPorts = const {},
     this.notes,
   });
 
@@ -27,6 +28,9 @@ class PipelineNode {
         y: (json['y'] as num?)?.toDouble() ?? 0,
         uptime: (json['uptime'] as num?)?.toDouble() ?? 1,
         outputScale: (json['outputScale'] as num?)?.toDouble() ?? 1,
+        ventedPorts: {
+          ...(json['ventedPorts'] as List<dynamic>? ?? const []).cast<String>(),
+        },
         notes: json['notes'] as String?,
       );
 
@@ -50,7 +54,18 @@ class PipelineNode {
   /// typical roll, but the geyser in your world has its own, and a Duplicant
   /// with Field Research can tell you what it is.
   final double outputScale;
+
+  /// Output ports allowed to make more than anything takes from them.
+  ///
+  /// Without this, a port that something pulls from has to deliver exactly what
+  /// is pulled, which is what sizes the producer — but it also means "I have a
+  /// geyser *and* twelve dupes" reads as a contradiction rather than as a
+  /// question about the leftover. Venting a port drops that equation and reports
+  /// the excess as surplus.
+  final Set<String> ventedPorts;
   final String? notes;
+
+  bool ventsPort(String portId) => ventedPorts.contains(portId);
 
   PipelineNode copyWith({
     String? label,
@@ -58,6 +73,7 @@ class PipelineNode {
     double? y,
     double? uptime,
     double? outputScale,
+    Set<String>? ventedPorts,
     String? notes,
   }) =>
       PipelineNode(
@@ -68,6 +84,7 @@ class PipelineNode {
         y: y ?? this.y,
         uptime: uptime ?? this.uptime,
         outputScale: outputScale ?? this.outputScale,
+        ventedPorts: ventedPorts ?? this.ventedPorts,
         notes: notes ?? this.notes,
       );
 
@@ -79,6 +96,7 @@ class PipelineNode {
         'y': y,
         if (uptime != 1) 'uptime': uptime,
         if (outputScale != 1) 'outputScale': outputScale,
+        if (ventedPorts.isNotEmpty) 'ventedPorts': ventedPorts.toList(),
         if (notes != null) 'notes': notes,
       };
 }

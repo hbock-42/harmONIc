@@ -366,6 +366,35 @@ class PipelineController extends ChangeNotifier {
   bool isGeyser(PipelineNode node) =>
       database.processOrThrow(node.specId).tags.contains('geyser');
 
+  /// Lets an output port make more than anything takes from it, so a build can
+  /// answer "how much is left over" instead of reading as a contradiction.
+  void setPortVenting(String nodeId, String portId, {required bool venting}) {
+    final node = _pipeline.node(nodeId);
+    if (node == null) return;
+    // Written out rather than as a conditional with a cascade: `a ? x : y..m()`
+    // applies the cascade to the whole conditional, which silently undid the
+    // addition here until a test caught it.
+    final ports = {...node.ventedPorts};
+    if (venting) {
+      ports.add(portId);
+    } else {
+      ports.remove(portId);
+    }
+    _apply(_pipeline.copyWith(
+      nodes: [
+        for (final n in _pipeline.nodes)
+          if (n.id == nodeId) n.copyWith(ventedPorts: ports) else n,
+      ],
+    ));
+  }
+
+  /// True when something pulls from this port, which is when venting it starts
+  /// to matter — an unclaimed port already vents by default.
+  bool portIsPulled(String nodeId, String portId) => _pipeline.edges.any((e) =>
+      e.fromNodeId == nodeId &&
+      e.fromPortId == portId &&
+      e.mode == EdgeMode.pull);
+
   void setNodeUptime(String nodeId, double uptime) => _apply(_pipeline.copyWith(
         nodes: [
           for (final n in _pipeline.nodes)

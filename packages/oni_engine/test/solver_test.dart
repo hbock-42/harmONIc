@@ -369,6 +369,90 @@ void main() {
     });
   });
 
+  group('venting a surplus', () {
+    /// A water geyser feeding electrolyzers that supply a fixed crew — the
+    /// question being how much oxygen is left over, not whether the two agree.
+    Pipeline geyserAndCrew({Set<String> vented = const {}}) {
+      final pipeline = (PipelineBuilder(db, name: 'geyser and crew')
+            ..add('water_geyser', nodeId: 'geyser')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..add('duplicant', nodeId: 'dupes')
+            ..addSink('hydrogen')
+            ..connectItem('geyser', 'elec', 'water')
+            ..connectItem('elec', 'dupes', 'oxygen')
+            ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+            ..pinCount('geyser', 1))
+          .build();
+      return pipeline.copyWith(
+        nodes: [
+          for (final n in pipeline.nodes)
+            if (n.id == 'elec') n.copyWith(ventedPorts: vented) else n,
+        ],
+        pins: [
+          ...pipeline.pins,
+          const BuildingCountPin(nodeId: 'dupes', count: 12),
+        ],
+      );
+    }
+
+    test('without venting, two pins look like a contradiction', () {
+      final solution = solver.solve(geyserAndCrew());
+      expect(solution.status, SolveStatus.inconsistent);
+      // And it says what to do about it.
+      expect(
+        solution.issues.map((i) => i.message).join('\n'),
+        contains('venting'),
+      );
+    });
+
+    test('venting the port turns it into a question about the leftover', () {
+      final solution = geyserAndCrew(vented: {'oxygen'});
+      final result = solver.solve(solution);
+
+      expect(result.status, SolveStatus.solved);
+      // One geyser runs 1.8 Electrolyzers, making 1598.4 g/s of oxygen; twelve
+      // dupes breathe 1200 of it.
+      expect(result.nodes['elec']!.count, closeTo(1.8, 1e-9));
+      expect(result.nodes['dupes']!.count, closeTo(12, 1e-9));
+      expect(result.externalOutputs['oxygen'], closeTo(1.8 * 888 - 1200, 1e-6));
+    });
+
+    test('venting only affects the port it is asked about', () {
+      final result = solver.solve(geyserAndCrew(vented: {'oxygen'}));
+      // The hydrogen still goes exactly where it is pulled.
+      for (final balance in result.portBalances) {
+        if (balance.ref.portId == 'hydrogen') {
+          expect(balance.unlinkedRate, closeTo(0, 1e-6));
+        }
+      }
+    });
+
+    test('venting an unconnected port changes nothing', () {
+      final base = (PipelineBuilder(db, name: 'lone')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..pinCount('elec', 1))
+          .build();
+      final vented = base.copyWith(
+        nodes: [
+          for (final n in base.nodes) n.copyWith(ventedPorts: {'oxygen'}),
+        ],
+      );
+
+      expect(solver.solve(vented).externalOutputs['oxygen'],
+          closeTo(solver.solve(base).externalOutputs['oxygen']!, 1e-9));
+    });
+
+    test('vents survive a JSON round trip', () {
+      const node = PipelineNode(
+        id: 'elec',
+        specId: 'electrolyzer',
+        ventedPorts: {'oxygen', 'hydrogen'},
+      );
+      expect(PipelineNode.fromJson(node.toJson()).ventedPorts,
+          {'oxygen', 'hydrogen'});
+    });
+  });
+
   group('output scaling', () {
     /// One water geyser feeding electrolyzers, at whatever activity you assume.
     PipelineSolution solveGeyser(double activeFraction) {

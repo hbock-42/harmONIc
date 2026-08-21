@@ -13,12 +13,18 @@ class ProblemsBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final solution = controller.solution;
-    final issues = solution.issues
-        .where((i) => i.severity != IssueSeverity.info)
-        .toList();
-    if (issues.isEmpty) return const SizedBox.shrink();
+    final blocking =
+        solution.issues.where((i) => i.severity != IssueSeverity.info).toList();
+    if (blocking.isEmpty) return const SizedBox.shrink();
 
-    final worst = issues.any((i) => i.isError)
+    // Info-level notes are the "here is how to fix it" half of an error, and
+    // are worth nothing if the banner hides them.
+    final issues = [
+      ...blocking,
+      ...solution.issues.where((i) => i.severity == IssueSeverity.info),
+    ];
+
+    final worst = blocking.any((i) => i.isError)
         ? OniColors.danger
         : OniColors.warning;
 
@@ -33,7 +39,7 @@ class ProblemsBanner extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final issue in issues.take(3))
+          for (final issue in issues.take(4))
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 1),
               child: Row(
@@ -45,7 +51,11 @@ class ProblemsBanner extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 6, right: OniSpacing.sm),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: issue.isError ? OniColors.danger : OniColors.warning,
+                      color: switch (issue.severity) {
+                        IssueSeverity.error => OniColors.danger,
+                        IssueSeverity.warning => OniColors.warning,
+                        IssueSeverity.info => OniColors.textFaint,
+                      },
                     ),
                   ),
                   Expanded(
@@ -68,10 +78,10 @@ class ProblemsBanner extends StatelessWidget {
                 ],
               ),
             ),
-          if (issues.length > 3)
+          if (issues.length > 4)
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Text('and ${issues.length - 3} more',
+              child: Text('and ${issues.length - 4} more',
                   style: OniType.numberSmall),
             ),
         ],

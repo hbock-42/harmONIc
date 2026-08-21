@@ -322,15 +322,24 @@ class _TopBarState extends State<_TopBar> {
               ),
             ),
             const SizedBox(width: OniSpacing.lg),
-            Text(
-              '${controller.pipeline.nodes.length} nodes · '
-              '${controller.pipeline.edges.length} links · '
-              '${controller.solution.status.name}',
-              style: OniType.numberSmall,
+            Flexible(
+              child: Text(
+                '${controller.pipeline.nodes.length} nodes · '
+                '${controller.pipeline.edges.length} links · '
+                '${controller.solution.status.name} · saved',
+                style: OniType.numberSmall,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             const SizedBox(width: OniSpacing.md),
-            Text('saved', style: OniType.numberSmall),
-            const Spacer(),
+            // The actions scroll rather than overflow, so a narrow window
+            // loses nothing — it just needs a nudge sideways to reach Fit.
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                reverse: true,
+                child: Row(children: [
             if (controller.pipeline.nodes.any(controller.isGeyser)) ...[
               Text('ALL GEYSERS', style: OniType.label),
               const SizedBox(width: OniSpacing.sm),
@@ -385,6 +394,9 @@ class _TopBarState extends State<_TopBar> {
               label: 'Fit',
               compact: true,
               onPressed: () => canvasKey.currentState?.fitToContent(),
+            ),
+                ]),
+              ),
             ),
           ],
         ),

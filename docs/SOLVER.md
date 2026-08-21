@@ -68,11 +68,14 @@ an identity: `pull` edges into an input port sum to that port's demand by constr
 **external supply** (on an input port) or **surplus** (on an output port), and is reported
 rather than treated as an error.
 
-> **The trade-off to know about.** An output port drained *only* by pull edges must deliver
-> exactly what it makes — that equality is what sizes the producer. So a by-product you mean
-> to vent needs somewhere to go: connect an output node. Forget one and the system comes out
-> inconsistent, so the solver names the offending ports in its diagnostics instead of just
-> shrugging. A future `allowSurplus` flag per port (`E3-7`) would remove the papercut.
+> **The trade-off, and the way out.** An output port drained *only* by pull edges must
+> deliver exactly what it makes — that equality is what sizes the producer. It also means
+> "I have a geyser **and** twelve dupes" reads as a contradiction rather than as a question
+> about the leftover. Marking the port as **vented** (`PipelineNode.ventedPorts`) drops its
+> equation, so the port makes whatever it makes and the excess is reported as surplus. Use
+> it when both ends are already pinned and you only want to know what is spare; leave it
+> alone when you want the consumer to size the producer. The solver names the candidate
+> ports whenever a system comes out inconsistent.
 
 **Pin.** One row per pin:
 
