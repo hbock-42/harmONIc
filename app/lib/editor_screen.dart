@@ -167,6 +167,8 @@ class _EditorScreenState extends State<EditorScreen> {
                                     controller: controller,
                                     rateDisplay:
                                         widget.displaySettings.display,
+                                    onToggleRates:
+                                        widget.displaySettings.toggle,
                                   ),
                           ),
                           InspectorPanel(

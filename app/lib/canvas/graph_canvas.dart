@@ -24,11 +24,16 @@ class GraphCanvas extends StatefulWidget {
   const GraphCanvas({
     required this.controller,
     required this.rateDisplay,
+    required this.onToggleRates,
     super.key,
   });
 
   final PipelineController controller;
   final RateDisplay rateDisplay;
+
+  /// Switches every rate between per second and per cycle — reachable from the
+  /// labels on the wires, which are where most rates are actually read.
+  final VoidCallback onToggleRates;
 
   @override
   State<GraphCanvas> createState() => GraphCanvasState();
@@ -358,6 +363,56 @@ class GraphCanvasState extends State<GraphCanvas>
             if (NodeLayout.worldRect(node, spec).overlaps(world)) node.id,
       ];
 
+  /// The flow label a click landed on, if any.
+  ///
+  /// The labels sit at a fixed fraction along each wire, so this asks the same
+  /// question the painter answered rather than storing what it drew.
+  String? _labelAt(Offset world, {double tolerance = 18}) {
+    for (final edge in controller.pipeline.edges) {
+      final anchor = _labelAnchor(edge);
+      if (anchor != null && (anchor - world).distance < tolerance) {
+        return edge.id;
+      }
+    }
+    return null;
+  }
+
+  /// Where an edge's flow label sits, for tests and for anything else that
+  /// needs to point at it.
+  Offset? labelAnchorFor(String edgeId) =>
+      pointAlongEdge(edgeId, EdgePainter.labelPosition);
+
+  /// A point a given fraction of the way along a wire.
+  Offset? pointAlongEdge(String edgeId, double fraction) {
+    final edge = controller.pipeline.edge(edgeId);
+    if (edge == null) return null;
+    return _pointAlong(edge, fraction);
+  }
+
+  Offset? _labelAnchor(PipelineEdge edge) =>
+      _pointAlong(edge, EdgePainter.labelPosition);
+
+  Offset? _pointAlong(PipelineEdge edge, double fraction) {
+    final fromNode = controller.pipeline.node(edge.fromNodeId);
+    final toNode = controller.pipeline.node(edge.toNodeId);
+    final fromSpec = fromNode == null ? null : controller.specFor(fromNode);
+    final toSpec = toNode == null ? null : controller.specFor(toNode);
+    if (fromNode == null || toNode == null ||
+        fromSpec == null || toSpec == null) {
+      return null;
+    }
+    final from =
+        NodeLayout.worldPortOffsetOrNull(fromNode, fromSpec, edge.fromPortId);
+    final to = NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
+    if (from == null || to == null) return null;
+
+    final metrics = edgePath(from, to).computeMetrics().toList();
+    if (metrics.isEmpty) return null;
+    return metrics.first
+        .getTangentForOffset(metrics.first.length * fraction)
+        ?.position;
+  }
+
   String? _edgeAt(Offset world, {double tolerance = 8}) {
     String? best;
     var bestDistance = tolerance;
@@ -384,6 +439,12 @@ class GraphCanvasState extends State<GraphCanvas>
 
   void _onBackgroundTap(Offset local) {
     final world = worldFromLocal(local);
+    // A click on the number is about the number: it switches the units, the
+    // same as clicking a rate anywhere else.
+    if (_scale > 0.55 && _labelAt(world) != null) {
+      widget.onToggleRates();
+      return;
+    }
     final edgeId = _edgeAt(world);
     controller.select(edgeId == null ? null : EdgeSelection(edgeId));
   }

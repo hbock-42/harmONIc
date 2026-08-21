@@ -20,6 +20,7 @@ void main() {
       key: canvasKey,
       controller: controller,
       rateDisplay: RateDisplay.perSecond,
+      onToggleRates: () {},
     )));
     if (scale != 1) {
       // Zoom about the node under test so it stays on screen; zooming about

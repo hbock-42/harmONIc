@@ -27,6 +27,7 @@ void main() {
       key: canvasKey,
       controller: controller,
       rateDisplay: RateDisplay.perSecond,
+      onToggleRates: () {},
     )));
     return controller;
   }
@@ -50,6 +51,7 @@ void main() {
       key: canvasKey,
       controller: controller,
       rateDisplay: RateDisplay.perSecond,
+      onToggleRates: () {},
     )));
 
     expect(find.byType(Minimap), findsNothing);

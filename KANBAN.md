@@ -32,8 +32,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
   plain drag for selection, which is what most editors do
-- `E10-9` Make the canvas edge labels clickable, so per-second ⇄ per-cycle can be toggled
-  from one; today a click there selects the edge
 - `E6-6` Tabs, so two pipelines can be compared side by side
 
 **Things the model cannot yet say**
@@ -124,6 +122,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E10-9` **The numbers on the wires are clickable** — most rates are read on the canvas,
+  so that is where switching per-second and per-cycle should be reachable. Clicking the
+  number switches the units; clicking the wire anywhere else still selects it
 - `E10-6` **The cursor lands where the fix is typed** — clicking a suggestion selects the
   node, travels to it, and puts the cursor in its amount field, so the number can be typed
   straight away. Selecting a node the ordinary way does not steal the cursor

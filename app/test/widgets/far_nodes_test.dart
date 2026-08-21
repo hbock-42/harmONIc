@@ -27,6 +27,7 @@ void main() {
       key: canvasKey,
       controller: controller,
       rateDisplay: RateDisplay.perSecond,
+      onToggleRates: () {},
     )));
     // Frame the whole build, as a person would before reaching for a far node.
     canvasKey.currentState!.fitToContent();

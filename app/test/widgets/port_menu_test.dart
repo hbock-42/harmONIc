@@ -30,6 +30,7 @@ void main() {
         key: canvasKey,
         controller: controller,
         rateDisplay: RateDisplay.perSecond,
+        onToggleRates: () {},
       ),
     ));
     return controller;

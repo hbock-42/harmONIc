@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/widgets.dart';
+import 'package:oni_pipeline/canvas/graph_canvas.dart';
 import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/panels/inspector_panel.dart';
 import 'package:oni_pipeline/panels/summary_bar.dart';
@@ -90,6 +91,42 @@ void main() {
     await tester.pump();
     // The same flow over a cycle: 675.68 kg.
     expect(textContaining('675.68 kg/cycle'), findsWidgets);
+  });
+
+  testWidgets('clicking the number on a wire switches the units too',
+      (tester) async {
+    await pumpEditor(tester);
+    final state = tester.state<GraphCanvasState>(find.byType(GraphCanvas));
+
+    // The label sits a third of the way along the wire.
+    final edge = controller.pipeline.edges
+        .firstWhere((e) => e.toNodeId == 'dupes');
+    final anchor = state.labelAnchorFor(edge.id)!;
+    // The canvas sits inside panels, so its own coordinates are not the
+    // window's.
+    final origin = tester.getTopLeft(find.byType(GraphCanvas));
+    await tester.tapAt(origin + state.localFromWorld(anchor));
+    await tester.pumpAndSettle();
+
+    expect(display.display, RateDisplay.perCycle);
+  });
+
+  testWidgets('clicking the wire away from its number still selects it',
+      (tester) async {
+    await pumpEditor(tester);
+    final state = tester.state<GraphCanvasState>(find.byType(GraphCanvas));
+    final edge = controller.pipeline.edges
+        .firstWhere((e) => e.toNodeId == 'dupes');
+
+    // Two thirds along, well clear of the label.
+    final away = state.pointAlongEdge(edge.id, 0.7)!;
+    final origin = tester.getTopLeft(find.byType(GraphCanvas));
+    await tester.tapAt(origin + state.localFromWorld(away));
+    await tester.pumpAndSettle();
+
+    expect(controller.selectedEdge?.id, edge.id);
+    expect(display.display, RateDisplay.perSecond,
+        reason: 'selecting a wire is not asking about its units');
   });
 
   testWidgets('a capacity is not multiplied by the cycle', (tester) async {

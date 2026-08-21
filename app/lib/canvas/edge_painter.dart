@@ -12,6 +12,10 @@ import 'geometry.dart';
 /// exactly how much — so the shape of a build is readable before you read a
 /// single number.
 class EdgePainter extends CustomPainter {
+  /// How far along a wire its flow label sits. Shared so that a click can ask
+  /// where the label is without the painter having to remember.
+  static const double labelPosition = 0.32;
+
   EdgePainter({
     required this.pipeline,
     required this.database,
@@ -147,7 +151,8 @@ class EdgePainter extends CustomPainter {
   ) {
     final metrics = path.computeMetrics().toList();
     if (metrics.isEmpty) return;
-    final tangent = metrics.first.getTangentForOffset(metrics.first.length * 0.32);
+    final tangent =
+        metrics.first.getTangentForOffset(metrics.first.length * labelPosition);
     if (tangent == null) return;
 
     final precision = rateDisplay == RateDisplay.perSecond && flow.abs() >= 100
