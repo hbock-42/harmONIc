@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import 'canvas/auto_layout.dart';
 import 'design/tokens.dart';
 import 'editor_screen.dart';
 import 'state/display_controller.dart';
@@ -118,18 +119,28 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
 
 /// A small starting graph, so the first run shows the app working rather than
 /// an empty grid. Everything in it can be deleted.
+///
+/// It is the SPOM template, laid out the way the canvas would lay it out, so
+/// the first thing anybody sees is also something they can make again from the
+/// pipelines menu rather than a one-off nobody can find twice.
 Pipeline starterPipeline(GameDatabase database) {
-  final builder = PipelineBuilder(database, name: 'Oxygen for the crew')
-    ..addSource('water', x: 0, y: 176)
-    ..add('electrolyzer', nodeId: 'elec', x: 296, y: 120)
-    ..add('duplicant', nodeId: 'dupes', x: 640, y: 40)
-    ..add('hydrogen_generator', nodeId: 'hgen', x: 640, y: 264)
-    ..addSink('power', nodeId: 'spare', x: 952, y: 296)
-    ..connectItem('src_water', 'elec', 'water')
-    ..connectItem('elec', 'dupes', 'oxygen')
-    ..connectItem('elec', 'hgen', 'hydrogen')
-    ..connectItem('hgen', 'elec', 'power')
-    ..connectItem('hgen', 'spare', 'power')
-    ..pinCount('dupes', 8);
-  return builder.build();
+  final template =
+      pipelineTemplates.firstWhere((t) => t.id == 'spom');
+  final built = template.build(database);
+  final placed =
+      AutoLayout(pipeline: built, database: database).positions();
+  return Pipeline(
+    id: built.id,
+    name: built.name,
+    dataVersion: database.dataVersion,
+    nodes: [
+      for (final node in built.nodes)
+        if (placed[node.id] case final Offset at)
+          node.copyWith(x: at.dx, y: at.dy)
+        else
+          node,
+    ],
+    edges: built.edges,
+    pins: built.pins,
+  );
 }

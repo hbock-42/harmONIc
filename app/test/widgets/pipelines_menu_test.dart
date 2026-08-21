@@ -246,4 +246,39 @@ void main() {
         reason: 'the saved build came back, not the starter');
     expect(find.text('Nothing here yet'), findsNothing);
   });
+
+  group('starting from a build', () {
+    testWidgets('the templates are offered, with what each is for',
+        (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+      await tester.tap(find.textContaining('START FROM A BUILD'));
+      await tester.pump();
+
+      expect(find.text('Petroleum power'), findsOneWidget);
+      expect(find.text('Hatch ranch'), findsOneWidget);
+      expect(textContaining('Rock in, coal out'), findsOneWidget);
+    });
+
+    testWidgets('picking one opens it, solved and arranged', (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+      await tester.tap(find.textContaining('START FROM A BUILD'));
+      await tester.pump();
+      await tester.tap(find.text('Hatch ranch'));
+      await tester.pumpAndSettle();
+
+      expect(controller.pipeline.name, 'Hatch ranch');
+      expect(controller.solution.status, SolveStatus.solved);
+      // One generator wants nine Hatches and two Grooming Stations.
+      expect(controller.solution.nodes['hatches']!.wholeCount, 9);
+      expect(controller.solution.nodes['station']!.wholeCount, 2);
+
+      // Laid out on the way in: nothing is left stacked at the origin.
+      final positions = {
+        for (final node in controller.pipeline.nodes) Offset(node.x, node.y),
+      };
+      expect(positions, hasLength(controller.pipeline.nodes.length));
+    });
+  });
 }

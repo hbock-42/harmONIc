@@ -56,6 +56,56 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     }
   }
 
+  bool _templatesOpen = false;
+
+  /// Starting points, folded away.
+  ///
+  /// A blank canvas is the right default — most opens are to keep working on
+  /// something — but a blank canvas is also the worst way to learn what the app
+  /// can say, so the builds worth copying are one click behind it.
+  Widget _templates() => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _templatesOpen = !_templatesOpen),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+              child: Text(
+                _templatesOpen ? '▾ START FROM A BUILD' : '▸ START FROM A BUILD',
+                style: OniType.label,
+              ),
+            ),
+          ),
+          if (_templatesOpen)
+            for (final template in pipelineTemplates)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () async {
+                  await widget.workspace.createFromTemplate(template);
+                  widget.onClose();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                      OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(template.name,
+                          style: OniType.body.copyWith(color: OniColors.text)),
+                      Text(
+                        template.summary,
+                        style: OniType.body.copyWith(
+                            fontSize: 11.5, color: OniColors.textFaint),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+        ],
+      );
+
   @override
   Widget build(BuildContext context) {
     final saved = workspace.saved;
@@ -126,6 +176,9 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
               shrinkWrap: true,
               padding: const EdgeInsets.only(bottom: OniSpacing.sm),
               children: [
+                // Inside the scroller rather than above it: with the section
+                // expanded, the menu is taller than the window it opens in.
+                _templates(),
                 for (final summary in saved)
                   _Row(
                     summary: summary,

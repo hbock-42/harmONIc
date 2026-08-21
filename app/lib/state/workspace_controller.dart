@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import '../canvas/auto_layout.dart';
 import '../storage/json_store.dart';
 import 'pipeline_controller.dart';
 
@@ -144,6 +145,41 @@ class WorkspaceController extends ChangeNotifier {
   Future<String> createNew({String name = 'New pipeline'}) async {
     await saveNow();
     final pipeline = _blank(name);
+    _pipelines[pipeline.id] = pipeline;
+    _openWithoutSaving(pipeline);
+    await _persist();
+    notifyListeners();
+    return pipeline.id;
+  }
+
+  /// Opens a fresh copy of a starting build.
+  ///
+  /// Templates carry no positions — laying a graph out is the canvas's job —
+  /// so the arrangement happens here, on the way in, and what lands on screen
+  /// is what Tidy would have made of it.
+  Future<String> createFromTemplate(PipelineTemplate template) async {
+    await saveNow();
+    final built = template.build(_controller.database);
+    final placed = AutoLayout(
+      pipeline: built,
+      database: _controller.database,
+    ).positions();
+
+    final pipeline = Pipeline(
+      id: 'pipeline_${DateTime.now().microsecondsSinceEpoch}',
+      name: template.name,
+      dataVersion: _controller.database.dataVersion,
+      nodes: [
+        for (final node in built.nodes)
+          if (placed[node.id] case final Offset at)
+            node.copyWith(x: at.dx, y: at.dy)
+          else
+            node,
+      ],
+      edges: built.edges,
+      pins: built.pins,
+    );
+
     _pipelines[pipeline.id] = pipeline;
     _openWithoutSaving(pipeline);
     await _persist();

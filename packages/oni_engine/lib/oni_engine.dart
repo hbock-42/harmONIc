@@ -6,6 +6,7 @@
 library;
 
 export 'src/data/default_database.dart';
+export 'src/data/templates.dart';
 export 'src/graph/builder.dart';
 export 'src/graph/components.dart';
 export 'src/graph/pin.dart';

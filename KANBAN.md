@@ -110,6 +110,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-8` **Start from a build** — four templates behind the pipelines menu, each one a
+  shape people actually make and each checked by the golden tests. They carry no positions:
+  the canvas lays them out on the way in, so what opens is what Tidy would have made
 - `E8-2` **Golden builds** — the petroleum boiler, the oxylite chain, the coal farm and the
   SPOM, with every number worked out by hand first. Two of my hand figures were wrong, which
   is the entire argument for writing them down before running anything
@@ -572,7 +575,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-5 | ✅ | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
 | E10-6 | ✅ | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
 | E10-7 | ✅ | Per-cycle ⇄ per-second toggle |
-| E10-8 | P2 | Templates: start from SPOM, petroleum boiler, coal farm |
+| E10-8 | ✅ | Templates | SPOM, petroleum boiler, Hatch ranch and cooling loop, laid out on the way in; the first-run build is one of them |
 | E10-9 | ✅ | The numbers on the wires are clickable |
 
 ## E11 — What a build actually costs to run
