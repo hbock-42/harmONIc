@@ -4507,6 +4507,1063 @@
           "rate": 20.0
         }
       ]
+    },
+    {
+      "id": "hatch_wild",
+      "name": "Hatch (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sedimentary_rock",
+          "direction": "input",
+          "rate": 233.3333
+        },
+        {
+          "item": "coal",
+          "direction": "output",
+          "rate": 116.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "sage_hatch_wild",
+      "name": "Sage Hatch (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 233.3333
+        },
+        {
+          "item": "coal",
+          "direction": "output",
+          "rate": 233.3333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "smooth_hatch_wild",
+      "name": "Smooth Hatch (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "iron_ore",
+          "direction": "input",
+          "rate": 166.6667
+        },
+        {
+          "item": "iron",
+          "direction": "output",
+          "rate": 125.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "slickster_wild",
+      "name": "Slickster (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "carbon_dioxide",
+          "direction": "input",
+          "rate": 33.3333
+        },
+        {
+          "item": "crude_oil",
+          "direction": "output",
+          "rate": 16.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "molten_slickster_wild",
+      "name": "Molten Slickster (wild)",
+      "kind": "critter",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "carbon_dioxide",
+          "direction": "input",
+          "rate": 33.3333
+        },
+        {
+          "item": "petroleum",
+          "direction": "output",
+          "rate": 16.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+    },
+    {
+      "id": "puft_wild",
+      "name": "Puft (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_oxygen",
+          "direction": "input",
+          "rate": 83.3333
+        },
+        {
+          "item": "slime",
+          "direction": "output",
+          "rate": 79.1667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 3.7e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "dense_puft_wild",
+      "name": "Dense Puft (wild)",
+      "kind": "critter",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "oxygen",
+          "direction": "input",
+          "rate": 83.3333
+        },
+        {
+          "item": "oxylite",
+          "direction": "output",
+          "rate": 79.1667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 3.7e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+    },
+    {
+      "id": "squeaky_puft_wild",
+      "name": "Squeaky Puft (wild)",
+      "kind": "critter",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "chlorine",
+          "direction": "input",
+          "rate": 50.0
+        },
+        {
+          "item": "bleach_stone",
+          "direction": "output",
+          "rate": 47.5
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 3.7e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+    },
+    {
+      "id": "puft_prince_wild",
+      "name": "Puft Prince (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_oxygen",
+          "direction": "input",
+          "rate": 50.0
+        },
+        {
+          "item": "slime",
+          "direction": "output",
+          "rate": 5.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 3.7e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "drecko_wild",
+      "name": "Drecko (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. No Duplicant can shear it either, so it gives no reed fiber.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mealwood_growth",
+          "direction": "input",
+          "rate": 0.0416666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 1.85e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "glossy_drecko_wild",
+      "name": "Glossy Drecko (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. No Duplicant can shear it either, so it gives no plastic.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mealwood_growth",
+          "direction": "input",
+          "rate": 0.0555555556
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 1.85e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "gulp_fish_wild",
+      "name": "Gulp Fish (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "algae",
+          "direction": "input",
+          "rate": 12.5
+        },
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 200
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 200
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "pacu_wild",
+      "name": "Pacu (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "ranching",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "algae",
+          "direction": "input",
+          "rate": 12.5
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "blowter_wild",
+      "name": "Blowter (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "tags": [
+        "oxygen",
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "waterweed_growth",
+          "direction": "input",
+          "rate": 0.0138888889
+        },
+        {
+          "item": "oxygen",
+          "direction": "output",
+          "rate": 25.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0
+    },
+    {
+      "id": "pip_wild",
+      "name": "Pip (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "arbor_tree_growth",
+          "direction": "input",
+          "rate": 0.0148148148
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "pokeshell_wild",
+      "name": "Pokeshell (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "polluted_dirt",
+          "direction": "input",
+          "rate": 116.666667
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 58.333333
+        },
+        {
+          "item": "pokeshell_molt",
+          "direction": "output",
+          "rate": 1.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "raw_shellfish",
+          "direction": "output",
+          "rate": 0.0125
+        }
+      ]
+    },
+    {
+      "id": "gassy_moo_wild",
+      "name": "Gassy Moo (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "power",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "gas_grass_growth",
+          "direction": "input",
+          "rate": 0.0833333333
+        },
+        {
+          "item": "natural_gas",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.222222
+        }
+      ]
+    },
+    {
+      "id": "plug_slug_wild",
+      "name": "Plug Slug (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "power",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "iron_ore",
+          "direction": "input",
+          "rate": 100.0
+        },
+        {
+          "item": "hydrogen",
+          "direction": "output",
+          "rate": 5.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ]
+    },
+    {
+      "id": "shove_vole_wild",
+      "name": "Shove Vole (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "regolith",
+          "direction": "input",
+          "rate": 8000.0,
+          "id": "dug"
+        },
+        {
+          "item": "regolith",
+          "direction": "output",
+          "rate": 4000.0,
+          "id": "packed"
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.166667
+        }
+      ]
+    },
+    {
+      "id": "shine_bug_wild",
+      "name": "Shine Bug (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 1.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        }
+      ]
+    },
+    {
+      "id": "dartle_wild",
+      "name": "Dartle (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "prehistoric",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "dewdrip",
+          "direction": "input",
+          "rate": 0.001667
+        },
+        {
+          "item": "bleach_stone",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "chlorine",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 5.56e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "blum_lumb_wild",
+      "name": "Blum Lumb (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "oxygen",
+        "prehistoric",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "algae",
+          "direction": "output",
+          "rate": 220.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 1.39e-05
+        },
+        {
+          "item": "tough_meat",
+          "direction": "output",
+          "rate": 0.1
+        }
+      ]
+    },
+    {
+      "id": "spigot_seal_wild",
+      "name": "Spigot Seal (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sucrose",
+          "direction": "input",
+          "rate": 51.333333
+        },
+        {
+          "item": "ethanol",
+          "direction": "output",
+          "rate": 66.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "tallow",
+          "direction": "output",
+          "rate": 0.833333
+        }
+      ]
+    },
+    {
+      "id": "flox_wild",
+      "name": "Flox (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. No Duplicant can shear it either, so it gives no lumber.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pikeapple_growth",
+          "direction": "input",
+          "rate": 0.0333333333
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 8.333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "shatter_flox_wild",
+      "name": "Shatter Flox (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "abyssalite",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "beakon_wild",
+      "name": "Beakon (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 8.333333
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 4.166667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
+        }
+      ]
+    },
+    {
+      "id": "slogo_wild",
+      "name": "Slogo (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "salt",
+          "direction": "input",
+          "rate": 166.666667
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 83.333333
+        },
+        {
+          "item": "slogo_molt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "mucin",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ]
+    },
+    {
+      "id": "gildgo_wild",
+      "name": "Gildgo (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 166.666667
+        },
+        {
+          "item": "obsidian",
+          "direction": "output",
+          "rate": 83.333333
+        },
+        {
+          "item": "gildgo_molt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "mucin",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ]
+    },
+    {
+      "id": "orehull_wild",
+      "name": "Orehull (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. No Duplicant can shear it either, so it gives no iron ore.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "nori",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "polluted_mud",
+          "direction": "output",
+          "rate": 83.333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "raw_shellfish",
+          "direction": "output",
+          "rate": 0.0625
+        }
+      ]
+    },
+    {
+      "id": "kelpole_wild",
+      "name": "Kelpole (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "nori",
+          "direction": "output",
+          "rate": 3.333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 3.33e-05
+        }
+      ]
+    },
+    {
+      "id": "beakon_grazing_wild",
+      "name": "Beakon (grazing Starnacles) (wild)",
+      "kind": "critter",
+      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "starnacle_growth",
+          "direction": "input",
+          "rate": 0.0208333333
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 4.166667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
+        }
+      ]
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"

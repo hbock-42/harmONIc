@@ -92,6 +92,12 @@ void main() {
     for (final spec in weighable()) {
       if (driftOf(spec).abs() <= 0.01) continue;
       if (spec.tags.contains('unverified')) continue;
+      // A wild critter is its tame twin with the services cut and the eggs
+      // slowed to a tenth, so its books drift by exactly the egg mass it no
+      // longer lays. Auditing it says nothing the twin has not already said;
+      // what is worth checking is that the derivation held, and
+      // "a wild critter is its tame twin, laying a tenth as often" does that.
+      if (spec.tags.contains('wild')) continue;
       if (expectedImbalance.containsKey(spec.id)) continue;
       unexplained.add('${spec.id} '
           '(${(driftOf(spec) * 100).toStringAsFixed(0)} %)');

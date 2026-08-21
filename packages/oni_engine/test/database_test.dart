@@ -524,9 +524,44 @@ void main() {
     });
 
     test('every critter needs a grooming slot, so a stable sizes itself', () {
-      for (final spec in db.processes.where((p) => p.kind == ProcessKind.critter)) {
+      for (final spec in db.processes.where(
+          (p) => p.kind == ProcessKind.critter && !p.tags.contains('wild'))) {
         expect(spec.inputs.map((p) => p.itemId), contains('grooming'),
             reason: '"${spec.id}" should ask for grooming');
+      }
+    });
+
+    test('a wild critter is its tame twin, laying a tenth as often', () {
+      const services = {'grooming', 'shearing', 'milking'};
+      final wild = db.processes.where((p) => p.tags.contains('wild'));
+      expect(wild, isNotEmpty);
+
+      for (final spec in wild) {
+        final tame = db.processOrThrow(
+            spec.id.substring(0, spec.id.length - '_wild'.length));
+
+        // Nobody tends it, so it asks for no Duplicant time and no station.
+        expect(spec.dupeLabourSecondsPerCycle, 0);
+        expect(spec.ports.map((p) => p.itemId), isNot(anyElement(isIn(services))));
+
+        for (final port in spec.ports) {
+          final twin = tame.ports.firstWhere((p) =>
+              p.itemId == port.itemId && p.direction == port.direction);
+          final factor = port.itemId == 'egg' ? 10 : 1;
+          expect(port.ratePerSecond, closeTo(twin.ratePerSecond / factor, 1e-9),
+              reason: '"${spec.id}" port "${port.itemId}"');
+        }
+        // Nothing appeared that the tame twin did not have. Sheared critters
+        // lose their fibre or plastic too, since no Duplicant shears a wild
+        // one, and the description has to say which product went missing.
+        final kept = spec.ports.map((p) => p.itemId).toSet();
+        final tameItems = tame.ports.map((p) => p.itemId).toSet();
+        expect(kept.difference(tameItems), isEmpty);
+        for (final lost in tameItems.difference(kept).difference(services)) {
+          expect((spec.description ?? '').toLowerCase(),
+              contains(lost.replaceAll('_', ' ')),
+              reason: '"${spec.id}" drops "$lost" without saying so');
+        }
       }
     });
 

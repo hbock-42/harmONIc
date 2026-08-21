@@ -41,6 +41,20 @@ void main() {
     expect(textContaining('0.24 dupes'), findsOneWidget);
   });
 
+  testWidgets('the same ranch left wild asks for no Duplicant time',
+      (tester) async {
+    final wild = (PipelineBuilder(testDatabase, name: 'Wild hatches')
+          ..add('hatch_wild', nodeId: 'hatches', x: 0, y: 100)
+          ..add('coal_generator', nodeId: 'gen', x: 340, y: 100)
+          ..connectItem('hatches', 'gen', 'coal')
+          ..pinCount('hatches', 12))
+        .build();
+    final controller = await pumpEditor(tester, pipeline: wild);
+
+    expect(controller.solution.dupeLabourSecondsPerCycle, 0);
+    expect(find.text('DUPE TIME'), findsNothing);
+  });
+
   testWidgets('a pipeline with no labour hides the figure', (tester) async {
     await pumpEditor(tester, pipeline: testPipeline());
     expect(find.text('DUPE TIME'), findsNothing);

@@ -656,4 +656,45 @@ void main() {
       }
     });
   });
+
+  group('wild ranching', () {
+    test('the same coal, none of the Duplicant time, a tenth of the meat', () {
+      PipelineSolution ranch(String critter) {
+        final pipeline = (PipelineBuilder(db, name: 'ranch')
+              ..add(critter, nodeId: 'hatches')
+              ..addSource('sedimentary_rock')
+              ..addSink('coal')
+              ..connectItem('src_sedimentary_rock', 'hatches', 'sedimentary_rock')
+              ..connectItem('hatches', 'sink_coal', 'coal')
+              ..pinRate('sink_coal', sinkPortId, 1))
+            .build();
+        return solver.solve(pipeline);
+      }
+
+      final tame = ranch('hatch');
+      final wild = ranch('hatch_wild');
+
+      expect(tame.status, SolveStatus.solved);
+      expect(wild.status, SolveStatus.solved);
+      // Coal comes from eating, and grooming does not change what a Hatch eats,
+      // so the two ranches are the same size.
+      expect(wild.nodes['hatches']!.count,
+          closeTo(tame.nodes['hatches']!.count, 1e-6));
+      // The whole point: nobody tends it.
+      expect(tame.dupeLabourSecondsPerCycle, greaterThan(0));
+      expect(wild.dupeLabourSecondsPerCycle, 0);
+      // And the whole cost: a tenth of the eggs, so a tenth of the meat.
+      double eggs(PipelineSolution s) {
+        final node = s.nodes['hatches']!;
+        return node.count *
+            db
+                .processOrThrow(node.specId)
+                .outputs
+                .firstWhere((p) => p.itemId == 'egg')
+                .ratePerSecond;
+      }
+
+      expect(eggs(wild), closeTo(eggs(tame) / 10, 1e-9));
+    });
+  });
 }
