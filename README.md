@@ -63,6 +63,13 @@ the cook's time counted against your Duplicant budget like any other labour.
 A plant comes in two forms, harvested and grazed, because its growth is either eaten by a
 critter or taken as a crop and never both.
 
+## When it cannot work it out
+
+The commonest thing a pipeline needs is another pin, and the app now offers the nodes
+worth pinning as buttons — click one and it is selected, with the field that fixes the
+problem in front of you. Other complaints sit in the same strip, and any that do not fit
+are behind a count rather than dropped.
+
 ## How hot is it?
 
 Where the game fixes a temperature — an Electrolyzer's 70 °C gases, a Water Geyser's 95 °C

@@ -34,7 +34,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
   convention would free the plain drag for selection, which is what most editors do
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
-- `E10-5` a real problems *panel* (the banner shows the first four)
+- `E10-6` Pin *from* the suggestion — clicking a free node selects it, but you still type
+  the number in the inspector; a value straight on the chip would close the loop
 - `E11-2` Pipe *materials*: 500 °C steam needs a pipe built of something that survives it,
   which depends on the material's own limits rather than the flow's temperature alone
 - `E11-7` Construction materials: an Electrolyzer costs 400 kg of refined metal to build,
@@ -149,6 +150,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E10-5` **Problems you can act on** — "not enough pins" now offers the free nodes as
+  buttons that select them, instead of naming internal ids in a sentence and leaving you
+  to find them. Nothing is silently dropped either: extra issues sit behind a count that
+  expands
 - `E3-5b` **Floor space** — every building's footprint was recorded and never shown. A
   build now reports the tiles it needs, per node and in total, counting whole buildings
   because half an Electrolyzer takes as much floor as a whole one. That empties the list
@@ -408,7 +413,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-2 | P0 | **Pin control** — the headline | select a node → "I have ▢ of these" (buildings) or "▢ g/s" (source/sink). Pinned node wears a lock badge; clearing it is one click |
 | E10-3 | P0 | Inspector | selected node: every port with its solved rate, what is connected, power, heat, uptime, and the `unverified` warning if the data ever carries one |
 | E10-4 | P1 | Summary bar | net power, total heat, raw inputs, net outputs, dupe labour — always visible |
-| E10-5 | P1 | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
+| E10-5 | ✅ | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
 | E10-6 | P1 | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
 | E10-7 | ✅ | Per-cycle ⇄ per-second toggle |
 | E10-8 | P2 | Templates: start from SPOM, petroleum boiler, coal farm |
