@@ -1,0 +1,288 @@
+import 'dart:convert';
+
+import 'package:oni_engine/oni_engine.dart';
+import 'package:test/test.dart';
+
+void main() {
+  final db = loadDefaultDatabase();
+  final solver = PipelineSolver(db);
+
+  /// water source → electrolyzer → oxygen sink + hydrogen sink
+  PipelineBuilder basic() {
+    final b = PipelineBuilder(db, name: 'basic oxygen');
+    b.addSource('water');
+    b.add('electrolyzer', nodeId: 'elec');
+    b.addSink('oxygen');
+    b.addSink('hydrogen');
+    b.connectItem('src_water', 'elec', 'water');
+    b.connectItem('elec', 'sink_oxygen', 'oxygen');
+    b.connectItem('elec', 'sink_hydrogen', 'hydrogen');
+    return b;
+  }
+
+  group('pinning', () {
+    test('a building count scales the whole graph', () {
+      final b = basic()..pinCount('elec', 3);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['elec']!.count, closeTo(3, 1e-9));
+      // Sources/sinks are 1 unit == 1 g/s, so their count reads as a rate.
+      expect(s.nodes['src_water']!.count, closeTo(3000, 1e-6));
+      expect(s.nodes['sink_oxygen']!.count, closeTo(2664, 1e-6));
+      expect(s.nodes['sink_hydrogen']!.count, closeTo(336, 1e-6));
+      expect(s.powerConsumedWatts, closeTo(360, 1e-6));
+    });
+
+    test('a supply rate works backwards to a building count', () {
+      // "I have 10 kg/s of water."
+      final b = basic()..pinRate('src_water', sourcePortId, 10000);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['elec']!.count, closeTo(10, 1e-9));
+      expect(s.nodes['sink_oxygen']!.count, closeTo(8880, 1e-6));
+    });
+
+    test('a wanted output works backwards too', () {
+      // "I want 1 kg/s of oxygen."
+      final b = basic()..pinRate('sink_oxygen', sinkPortId, 1000);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['elec']!.count, closeTo(1000 / 888, 1e-9));
+      expect(s.nodes['src_water']!.count, closeTo(1000 / 0.888, 1e-6));
+    });
+
+    test('a stockpile plus a duration is just a rate', () {
+      // 600 kg of water, made to last 10 cycles = 6000 s → 100 g/s.
+      final b = basic()
+        ..pinStock('src_water', sourcePortId,
+            amount: 600000, durationSeconds: 10 * secondsPerCycle);
+      final s = solver.solve(b.build());
+
+      expect(s.nodes['src_water']!.count, closeTo(100, 1e-6));
+      expect(s.nodes['elec']!.count, closeTo(0.1, 1e-9));
+    });
+
+    test('the solution scales linearly with the pin', () {
+      final one = solver.solve((basic()..pinCount('elec', 1)).build());
+      final seven = solver.solve((basic()..pinCount('elec', 7)).build());
+      for (final id in one.nodes.keys) {
+        expect(seven.nodes[id]!.count, closeTo(one.nodes[id]!.count * 7, 1e-6));
+      }
+    });
+  });
+
+  group('balances', () {
+    test('unconnected input ports become required inputs', () {
+      final b = PipelineBuilder(db, name: 'bare')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.externalInputs['water'], closeTo(1000, 1e-9));
+      expect(s.externalOutputs['oxygen'], closeTo(888, 1e-9));
+      expect(s.externalOutputs['hydrogen'], closeTo(112, 1e-9));
+      expect(s.shortages, isEmpty, reason: 'nothing is *half* fed here');
+    });
+
+    test('fed ports have no shortage', () {
+      final s = solver.solve((basic()..pinCount('elec', 2.5)).build());
+      for (final balance in s.portBalances) {
+        expect(balance.shortage, closeTo(0, 1e-6), reason: '${balance.ref}');
+      }
+    });
+
+    test('an output port with no edges is surplus, not an error', () {
+      final b = PipelineBuilder(db, name: 'vented hydrogen')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..addSink('oxygen')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'sink_oxygen', 'oxygen')
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.externalOutputs['hydrogen'], closeTo(112, 1e-9));
+      expect(s.issues.where((i) => i.isError), isEmpty);
+    });
+
+    test('shares split an output between consumers', () {
+      final b = PipelineBuilder(db, name: 'split')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..addSink('oxygen', nodeId: 'a')
+        ..addSink('oxygen', nodeId: 'b')
+        ..connectItem('elec', 'a', 'oxygen')
+        ..connectItem('elec', 'b', 'oxygen')
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.nodes['a']!.count, closeTo(444, 1e-6));
+      expect(s.nodes['b']!.count, closeTo(444, 1e-6));
+    });
+
+    test('an explicit share leaves the rest as surplus', () {
+      final b = PipelineBuilder(db, name: 'partial')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..addSink('oxygen', nodeId: 'a')
+        ..connect('elec', 'oxygen', 'a', sinkPortId, share: 0.25)
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.nodes['a']!.count, closeTo(222, 1e-6));
+      expect(s.externalOutputs['oxygen'], closeTo(666, 1e-6));
+    });
+  });
+
+  group('power as an ordinary item', () {
+    test('a SPOM nets out positive', () {
+      // 1 electrolyzer → 112 g/s H2 → 1.12 hydrogen generators → 896 W,
+      // against 120 W of electrolyzer draw.
+      final b = PipelineBuilder(db, name: 'spom')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('hydrogen_generator', nodeId: 'hgen')
+        ..addSink('oxygen')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'hgen', 'hydrogen')
+        ..connectItem('elec', 'sink_oxygen', 'oxygen')
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.nodes['hgen']!.count, closeTo(1.12, 1e-9));
+      expect(s.powerGeneratedWatts, closeTo(896, 1e-6));
+      expect(s.powerConsumedWatts, closeTo(120, 1e-6));
+      expect(s.netPowerWatts, closeTo(776, 1e-6));
+    });
+
+    test('a power loop solves without special handling', () {
+      // The hydrogen generator feeds the electrolyzer's own power port: a real
+      // cycle in the graph, which the linear system swallows whole.
+      final b = PipelineBuilder(db, name: 'spom loop')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('hydrogen_generator', nodeId: 'hgen')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'hgen', 'hydrogen')
+        ..connect('hgen', 'power_out', 'elec', 'power_in', share: 120 / 896)
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['hgen']!.count, closeTo(1.12, 1e-9));
+      expect(s.externalInputs['power'] ?? 0, closeTo(0, 1e-6),
+          reason: 'the electrolyzer powers itself off its own hydrogen');
+      expect(s.externalOutputs['power'], closeTo(776, 1e-6));
+    });
+  });
+
+  group('failure modes', () {
+    test('no pin leaves everything free', () {
+      final s = solver.solve(basic().build());
+      expect(s.status, SolveStatus.underdetermined);
+      expect(s.freeNodeIds, isNotEmpty);
+      expect(s.isUsable, isTrue, reason: 'the UI still shows a zeroed graph');
+    });
+
+    test('a disconnected island needs its own pin', () {
+      final b = basic()
+        ..pinCount('elec', 1)
+        ..add('coal_generator', nodeId: 'island');
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.underdetermined);
+      expect(s.freeNodeIds, ['island']);
+      expect(s.nodes['elec']!.count, closeTo(1, 1e-9),
+          reason: 'the rest of the graph is still solved');
+    });
+
+    test('contradictory pins are reported, not silently averaged', () {
+      final b = basic()
+        ..pinCount('elec', 1)
+        ..pinRate('src_water', sourcePortId, 5000);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.inconsistent);
+      expect(s.issues.any((i) => i.isError), isTrue);
+    });
+
+    test('a mismatched edge is a validation error', () {
+      final pipeline = Pipeline(
+        id: 'bad',
+        name: 'bad',
+        nodes: const [
+          PipelineNode(id: 'elec', specId: 'electrolyzer'),
+          PipelineNode(id: 'gen', specId: 'coal_generator'),
+        ],
+        edges: const [
+          PipelineEdge(
+            id: 'e',
+            fromNodeId: 'elec',
+            fromPortId: 'oxygen',
+            toNodeId: 'gen',
+            toPortId: 'coal',
+          ),
+        ],
+      );
+      final s = solver.solve(pipeline);
+      expect(s.status, SolveStatus.invalid);
+      expect(s.issues.first.message, contains('oxygen'));
+    });
+
+    test('over-committed shares are rejected', () {
+      final b = PipelineBuilder(db, name: 'over')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..addSink('oxygen', nodeId: 'a')
+        ..addSink('oxygen', nodeId: 'b')
+        ..connect('elec', 'oxygen', 'a', sinkPortId, share: 0.8)
+        ..connect('elec', 'oxygen', 'b', sinkPortId, share: 0.8)
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+      expect(s.status, SolveStatus.invalid);
+    });
+  });
+
+  group('presentation helpers', () {
+    test('uptime turns effective units into buildings to place', () {
+      final b = PipelineBuilder(db, name: 'duty cycle')
+        ..add('electrolyzer', nodeId: 'elec', uptime: 0.5)
+        ..pinCount('elec', 3);
+      final s = solver.solve(b.build());
+
+      expect(s.nodes['elec']!.physicalCount, closeTo(6, 1e-9));
+      expect(s.nodes['elec']!.wholeCount, 6);
+    });
+
+    test('fractional counts round up and report idle capacity', () {
+      final s = solver.solve((basic()..pinCount('elec', 2.4)).build());
+      final elec = s.nodes['elec']!;
+      expect(elec.wholeCount, 3);
+      expect(elec.utilisation, closeTo(0.8, 1e-9));
+    });
+
+    test('the text report mentions the key numbers', () {
+      final s = solver.solve((basic()..pinCount('elec', 3)).build());
+      final text = formatSolution(s, db);
+      expect(text, contains('Electrolyzer'));
+      expect(text, contains('Water'));
+      expect(text, contains('Power'));
+    });
+  });
+
+  group('persistence', () {
+    test('a pipeline round-trips through JSON and solves the same', () {
+      final original = (basic()..pinCount('elec', 3)).build();
+      final restored =
+          Pipeline.fromJsonString(jsonEncode(original.toJson()));
+
+      final a = solver.solve(original);
+      final b = solver.solve(restored);
+      expect(b.status, a.status);
+      for (final id in a.nodes.keys) {
+        expect(b.nodes[id]!.count, closeTo(a.nodes[id]!.count, 1e-9));
+      }
+    });
+  });
+}
