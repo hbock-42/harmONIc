@@ -49,6 +49,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
+- `E12-2` The rest of the roster now that classes make it cheap: Aquatuner and Thermo
+  Regulator (they move heat rather than make it, so the heat item needs a sign convention
+  first), Supermaterial Refinery, Molecular Forge, Spice Grinder, Dehydrator, Smoker
+- `E12-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
+  plastic makes, which is the one figure a build actually needs
+
 - `E11-7b` What a Gasket costs: 50 kg of plastic or rubber makes some number of them, and
   the wiki does not say how many, so a build wanting four is priced in gaskets rather than
   in the plastic behind them
@@ -120,6 +126,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-1` **Material classes** — a port can ask for "Metal Ore" and take any of them. It is
+  a compatibility rule rather than a new kind of flow, so the solver never learned about
+  it: everything was already grams. One Metal Refinery in the palette instead of one per
+  ore, and 12 more converters seeded — Oxygen Diffuser, Steam Turbine, Oil Well, Glass
+  Forge, Kiln, Compost, Fertilizer Synthesizer, Sublimation Station and the rest
 - `E11-7` **Construction materials** — all 36 buildings priced from the wiki, including the
   pumps the engine synthesises. Counted per building placed rather than per fractional one,
   and in the class the game asks for: any metal ore will do

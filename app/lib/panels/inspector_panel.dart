@@ -352,7 +352,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
             ],
           ),
           _asBuiltNote(controller, result),
-          _buildCost(spec, result),
+          _buildCost(controller, spec, result),
           const SizedBox(height: OniSpacing.lg),
           if (!_isBoundary)
             Wrap(
@@ -444,7 +444,8 @@ class _NodeInspectorState extends State<_NodeInspector> {
   /// half an Electrolyzer still costs its whole 200 kg of ore, and shown in the
   /// class the game asks for: any metal ore will do, and which one you choose
   /// changes its heat tolerance rather than whether it can be built.
-  Widget _buildCost(ProcessSpec spec, NodeResult? result) {
+  Widget _buildCost(
+      PipelineController controller, ProcessSpec spec, NodeResult? result) {
     if (result == null || spec.buildCost.isEmpty || result.wholeCount == 0) {
       return const SizedBox.shrink();
     }
@@ -467,7 +468,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
                 for (final entry in entries)
                   Text(
                     '${formatMass(entry.value * result.wholeCount)} '
-                    '${BuildMaterials.nameOf(entry.key)}',
+                    '${controller.database.item(entry.key)?.name ?? entry.key}',
                     style: OniType.body,
                   ),
               ],

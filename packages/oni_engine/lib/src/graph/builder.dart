@@ -137,7 +137,8 @@ class PipelineBuilder {
     );
     final spec = database.processOrThrow(node.specId);
     final matches = spec.ports
-        .where((p) => p.itemId == itemId && p.direction == direction)
+        .where((p) =>
+            database.accepts(p.itemId, itemId) && p.direction == direction)
         .toList();
     if (matches.isEmpty) {
       throw ArgumentError(

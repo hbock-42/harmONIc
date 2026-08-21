@@ -856,6 +856,127 @@
       "tags": [
         "growth"
       ]
+    },
+    {
+      "id": "metal_ore",
+      "name": "Metal Ore",
+      "category": "solid",
+      "members": [
+        "iron_ore",
+        "copper_ore",
+        "gold_amalgam",
+        "nickel_ore",
+        "zinc_ore",
+        "cinnabar_ore",
+        "galena"
+      ],
+      "tags": [
+        "class"
+      ]
+    },
+    {
+      "id": "refined_metal",
+      "name": "Refined Metal",
+      "category": "solid",
+      "members": [
+        "iron",
+        "copper",
+        "gold",
+        "nickel",
+        "zinc",
+        "solid_mercury"
+      ],
+      "tags": [
+        "class"
+      ]
+    },
+    {
+      "id": "raw_mineral",
+      "name": "Raw Mineral",
+      "category": "solid",
+      "members": [
+        "sedimentary_rock",
+        "obsidian",
+        "shale",
+        "siltstone",
+        "basalt",
+        "coquina",
+        "corallium"
+      ],
+      "tags": [
+        "class"
+      ]
+    },
+    {
+      "id": "compostable",
+      "name": "Compostable",
+      "category": "solid",
+      "members": [
+        "polluted_dirt",
+        "slime"
+      ],
+      "tags": [
+        "class"
+      ]
+    },
+    {
+      "id": "fertilizer",
+      "name": "Fertilizer",
+      "category": "solid",
+      "tags": []
+    },
+    {
+      "id": "ceramic",
+      "name": "Ceramic",
+      "category": "solid",
+      "tags": []
+    },
+    {
+      "id": "molten_glass",
+      "name": "Molten Glass",
+      "category": "liquid",
+      "tags": []
+    },
+    {
+      "id": "glass",
+      "name": "Glass",
+      "category": "solid",
+      "tags": []
+    },
+    {
+      "id": "gasket",
+      "name": "Gaskets",
+      "category": "other",
+      "tags": []
+    },
+    {
+      "id": "mush_bar",
+      "name": "Mush Bar",
+      "category": "solid",
+      "tags": []
+    },
+    {
+      "id": "cultivable_soil",
+      "name": "Cultivable Soil",
+      "category": "solid",
+      "members": [
+        "dirt"
+      ],
+      "tags": [
+        "class"
+      ]
+    },
+    {
+      "id": "wood",
+      "name": "Wood",
+      "category": "solid",
+      "members": [
+        "lumber",
+        "gum_wood"
+      ],
+      "tags": [
+        "class"
+      ]
     }
   ],
   "processes": [
@@ -1447,8 +1568,8 @@
       }
     },
     {
-      "id": "metal_refinery_iron",
-      "name": "Metal Refinery (Iron)",
+      "id": "metal_refinery",
+      "name": "Metal Refinery",
       "kind": "building",
       "buildingId": "metal_refinery",
       "powerWatts": 1200,
@@ -1461,7 +1582,7 @@
       ],
       "ports": [
         {
-          "item": "iron_ore",
+          "item": "metal_ore",
           "direction": "input",
           "rate": 2500
         },
@@ -1472,7 +1593,7 @@
           "rate": 10000
         },
         {
-          "item": "iron",
+          "item": "refined_metal",
           "direction": "output",
           "rate": 2500,
           "temperatureC": 40
@@ -1485,7 +1606,7 @@
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Batch building: 100 kg per 40 s operation. The coolant loop is the same liquid in and out, only hotter — wire it back on itself.",
+      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is. The coolant comes back 14 °C hotter per kilogram refined; the figure here is water.",
       "build": {
         "raw_mineral": 800
       }
@@ -1505,7 +1626,7 @@
       ],
       "ports": [
         {
-          "item": "sedimentary_rock",
+          "item": "raw_mineral",
           "direction": "input",
           "rate": 2500
         },
@@ -1516,7 +1637,7 @@
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Batch building: 100 kg per 40 s operation. Sedimentary rock crushes 1:1 into sand.",
+      "description": "Any rock crushes to sand at the same rate, so this takes the class rather than one stone in particular.",
       "build": {
         "metal_ore": 800
       }
@@ -6242,6 +6363,433 @@
           "rate": 5.0
         }
       ]
+    },
+    {
+      "id": "metal_refinery",
+      "name": "Metal Refinery",
+      "kind": "building",
+      "buildingId": "metal_refinery",
+      "powerWatts": 1200,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 5,
+      "footprintHeight": 3,
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "metal_ore",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "id": "coolant_in",
+          "item": "water",
+          "direction": "input",
+          "rate": 10000
+        },
+        {
+          "item": "refined_metal",
+          "direction": "output",
+          "rate": 2500,
+          "temperatureC": 40
+        },
+        {
+          "id": "coolant_out",
+          "item": "water",
+          "direction": "output",
+          "rate": 10000
+        }
+      ],
+      "heatKdtuPerSecond": 16,
+      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is. The coolant comes back 14 °C hotter per kilogram refined; the figure here is water.",
+      "build": {
+        "raw_mineral": 800
+      }
+    },
+    {
+      "id": "oxygen_diffuser",
+      "name": "Oxygen Diffuser",
+      "kind": "building",
+      "buildingId": "oxygen_diffuser",
+      "powerWatts": 120,
+      "heatKdtuPerSecond": 1.5,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "The first oxygen anybody makes. 550 g/s of algae for 500 g/s of oxygen at 30 °C — the missing 50 g is the mass the game simply drops.",
+      "tags": [
+        "oxygen",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "algae",
+          "direction": "input",
+          "rate": 550
+        },
+        {
+          "item": "oxygen",
+          "direction": "output",
+          "rate": 500,
+          "temperatureC": 30
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "steam_turbine",
+      "name": "Steam Turbine",
+      "kind": "building",
+      "buildingId": "steam_turbine",
+      "powerWatts": -850,
+      "heatKdtuPerSecond": 4,
+      "footprintWidth": 5,
+      "footprintHeight": 3,
+      "description": "UNVERIFIED: the figures here are the turbine flat out — 2 kg/s of steam at 200 °C or hotter, for 850 W. Below that it makes less, down to 242 W at its 125 °C minimum, and the app has no way to say how hot your steam is. It gives the water back at 95 °C and deletes the rest of the heat, which is the whole reason it exists.",
+      "tags": [
+        "power",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "steam",
+          "direction": "input",
+          "rate": 2000
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 2000,
+          "temperatureC": 95
+        }
+      ],
+      "build": {
+        "refined_metal": 800,
+        "gasket": 4
+      }
+    },
+    {
+      "id": "fertilizer_synthesizer",
+      "name": "Fertilizer Synthesizer",
+      "kind": "building",
+      "buildingId": "fertilizer_synthesizer",
+      "powerWatts": 120,
+      "heatKdtuPerSecond": 3,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "Dirt, phosphorite and polluted water into fertiliser, with a little natural gas on the side that is worth catching.",
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 65
+        },
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 26
+        },
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 39
+        },
+        {
+          "item": "fertilizer",
+          "direction": "output",
+          "rate": 120
+        },
+        {
+          "item": "natural_gas",
+          "direction": "output",
+          "rate": 10
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "compost",
+      "name": "Compost",
+      "kind": "building",
+      "buildingId": "compost",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 1.125,
+      "dupeLabourSecondsPerCycle": 24,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "Rotting matter into dirt, one kilogram for one, at 75 °C. No power at all — just a Duplicant turning it over every 50 kg, which is about 24 seconds of somebody’s cycle.",
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "compostable",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 100,
+          "temperatureC": 75
+        }
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
+    },
+    {
+      "id": "sublimation_station",
+      "name": "Sublimation Station",
+      "kind": "building",
+      "buildingId": "sublimation_station",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 1.5,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "A kilogram of polluted dirt a second becomes 660 g of polluted oxygen. The third of it that goes missing is the game deleting mass, not an error here.",
+      "tags": [
+        "oxygen",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_dirt",
+          "direction": "input",
+          "rate": 1000
+        },
+        {
+          "item": "polluted_oxygen",
+          "direction": "output",
+          "rate": 660
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "oil_well",
+      "name": "Oil Well",
+      "kind": "building",
+      "buildingId": "oil_well",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 2,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "A kilogram of water a second down the hole, 3.33 kg of crude oil back up at 90 °C, and 33 g of natural gas at 300 °C that is hotter than everything else it does put together. The water is gone for good.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 1000
+        },
+        {
+          "item": "crude_oil",
+          "direction": "output",
+          "rate": 3330,
+          "temperatureC": 90
+        },
+        {
+          "item": "natural_gas",
+          "direction": "output",
+          "rate": 33.3,
+          "temperatureC": 300
+        }
+      ],
+      "build": {
+        "refined_metal": 200
+      }
+    },
+    {
+      "id": "kiln_ceramic",
+      "name": "Kiln (Ceramic)",
+      "kind": "building",
+      "buildingId": "kiln",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 20,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: 100 kg of clay and 25 kg of coal make 100 kg of ceramic in 40 s, which is the recipe; whether a Duplicant is tied up the whole cycle is stated two ways on the same page.",
+      "tags": [
+        "refining",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "clay",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "item": "coal",
+          "direction": "input",
+          "rate": 625
+        },
+        {
+          "item": "ceramic",
+          "direction": "output",
+          "rate": 2500,
+          "temperatureC": 80
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "kiln_refined_carbon",
+      "name": "Kiln (Refined Carbon)",
+      "kind": "building",
+      "buildingId": "kiln",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 20,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: 125 kg of coal down to 100 kg of refined carbon in 40 s. Same doubt about the Duplicant time as the ceramic recipe.",
+      "tags": [
+        "refining",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "coal",
+          "direction": "input",
+          "rate": 3125
+        },
+        {
+          "item": "refined_carbon",
+          "direction": "output",
+          "rate": 2500,
+          "temperatureC": 80
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "glass_forge",
+      "name": "Glass Forge",
+      "kind": "building",
+      "buildingId": "glass_forge",
+      "powerWatts": 1200,
+      "heatKdtuPerSecond": 16,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "100 kg of sand into 25 kg of molten glass at 1942 °C, every 40 s. Three quarters of the sand does not come out the other side.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sand",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "item": "molten_glass",
+          "direction": "output",
+          "rate": 625,
+          "temperatureC": 1941.85
+        }
+      ],
+      "build": {
+        "raw_mineral": 800
+      }
+    },
+    {
+      "id": "manual_generator",
+      "name": "Manual Generator",
+      "kind": "building",
+      "buildingId": "manual_generator",
+      "powerWatts": -400,
+      "heatKdtuPerSecond": 1,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "400 W for as long as somebody runs on it, which is why the labour figure is a whole cycle: this building is a Duplicant.",
+      "tags": [
+        "power",
+        "verified"
+      ],
+      "ports": [],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "solar_panel",
+      "name": "Solar Panel",
+      "kind": "building",
+      "buildingId": "solar_panel",
+      "powerWatts": -262,
+      "heatKdtuPerSecond": 0,
+      "footprintWidth": 3,
+      "footprintHeight": 1,
+      "description": "UNVERIFIED: 380 W at noon and nothing at night, averaging about 262 W over a cycle, which is the figure used here. A panel in shade or under a meteor shower makes less and the app cannot tell.",
+      "tags": [
+        "power",
+        "unverified"
+      ],
+      "ports": [],
+      "build": {
+        "glass": 200
+      }
+    },
+    {
+      "id": "microbe_musher_mush_bar",
+      "name": "Microbe Musher (Mush Bar)",
+      "kind": "building",
+      "buildingId": "microbe_musher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 0,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "description": "UNVERIFIED: 75 kg of dirt and 75 kg of water make one Mush Bar worth 800 kcal. The wiki gives the recipe but not how long it takes, so the rates here assume one bar a cycle and the heat is unstated.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 125
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 125
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 1333.3333333333333
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"

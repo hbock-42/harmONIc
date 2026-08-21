@@ -44,6 +44,14 @@ const Map<String, String> expectedImbalance = <String, String>{
   'thimble_reed': 'one fibre out of 160 kg of water, which is the whole complaint '
       'about the plant',
   'nosh_sprout': 'twelve beans out of ethanol and dirt',
+  'oxygen_diffuser': 'a tenth of the algae simply disappears, which is the '
+      'game and not the sheet',
+  'sublimation_station': 'a third of the polluted dirt goes nowhere on its way '
+      'to being polluted oxygen',
+  'oil_well': 'the oil comes out of the reservoir underneath, not out of the '
+      'water going in — the water is the fee, not the ingredient',
+  'glass_forge': 'four kilograms of sand for one of glass, confirmed twice '
+      'because a 75 % loss reads like a typo',
 };
 
 void main() {

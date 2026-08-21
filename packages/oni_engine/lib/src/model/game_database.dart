@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'build_material.dart';
 import 'item.dart';
 import 'process_spec.dart';
 
@@ -50,6 +49,20 @@ class GameDatabase {
   ProcessSpec processOrThrow(String id) =>
       _processes[id] ?? (throw ArgumentError('Unknown process "$id"'));
 
+  /// Can something offering [offered] be wired into a port asking for [wanted]?
+  ///
+  /// The same item always can. Beyond that, a class accepts any of its members
+  /// — a Metal Refinery asking for Metal Ore takes the Iron Ore an Orehull
+  /// sheds — and, going the other way, a port offering the class satisfies a
+  /// port asking for one of its members, because a pile of unspecified ore is
+  /// where the iron was going to come from anyway.
+  bool accepts(String wanted, String offered) {
+    if (wanted == offered) return true;
+    if (_items[wanted]?.members.contains(offered) ?? false) return true;
+    if (_items[offered]?.members.contains(wanted) ?? false) return true;
+    return false;
+  }
+
   /// Every process port must reference a known item.
   void assertConsistent() {
     final problems = <String>[];
@@ -61,9 +74,19 @@ class GameDatabase {
         }
       }
       for (final material in spec.buildCost.keys) {
-        if (!BuildMaterials.isKnown(material)) {
+        if (!_items.containsKey(material)) {
           problems.add('process "${spec.id}" is built of unknown material '
               '"$material"');
+        }
+      }
+    }
+    for (final item in _items.values) {
+      for (final member in item.members) {
+        if (!_items.containsKey(member)) {
+          problems.add('item "${item.id}" contains unknown member "$member"');
+        } else if (_items[member]!.isClass) {
+          problems.add('item "${item.id}" contains "$member", which is itself '
+              'a class — a class of classes has no useful meaning here');
         }
       }
     }

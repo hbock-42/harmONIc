@@ -89,7 +89,7 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
           'Edge "${edge.id}" ends at output port "${toPort.id}"',
           edgeId: edge.id));
     }
-    if (fromPort.itemId != toPort.itemId) {
+    if (!db.accepts(toPort.itemId, fromPort.itemId)) {
       issues.add(PipelineIssue(
           IssueSeverity.error,
           'Edge "${edge.id}" carries ${fromPort.itemId} into a '

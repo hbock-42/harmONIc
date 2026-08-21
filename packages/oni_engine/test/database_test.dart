@@ -952,11 +952,12 @@ void main() {
       // 100 kg per 40 s operation, and a dupe tied up the whole cycle.
       expect(rate('rock_crusher_sand', 'sand', input: false), closeTo(2500, 0.01));
       expect(db.processOrThrow('rock_crusher_sand').dupeLabourSecondsPerCycle, 600);
-      expect(rate('metal_refinery_iron', 'iron', input: false), closeTo(2500, 0.01));
+      expect(rate('metal_refinery', 'refined_metal', input: false),
+          closeTo(2500, 0.01));
     });
 
     test('the Metal Refinery coolant loop is the same water in and out', () {
-      final spec = db.processOrThrow('metal_refinery_iron');
+      final spec = db.processOrThrow('metal_refinery');
       expect(spec.portByIdOrThrow('coolant_in').ratePerSecond, 10000);
       expect(spec.portByIdOrThrow('coolant_out').ratePerSecond, 10000);
     });

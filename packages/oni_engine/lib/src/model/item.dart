@@ -28,6 +28,7 @@ class Item {
     required this.id,
     required this.name,
     required this.category,
+    this.members = const {},
     this.tags = const {},
   });
 
@@ -35,12 +36,27 @@ class Item {
         id: json['id'] as String,
         name: json['name'] as String,
         category: ItemCategory.parse(json['category'] as String),
+        members: {
+          ...(json['members'] as List<dynamic>? ?? const []).cast<String>(),
+        },
         tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
       );
 
   final String id;
   final String name;
   final ItemCategory category;
+
+  /// The concrete items this one stands for, if it is a class rather than a
+  /// thing: "Metal Ore" is any of a dozen ores, and a Metal Refinery does not
+  /// care which. Empty for an ordinary item.
+  ///
+  /// A class is a *compatibility* rule, not a new kind of flow. Everything here
+  /// is already measured in grams, so a port asking for Metal Ore and a port
+  /// offering Iron Ore balance without the solver knowing the difference. What
+  /// the class buys is one Metal Refinery in the palette instead of a dozen.
+  final Set<String> members;
+
+  bool get isClass => members.isNotEmpty;
   final Set<String> tags;
 
   Unit get unit => switch (category) {
@@ -89,6 +105,7 @@ class Item {
         'id': id,
         'name': name,
         'category': category.name,
+        if (members.isNotEmpty) 'members': members.toList(),
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 

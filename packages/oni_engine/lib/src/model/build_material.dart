@@ -2,9 +2,13 @@
 ///
 /// The game asks for a class of material rather than a particular one: an
 /// Electrolyzer takes 200 kg of any metal ore, and which ore you feed it
-/// changes its heat tolerance and nothing else. So these are not items that
-/// flow through a pipeline — they are a shopping list, and they are counted
-/// once per building rather than per second.
+/// changes its heat tolerance and nothing else. Those classes are ordinary
+/// items in the database with members — the same ones a recipe port names — so
+/// there is one vocabulary here and not two.
+///
+/// What makes a build cost different from a flow is when it is paid: once, when
+/// the building goes up, rather than every second it runs. That is why it lives
+/// beside the ports instead of among them.
 abstract final class BuildMaterials {
   static const String metalOre = 'metal_ore';
   static const String refinedMetal = 'refined_metal';
@@ -12,24 +16,11 @@ abstract final class BuildMaterials {
   static const String plastic = 'plastic';
   static const String cultivableSoil = 'cultivable_soil';
   static const String wood = 'wood';
+  static const String glass = 'glass';
 
-  /// A crafted part rather than a raw class: 50 kg of plastic or rubber makes
-  /// one, and the Aquatic buildings want a few.
+  /// A crafted part rather than a class: 50 kg of plastic or rubber makes some
+  /// number of them, and the wiki does not say how many.
   static const String gasket = 'gasket';
-
-  static const Map<String, String> names = <String, String>{
-    metalOre: 'Metal Ore',
-    refinedMetal: 'Refined Metal',
-    rawMineral: 'Raw Mineral',
-    plastic: 'Plastic',
-    cultivableSoil: 'Cultivable Soil',
-    wood: 'Wood',
-    gasket: 'Gaskets',
-  };
-
-  static String nameOf(String id) => names[id] ?? id;
-
-  static bool isKnown(String id) => names.containsKey(id);
 }
 
 /// Kilograms, written the way a shopping list would be.
