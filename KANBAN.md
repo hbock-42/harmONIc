@@ -135,6 +135,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E7-14` **The view follows a drag off the edge** — hold a node, a selection, a rubber band
+  or a half-drawn wire against the window edge and the canvas pans, faster the harder you
+  press. The dragged thing keeps moving even while the pointer sits still, which is the
+  half that makes it useful
 - `E12-1c` **Classes applied where they were verified** — Filtration Medium (Deodorizer and
   Water Sieve take sand *or* regolith), a Hatch eats rock rather than one rock, a Smooth
   Hatch eats any ore and gives back the matching metal at 75 %, and the Ethanol Distiller

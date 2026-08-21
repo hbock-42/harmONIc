@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -128,6 +129,7 @@ class GraphCanvasState extends State<GraphCanvas>
 
   @override
   void dispose() {
+    endEdgePan();
     controller.removeListener(_onControllerChanged);
     _travel.dispose();
     _focus.dispose();
@@ -212,6 +214,73 @@ class GraphCanvasState extends State<GraphCanvas>
 
   double get scale => _scale;
   Offset get offset => _offset;
+
+  // ---------------------------------------------------------------- edge pan
+
+  /// How close to the edge a drag has to get before the view starts following,
+  /// and how fast it goes when the pointer is right against it.
+  static const double edgeMargin = 64;
+  static const double edgeSpeed = 18;
+
+  Timer? _edgeTimer;
+  Offset? _edgePointer;
+  VoidCallback? _edgeReapply;
+
+  /// Follow a drag that has reached the edge of the window.
+  ///
+  /// The view moving is only half of it: the pointer can sit perfectly still
+  /// against the edge while the canvas slides under it, and no drag update
+  /// fires in that time. So the drag is re-applied on every step from the
+  /// pointer's unchanged position — the world beneath it has moved, so the
+  /// thing being dragged moves with it, which is what "drag it off the edge"
+  /// is supposed to mean.
+  void beginEdgePan(VoidCallback reapply) {
+    _edgeReapply = reapply;
+    _edgeTimer ??= Timer.periodic(
+        const Duration(milliseconds: 16), (_) => _edgePanStep());
+  }
+
+  void updateEdgePan(Offset globalPosition) => _edgePointer = globalPosition;
+
+  void endEdgePan() {
+    _edgeTimer?.cancel();
+    _edgeTimer = null;
+    _edgePointer = null;
+    _edgeReapply = null;
+  }
+
+  /// How far the view should move this step, given where the pointer is.
+  ///
+  /// Zero until the pointer is inside the margin, then proportional to how far
+  /// in it has come, so nudging the edge creeps and pressing against it runs.
+  @visibleForTesting
+  static Offset edgePanFor(Offset local, Size viewport) {
+    double axis(double position, double extent) {
+      if (position < edgeMargin) {
+        return (edgeMargin - math.max(position, 0)) / edgeMargin * edgeSpeed;
+      }
+      if (position > extent - edgeMargin) {
+        return -(edgeMargin - math.max(extent - position, 0)) /
+            edgeMargin *
+            edgeSpeed;
+      }
+      return 0;
+    }
+
+    return Offset(axis(local.dx, viewport.width), axis(local.dy, viewport.height));
+  }
+
+  void _edgePanStep() {
+    final pointer = _edgePointer;
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    if (pointer == null || box == null) return;
+
+    final step = edgePanFor(box.globalToLocal(pointer), box.size);
+    if (step == Offset.zero) return;
+
+    setState(() => _offset += step);
+    _edgeReapply?.call();
+  }
 
   Offset worldFromLocal(Offset local) => (local - _offset) / _scale;
 
@@ -317,9 +386,13 @@ class GraphCanvasState extends State<GraphCanvas>
   void _onPortDragUpdate(Offset global) {
     if (_pendingFrom == null) return;
     setState(() => _pendingWorld = worldFromGlobal(global));
+    // A wire can be dragged to a node that is not on screen yet.
+    beginEdgePan(() => _onPortDragUpdate(global));
+    updateEdgePan(global);
   }
 
   void _onPortDragEnd(Offset global) {
+    endEdgePan();
     final from = _pendingFrom;
     final world = worldFromGlobal(global);
     setState(() {
@@ -454,6 +527,16 @@ class GraphCanvasState extends State<GraphCanvas>
     return box?.globalToLocal(globalPosition);
   }
 
+  /// Where the rubber band's loose end is now, in world terms.
+  ///
+  /// Taken from the global pointer rather than a local one so it survives the
+  /// view moving underneath it during an edge pan.
+  void _extendMarqueeTo(Offset globalPosition) {
+    final world = worldFromGlobal(globalPosition);
+    if (world == null) return;
+    setState(() => _marqueeTo = world);
+  }
+
   void _onPointerSignal(PointerSignalEvent event) {
     final local = _localOf(event.position);
     if (local == null) return;
@@ -549,12 +632,15 @@ class GraphCanvasState extends State<GraphCanvas>
           },
           onPanUpdate: (d) {
             if (_marqueeFrom != null) {
-              setState(() => _marqueeTo = worldFromLocal(d.localPosition));
+              _extendMarqueeTo(d.globalPosition);
+              beginEdgePan(() => _extendMarqueeTo(d.globalPosition));
+              updateEdgePan(d.globalPosition);
               return;
             }
             setState(() => _offset += d.delta);
           },
           onPanEnd: (_) {
+            endEdgePan();
             final from = _marqueeFrom;
             final to = _marqueeTo;
             if (from == null || to == null) return;
@@ -628,6 +714,11 @@ class GraphCanvasState extends State<GraphCanvas>
                             // was built — the key is not held at build time.
                             additive: () => _additive,
                             toWorld: worldFromGlobal,
+                            onEdgePan: (reapply, at) {
+                              beginEdgePan(reapply);
+                              updateEdgePan(at);
+                            },
+                            onEdgePanEnd: endEdgePan,
                             onPortTap: _openPortMenu,
                             onPortDragStart: _onPortDragStart,
                             onPortDragUpdate: _onPortDragUpdate,
@@ -785,6 +876,8 @@ class _DraggableNode extends StatefulWidget {
     required this.rateDisplay,
     required this.additive,
     required this.toWorld,
+    required this.onEdgePan,
+    required this.onEdgePanEnd,
     required this.onPortTap,
     required this.onPortDragStart,
     required this.onPortDragUpdate,
@@ -801,6 +894,11 @@ class _DraggableNode extends StatefulWidget {
 
   /// Where a screen point lands in the graph's own coordinates.
   final Offset? Function(Offset globalPosition) toWorld;
+
+  /// Ask the canvas to follow a drag that has reached the window's edge, and
+  /// to re-apply this drag on every step it takes.
+  final void Function(VoidCallback reapply, Offset globalPosition) onEdgePan;
+  final VoidCallback onEdgePanEnd;
   final void Function(PortRef, Offset) onPortTap;
   final void Function(PortRef, Offset) onPortDragStart;
   final void Function(Offset) onPortDragUpdate;
@@ -820,6 +918,13 @@ class _DraggableNodeState extends State<_DraggableNode> {
   /// card built from deltas always trails the cursor by the width of the slop,
   /// and never catches up.
   Offset? _grabbedAt;
+
+  void _dragTo(Offset globalPosition) {
+    final from = _grabbedAt;
+    final to = widget.toWorld(globalPosition);
+    if (from == null || to == null) return;
+    widget.controller.dragSelectionBy(to - from);
+  }
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -845,11 +950,13 @@ class _DraggableNodeState extends State<_DraggableNode> {
           widget.controller.beginNodeDrag();
         },
         onPanUpdate: (d) {
-          final from = _grabbedAt;
-          final to = widget.toWorld(d.globalPosition);
-          if (from == null || to == null) return;
-          widget.controller.dragSelectionBy(to - from);
+          _dragTo(d.globalPosition);
+          // Held against the edge, the view follows and the card keeps moving
+          // with it, so a node can be dragged somewhere off screen.
+          widget.onEdgePan(() => _dragTo(d.globalPosition), d.globalPosition);
         },
+        onPanEnd: (_) => widget.onEdgePanEnd(),
+        onPanCancel: widget.onEdgePanEnd,
         child: MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: NodeWidget(
