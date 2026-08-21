@@ -3,19 +3,20 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 
-/// Where the player's own process definitions live.
+/// A named blob of JSON on disk: the player's own recipes, their saved
+/// pipelines, anything else worth keeping between runs.
 ///
 /// Behind an interface so tests never touch the disk, and so a future web build
 /// can swap in browser storage without the rest of the app noticing.
-abstract class UserDataStore {
+abstract class JsonStore {
   Future<Map<String, dynamic>?> read();
 
   Future<void> write(Map<String, dynamic> data);
 }
 
 /// A JSON file in the platform's application-support directory.
-class FileUserDataStore implements UserDataStore {
-  const FileUserDataStore({this.fileName = 'user_processes.json'});
+class FileJsonStore implements JsonStore {
+  const FileJsonStore(this.fileName);
 
   final String fileName;
 
@@ -49,10 +50,14 @@ class FileUserDataStore implements UserDataStore {
 }
 
 /// For tests, and for a first run before anything has been saved.
-class MemoryUserDataStore implements UserDataStore {
-  MemoryUserDataStore([this._data]);
+class MemoryJsonStore implements JsonStore {
+  MemoryJsonStore([this._data]);
 
   Map<String, dynamic>? _data;
+
+  /// How many times [write] has been called, so a test can prove that editing
+  /// saves — and that it does not save on every keystroke.
+  int writes = 0;
 
   /// What was last written, so a test can assert on it.
   Map<String, dynamic>? get data => _data;
@@ -61,5 +66,8 @@ class MemoryUserDataStore implements UserDataStore {
   Future<Map<String, dynamic>?> read() async => _data;
 
   @override
-  Future<void> write(Map<String, dynamic> data) async => _data = data;
+  Future<void> write(Map<String, dynamic> data) async {
+    writes++;
+    _data = data;
+  }
 }

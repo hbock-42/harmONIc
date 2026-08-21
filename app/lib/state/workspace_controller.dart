@@ -1,0 +1,214 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:oni_engine/oni_engine.dart';
+
+import '../storage/json_store.dart';
+import 'pipeline_controller.dart';
+
+/// One entry in the "open a pipeline" list.
+class PipelineSummary {
+  const PipelineSummary({
+    required this.id,
+    required this.name,
+    required this.nodeCount,
+  });
+
+  final String id;
+  final String name;
+  final int nodeCount;
+}
+
+/// Every pipeline the player has, and the one they are looking at.
+///
+/// Editing saves itself: a planning tool that loses a half-drawn build because
+/// nobody pressed ⌘S is a planning tool people stop trusting. Saving is
+/// debounced so a drag is one write rather than sixty.
+class WorkspaceController extends ChangeNotifier {
+  WorkspaceController({
+    required JsonStore store,
+    required PipelineController controller,
+    this.debounce = const Duration(milliseconds: 400),
+  })  // Named parameters cannot be written `this._store`.
+      // ignore: prefer_initializing_formals
+      : _store = store,
+        // ignore: prefer_initializing_formals
+        _controller = controller {
+    _controller.addListener(_onPipelineChanged);
+  }
+
+  final JsonStore _store;
+  final PipelineController _controller;
+  final Duration debounce;
+
+  final Map<String, Pipeline> _pipelines = {};
+  String? _currentId;
+  Timer? _timer;
+  Pipeline? _lastSeen;
+  bool _saving = false;
+  bool _loaded = false;
+
+  String? get currentId => _currentId;
+  bool get isSaving => _saving;
+
+  List<PipelineSummary> get saved {
+    final list = [
+      for (final p in _pipelines.values)
+        PipelineSummary(id: p.id, name: p.name, nodeCount: p.nodes.length),
+    ]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return list;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.removeListener(_onPipelineChanged);
+    super.dispose();
+  }
+
+  /// Reads everything back and reopens whatever was last on screen. Returns
+  /// false when there was nothing saved, so the caller can seed a starter.
+  Future<bool> load() async {
+    final raw = await _store.read();
+    _loaded = true;
+    if (raw == null) return false;
+
+    var restoredId = raw['lastOpenedId'] as String?;
+    for (final entry in (raw['pipelines'] as List<dynamic>? ?? const [])) {
+      try {
+        final pipeline = Pipeline.fromJson(entry as Map<String, dynamic>);
+        _pipelines[pipeline.id] = pipeline;
+      } on Object {
+        // Skip the unreadable one rather than losing every other pipeline.
+        continue;
+      }
+    }
+    if (_pipelines.isEmpty) return false;
+
+    restoredId ??= _pipelines.keys.first;
+    final pipeline = _pipelines[restoredId] ?? _pipelines.values.first;
+    _openWithoutSaving(pipeline);
+    notifyListeners();
+    return true;
+  }
+
+  /// Adopts a pipeline that is already on screen — used for the starter build
+  /// on a first run, so it is saved like anything else.
+  Future<void> adopt(Pipeline pipeline) async {
+    _pipelines[pipeline.id] = pipeline;
+    _currentId = pipeline.id;
+    _lastSeen = pipeline;
+    await _persist();
+    notifyListeners();
+  }
+
+  Future<void> open(String id) async {
+    final pipeline = _pipelines[id];
+    if (pipeline == null) return;
+    await saveNow();
+    _openWithoutSaving(pipeline);
+    await _persist();
+    notifyListeners();
+  }
+
+  Future<String> createNew({String name = 'New pipeline'}) async {
+    await saveNow();
+    final pipeline = _blank(name);
+    _pipelines[pipeline.id] = pipeline;
+    _openWithoutSaving(pipeline);
+    await _persist();
+    notifyListeners();
+    return pipeline.id;
+  }
+
+  Pipeline _blank(String name) => Pipeline(
+        id: 'pipeline_${DateTime.now().microsecondsSinceEpoch}',
+        name: name,
+        dataVersion: _controller.database.dataVersion,
+      );
+
+  /// A copy under a new id, so experimenting never risks the original.
+  Future<String> duplicate(String id) async {
+    final source = _pipelines[id];
+    if (source == null) return id;
+    await saveNow();
+    final copy = Pipeline(
+      id: 'pipeline_copy_${DateTime.now().microsecondsSinceEpoch}',
+      name: '${source.name} copy',
+      nodes: source.nodes,
+      edges: source.edges,
+      pins: source.pins,
+      dataVersion: source.dataVersion,
+    );
+    _pipelines[copy.id] = copy;
+    _openWithoutSaving(copy);
+    await _persist();
+    notifyListeners();
+    return copy.id;
+  }
+
+  Future<void> delete(String id) async {
+    // Any pending autosave still refers to the pipeline being deleted, and
+    // writing it back would resurrect what the player just threw away.
+    _timer?.cancel();
+    _timer = null;
+
+    final wasCurrent = _currentId == id;
+    _pipelines.remove(id);
+    if (wasCurrent) {
+      final next = _pipelines.isEmpty
+          ? _blank('New pipeline')
+          : _pipelines.values.first;
+      _pipelines[next.id] = next;
+      _openWithoutSaving(next);
+    }
+    await _persist();
+    notifyListeners();
+  }
+
+  /// Writes immediately, cancelling any pending debounce.
+  Future<void> saveNow() async {
+    _timer?.cancel();
+    _timer = null;
+    if (!_loaded) return;
+    final current = _controller.pipeline;
+    _pipelines[current.id] = current;
+    _currentId = current.id;
+    await _persist();
+  }
+
+  void _openWithoutSaving(Pipeline pipeline) {
+    _currentId = pipeline.id;
+    _lastSeen = pipeline;
+    _controller.load(pipeline);
+  }
+
+  /// Selecting a node rebuilds the UI but not the document, so compare
+  /// identity: only a genuine edit is worth a write.
+  void _onPipelineChanged() {
+    if (!_loaded) return;
+    final current = _controller.pipeline;
+    if (identical(current, _lastSeen)) return;
+    _lastSeen = current;
+    _timer?.cancel();
+    if (debounce == Duration.zero) {
+      // No timer at all — used by tests, where a pending one would outlive the
+      // test and be reported as a leak.
+      unawaited(saveNow());
+      return;
+    }
+    _timer = Timer(debounce, () {
+      unawaited(saveNow());
+    });
+  }
+
+  Future<void> _persist() async {
+    _saving = true;
+    await _store.write(<String, dynamic>{
+      'schemaVersion': 1,
+      if (_currentId != null) 'lastOpenedId': _currentId,
+      'pipelines': [for (final p in _pipelines.values) p.toJson()],
+    });
+    _saving = false;
+  }
+}

@@ -7,23 +7,25 @@ import 'package:oni_pipeline/panels/palette_panel.dart';
 import 'package:oni_pipeline/panels/process_editor.dart';
 import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
-import 'package:oni_pipeline/storage/user_data_store.dart';
+import 'package:oni_pipeline/storage/json_store.dart';
 
 import '../support/harness.dart';
 
 void main() {
   late LibraryController library;
   late PipelineController controller;
-  late MemoryUserDataStore store;
+  late MemoryJsonStore store;
 
   Future<void> pumpEditor(WidgetTester tester) async {
     await useDesktopSurface(tester);
-    store = MemoryUserDataStore();
+    store = MemoryJsonStore();
     library = testLibrary(store);
     controller = testController();
-    await tester.pumpWidget(harness(
-      EditorScreen(controller: controller, library: library),
-    ));
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: library,
+      workspace: await testWorkspace(controller),
+    )));
   }
 
   Future<void> openNewRecipe(WidgetTester tester) async {

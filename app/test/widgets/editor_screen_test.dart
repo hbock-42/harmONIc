@@ -7,22 +7,35 @@ import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/main.dart';
 import 'package:oni_pipeline/panels/palette_panel.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
+import 'package:oni_pipeline/storage/json_store.dart';
 
 import '../support/harness.dart';
 
 void main() {
+  /// The palette's own search box — the top bar has a text field too now.
+  Finder paletteSearch() => find.descendant(
+        of: find.byType(PalettePanel),
+        matching: find.byType(OniField),
+      );
+
   Future<PipelineController> pumpEditor(WidgetTester tester) async {
     await useDesktopSurface(tester);
     final controller = testController();
-    await tester.pumpWidget(harness(
-      EditorScreen(controller: controller, library: testLibrary()),
-    ));
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+    )));
     return controller;
   }
 
   testWidgets('the app boots with a solved starter pipeline', (tester) async {
     await useDesktopSurface(tester);
-    await tester.pumpWidget(OniPipelineApp(library: testLibrary()));
+    await tester.pumpWidget(OniPipelineApp(
+      library: testLibrary(),
+      pipelineStore: MemoryJsonStore(),
+    ));
+    await tester.pumpAndSettle();
 
     expect(find.text('Oxygen for the crew'), findsOneWidget);
     expect(find.byType(GraphCanvas), findsOneWidget);
@@ -92,7 +105,7 @@ void main() {
     final controller = await pumpEditor(tester);
     final before = controller.pipeline.nodes.length;
 
-    await tester.enterText(find.byType(OniField).first, 'Coal Gen');
+    await tester.enterText(paletteSearch(), 'Coal Gen');
     await tester.pump();
     await tester.tap(find.descendant(
       of: find.byType(PalettePanel),
@@ -106,7 +119,7 @@ void main() {
 
   testWidgets('the palette search filters the list', (tester) async {
     await pumpEditor(tester);
-    await tester.enterText(find.byType(OniField).first, 'Electrolyzer');
+    await tester.enterText(paletteSearch(), 'Electrolyzer');
     await tester.pump();
 
     expect(
@@ -162,9 +175,11 @@ void main() {
   testWidgets('an empty pipeline explains what to do', (tester) async {
     await useDesktopSurface(tester);
     final controller = PipelineController(testDatabase);
-    await tester.pumpWidget(harness(
-      EditorScreen(controller: controller, library: testLibrary()),
-    ));
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+    )));
 
     expect(find.text('Nothing here yet'), findsOneWidget);
     expect(find.byType(GraphCanvas), findsNothing);

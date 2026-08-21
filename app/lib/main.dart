@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
@@ -6,26 +8,36 @@ import 'design/tokens.dart';
 import 'editor_screen.dart';
 import 'state/library_controller.dart';
 import 'state/pipeline_controller.dart';
-import 'storage/user_data_store.dart';
+import 'state/workspace_controller.dart';
+import 'storage/json_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final library = LibraryController(
     bundled: loadDefaultDatabase(),
-    store: const FileUserDataStore(),
+    store: const FileJsonStore('user_processes.json'),
   );
   // Recipes the player has written down are part of the catalogue from the
   // first frame, so nothing on screen ever shows the stale numbers.
   await library.load();
-  runApp(OniPipelineApp(library: library));
+  runApp(OniPipelineApp(
+    library: library,
+    pipelineStore: const FileJsonStore('pipelines.json'),
+  ));
 }
 
 /// No `MaterialApp`: the app is hosted on a bare [WidgetsApp] with forui's
 /// theme layered on top, so nothing imposes a design language we did not pick.
 class OniPipelineApp extends StatefulWidget {
-  const OniPipelineApp({required this.library, this.initial, super.key});
+  const OniPipelineApp({
+    required this.library,
+    required this.pipelineStore,
+    this.initial,
+    super.key,
+  });
 
   final LibraryController library;
+  final JsonStore pipelineStore;
   final Pipeline? initial;
 
   @override
@@ -37,9 +49,32 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
     widget.library.database,
     initial: widget.initial ?? starterPipeline(widget.library.database),
   );
+  late final WorkspaceController _workspace = WorkspaceController(
+    store: widget.pipelineStore,
+    controller: _controller,
+  );
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_restore());
+  }
+
+  /// Reopen whatever was on screen last time. If this is a first run there is
+  /// nothing to reopen, so the starter build becomes the first saved pipeline
+  /// rather than something that vanishes when the window closes.
+  Future<void> _restore() async {
+    final restored = await _workspace.load();
+    if (!restored) {
+      await _workspace.adopt(_controller.pipeline);
+    }
+    if (mounted) setState(() => _ready = true);
+  }
 
   @override
   void dispose() {
+    _workspace.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -62,10 +97,13 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
             child: child ?? const SizedBox.shrink(),
           ),
         ),
-        home: EditorScreen(
-          controller: _controller,
-          library: widget.library,
-        ),
+        home: _ready
+            ? EditorScreen(
+                controller: _controller,
+                library: widget.library,
+                workspace: _workspace,
+              )
+            : const ColoredBox(color: OniColors.background),
       );
 }
 

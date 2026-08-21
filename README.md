@@ -54,6 +54,12 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Your work is kept
+
+Pipelines live on disk and the app reopens whatever was last on screen. There is no save
+button: edits write themselves, debounced so a drag costs one write. `Pipelines` in the
+top bar lists what you have, and makes new ones, copies and deletions.
+
 ## Edges: who decides the flow
 
 By default an edge **pulls**: the consumer takes what it needs and the producer is

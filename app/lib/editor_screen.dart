@@ -8,11 +8,13 @@ import 'panels/inspector_panel.dart';
 import 'package:oni_engine/oni_engine.dart';
 
 import 'panels/palette_panel.dart';
+import 'panels/pipelines_menu.dart';
 import 'panels/process_editor.dart';
 import 'panels/problems_panel.dart';
 import 'panels/summary_bar.dart';
 import 'state/library_controller.dart';
 import 'state/pipeline_controller.dart';
+import 'state/workspace_controller.dart';
 
 /// The whole app: palette on the left, canvas in the middle, inspector on the
 /// right, totals along the bottom.
@@ -20,11 +22,13 @@ class EditorScreen extends StatefulWidget {
   const EditorScreen({
     required this.controller,
     required this.library,
+    required this.workspace,
     super.key,
   });
 
   final PipelineController controller;
   final LibraryController library;
+  final WorkspaceController workspace;
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
@@ -37,6 +41,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
   /// The recipe being edited, shown over the whole editor.
   ProcessSpec? _editing;
+  bool _pipelinesOpen = false;
 
   @override
   void initState() {
@@ -89,7 +94,13 @@ class _EditorScreenState extends State<EditorScreen> {
                 decoration: const BoxDecoration(color: OniColors.background),
                 child: Column(
                   children: [
-                    _TopBar(controller: controller, canvasKey: _canvasKey),
+                    _TopBar(
+                      controller: controller,
+                      workspace: widget.workspace,
+                      canvasKey: _canvasKey,
+                      onTogglePipelines: () =>
+                          setState(() => _pipelinesOpen = !_pipelinesOpen),
+                    ),
                     ProblemsBanner(controller: controller),
                     Expanded(
                       child: Row(
@@ -121,6 +132,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   ],
                 ),
               ),
+              ?_pipelinesMenu(),
               ?_recipeEditor(),
                 ],
               ),
@@ -128,6 +140,34 @@ class _EditorScreenState extends State<EditorScreen> {
           ),
         ),
       );
+
+  Widget? _pipelinesMenu() {
+    if (!_pipelinesOpen) return null;
+    return Positioned.fill(
+      child: GestureDetector(
+        onTap: () => setState(() => _pipelinesOpen = false),
+        child: ColoredBox(
+          color: const Color(0x33000000),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: OniSpacing.lg, top: 48),
+              child: GestureDetector(
+                onTap: () {},
+                child: ListenableBuilder(
+                  listenable: widget.workspace,
+                  builder: (context, _) => PipelinesMenu(
+                    workspace: widget.workspace,
+                    onClose: () => setState(() => _pipelinesOpen = false),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget? _recipeEditor() {
     final spec = _editing;
@@ -203,14 +243,47 @@ class _DeselectIntent extends Intent {
   const _DeselectIntent();
 }
 
-class _TopBar extends StatelessWidget {
-  const _TopBar({required this.controller, required this.canvasKey});
+class _TopBar extends StatefulWidget {
+  const _TopBar({
+    required this.controller,
+    required this.workspace,
+    required this.canvasKey,
+    required this.onTogglePipelines,
+  });
 
   final PipelineController controller;
+  final WorkspaceController workspace;
   final GlobalKey<GraphCanvasState> canvasKey;
+  final VoidCallback onTogglePipelines;
 
   @override
-  Widget build(BuildContext context) => Container(
+  State<_TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<_TopBar> {
+  late final TextEditingController _name =
+      TextEditingController(text: widget.controller.pipeline.name);
+  String _lastKnownName = '';
+
+  PipelineController get controller => widget.controller;
+  GlobalKey<GraphCanvasState> get canvasKey => widget.canvasKey;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Opening another pipeline changes the name underneath us.
+    final current = controller.pipeline.name;
+    if (current != _lastKnownName && current != _name.text) {
+      _name.text = current;
+    }
+    _lastKnownName = current;
+
+    return Container(
         height: 44,
         padding: const EdgeInsets.symmetric(horizontal: OniSpacing.lg),
         decoration: const BoxDecoration(
@@ -219,7 +292,20 @@ class _TopBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(controller.pipeline.name, style: OniType.heading),
+            OniButton(
+              label: 'Pipelines',
+              compact: true,
+              onPressed: widget.onTogglePipelines,
+            ),
+            const SizedBox(width: OniSpacing.md),
+            SizedBox(
+              width: 220,
+              child: OniField(
+                controller: _name,
+                hint: 'Untitled',
+                onChanged: controller.rename,
+              ),
+            ),
             const SizedBox(width: OniSpacing.lg),
             Text(
               '${controller.pipeline.nodes.length} nodes · '
@@ -227,6 +313,8 @@ class _TopBar extends StatelessWidget {
               '${controller.solution.status.name}',
               style: OniType.numberSmall,
             ),
+            const SizedBox(width: OniSpacing.md),
+            Text('saved', style: OniType.numberSmall),
             const Spacer(),
             OniButton(
               label: 'Undo',
@@ -248,6 +336,7 @@ class _TopBar extends StatelessWidget {
           ],
         ),
       );
+  }
 }
 
 class _EmptyCanvas extends StatelessWidget {

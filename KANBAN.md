@@ -32,6 +32,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
 - `E10-5` a real problems *panel* (the banner shows the first three)
+- `E5-3` Export/import a pipeline as a file or a link, to share a build
+- `E6-6` Tabs, so two pipelines can be compared side by side
 - `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
 - `E4-14` Geyser dormancy and per-instance variance: today a geyser is its *average*
   output, but a real one has an eruption period, a dormancy period and a rate rolled at
@@ -53,7 +55,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
   sink node just to keep the system consistent
 - `E3-4` Whole-building rounding as a first-class solver mode (currently only a
   per-node `wholeCount` / `utilisation` getter)
-- `E5-1..2` Save/load pipelines to disk
 - `E6-2` `spike`: state management (recommendation: riverpod over the pure-Dart engine)
 - `E7-1..4` The canvas: pan/zoom, node widgets, bezier edges, drag-to-connect
 
@@ -97,6 +98,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E5-1..2` **Save and load** — every pipeline is kept on disk and the app reopens the
+  one you had on screen. Editing saves itself, debounced so a drag is one write rather
+  than sixty, and selecting a node is not treated as an edit. New, duplicate, delete and
+  rename live in the Pipelines menu; a first run adopts the starter build as a real saved
+  pipeline instead of something that evaporates when the window closes
 - `E4-13` **User-defined recipes** — add or correct a process from inside the app, saved
   to disk and merged over the bundled data by id. A hand-entered recipe is always tagged
   `unverified`, new items can be invented on the spot for content the app has never heard

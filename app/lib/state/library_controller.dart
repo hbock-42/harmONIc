@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:oni_engine/oni_engine.dart';
 
-import '../storage/user_data_store.dart';
+import '../storage/json_store.dart';
 
 /// The process catalogue: what ships with the app, plus whatever the player has
 /// added or corrected on top of it.
@@ -12,7 +12,7 @@ import '../storage/user_data_store.dart';
 class LibraryController extends ChangeNotifier {
   LibraryController({
     required GameDatabase bundled,
-    required UserDataStore store,
+    required JsonStore store,
   })  : _bundled = bundled,
         _database = bundled,
         // A named parameter cannot be written `this._store`.
@@ -20,7 +20,7 @@ class LibraryController extends ChangeNotifier {
         _store = store;
 
   final GameDatabase _bundled;
-  final UserDataStore _store;
+  final JsonStore _store;
 
   GameDatabase _database;
   final Map<String, ProcessSpec> _customProcesses = {};

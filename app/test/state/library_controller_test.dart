@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
-import 'package:oni_pipeline/storage/user_data_store.dart';
+import 'package:oni_pipeline/storage/json_store.dart';
 
 import '../support/harness.dart';
 
 void main() {
-  LibraryController library([MemoryUserDataStore? store]) => LibraryController(
+  LibraryController library([MemoryJsonStore? store]) => LibraryController(
         bundled: testDatabase,
-        store: store ?? MemoryUserDataStore(),
+        store: store ?? MemoryJsonStore(),
       );
 
   /// The motivating case: a critter the wiki has not documented.
@@ -148,7 +148,7 @@ void main() {
 
   group('persistence', () {
     test('survives a restart', () async {
-      final store = MemoryUserDataStore();
+      final store = MemoryJsonStore();
       await library(store).save(beakon());
 
       final reopened = library(store);
@@ -159,7 +159,7 @@ void main() {
     });
 
     test('a corrupt file does not stop the app starting', () async {
-      final store = MemoryUserDataStore(<String, dynamic>{
+      final store = MemoryJsonStore(<String, dynamic>{
         'processes': [
           {'nonsense': true},
         ],
@@ -172,7 +172,7 @@ void main() {
     });
 
     test('nothing saved yet is not an error', () async {
-      final lib = library(MemoryUserDataStore());
+      final lib = library(MemoryJsonStore());
       await lib.load();
       expect(lib.customProcesses, isEmpty);
     });

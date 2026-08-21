@@ -5,7 +5,8 @@ import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/tokens.dart';
 import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
-import 'package:oni_pipeline/storage/user_data_store.dart';
+import 'package:oni_pipeline/state/workspace_controller.dart';
+import 'package:oni_pipeline/storage/json_store.dart';
 
 /// The database is immutable and parsing it is not free — share one.
 final GameDatabase testDatabase = loadDefaultDatabase();
@@ -36,10 +37,28 @@ Future<void> useDesktopSurface(WidgetTester tester) async {
 }
 
 /// A catalogue backed by memory rather than the disk.
-LibraryController testLibrary([MemoryUserDataStore? store]) => LibraryController(
+LibraryController testLibrary([MemoryJsonStore? store]) => LibraryController(
       bundled: testDatabase,
-      store: store ?? MemoryUserDataStore(),
+      store: store ?? MemoryJsonStore(),
     );
+
+/// A workspace wired to memory, already holding [controller]'s pipeline.
+Future<WorkspaceController> testWorkspace(
+  PipelineController controller, [
+  MemoryJsonStore? store,
+]) async {
+  final workspace = WorkspaceController(
+    store: store ?? MemoryJsonStore(),
+    controller: controller,
+    debounce: Duration.zero,
+  );
+  await workspace.load();
+  await workspace.adopt(controller.pipeline);
+  // Autosave leaves a debounce timer behind; a widget test fails if one is
+  // still pending when it ends.
+  addTearDown(workspace.dispose);
+  return workspace;
+}
 
 /// water → electrolyzer → dupes, with the hydrogen vented. Small enough to
 /// assert on, big enough to exercise pulling.
