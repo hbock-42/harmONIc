@@ -63,6 +63,12 @@ the cook's time counted against your Duplicant budget like any other labour.
 A plant comes in two forms, harvested and grazed, because its growth is either eaten by a
 critter or taken as a crop and never both.
 
+## Working with more than one node
+
+⇧-click adds to the selection, ⇧-drag rubber-bands a region, and dragging any member of a
+group takes the rest with it. Delete removes the lot — nodes, their wires and their pins —
+in a single undo step. The inspector totals a group's power, heat and Duplicant time.
+
 ## Tidy
 
 `Tidy` in the top bar arranges the graph left to right — every node one column right of

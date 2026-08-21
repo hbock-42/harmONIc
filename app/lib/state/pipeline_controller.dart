@@ -49,31 +49,73 @@ class PipelineController extends ChangeNotifier {
 
   Pipeline _pipeline;
   late PipelineSolution _solution;
-  Selection? _selection;
+  final Set<String> _selectedNodeIds = {};
+  String? _selectedEdgeId;
   final List<Pipeline> _undoStack = [];
   final List<Pipeline> _redoStack = [];
   int _idCounter = 0;
 
   Pipeline get pipeline => _pipeline;
   PipelineSolution get solution => _solution;
-  Selection? get selection => _selection;
+
+  /// Every node currently selected. More than one is normal: a marquee or a
+  /// shift-click gathers a whole subsystem so it can be moved or deleted at once.
+  Set<String> get selectedNodeIds => Set.unmodifiable(_selectedNodeIds);
+  String? get selectedEdgeId => _selectedEdgeId;
+
+  /// The single-selection view of the above, which most of the UI wants.
+  Selection? get selection {
+    if (_selectedEdgeId != null) return EdgeSelection(_selectedEdgeId!);
+    if (_selectedNodeIds.length == 1) {
+      return NodeSelection(_selectedNodeIds.first);
+    }
+    return null;
+  }
   bool get canUndo => _undoStack.isNotEmpty;
   bool get canRedo => _redoStack.isNotEmpty;
 
-  PipelineNode? get selectedNode => switch (_selection) {
-        NodeSelection(:final nodeId) => _pipeline.node(nodeId),
-        _ => null,
-      };
+  PipelineNode? get selectedNode => _selectedNodeIds.length == 1
+      ? _pipeline.node(_selectedNodeIds.first)
+      : null;
 
-  PipelineEdge? get selectedEdge => switch (_selection) {
-        EdgeSelection(:final edgeId) => _pipeline.edge(edgeId),
-        _ => null,
-      };
+  PipelineEdge? get selectedEdge =>
+      _selectedEdgeId == null ? null : _pipeline.edge(_selectedEdgeId!);
+
+  bool isSelected(String nodeId) => _selectedNodeIds.contains(nodeId);
 
   ProcessSpec specOf(PipelineNode node) => database.processOrThrow(node.specId);
 
   void select(Selection? selection) {
-    _selection = selection;
+    _selectedNodeIds.clear();
+    _selectedEdgeId = null;
+    switch (selection) {
+      case NodeSelection(:final nodeId):
+        _selectedNodeIds.add(nodeId);
+      case EdgeSelection(:final edgeId):
+        _selectedEdgeId = edgeId;
+      case null:
+        break;
+    }
+    notifyListeners();
+  }
+
+  /// Adds to the selection rather than replacing it, for shift-clicking.
+  void selectNode(String nodeId, {bool additive = false}) {
+    _selectedEdgeId = null;
+    if (!additive) {
+      _selectedNodeIds
+        ..clear()
+        ..add(nodeId);
+    } else if (!_selectedNodeIds.remove(nodeId)) {
+      _selectedNodeIds.add(nodeId);
+    }
+    notifyListeners();
+  }
+
+  void selectNodes(Iterable<String> nodeIds, {bool additive = false}) {
+    _selectedEdgeId = null;
+    if (!additive) _selectedNodeIds.clear();
+    _selectedNodeIds.addAll(nodeIds);
     notifyListeners();
   }
 
@@ -117,8 +159,7 @@ class PipelineController extends ChangeNotifier {
       y: NodeLayout.snap(position.dy - size.height / 2),
     );
     _apply(_pipeline.copyWith(nodes: [..._pipeline.nodes, node]));
-    _selection = NodeSelection(id);
-    notifyListeners();
+    selectNode(id);
     return id;
   }
 
@@ -131,6 +172,27 @@ class PipelineController extends ChangeNotifier {
           n,
     ];
     _apply(_pipeline.copyWith(nodes: nodes), record: record);
+  }
+
+  /// Shifts every selected node by the same amount, so dragging one of a group
+  /// takes the rest with it.
+  void moveSelectionBy(Offset delta, {bool record = false}) {
+    if (_selectedNodeIds.isEmpty) return;
+    _apply(
+      _pipeline.copyWith(
+        nodes: [
+          for (final n in _pipeline.nodes)
+            if (_selectedNodeIds.contains(n.id))
+              n.copyWith(
+                x: NodeLayout.snap(n.x + delta.dx),
+                y: NodeLayout.snap(n.y + delta.dy),
+              )
+            else
+              n,
+        ],
+      ),
+      record: record,
+    );
   }
 
   /// Called once when a node drag starts, so the whole drag is one undo step.
@@ -166,8 +228,7 @@ class PipelineController extends ChangeNotifier {
       toPortId: to.portId,
     );
     _apply(_pipeline.copyWith(edges: [..._pipeline.edges, edge]));
-    _selection = EdgeSelection(edge.id);
-    notifyListeners();
+    select(EdgeSelection(edge.id));
   }
 
   /// Everything that could sit on the other end of [ref].
@@ -259,8 +320,7 @@ class PipelineController extends ChangeNotifier {
       nodes: [..._pipeline.nodes, node],
       edges: [..._pipeline.edges, edge],
     ));
-    _selection = NodeSelection(id);
-    notifyListeners();
+    selectNode(id);
     return id;
   }
 
@@ -279,25 +339,30 @@ class PipelineController extends ChangeNotifier {
     return candidate;
   }
 
+  /// Deletes whatever is selected — one node, one edge, or a whole marquee's
+  /// worth — along with any edges and pins left dangling.
   void deleteSelection() {
-    switch (_selection) {
-      case NodeSelection(:final nodeId):
-        _apply(_pipeline.copyWith(
-          nodes: [for (final n in _pipeline.nodes) if (n.id != nodeId) n],
-          edges: [
-            for (final e in _pipeline.edges)
-              if (e.fromNodeId != nodeId && e.toNodeId != nodeId) e,
-          ],
-          pins: [for (final p in _pipeline.pins) if (p.nodeId != nodeId) p],
-        ));
-      case EdgeSelection(:final edgeId):
-        _apply(_pipeline.copyWith(
-          edges: [for (final e in _pipeline.edges) if (e.id != edgeId) e],
-        ));
-      case null:
-        return;
+    final edgeId = _selectedEdgeId;
+    if (edgeId != null) {
+      _apply(_pipeline.copyWith(
+        edges: [for (final e in _pipeline.edges) if (e.id != edgeId) e],
+      ));
+      _selectedEdgeId = null;
+      notifyListeners();
+      return;
     }
-    _selection = null;
+    if (_selectedNodeIds.isEmpty) return;
+
+    final going = {..._selectedNodeIds};
+    _apply(_pipeline.copyWith(
+      nodes: [for (final n in _pipeline.nodes) if (!going.contains(n.id)) n],
+      edges: [
+        for (final e in _pipeline.edges)
+          if (!going.contains(e.fromNodeId) && !going.contains(e.toNodeId)) e,
+      ],
+      pins: [for (final p in _pipeline.pins) if (!going.contains(p.nodeId)) p],
+    ));
+    _selectedNodeIds.clear();
     notifyListeners();
   }
 
@@ -418,7 +483,8 @@ class PipelineController extends ChangeNotifier {
   void rename(String name) => _apply(_pipeline.copyWith(name: name));
 
   void load(Pipeline pipeline) {
-    _selection = null;
+    _selectedNodeIds.clear();
+    _selectedEdgeId = null;
     _apply(pipeline);
   }
 

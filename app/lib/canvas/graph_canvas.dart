@@ -52,6 +52,19 @@ class GraphCanvasState extends State<GraphCanvas> {
   PortRef? _menuRef;
   Offset? _menuLocal;
 
+  /// The rubber-band rectangle being dragged, in world coordinates.
+  ///
+  /// The corner is remembered from the pointer going down rather than from when
+  /// the drag is recognised: a gesture only becomes a pan after it has moved a
+  /// little, and by then the cursor has left the corner the user meant.
+  Offset? _pointerDownWorld;
+  Offset? _marqueeFrom;
+  Offset? _marqueeTo;
+
+  static bool get _additive =>
+      HardwareKeyboard.instance.isShiftPressed ||
+      HardwareKeyboard.instance.isMetaPressed;
+
   PipelineController get controller => widget.controller;
 
   @override
@@ -191,6 +204,14 @@ class GraphCanvasState extends State<GraphCanvas> {
     return best;
   }
 
+  /// Every node the rubber band touches, however slightly.
+  List<String> _nodesWithin(Rect world) => [
+        for (final node in controller.pipeline.nodes)
+          if (NodeLayout.worldRect(node, controller.specOf(node))
+              .overlaps(world))
+            node.id,
+      ];
+
   String? _edgeAt(Offset world, {double tolerance = 8}) {
     String? best;
     var bestDistance = tolerance;
@@ -238,16 +259,20 @@ class GraphCanvasState extends State<GraphCanvas> {
       EdgeSelection(:final edgeId) => edgeId,
       _ => null,
     };
-    final selectedNodeId = switch (controller.selection) {
-      NodeSelection(:final nodeId) => nodeId,
-      _ => null,
-    };
+    final selectedNodeIds = controller.selectedNodeIds;
 
     return Focus(
       focusNode: _focus,
       child: Listener(
       key: _viewportKey,
-      onPointerDown: (_) => _focus.requestFocus(),
+      onPointerDown: (event) {
+        _focus.requestFocus();
+        final box =
+            _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+        if (box != null) {
+          _pointerDownWorld = worldFromLocal(box.globalToLocal(event.position));
+        }
+      },
       onPointerSignal: _onPointerSignal,
       child: MouseRegion(
         onHover: (event) {
@@ -266,7 +291,33 @@ class GraphCanvasState extends State<GraphCanvas> {
             }
             _onBackgroundTap(d.localPosition);
           },
-          onPanUpdate: (d) => setState(() => _offset += d.delta),
+          onPanStart: (d) {
+            // Shift turns a drag on empty canvas into a rubber band; a plain
+            // drag still pans, which is the gesture people reach for first.
+            if (!_additive) return;
+            setState(() {
+              _marqueeFrom =
+                  _pointerDownWorld ?? worldFromLocal(d.localPosition);
+              _marqueeTo = worldFromLocal(d.localPosition);
+            });
+          },
+          onPanUpdate: (d) {
+            if (_marqueeFrom != null) {
+              setState(() => _marqueeTo = worldFromLocal(d.localPosition));
+              return;
+            }
+            setState(() => _offset += d.delta);
+          },
+          onPanEnd: (_) {
+            final from = _marqueeFrom;
+            final to = _marqueeTo;
+            if (from == null || to == null) return;
+            controller.selectNodes(_nodesWithin(Rect.fromPoints(from, to)));
+            setState(() {
+              _marqueeFrom = null;
+              _marqueeTo = null;
+            });
+          },
           child: ClipRect(
             child: Stack(
               children: [
@@ -311,9 +362,12 @@ class GraphCanvasState extends State<GraphCanvas> {
                           child: _DraggableNode(
                             node: node,
                             controller: controller,
-                            selected: node.id == selectedNodeId,
+                            selected: selectedNodeIds.contains(node.id),
                             scale: _scale,
                             rateDisplay: widget.rateDisplay,
+                            // Read when the click happens, not when the node
+                            // was built — the key is not held at build time.
+                            additive: () => _additive,
                             onPortTap: _openPortMenu,
                             onPortDragStart: _onPortDragStart,
                             onPortDragUpdate: _onPortDragUpdate,
@@ -321,6 +375,7 @@ class GraphCanvasState extends State<GraphCanvas> {
                             highlightPort: _isLegalTarget,
                           ),
                         ),
+                      ?_marquee(),
                     ],
                   ),
                 ),
@@ -332,6 +387,26 @@ class GraphCanvasState extends State<GraphCanvas> {
           ),
         ),
       ),
+      ),
+    );
+  }
+
+  /// The rubber band itself, drawn in world space alongside the nodes.
+  Widget? _marquee() {
+    final from = _marqueeFrom;
+    final to = _marqueeTo;
+    if (from == null || to == null) return null;
+    final rect = Rect.fromPoints(from, to);
+    return Positioned(
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: OniColors.accent.withValues(alpha: 0.08),
+          border: Border.all(color: OniColors.accent, width: 1 / _scale),
+        ),
       ),
     );
   }
@@ -384,6 +459,7 @@ class _DraggableNode extends StatelessWidget {
     required this.selected,
     required this.scale,
     required this.rateDisplay,
+    required this.additive,
     required this.onPortTap,
     required this.onPortDragStart,
     required this.onPortDragUpdate,
@@ -396,6 +472,7 @@ class _DraggableNode extends StatelessWidget {
   final bool selected;
   final double scale;
   final RateDisplay rateDisplay;
+  final bool Function() additive;
   final void Function(PortRef, Offset) onPortTap;
   final void Function(PortRef, Offset) onPortDragStart;
   final void Function(Offset) onPortDragUpdate;
@@ -405,16 +482,17 @@ class _DraggableNode extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => controller.select(NodeSelection(node.id)),
+        onTap: () => controller.selectNode(node.id, additive: additive()),
         onPanStart: (_) {
-          controller.select(NodeSelection(node.id));
+          // Dragging a node that is already part of a group takes the group
+          // with it; dragging any other node selects just that one first.
+          if (!controller.isSelected(node.id)) {
+            controller.selectNode(node.id);
+          }
           controller.beginNodeDrag();
         },
-        // The drag happens in screen pixels; the node lives in world units.
-        onPanUpdate: (d) => controller.moveNode(
-          node.id,
-          Offset(node.x, node.y) + d.delta / scale,
-        ),
+        // The drag happens in screen pixels; the nodes live in world units.
+        onPanUpdate: (d) => controller.moveSelectionBy(d.delta / scale),
         child: MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: NodeWidget(

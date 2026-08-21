@@ -26,7 +26,9 @@ class InspectorPanel extends StatelessWidget {
     return OniPanel(
       title: 'Inspector',
       width: 300,
-      child: switch ((node, edge)) {
+      child: controller.selectedNodeIds.length > 1
+          ? _MultiSelection(controller: controller)
+          : switch ((node, edge)) {
         (final PipelineNode n, _) => _NodeInspector(
             key: ValueKey(n.id),
             controller: controller,
@@ -42,6 +44,90 @@ class InspectorPanel extends StatelessWidget {
           ),
         _ => const _EmptyInspector(),
       },
+    );
+  }
+}
+
+/// What a marquee gets you: what is in it, what it costs, and the two things
+/// worth doing to a group.
+class _MultiSelection extends StatelessWidget {
+  const _MultiSelection({required this.controller});
+
+  final PipelineController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final ids = controller.selectedNodeIds;
+    var power = 0.0;
+    var heat = 0.0;
+    var labour = 0.0;
+    for (final id in ids) {
+      final node = controller.pipeline.node(id);
+      final result = controller.solution.nodes[id];
+      if (node == null || result == null) continue;
+      final spec = controller.specOf(node);
+      if (spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink) {
+        continue;
+      }
+      power += spec.netPowerWatts * result.count;
+      heat += spec.netHeatKdtu * result.count;
+      labour += spec.dupeLabourSecondsPerCycle * result.count;
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(OniSpacing.lg),
+      children: [
+        Text('${ids.length} nodes selected', style: OniType.heading),
+        const SizedBox(height: OniSpacing.lg),
+        Wrap(
+          spacing: OniSpacing.md,
+          runSpacing: OniSpacing.md,
+          children: [
+            SizedBox(
+              width: 118,
+              child: OniStat(
+                label: 'power',
+                value: Unit.watts.format(power),
+                valueColour: power < 0 ? OniColors.ok : OniColors.text,
+              ),
+            ),
+            SizedBox(
+              width: 118,
+              child: OniStat(
+                label: 'heat',
+                value: Unit.kdtuPerSecond.format(heat),
+              ),
+            ),
+            if (labour > 0)
+              SizedBox(
+                width: 118,
+                child: OniStat(
+                  label: 'dupe time',
+                  value: '${labour.toStringAsFixed(0)} s/cycle',
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: OniSpacing.xl),
+        Text('SELECTED', style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        for (final id in ids)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Text(
+              controller.specOf(controller.pipeline.nodeOrThrow(id)).name,
+              style: OniType.body.copyWith(fontSize: 12),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        const SizedBox(height: OniSpacing.xl),
+        OniButton(
+          label: 'Delete ${ids.length} nodes   ⌫',
+          tone: OniButtonTone.danger,
+          onPressed: controller.deleteSelection,
+        ),
+      ],
     );
   }
 }

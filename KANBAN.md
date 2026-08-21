@@ -28,9 +28,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
-- `E7-10` marquee select, `E7-11` minimap
-- `E7-12` Tidy only the selection, for someone who has arranged part of a build by hand
-  and does not want it moved
+- `E7-11` minimap
+- `E7-12` Tidy only the selection, now that a selection can be more than one node
+- `E7-13` Marquee currently needs ⇧ because a plain drag pans. A space-drag-to-pan
+  convention would free the plain drag for selection, which is what most editors do
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
 - `E10-5` a real problems *panel* (the banner shows the first three)
@@ -136,6 +137,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E7-10` **Multi-select** — ⇧-click to add, ⇧-drag to rubber-band, and dragging any
+  member of a group carries the rest. Delete takes the whole selection with its edges and
+  pins, in one undo step, and the inspector summarises a group's power, heat and labour
+  rather than showing nothing
 - `E4-33` **The food chain** — Bristle Blossom, Dusk Cap, Waterweed and Sleet Wheat, plus
   the Electric Grill, so a crew can be fed end to end: wheat to grain to grill to
   Duplicants, with the cook's time counted. Oxygen, power and food are all plannable now
