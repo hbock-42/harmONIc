@@ -86,7 +86,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
   critters, which a flow model cannot express), Gnit and Mimika (produce nothing), and the
   regular Lumb (its peat rate is stated nowhere)
-- `E4-9` Aquatic plants: 5 of 12 seeded. Sodicane, Bulbloom, Mussel Sprout, Clampum,
+- `E4-37` Aquatic plants: 5 of 12 seeded. Sodicane, Bulbloom, Mussel Sprout, Clampum,
   Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Check each page individually
   rather than the summary table — that mistake cost us the whole critter roster once
 - `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
@@ -101,7 +101,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Saving and sharing**
 
-- `E5-4` Export to a file, for archiving rather than pasting — wants a file-picker
+- `E5-7` Export to a file, for archiving rather than pasting — wants a file-picker
   dependency nothing else has needed
 
 ### 🚧 In Progress
@@ -390,17 +390,17 @@ _(empty)_
 | E0-2 | ✅ | Monorepo layout | `packages/oni_engine` (pure Dart, **no** flutter import), `app/` (Flutter), root `README.md` |
 | E0-3 | ✅ | Lints + CI-ready scripts | `very_good_analysis` or `flutter_lints`, `dart analyze` clean, `dart test` runs |
 | E0-4 | P1 | GitHub Actions | analyze + test on push |
-| E0-5 | P2 | `melos` or simple `tool/` shell scripts for multi-package commands | one command runs all tests |
+| E0-5 | ✅ | `melos` or simple `tool/` shell scripts for multi-package commands | one command runs all tests |
 
 ## E1 — Domain model (the ONI vocabulary)
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E1-1 | P0 | `Item` | id, display name, `ItemCategory` (solid / liquid / gas / power / heat / critter / plant / dupe-time / other), base unit |
-| E1-2 | P0 | `Unit` + `Rate` | canonical internal units: **g/s** for mass, **W** for power, **kDTU/s** for heat, **count** for entities. Display conversion (g/s ↔ kg/s ↔ t/cycle) lives at the edge, never in the solver |
-| E1-3 | P0 | `Port` | `(item, ratePerSecond, direction: input\|output, optional: temperature °C)` |
-| E1-4 | P0 | `ProcessSpec` | id, name, kind (`building` \| `critter` \| `plant` \| `duplicant` \| `source` \| `sink`), ports, `powerDraw`, `heatOutput`, `dupeLabourPerCycle`, `footprint`, tags |
-| E1-5 | P1 | Operating modes | one building = several specs (e.g. Oil Refinery is one, but Metal Refinery has one spec *per* metal; Generators have "on demand" vs "100% uptime") |
+| E1-1 | ✅ | `Item` | id, display name, `ItemCategory` (solid / liquid / gas / power / heat / critter / plant / dupe-time / other), base unit |
+| E1-2 | ✅ | `Unit` + `Rate` | canonical internal units: **g/s** for mass, **W** for power, **kDTU/s** for heat, **count** for entities. Display conversion (g/s ↔ kg/s ↔ t/cycle) lives at the edge, never in the solver |
+| E1-3 | ✅ | `Port` | `(item, ratePerSecond, direction: input\|output, optional: temperature °C)` |
+| E1-4 | ✅ | `ProcessSpec` | id, name, kind (`building` \| `critter` \| `plant` \| `duplicant` \| `source` \| `sink`), ports, `powerDraw`, `heatOutput`, `dupeLabourPerCycle`, `footprint`, tags |
+| E1-5 | ✅ | Operating modes | one building = several specs (e.g. Oil Refinery is one, but Metal Refinery has one spec *per* metal; Generators have "on demand" vs "100% uptime") |
 | E1-6 | ✅ | `uptime` factor on a node | a building fed at 60 % runs at 60 %; solver works in "effective building-seconds", UI shows both `count` and `physicalCount = ceil(count/uptime)` |
 | E1-7 | ✅ | Temperature reported | ports carry a temperature and the app shows it; heat exchange is still not modelled |
 | E1-8 | P2 | Germs / disease | out of scope v1, keep a field so it can be added |
@@ -409,12 +409,12 @@ _(empty)_
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E2-1 | P0 | `PipelineNode` | `id`, `specId`, `count` (the solved variable), `pin?` |
+| E2-1 | ✅ | `PipelineNode` | `id`, `specId`, `count` (the solved variable), `pin?` |
 | E2-2 | ✅ | `PipelineEdge` | `fromNode.outputPort → toNode.inputPort`, carries one item, has a `share` ∈ [0,1] of the source port's output |
-| E2-3 | P0 | Auto-share | edges leaving the same output port default to an equal split; user can override. **This is what keeps the system square** — flows become a linear function of node counts only |
-| E2-4 | P0 | `Pin` kinds | `buildingCount(n)`, `itemRate(item, g/s, at a port)`, `itemStock(item, mass, over duration)` → converted to a rate |
-| E2-5 | P0 | Validation | edge item must match both ports; no duplicate edges; unknown spec ids; dangling pins |
-| E2-6 | P1 | Free ports | an input port with no incoming edge = **external supply** (raw resource you must provide); an output port with no outgoing edge = **surplus/vent**. Both reported, never an error |
+| E2-3 | ✅ | Auto-share | edges leaving the same output port default to an equal split; user can override. **This is what keeps the system square** — flows become a linear function of node counts only |
+| E2-4 | ✅ | `Pin` kinds | `buildingCount(n)`, `itemRate(item, g/s, at a port)`, `itemStock(item, mass, over duration)` → converted to a rate |
+| E2-5 | ✅ | Validation | edge item must match both ports; no duplicate edges; unknown spec ids; dangling pins |
+| E2-6 | ✅ | Free ports | an input port with no incoming edge = **external supply** (raw resource you must provide); an output port with no outgoing edge = **surplus/vent**. Both reported, never an error |
 | E2-7 | ✅ | Cycles | recycling loops (petroleum boiler, SPOM hydrogen return) must solve — the linear system handles them natively, add regression tests |
 | E2-8 | P2 | Sub-pipelines | a saved pipeline usable as a single node in a bigger one |
 
@@ -422,10 +422,10 @@ _(empty)_
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E3-0 | P0 `spike` | Write `docs/SOLVER.md` | the maths, decided before code |
-| E3-1 | P0 | Linear system build | Variables = node counts `x_n`. One equation per **fed** input port: `Σ_e share_e · x_src · outRate(src,item) = x_n · inRate(n,item)`. Plus one equation per pin |
-| E3-2 | P0 | Gauss-Jordan w/ partial pivoting | dense is fine (graphs are ≤ a few hundred nodes); detect rank, report `underdetermined` (needs another pin) / `inconsistent` (contradictory pins) |
-| E3-3 | P0 | Result object | per-node `count`, per-edge `flow` (g/s), per-item global balance, list of `Shortage` and `Surplus` |
+| E3-0 | ✅ | Write `docs/SOLVER.md` | the maths, decided before code |
+| E3-1 | ✅ | Linear system build | Variables = node counts `x_n`. One equation per **fed** input port: `Σ_e share_e · x_src · outRate(src,item) = x_n · inRate(n,item)`. Plus one equation per pin |
+| E3-2 | ✅ | Gauss-Jordan w/ partial pivoting | dense is fine (graphs are ≤ a few hundred nodes); detect rank, report `underdetermined` (needs another pin) / `inconsistent` (contradictory pins) |
+| E3-3 | ✅ | Result object | per-node `count`, per-edge `flow` (g/s), per-item global balance, list of `Shortage` and `Surplus` |
 | E3-4 | ✅ | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
 | E3-5 | ✅ | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
@@ -439,21 +439,21 @@ _(empty)_
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E4-0 | P0 `spike` | Decide data source | hand-curated JSON in `packages/oni_engine/data/` vs scraping the wiki. **Start hand-curated, seeded from the wiki, versioned per game update** |
-| E4-1 | P0 | JSON schema + loader | `items.json`, `processes.json`, `buildings.json`; strict parsing with helpful errors; unit-tested against the shipped data |
-| E4-2 | P0 | Seed set — oxygen | Electrolyzer, Algae Terrarium, Algae Distiller, Rust Deoxidizer, Oxylite Refinery, Deodorizer |
-| E4-3 | P1 | Seed set — power | Coal / Wood / Natural Gas / Petroleum / Hydrogen / Steam / Solar generators, Transformers, Batteries (self-discharge) |
-| E4-4 | P1 | Seed set — liquids | Water Sieve, Desalinator, Carbon Skimmer, Oil Well, Oil Refinery, Polymer Press, Ethanol Distiller |
-| E4-5 | P1 | Seed set — refining | Metal Refinery (per ore), Rock Crusher, Kiln, Glass Forge, Molecular Forge |
-| E4-6 | P1 | Seed set — food & farming | plants (per fertiliser/irrigation mode), Grill, Microbe Musher, Electric Grill, Gas Range |
-| E4-7 | P1 | Seed set — duplicants | O₂ consumption, CO₂ / dirt / polluted-water output, calories, so "20 dupes" is a pinnable node |
+| E4-0 | ✅ | Decide data source | hand-curated JSON in `packages/oni_engine/data/` vs scraping the wiki. **Start hand-curated, seeded from the wiki, versioned per game update** |
+| E4-1 | ✅ | JSON schema + loader | `items.json`, `processes.json`, `buildings.json`; strict parsing with helpful errors; unit-tested against the shipped data |
+| E4-2 | ✅ | Seed set — oxygen | Electrolyzer, Algae Terrarium, Algae Distiller, Rust Deoxidizer, Oxylite Refinery, Deodorizer |
+| E4-3 | ✅ | Seed set — power | Coal / Wood / Natural Gas / Petroleum / Hydrogen / Steam / Solar generators, Transformers, Batteries (self-discharge) |
+| E4-4 | ✅ | Seed set — liquids | Water Sieve, Desalinator, Carbon Skimmer, Oil Well, Oil Refinery, Polymer Press, Ethanol Distiller |
+| E4-5 | ✅ | Seed set — refining | Metal Refinery (per ore), Rock Crusher, Kiln, Glass Forge, Molecular Forge |
+| E4-6 | ✅ | Seed set — food & farming | plants (per fertiliser/irrigation mode), Grill, Microbe Musher, Electric Grill, Gas Range |
+| E4-7 | ✅ | Seed set — duplicants | O₂ consumption, CO₂ / dirt / polluted-water output, calories, so "20 dupes" is a pinnable node |
 | E4-8 | ✅ | Ranching | critters: food in, meat/eggs/coal out, per-critter |
-| E4-9 | P2 | DLC toggle | Spaced Out! variants (rockets, radiation), base-game filter |
+| E4-9 | P2 | Spaced Out variants | rockets and radiation. The base-game filter half of this shipped as E4-12 |
 | E4-11 | P1 | Confirm the unverified DLC rates once the wiki fills them in |
 | E4-12 | ✅ | Palette filter by DLC |
 | E4-13 | ✅ | User-defined / overridable processes, edited in the app |
 | E4-17 | P2 | Share a custom recipe pack, so a wiki gap gets filled once for everyone |
-| E4-10 | P1 | Data version stamp | `dataVersion` + game build in the JSON so saved pipelines can warn on mismatch |
+| E4-10 | ✅ | Data version stamp | `dataVersion` + game build in the JSON so saved pipelines can warn on mismatch |
 | E4-9b | ✅ | The Aquatic critter roster | Beakon, Slogo, Gildgo, Orehull, Glo Squid, Seaquine, Kelpole — individual pages carry rates the summary table omits |
 | E4-12a | ✅ | The port menu obeys the palette filters | and learned about material classes while there |
 | E4-12b | ✅ | The recipe editor's item picker obeys them too | checking whether item pack tags could be trusted found three that were wrong |
@@ -483,17 +483,19 @@ _(empty)_
 | E4-35 | ✅ | Three more crops | Pincha Pepperplant, Thimble Reed, Nosh Sprout, each with a grazed twin |
 | E4-35b | P3 | Sporechid, and the Prehistoric and Aquatic food plants |  |
 | E4-36 | ✅ | Harvested and grazed are separate processes | offering both on one process let a farm be counted twice |
+| E4-37 | P2 | The rest of the Aquatic plants | 5 of 12 seeded; Sodicane, Bulbloom, Mussel Sprout, Clampum, Pinpoket, Petta Pouf and Husha Cups have no usable numbers |
 
 ## E5 — Persistence & interop
 
 | id | P | Task |
 |---|---|---|
 | E5-1 | ✅ | `Pipeline` ⇄ JSON (`toJson`/`fromJson`) with a schema version + migrations hook |
-| E5-2 | P1 | Local save/load of user pipelines (`path_provider` + file, or `hive`/`isar` — decide in a spike) |
+| E5-2 | ✅ | Local save/load of user pipelines (`path_provider` + file, or `hive`/`isar` — decide in a spike) |
 | E5-3 | ✅ | Share a pipeline as a base64 code |
-| E5-4 | P2 | Import/export to clipboard |
+| E5-4 | ✅ | Import/export to clipboard |
 | E5-2a | ✅ | Persistence groundwork |
 | E5-6 | ✅ | Corrected recipes are named |
+| E5-7 | P2 | Export to a file | for archiving rather than pasting; wants a file-picker dependency nothing else has needed |
 
 ## E6 — App shell & foundations
 
@@ -508,10 +510,10 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 
 | id | P | Task | Definition of done |
 |---|---|---|---|
-| E6-1 | P0 | forui wired up, Material dropped | no `package:flutter/material.dart` anywhere in `app/lib` |
-| E6-2 | P0 | State management | `PipelineController extends ChangeNotifier`: holds the `Pipeline`, the current `PipelineSolution`, selection, and an undo stack. No riverpod — the engine is pure and the app has one document |
-| E6-3 | P0 | Re-solve on every edit | any mutation re-runs the solver and repaints; target < 16 ms for a 100-node graph |
-| E6-4 | P1 | Undo/redo | trivial: `Pipeline` is immutable, so the stack is a `List<Pipeline>` |
+| E6-1 | ✅ | forui wired up, Material dropped | no `package:flutter/material.dart` anywhere in `app/lib` |
+| E6-2 | ✅ | State management | `PipelineController extends ChangeNotifier`: holds the `Pipeline`, the current `PipelineSolution`, selection, and an undo stack. No riverpod — the engine is pure and the app has one document |
+| E6-3 | ✅ | Re-solve on every edit | any mutation re-runs the solver and repaints; target < 16 ms for a 100-node graph |
+| E6-4 | ✅ | Undo/redo | trivial: `Pipeline` is immutable, so the stack is a `List<Pipeline>` |
 | E6-5 | ✅ | Desktop-first window chrome, keyboard shortcuts (⌘Z, ⌫, ⌘F) |
 | E6-6 | P2 | Multi-document: open several pipelines in tabs |
 
@@ -519,10 +521,10 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E9-1 | P0 | Tokens | `OniColors`, `OniSpacing`, `OniTypography`. One dark palette; colour is *data*, not decoration |
-| E9-2 | P0 | Item-category palette | solid / liquid / gas / power / heat each get a hue, used identically on ports, edges and legends — the single most important visual rule in the app |
-| E9-3 | P0 | Wrappers | `OniPanel`, `OniButton`, `OniField`, `OniSelect`, `OniTooltip` over forui equivalents |
-| E9-4 | P1 | Numeric formatting widget | reuses the engine's `Unit.format`; per-second ⇄ per-cycle toggle in one place |
+| E9-1 | ✅ | Tokens | `OniColors`, `OniSpacing`, `OniTypography`. One dark palette; colour is *data*, not decoration |
+| E9-2 | ✅ | Item-category palette | solid / liquid / gas / power / heat each get a hue, used identically on ports, edges and legends — the single most important visual rule in the app |
+| E9-3 | ✅ | Wrappers | `OniPanel`, `OniButton`, `OniField`, `OniSelect`, `OniTooltip` over forui equivalents |
+| E9-4 | ✅ | Numeric formatting widget | reuses the engine's `Unit.format`; per-second ⇄ per-cycle toggle in one place |
 | E9-5 | P1 | Icon set | no game sprites (copyright) — generated glyphs per item category |
 | E9-6 | P2 | Light theme |
 
@@ -532,14 +534,14 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E7-1 | P0 | Viewport | `Matrix4` pan/zoom driven by `Listener` + `GestureDetector`; explicit screen ⇄ world coordinate conversion, because every hit test needs it. Trackpad pinch and scroll-to-pan |
-| E7-2 | P0 | Node widget | real widgets inside a `Stack` (not painted), so text, focus and hit-testing come free. Shows name, solved count, `build N`, a utilisation bar, and its ports as dots |
-| E7-3 | P0 | Edge painter | one `CustomPaint` *under* the nodes: bezier per edge, colour by item category, **thickness ∝ flow**, flow label at the midpoint |
-| E7-4 | P0 | Selection | click a node or an edge; selection drives the inspector |
-| E7-5 | P0 | Drag a node | updates `PipelineNode.x/y`, snaps to a grid |
+| E7-1 | ✅ | Viewport | `Matrix4` pan/zoom driven by `Listener` + `GestureDetector`; explicit screen ⇄ world coordinate conversion, because every hit test needs it. Trackpad pinch and scroll-to-pan |
+| E7-2 | ✅ | Node widget | real widgets inside a `Stack` (not painted), so text, focus and hit-testing come free. Shows name, solved count, `build N`, a utilisation bar, and its ports as dots |
+| E7-3 | ✅ | Edge painter | one `CustomPaint` *under* the nodes: bezier per edge, colour by item category, **thickness ∝ flow**, flow label at the midpoint |
+| E7-4 | ✅ | Selection | click a node or an edge; selection drives the inspector |
+| E7-5 | ✅ | Drag a node | updates `PipelineNode.x/y`, snaps to a grid |
 | E7-6 | ✅ | Drag-from-port to connect | live bezier following the cursor; compatible target ports light up, incompatible ones dim; drop on empty space opens the palette filtered to processes that accept that item |
-| E7-7 | P1 | Delete | node or edge, with the edges of a deleted node going too |
-| E7-8 | P1 | Empty state | a real "add your first node" affordance, not a blank void |
+| E7-7 | ✅ | Delete | node or edge, with the edges of a deleted node going too |
+| E7-8 | ✅ | Empty state | a real "add your first node" affordance, not a blank void |
 | E7-9 | ✅ | Auto-layout (layered / Sugiyama) |
 | E7-10 | ✅ | Marquee select, group move |
 | E7-11 | ✅ | Minimap |
@@ -553,10 +555,10 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E10-1 | P0 | Process palette | searchable, grouped by tag (oxygen / power / liquid / refining), click or drag to place. Sources and sinks listed per item |
-| E10-2 | P0 | **Pin control** — the headline | select a node → "I have ▢ of these" (buildings) or "▢ g/s" (source/sink). Pinned node wears a lock badge; clearing it is one click |
-| E10-3 | P0 | Inspector | selected node: every port with its solved rate, what is connected, power, heat, uptime, and the `unverified` warning if the data ever carries one |
-| E10-4 | P1 | Summary bar | net power, total heat, raw inputs, net outputs, dupe labour — always visible |
+| E10-1 | ✅ | Process palette | searchable, grouped by tag (oxygen / power / liquid / refining), click or drag to place. Sources and sinks listed per item |
+| E10-2 | ✅ | **Pin control** — the headline | select a node → "I have ▢ of these" (buildings) or "▢ g/s" (source/sink). Pinned node wears a lock badge; clearing it is one click |
+| E10-3 | ✅ | Inspector | selected node: every port with its solved rate, what is connected, power, heat, uptime, and the `unverified` warning if the data ever carries one |
+| E10-4 | ✅ | Summary bar | net power, total heat, raw inputs, net outputs, dupe labour — always visible |
 | E10-5 | ✅ | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
 | E10-6 | ✅ | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
 | E10-7 | ✅ | Per-cycle ⇄ per-second toggle |
@@ -623,7 +625,7 @@ flow, so the solver never had to learn about it.
 | id | P | Task |
 |---|---|---|
 | E8-1 | ✅ | Unit tests for every solver path (DAG, cycle, underdetermined, inconsistent, shortage, surplus) |
-| E8-2 | P1 | Golden real-world scenarios: SPOM, petroleum boiler, oxylite chain, coal farm — with hand-checked expected numbers |
+| E8-2 | P1 | Golden real-world scenarios | the SPOM and the pepper-bread chain are pinned with hand-checked numbers; the petroleum boiler, oxylite chain and coal farm are not |
 | E8-3 | ✅ | Property test: any solved graph satisfies mass balance within ε |
 | E8-4 | ✅ | Widget/golden tests for the canvas |
 | E8-5 | P2 | Benchmarks in CI |
