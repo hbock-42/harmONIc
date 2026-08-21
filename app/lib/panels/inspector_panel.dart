@@ -406,6 +406,11 @@ class _NodeInspectorState extends State<_NodeInspector> {
           const SizedBox(height: OniSpacing.lg),
         ],
 
+        if (spec.kind == ProcessKind.source) ...[
+          _SupplyTemperature(controller: controller, node: node),
+          const SizedBox(height: OniSpacing.lg),
+        ],
+
         for (final port in choosablePorts(controller.database, spec)) ...[
           _MaterialChoice(
             controller: controller,
@@ -781,6 +786,82 @@ class _MaterialChoice extends StatelessWidget {
   }
 }
 
+/// What temperature this supply arrives at.
+///
+/// A build's temperatures have to start somewhere, and the game does not know:
+/// water out of a Cool Steam Vent is 95 °C, water out of a reservoir is
+/// whatever you left it at. Given one figure here, everything downstream can be
+/// worked out — mixed by mass and specific heat, or overridden wherever a
+/// recipe publishes its own.
+class _SupplyTemperature extends StatefulWidget {
+  const _SupplyTemperature({required this.controller, required this.node});
+
+  final PipelineController controller;
+  final PipelineNode node;
+
+  @override
+  State<_SupplyTemperature> createState() => _SupplyTemperatureState();
+}
+
+class _SupplyTemperatureState extends State<_SupplyTemperature> {
+  late final TextEditingController _field = TextEditingController(
+      text: widget.node.temperatureC?.toStringAsFixed(0) ?? '');
+
+  @override
+  void dispose() {
+    _field.dispose();
+    super.dispose();
+  }
+
+  void _apply(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) {
+      widget.controller.setNodeTemperature(widget.node.id, null);
+      return;
+    }
+    final value = double.tryParse(trimmed);
+    if (value == null) return;
+    widget.controller.setNodeTemperature(widget.node.id, value);
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('ARRIVES AT', style: OniType.label),
+          const SizedBox(height: OniSpacing.sm),
+          Row(
+            children: [
+              SizedBox(
+                width: 84,
+                child: OniField(
+                  key: supplyTemperatureFieldKey,
+                  controller: _field,
+                  hint: '—',
+                  textAlign: TextAlign.right,
+                  onChanged: _apply,
+                ),
+              ),
+              const SizedBox(width: OniSpacing.sm),
+              Expanded(
+                child: Text(
+                  widget.node.temperatureC == null
+                      ? '°C. Leave it blank if you do not know — the build will '
+                          'simply not say what anything downstream runs at.'
+                      : '°C, and everything downstream follows from it.',
+                  style: OniType.body
+                      .copyWith(fontSize: 11.5, color: OniColors.textMuted),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+}
+
+/// Named so tests can drive it directly.
+const Key supplyTemperatureFieldKey = ValueKey('supply-temperature');
+
 /// The measured-percentage field, named so tests can drive it directly.
 const Key geyserActivityFieldKey = ValueKey('geyser-activity-percent');
 
@@ -851,7 +932,11 @@ class _PortRow extends StatelessWidget {
           // Everything qualifying the flow goes on its own line: cramming the
           // temperature, the shortfall and the vent switch onto the first one
           // left no room for the name.
-          if (port.temperatureC != null || unmet || spare || canVent)
+          if (port.temperatureC != null ||
+              controller.temperatures.at(ref) != null ||
+              unmet ||
+              spare ||
+              canVent)
             Padding(
               padding: const EdgeInsets.only(left: 16, top: 3),
               child: Wrap(
@@ -859,12 +944,25 @@ class _PortRow extends StatelessWidget {
                 runSpacing: 4,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+                  // The recipe's own figure if it has one; failing that, what
+                  // the build works out this port actually runs at, marked as
+                  // worked out rather than published.
                   if (port.temperatureC case final double celsius)
                     Text(
                       '${celsius.toStringAsFixed(0)} °C',
                       style: OniType.numberSmall.copyWith(
                         color:
                             port.runsHot ? OniColors.warning : OniColors.textFaint,
+                      ),
+                    )
+                  else if (controller.temperatures.at(ref)
+                      case final double celsius)
+                    Text(
+                      '~${celsius.toStringAsFixed(0)} °C',
+                      style: OniType.numberSmall.copyWith(
+                        color: celsius > commonOverheatCelsius
+                            ? OniColors.warning
+                            : OniColors.textFaint,
                       ),
                     ),
                   if (unmet || spare)

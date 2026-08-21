@@ -41,14 +41,74 @@ void main() {
     expect(find.text('70 °C'), findsNWidgets(2));
   });
 
-  testWidgets('a port with no stated temperature shows none', (tester) async {
+  testWidgets('a port with no stated temperature is worked out instead',
+      (tester) async {
     final controller = await pumpEditor(tester);
     controller.select(const NodeSelection('elec'));
     await tester.pump();
 
-    // Water in has no fixed temperature, so nothing is claimed about it.
+    // The Electrolyzer publishes nothing about its water inlet, but the geyser
+    // feeding it does, so the figure is arrived at rather than quoted — and it
+    // says which it is with a tilde.
     expect(find.byType(InspectorPanel), findsOneWidget);
+    expect(find.text('~95 °C'), findsOneWidget);
+    expect(find.text('70 °C'), findsNWidgets(2));
+  });
+
+  testWidgets('a build with no temperature anywhere claims none',
+      (tester) async {
+    await useDesktopSurface(tester);
+    final controller = testController(
+      pipeline: (PipelineBuilder(testDatabase, name: 'Plain')
+            ..addSource('water', x: 0, y: 0)
+            ..add('electrolyzer', nodeId: 'elec', x: 360, y: 0)
+            ..connectItem('src_water', 'elec', 'water')
+            ..pinCount('elec', 1))
+          .build(),
+    );
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+    controller.select(const NodeSelection('elec'));
+    await tester.pump();
+
+    // Only the two published 70 °C outputs. Nobody has said what temperature
+    // the water is, so nothing pretends to know.
     expect(find.textContaining('°C'), findsNWidgets(2));
+  });
+
+  testWidgets('saying what the supply arrives at carries it downstream',
+      (tester) async {
+    await useDesktopSurface(tester);
+    final controller = testController(
+      pipeline: (PipelineBuilder(testDatabase, name: 'Warm')
+            ..addSource('polluted_water', x: 0, y: 0)
+            ..add('water_sieve', nodeId: 'sieve', x: 360, y: 0)
+            ..connectItem('src_polluted_water', 'sieve', 'polluted_water')
+            ..pinCount('sieve', 1))
+          .build(),
+    );
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+    controller.select(const NodeSelection('src_polluted_water'));
+    await tester.pump();
+
+    expect(find.text('ARRIVES AT'), findsOneWidget);
+    await tester.enterText(find.byKey(supplyTemperatureFieldKey), '40');
+    await tester.pump();
+
+    controller.select(const NodeSelection('sieve'));
+    await tester.pump();
+    // A Water Sieve publishes no output temperature, so it hands back what it
+    // was given — which is the assumption, and it is marked as one.
+    expect(find.text('~40 °C'), findsNWidgets(2));
   });
 
   testWidgets('an edge says what temperature the flow arrives at',

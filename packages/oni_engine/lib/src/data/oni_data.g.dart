@@ -19,77 +19,92 @@ const String oniDataJson = r"""
     {
       "id": "water",
       "name": "Water",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 4.179
     },
     {
       "id": "polluted_water",
       "name": "Polluted Water",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 4.179
     },
     {
       "id": "brine",
       "name": "Brine",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 3.4
     },
     {
       "id": "salt_water",
       "name": "Salt Water",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 4.1
     },
     {
       "id": "crude_oil",
       "name": "Crude Oil",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 1.69
     },
     {
       "id": "petroleum",
       "name": "Petroleum",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 1.76
     },
     {
       "id": "ethanol",
       "name": "Ethanol",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 2.46
     },
     {
       "id": "liquid_oxygen",
       "name": "Liquid Oxygen",
-      "category": "liquid"
+      "category": "liquid",
+      "specificHeat": 1.01
     },
     {
       "id": "oxygen",
       "name": "Oxygen",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 1.005
     },
     {
       "id": "polluted_oxygen",
       "name": "Polluted Oxygen",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 1.01
     },
     {
       "id": "hydrogen",
       "name": "Hydrogen",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 2.4
     },
     {
       "id": "carbon_dioxide",
       "name": "Carbon Dioxide",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 0.846
     },
     {
       "id": "natural_gas",
       "name": "Natural Gas",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 2.191
     },
     {
       "id": "chlorine",
       "name": "Chlorine",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 0.48
     },
     {
       "id": "steam",
       "name": "Steam",
-      "category": "gas"
+      "category": "gas",
+      "specificHeat": 4.179
     },
     {
       "id": "algae",
@@ -347,7 +362,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 3.6
     },
     {
       "id": "polluted_brine_ice",
@@ -439,7 +455,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 2.191
     },
     {
       "id": "kelpole",

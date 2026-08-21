@@ -19,6 +19,7 @@ class PipelineNode {
     this.outputScale = 1,
     this.ventedPorts = const {},
     this.materials = const {},
+    this.temperatureC,
     this.notes,
   });
 
@@ -35,6 +36,7 @@ class PipelineNode {
               in (json['materials'] as Map<String, dynamic>? ?? const {}).entries)
             entry.key: entry.value as String,
         },
+        temperatureC: (json['temperatureC'] as num?)?.toDouble(),
         ventedPorts: {
           ...(json['ventedPorts'] as List<dynamic>? ?? const []).cast<String>(),
         },
@@ -80,6 +82,13 @@ class PipelineNode {
   /// happily feed a port that wants copper, because a pile of unspecified ore
   /// is where the copper was going to come from.
   final Map<String, String> materials;
+
+  /// What temperature this node's material arrives at, when you know it.
+  ///
+  /// Mostly for supply nodes: a build's temperatures have to start somewhere,
+  /// and where they start is a fact about your base rather than about the game
+  /// — the water from a Cool Steam Vent is not the water in your reservoir.
+  final double? temperatureC;
   final String? notes;
 
   bool ventsPort(String portId) => ventedPorts.contains(portId);
@@ -92,6 +101,7 @@ class PipelineNode {
     double? outputScale,
     Set<String>? ventedPorts,
     Map<String, String>? materials,
+    double? temperatureC,
     String? notes,
   }) =>
       PipelineNode(
@@ -104,6 +114,7 @@ class PipelineNode {
         outputScale: outputScale ?? this.outputScale,
         ventedPorts: ventedPorts ?? this.ventedPorts,
         materials: materials ?? this.materials,
+        temperatureC: temperatureC ?? this.temperatureC,
         notes: notes ?? this.notes,
       );
 
@@ -117,6 +128,7 @@ class PipelineNode {
         if (outputScale != 1) 'outputScale': outputScale,
         if (ventedPorts.isNotEmpty) 'ventedPorts': ventedPorts.toList(),
         if (materials.isNotEmpty) 'materials': materials,
+        if (temperatureC != null) 'temperatureC': temperatureC,
         if (notes != null) 'notes': notes,
       };
 }

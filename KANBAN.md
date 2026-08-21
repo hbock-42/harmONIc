@@ -44,8 +44,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E11-2` Pipe materials: 500 °C steam needs a pipe built of something that survives it,
   which depends on the material's limits rather than the flow's temperature alone
-- `E11-6` Temperature mixing: two flows meeting average out by mass and specific heat; the
-  app reports the temperature a port declares, no more
 - `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
 - `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
   model has no notion of a mixture
@@ -146,6 +144,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E11-6` **Temperature that travels** — specific heat seeded for the seventeen fluids a
+  build actually plumbs, and a pass after the solve that carries temperature downstream:
+  published figures win, everything else is the mass-and-specific-heat mixture of what
+  arrives. A supply node is where it starts, and blank means blank
 - `E13-2` **The cooling loop** — a Steam Turbine deletes heat, an Aquatuner only moves it,
   and both are now sayable: heat was always an item and a negative rate always made an
   input port, but nothing had ever used it. A build can be asked how many Aquatuners its
@@ -574,7 +576,8 @@ does not see.
 | E11-3 | ✅ | Pumps | generated per fluid the way sources and sinks are, since a pump is the same machine whatever it moves |
 | E11-4 | P2 | Filters and valves | a Gas Filter separates one gas from a mixed stream, and this model has no notion of a mixture |
 | E11-5 | P2 | Conduit heat | a pipe full of 95 °C water heats whatever it runs past |
-| E11-6 | P2 | Temperature mixing | two flows meeting average out by mass and specific heat; the app reports the temperature a port declares, no more |
+| E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
+| E11-6b | P2 | The specific heats not yet measured | molten metals and DLC exotica; a fluid without one is silently left out of any mixture it joins |
 | E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
 | E11-7b | P3 | What a Gasket costs | 50 kg of plastic or rubber makes some unstated number of them |
 

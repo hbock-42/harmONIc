@@ -32,6 +32,7 @@ class PipelineController extends ChangeNotifier {
                 dataVersion: database.dataVersion) {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
+    _temperatures = null;
   }
 
   GameDatabase _database;
@@ -46,6 +47,7 @@ class PipelineController extends ChangeNotifier {
     _solver = PipelineSolver(database);
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
+    _temperatures = null;
     notifyListeners();
   }
 
@@ -67,6 +69,12 @@ class PipelineController extends ChangeNotifier {
   /// only when a rounded node is selected.
   AsBuiltReport get asBuiltReport =>
       _asBuilt ??= asBuilt(_pipeline, database, _solution);
+
+  Temperatures? _temperatures;
+
+  /// What temperature each port runs at, where the build determines it.
+  Temperatures get temperatures =>
+      _temperatures ??= temperaturesOf(_pipeline, database, _solution);
 
   /// Every node currently selected. More than one is normal: a marquee or a
   /// shift-click gathers a whole subsystem so it can be moved or deleted at once.
@@ -165,6 +173,7 @@ class PipelineController extends ChangeNotifier {
     _pipeline = next;
     _solution = _solver.solve(next);
     _asBuilt = null;
+    _temperatures = null;
     notifyListeners();
   }
 
@@ -174,6 +183,7 @@ class PipelineController extends ChangeNotifier {
     _pipeline = _undoStack.removeLast();
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
+    _temperatures = null;
     notifyListeners();
   }
 
@@ -183,6 +193,7 @@ class PipelineController extends ChangeNotifier {
     _pipeline = _redoStack.removeLast();
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
+    _temperatures = null;
     notifyListeners();
   }
 
@@ -539,6 +550,35 @@ class PipelineController extends ChangeNotifier {
       nodes: [
         for (final n in _pipeline.nodes)
           if (n.id == nodeId) n.copyWith(ventedPorts: ports) else n,
+      ],
+    ));
+  }
+
+  /// What temperature this node's material arrives at. Mostly for supply
+  /// nodes: a build's temperatures have to start somewhere, and where they
+  /// start is a fact about your base rather than about the game.
+  void setNodeTemperature(String nodeId, double? celsius) {
+    final node = _pipeline.node(nodeId);
+    if (node == null) return;
+    _apply(_pipeline.copyWith(
+      nodes: [
+        for (final n in _pipeline.nodes)
+          if (n.id == nodeId)
+            PipelineNode(
+              id: n.id,
+              specId: n.specId,
+              label: n.label,
+              x: n.x,
+              y: n.y,
+              uptime: n.uptime,
+              outputScale: n.outputScale,
+              ventedPorts: n.ventedPorts,
+              materials: n.materials,
+              temperatureC: celsius,
+              notes: n.notes,
+            )
+          else
+            n,
       ],
     ));
   }

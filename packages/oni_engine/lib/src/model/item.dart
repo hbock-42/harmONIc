@@ -30,6 +30,7 @@ class Item {
     required this.category,
     this.members = const {},
     this.refinesTo,
+    this.specificHeat,
     this.tags = const {},
   });
 
@@ -41,6 +42,7 @@ class Item {
           ...(json['members'] as List<dynamic>? ?? const []).cast<String>(),
         },
         refinesTo: json['refinesTo'] as String?,
+        specificHeat: (json['specificHeat'] as num?)?.toDouble(),
         tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
       );
 
@@ -62,6 +64,17 @@ class Item {
 
   /// What this becomes in a refinery: iron ore makes iron, and nothing else.
   final String? refinesTo;
+
+  /// (DTU/g)/°C — how much heat a gram of this holds per degree.
+  ///
+  /// The number that decides what happens when two flows meet: a kilogram of
+  /// 90 °C water and a kilogram of 20 °C water make two kilograms at 55 °C,
+  /// but a kilogram of hot water and a kilogram of cold oil do not meet in the
+  /// middle at all, because water holds two and a half times the heat.
+  ///
+  /// Null for anything not measured yet, and for things where it has no
+  /// meaning — power, heat, a grooming slot.
+  final double? specificHeat;
   final Set<String> tags;
 
   Unit get unit => switch (category) {
@@ -112,6 +125,7 @@ class Item {
         'category': category.name,
         if (members.isNotEmpty) 'members': members.toList(),
         if (refinesTo != null) 'refinesTo': refinesTo,
+        if (specificHeat != null) 'specificHeat': specificHeat,
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 

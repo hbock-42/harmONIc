@@ -26,4 +26,5 @@ export 'src/solver/linear_algebra.dart';
 export 'src/solver/report.dart';
 export 'src/solver/shares.dart';
 export 'src/solver/solution.dart';
+export 'src/solver/temperatures.dart';
 export 'src/solver/solver.dart';
