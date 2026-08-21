@@ -488,25 +488,21 @@ class _TopBarState extends State<_TopBar> {
                 ),
               const SizedBox(width: OniSpacing.md),
             ],
-            OniButton(
-              label: widget.displaySettings.currentLabel,
-              compact: true,
-              tone: OniButtonTone.accent,
-              onPressed: widget.displaySettings.toggle,
-            ),
-            const SizedBox(width: OniSpacing.sm),
+            // Grouped by what they touch, because a row of evenly spaced
+            // buttons says they are all the same kind of thing and these are
+            // three kinds: the past, the arrangement, and the units.
             OniButton(
               label: 'Undo',
               compact: true,
               onPressed: controller.canUndo ? controller.undo : null,
             ),
-            const SizedBox(width: OniSpacing.sm),
+            const SizedBox(width: OniSpacing.xs),
             OniButton(
               label: 'Redo',
               compact: true,
               onPressed: controller.canRedo ? controller.redo : null,
             ),
-            const SizedBox(width: OniSpacing.sm),
+            const _ToolbarDivider(),
             OniButton(
               label: 'Tidy',
               compact: true,
@@ -528,7 +524,7 @@ class _TopBarState extends State<_TopBar> {
                       );
                     },
             ),
-            const SizedBox(width: OniSpacing.sm),
+            const SizedBox(width: OniSpacing.xs),
             OniButton(
               label: 'Fit',
               compact: true,
@@ -537,6 +533,13 @@ class _TopBarState extends State<_TopBar> {
                         ? controller.selectedNodeIds
                         : const {},
                   ),
+            ),
+            const _ToolbarDivider(),
+            OniButton(
+              label: widget.displaySettings.currentLabel,
+              compact: true,
+              tone: OniButtonTone.accent,
+              onPressed: widget.displaySettings.toggle,
             ),
                 ]),
               ),
@@ -572,5 +575,20 @@ class _EmptyCanvas extends StatelessWidget {
             ),
           ),
         ),
+      );
+}
+
+/// The gap between two groups of toolbar buttons: wider than the gap inside a
+/// group, with a rule down the middle, so the grouping is stated rather than
+/// implied by a few pixels.
+class _ToolbarDivider extends StatelessWidget {
+  const _ToolbarDivider();
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 1,
+        height: 16,
+        margin: const EdgeInsets.symmetric(horizontal: OniSpacing.md),
+        color: OniColors.border,
       );
 }

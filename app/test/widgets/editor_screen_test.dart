@@ -221,4 +221,24 @@ void main() {
     expect(find.text('Nothing here yet'), findsOneWidget);
     expect(find.byType(GraphCanvas), findsNothing);
   });
+
+  testWidgets('the toolbar is grouped by what each button touches',
+      (tester) async {
+    await pumpEditor(tester);
+
+    double xOf(String label) => tester.getCenter(find.text(label)).dx;
+
+    // Undo and Redo, then Tidy and Fit, then the units. Reading order matters
+    // less than the grouping, but a gap that says nothing is worse than none.
+    expect(xOf('Undo'), lessThan(xOf('Redo')));
+    expect(xOf('Redo'), lessThan(xOf('Tidy')));
+    expect(xOf('Tidy'), lessThan(xOf('Fit')));
+    expect(xOf('Fit'), lessThan(xOf('g/s')));
+
+    // The space between groups is wider than the space within one, which is
+    // the whole claim being made by the layout.
+    final withinHistory = xOf('Redo') - xOf('Undo');
+    final betweenGroups = xOf('Tidy') - xOf('Redo');
+    expect(betweenGroups, greaterThan(withinHistory));
+  });
 }
