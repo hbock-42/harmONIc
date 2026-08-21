@@ -9,18 +9,17 @@ import '../support/harness.dart';
 ///
 /// The layout counts crossings internally to score its own sweeps, but it does
 /// so over its own expanded graph. This counts what a person would see: a
-/// straight line from each output edge to each input edge, and every pair of
-/// them that meets in the middle.
+/// straight line between the two port dots a wire actually joins, and every
+/// pair of them that meets in the middle.
+///
+/// It used to run those lines between the middles of the two nodes, which made
+/// it blind to exactly the crossings a person complains about — two wires into
+/// the same node, arriving at different rows, in the wrong order.
 int crossings(Pipeline pipeline, Map<String, Offset> at) {
-  Offset out(String id) {
-    final node = pipeline.nodeOrThrow(id);
-    final size = NodeLayout.sizeOf(testDatabase.processOrThrow(node.specId));
-    return at[id]! + Offset(size.width, size.height / 2);
-  }
-  Offset into(String id) {
-    final node = pipeline.nodeOrThrow(id);
-    final size = NodeLayout.sizeOf(testDatabase.processOrThrow(node.specId));
-    return at[id]! + Offset(0, size.height / 2);
+  Offset endOf(String nodeId, String portId) {
+    final node = pipeline.nodeOrThrow(nodeId);
+    final spec = testDatabase.processOrThrow(node.specId);
+    return at[nodeId]! + NodeLayout.portOffset(spec, portId);
   }
   double cross(Offset a, Offset b) => a.dx * b.dy - a.dy * b.dx;
   bool intersect(Offset p1, Offset p2, Offset p3, Offset p4) {
@@ -37,12 +36,23 @@ int crossings(Pipeline pipeline, Map<String, Offset> at) {
     for (var j = i + 1; j < edges.length; j++) {
       final a = edges[i];
       final b = edges[j];
-      if ({a.fromNodeId, a.toNodeId}
-          .intersection({b.fromNodeId, b.toNodeId}).isNotEmpty) {
+      // Two wires sharing a *port* meet there by definition; two wires into
+      // different ports of the same node do not, and those are precisely the
+      // crossings a person notices. Skipping every edge pair that shared a
+      // node made this blind to them.
+      final ends = <String>{
+        '${a.fromNodeId}.${a.fromPortId}',
+        '${a.toNodeId}.${a.toPortId}',
+      };
+      if (ends.contains('${b.fromNodeId}.${b.fromPortId}') ||
+          ends.contains('${b.toNodeId}.${b.toPortId}')) {
         continue;
       }
-      if (intersect(out(a.fromNodeId), into(a.toNodeId), out(b.fromNodeId),
-          into(b.toNodeId))) {
+      if (intersect(
+          endOf(a.fromNodeId, a.fromPortId),
+          endOf(a.toNodeId, a.toPortId),
+          endOf(b.fromNodeId, b.fromPortId),
+          endOf(b.toNodeId, b.toPortId))) {
         total++;
       }
     }
@@ -101,7 +111,14 @@ void main() {
     // the layout. Without dummy vertices for edges that skip a column —
     // Sugiyama's third phase, which this had been missing — the same corpus
     // scores worse, and this is where a change that makes pictures worse gets
-    // caught: 2 649 crossings without them against 2 248 with.
+    // caught.
+    //
+    // The figure moved twice for reasons that were not the layout getting
+    // worse. It counted wires between the middles of nodes, which cannot see
+    // two wires arriving at different rows of the same node in the wrong
+    // order — the commonest crossing there is — and it skipped every pair of
+    // edges that shared a node, which is exactly that case. Counted honestly,
+    // port to port: 2 993 before the layout learned about ports, 2 683 after.
     //
     // The cast is written out rather than taken from the database, because a
     // corpus drawn from "everything there is" moves every time the database
@@ -164,6 +181,43 @@ void main() {
 
     expect(graphs, 427, reason: 'the corpus itself changed, so the score below '
         'is no longer comparable — re-measure before moving it');
-    expect(total, lessThanOrEqualTo(2248));
+    expect(total, lessThanOrEqualTo(2683));
+  });
+
+  group('ports decide the order within a column', () {
+    /// The cooling loop, which a person rearranges into a crossing-free
+    /// picture in about ten seconds and the layout used to make a mess of.
+    Pipeline coolingLoop() =>
+        pipelineTemplates.firstWhere((t) => t.id == 'cooling_loop').build(testDatabase);
+
+    test('the cooling loop comes out with nothing crossing', () {
+      final pipeline = coolingLoop();
+      expect(crossings(pipeline, layoutOf(pipeline)), 0);
+    });
+
+    test('two supplies feeding one node stack the way its ports do', () {
+      // The Aquatuner takes water at its first port row and heat at its
+      // second, so the water supply belongs above the heat supply. Both feed
+      // the same node, so with nodes treated as points they scored identically
+      // and fell back on the order they were created in — which was heat
+      // first, and a crossed pair of wires.
+      final pipeline = coolingLoop();
+      final at = layoutOf(pipeline);
+
+      final water = at['src_water']!;
+      final heat = at['src_heat']!;
+      expect(water.dy, lessThan(heat.dy));
+    });
+
+    test('a wire passing a column is ordered by where it lands, not by luck',
+        () {
+      // The steam supply skips the Aquatuner's column entirely and arrives at
+      // the turbine's first port row, above the heat the Aquatuner sends it.
+      // So the steam has to pass above the Aquatuner, not below it.
+      final pipeline = coolingLoop();
+      final at = layoutOf(pipeline);
+
+      expect(at['src_steam']!.dy, lessThan(at['tuner']!.dy));
+    });
   });
 }

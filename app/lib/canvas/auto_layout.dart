@@ -24,6 +24,16 @@ const String _dummyPrefix = '\u0000edge:';
 
 bool _isDummy(String id) => id.startsWith(_dummyPrefix);
 
+/// One end of a wire, seen from the vertex being placed: who is at the other
+/// end, how far down *that* node the wire attaches, and how far down this one.
+class _Link {
+  const _Link(this.other, this.otherPort, this.ownPort);
+
+  final String other;
+  final double otherPort;
+  final double ownPort;
+}
+
 class AutoLayout {
   const AutoLayout({
     required this.pipeline,
@@ -205,35 +215,47 @@ class AutoLayout {
     }
 
     // Phase 3: dummy vertices for every edge that skips a column.
-    final incoming = <String, List<String>>{};
-    final outgoing = <String, List<String>>{};
-    void link(String from, String to) {
-      incoming.putIfAbsent(to, () => []).add(from);
-      outgoing.putIfAbsent(from, () => []).add(to);
+    final incoming = <String, List<_Link>>{};
+    final outgoing = <String, List<_Link>>{};
+    void link(String from, String to, double fromPort, double toPort) {
+      incoming.putIfAbsent(to, () => []).add(_Link(from, fromPort, toPort));
+      outgoing.putIfAbsent(from, () => []).add(_Link(to, toPort, fromPort));
     }
 
     for (final edge in forward) {
       final from = layer[edge.fromNodeId];
       final to = layer[edge.toNodeId];
       if (from == null || to == null) continue;
+      final fromPort = _portFraction(edge.fromNodeId, edge.fromPortId);
+      final toPort = _portFraction(edge.toNodeId, edge.toPortId);
       if (to - from <= 1) {
-        link(edge.fromNodeId, edge.toNodeId);
+        link(edge.fromNodeId, edge.toNodeId, fromPort, toPort);
         continue;
       }
       var previous = edge.fromNodeId;
+      var previousPort = fromPort;
       for (var column = from + 1; column < to; column++) {
         final dummy = '$_dummyPrefix${edge.id}:$column';
         columns[column].add(dummy);
-        link(previous, dummy);
+        link(previous, dummy, previousPort, 0.5);
         previous = dummy;
+        previousPort = 0.5;
       }
-      link(previous, edge.toNodeId);
+      link(previous, edge.toNodeId, previousPort, toPort);
     }
 
-    double? barycentre(String vertex, List<String> neighbours, List<String> row) {
+    // Where a vertex wants to sit, in units of "rows of the next column
+    // along". A node is not a point: its wires leave and arrive at particular
+    // port rows, and two nodes feeding the same neighbour used to score
+    // identically and fall back on the order they happened to be created in.
+    // Adding the far port's height within its node breaks that tie the way the
+    // picture wants, and subtracting our own pulls a node up when the wire
+    // leaves from low down on it.
+    double? barycentre(String vertex, List<_Link> links, List<String> row) {
       final positions = [
-        for (final other in neighbours)
-          if (row.contains(other)) row.indexOf(other).toDouble(),
+        for (final link in links)
+          if (row.contains(link.other))
+            row.indexOf(link.other) + link.otherPort - link.ownPort,
       ];
       if (positions.isEmpty) return null;
       return positions.reduce((a, b) => a + b) / positions.length;
@@ -295,16 +317,22 @@ class AutoLayout {
   /// in the opposite order at each end. That is the whole definition, and
   /// counting it is what makes "did that sweep help?" a question with an answer
   /// rather than a hope.
-  int _crossings(List<List<String>> columns, Map<String, List<String>> outgoing) {
+  int _crossings(List<List<String>> columns, Map<String, List<_Link>> outgoing) {
     var total = 0;
     for (var i = 0; i + 1 < columns.length; i++) {
       final left = columns[i];
       final right = columns[i + 1];
-      final pairs = <List<int>>[];
+      final pairs = <List<double>>[];
       for (var from = 0; from < left.length; from++) {
-        for (final target in outgoing[left[from]] ?? const <String>[]) {
-          final to = right.indexOf(target);
-          if (to >= 0) pairs.add([from, to]);
+        for (final link in outgoing[left[from]] ?? const <_Link>[]) {
+          final to = right.indexOf(link.other);
+          // Position within the column *plus* where the wire attaches to the
+          // node. Without the fraction, two wires into one node scored as
+          // landing in the same place and their crossing was invisible — which
+          // is the commonest crossing there is.
+          if (to >= 0) {
+            pairs.add([from + link.ownPort, to + link.otherPort]);
+          }
         }
       }
       for (var a = 0; a < pairs.length; a++) {
@@ -343,6 +371,20 @@ class AutoLayout {
       x += widest + columnGap;
     }
     return positions;
+  }
+
+  /// How far down a node its port sits, as a fraction of the node's height.
+  ///
+  /// 0.5 for a dummy, which stands for a wire passing through and has no ports
+  /// of its own.
+  double _portFraction(String nodeId, String portId) {
+    if (_isDummy(nodeId)) return 0.5;
+    final node = pipeline.node(nodeId);
+    final spec = node == null ? null : database.process(node.specId);
+    if (spec == null || spec.portById(portId) == null) return 0.5;
+    final size = NodeLayout.sizeOf(spec);
+    if (size.height <= 0) return 0.5;
+    return NodeLayout.portOffset(spec, portId).dy / size.height;
   }
 
   Size _sizeOf(String nodeId) {
