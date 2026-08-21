@@ -35,12 +35,196 @@ void main() {
     expect(copy.netPowerWatts, spec.netPowerWatts);
   });
 
-  test('every process has been checked against the wiki', () {
-    final unverified = db.processes
-        .where((p) => !p.tags.contains('source') && !p.tags.contains('sink'))
-        .where((p) => !p.tags.contains('verified'))
-        .map((p) => p.id);
-    expect(unverified, isEmpty);
+  test('every process states whether its numbers were confirmed', () {
+    // Not everything *can* be verified — some DLC rates are not published — so
+    // the invariant is that each process says which it is, and the app warns on
+    // the ones it cannot vouch for.
+    for (final spec in db.processes) {
+      if (spec.tags.contains('source') || spec.tags.contains('sink')) continue;
+      final verified = spec.tags.contains('verified');
+      final unverified = spec.tags.contains('unverified');
+      expect(verified ^ unverified, isTrue,
+          reason: '"${spec.id}" must carry exactly one of verified/unverified');
+    }
+  });
+
+  test('an unverified process explains what is doubtful', () {
+    for (final spec in db.processes.where((p) => p.tags.contains('unverified'))) {
+      expect(spec.description, isNotNull,
+          reason: '"${spec.id}" is unverified and must say why');
+      expect(spec.description!.toUpperCase(), contains('UNVERIFIED'),
+          reason: '"${spec.id}" should lead with the caveat');
+    }
+  });
+
+  group('geysers and vents', () {
+    test('the common ones are all present', () {
+      for (final id in ['water_geyser', 'cool_steam_vent', 'natural_gas_geyser',
+          'polluted_water_vent', 'chlorine_gas_vent', 'leaky_oil_fissure',
+          'salt_water_geyser', 'cool_slush_geyser', 'tidal_spring']) {
+        expect(db.process(id), isNotNull, reason: 'missing "$id"');
+      }
+    });
+
+    test('a geyser counts as a thing you have, not as a rate', () {
+      // Boundary `source` nodes are 1 unit == 1 g/s; a geyser is a discrete
+      // feature, so pinning one means "I have one geyser", not "1 g/s".
+      final geyser = db.processOrThrow('water_geyser');
+      expect(geyser.kind, isNot(ProcessKind.source));
+      expect(geyser.outputs.single.ratePerSecond, 1800);
+    });
+
+    test('every geyser that creates matter says how hot it is', () {
+      for (final spec in db.processes.where((p) => p.tags.contains('geyser'))) {
+        for (final port in spec.outputs) {
+          // A recirculator like the Tidal Spring returns whatever it drew, so
+          // it has no temperature of its own to declare.
+          final recirculated =
+              spec.inputs.any((i) => i.itemId == port.itemId);
+          if (recirculated) continue;
+          expect(port.temperatureC, isNotNull,
+              reason: '"${spec.id}" should say how hot its output is');
+        }
+      }
+    });
+
+    test('one water geyser sizes an oxygen build', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'geyser fed')
+            ..add('water_geyser', nodeId: 'geyser')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..addSink('oxygen')
+            ..addSink('hydrogen')
+            ..connectItem('geyser', 'elec', 'water')
+            ..connectItem('elec', 'sink_oxygen', 'oxygen')
+            ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+            ..pinCount('geyser', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      expect(solution.nodes['elec']!.count, closeTo(1.8, 1e-9));
+      expect(solution.nodes['sink_oxygen']!.count, closeTo(1.8 * 888, 1e-6));
+    });
+  });
+
+  group('critters', () {
+    test('the ranching staples are present', () {
+      for (final id in ['hatch', 'sage_hatch', 'smooth_hatch', 'slickster',
+          'puft', 'dense_puft', 'drecko', 'glossy_drecko', 'pacu',
+          'gulp_fish', 'blowter']) {
+        expect(db.process(id), isNotNull, reason: 'missing critter "$id"');
+        expect(db.processOrThrow(id).kind, ProcessKind.critter);
+      }
+    });
+
+    test('a Hatch converts half its feed into coal', () {
+      final hatch = db.processOrThrow('hatch');
+      final eats = hatch.inputs.single.ratePerSecond;
+      final coal = hatch.outputs.single.ratePerSecond;
+      // Rates are stored to 4 decimal places of g/s, so allow for that.
+      expect(coal / eats, closeTo(0.5, 1e-6));
+      expect(eats, closeTo(140000 / secondsPerCycle, 1e-3));
+    });
+
+    test('a Sage Hatch converts all of it', () {
+      final sage = db.processOrThrow('sage_hatch');
+      expect(sage.outputs.single.ratePerSecond,
+          closeTo(sage.inputs.single.ratePerSecond, 1e-6));
+    });
+
+    test('a Gulp Fish cleans water at 200 g/s', () {
+      final gulp = db.processOrThrow('gulp_fish');
+      expect(
+        gulp.inputs.firstWhere((p) => p.itemId == 'polluted_water')
+            .ratePerSecond,
+        200,
+      );
+      expect(gulp.outputs.single.ratePerSecond, 200);
+    });
+
+    test('a Blowter breathes out as much as it eats', () {
+      final blowter = db.processOrThrow('blowter');
+      expect(blowter.outputs.single.itemId, 'oxygen');
+      expect(blowter.outputs.single.ratePerSecond,
+          closeTo(15000 / secondsPerCycle, 1e-3));
+      expect(blowter.tags, contains('unverified'));
+    });
+
+    test('a ranch of Slicksters sizes itself from your CO2', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'oily air')
+            ..add('duplicant', nodeId: 'dupes')
+            ..add('slickster', nodeId: 'slicksters')
+            ..addSink('crude_oil')
+            ..connectItem('dupes', 'slicksters', 'carbon_dioxide')
+            ..connectItem('slicksters', 'sink_crude_oil', 'crude_oil')
+            ..pinCount('dupes', 12))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // 12 dupes exhale 24 g/s; a Slickster eats 33.33 g/s of it.
+      expect(solution.nodes['slicksters']!.count,
+          closeTo(24 / (20000 / secondsPerCycle), 1e-3));
+    });
+  });
+
+  group('The Aquatic Planet Pack', () {
+    test('its new elements are loaded', () {
+      for (final id in ['rubber', 'latex', 'zinc_ore', 'polluted_brine',
+          'squid_ink', 'corallium']) {
+        expect(db.item(id), isNotNull, reason: 'missing item "$id"');
+      }
+    });
+
+    test('the rubber chain joins up end to end', () {
+      final pulverizer = db.processOrThrow('plant_pulverizer_gum_wood');
+      final vulcanizer = db.processOrThrow('vulcanizer');
+      expect(pulverizer.outputs.map((p) => p.itemId), contains('latex'));
+      expect(vulcanizer.inputs.map((p) => p.itemId), contains('latex'));
+      expect(vulcanizer.outputs.map((p) => p.itemId), contains('rubber'));
+    });
+
+    test('the Tidal Turbine generates without consuming anything', () {
+      final turbine = db.processOrThrow('tidal_turbine');
+      expect(turbine.netPowerWatts, -225);
+      expect(turbine.inputs.where((p) => p.itemId != 'power'), isEmpty);
+    });
+
+    test('Flue Coral is present and makes oxygen', () {
+      final coral = db.processOrThrow('flue_coral');
+      expect(coral.kind, ProcessKind.plant);
+      expect(
+        coral.outputs.firstWhere((p) => p.itemId == 'oxygen').ratePerSecond,
+        150,
+      );
+      expect(coral.inputs.map((p) => p.itemId),
+          containsAll(<String>['salt_water', 'lime']));
+    });
+
+    test('plants state their per-cycle yields as continuous rates', () {
+      // 80 kg of phosphorite every 4 cycles is 33.33 g/s.
+      final starnacle = db.processOrThrow('starnacle');
+      expect(
+        starnacle.outputs.firstWhere((p) => p.itemId == 'phosphorite')
+            .ratePerSecond,
+        closeTo(80000 / (4 * secondsPerCycle), 1e-6),
+      );
+    });
+
+    test('the Tidal Spring recirculates rather than creating liquid', () {
+      final spring = db.processOrThrow('tidal_spring');
+      expect(spring.portByIdOrThrow('draw').ratePerSecond,
+          spring.portByIdOrThrow('spout').ratePerSecond,
+          reason: 'it puts back exactly what it takes');
+    });
+
+    test('the Desalinator now has all three brine recipes', () {
+      expect(db.process('desalinator_brine'), isNotNull);
+      expect(db.process('desalinator_salt_water'), isNotNull);
+      expect(db.process('desalinator_polluted_brine'), isNotNull);
+    });
   });
 
   group('numbers that were wrong before the wiki pass', () {

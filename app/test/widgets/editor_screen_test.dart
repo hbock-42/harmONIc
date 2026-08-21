@@ -140,6 +140,23 @@ void main() {
     expect(controller.pipeline.nodes.length, before + 1);
   });
 
+  testWidgets('an unverified process is flagged in the inspector',
+      (tester) async {
+    final controller = await pumpEditor(tester);
+    controller.addNode('vulcanizer', const Offset(200, 200));
+    await tester.pump();
+
+    expect(textContaining('could not be confirmed'), findsOneWidget);
+  });
+
+  testWidgets('a verified process carries no warning', (tester) async {
+    final controller = await pumpEditor(tester);
+    controller.select(const NodeSelection('elec'));
+    await tester.pump();
+
+    expect(textContaining('could not be confirmed'), findsNothing);
+  });
+
   testWidgets('an empty pipeline explains what to do', (tester) async {
     await useDesktopSurface(tester);
     final controller = PipelineController(testDatabase);

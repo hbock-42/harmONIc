@@ -70,7 +70,9 @@ to vent needs an output node to go to. Forget one and the solver says which port
 `packages/oni_engine/lib/data/oni_data.json` is the source of truth; run
 `fvm dart run tool/gen_data.dart` after editing it to refresh the embedded copy.
 
-Every process has been checked against [the wiki](https://oxygennotincluded.wiki.gg)
-and carries a `verified` tag; a test fails if any process loses it. Batch buildings
+Covers the base game, Spaced Out! and **The Aquatic Planet Pack**. Every process is
+checked against [the wiki](https://oxygennotincluded.wiki.gg) and must carry either a
+`verified` or an `unverified` tag — a test enforces it, an `unverified` process has to
+explain what is doubtful, and the app warns you when you select one. Batch buildings
 (Rock Crusher, Metal Refinery) are stated as continuous rates — 100 kg per 40 s
 operation becomes 2500 g/s, with the duplicant's time booked as 600 s/cycle.

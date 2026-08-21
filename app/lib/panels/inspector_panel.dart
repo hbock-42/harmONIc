@@ -128,6 +128,35 @@ class _NodeInspectorState extends State<_NodeInspector> {
       padding: const EdgeInsets.all(OniSpacing.lg),
       children: [
         Text(spec.name, style: OniType.heading),
+        if (spec.tags.contains('unverified')) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: OniSpacing.sm, vertical: 6),
+            decoration: BoxDecoration(
+              color: OniColors.warning.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(4),
+              border:
+                  Border.all(color: OniColors.warning.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('!',
+                    style: OniType.title.copyWith(color: OniColors.warning)),
+                const SizedBox(width: OniSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'These numbers could not be confirmed — treat the result '
+                    'as an estimate.',
+                    style: OniType.body
+                        .copyWith(fontSize: 11.5, color: OniColors.warning),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (spec.description != null) ...[
           const SizedBox(height: OniSpacing.xs),
           Text(spec.description!,
@@ -229,7 +258,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
 
         const SizedBox(height: OniSpacing.xl),
         OniButton(
-          label: 'Delete node',
+          label: 'Delete node   ⌫',
           tone: OniButtonTone.danger,
           onPressed: () {
             controller.select(NodeSelection(node.id));
@@ -373,7 +402,7 @@ class _EdgeInspector extends StatelessWidget {
         ),
         const SizedBox(height: OniSpacing.xl),
         OniButton(
-          label: 'Delete connection',
+          label: 'Delete connection   ⌫',
           tone: OniButtonTone.danger,
           onPressed: () {
             controller.select(EdgeSelection(edge.id));
