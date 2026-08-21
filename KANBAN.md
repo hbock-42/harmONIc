@@ -110,6 +110,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
+  list meant holding backspace down
+- `E10-13` **Saving a build as a node, explained where you do it** — a button called "Save
+  as recipe" among the sharing buttons said neither what it did nor where the result went.
+  It is its own section now, saying what will happen, and the result lands under "My builds"
+  at the top of the palette
 - `E2-8` **A build as one node** — save a solved build as a recipe and place it in a bigger
   plan. What crosses its boundary becomes its ports; what it does to itself stays inside,
   which is the whole point of a box. A snapshot, not a link
@@ -560,6 +566,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-4 | ✅ | Numeric formatting widget | reuses the engine's `Unit.format`; per-second ⇄ per-cycle toggle in one place |
 | E9-5 | ✅ | Icon set | a drawn glyph per item category — drop, ring, square, bolt, diamond, pill, cross — so shape carries what colour alone was carrying |
 | E9-6 | P2 | Light theme |
+| E9-7 | ✅ | A cross to empty a search | on every search field, since getting back to the whole list should not mean holding backspace |
 
 ## E7 — The canvas
 
@@ -600,6 +607,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-10 | ✅ | Totals scoped to one build | two builds on a canvas were summed together, which described neither; the selection decides which one the bar is about |
 | E10-11 | ✅ | Toolbar grouping | history, arrangement and units separated by a rule, rather than one evenly spaced row |
 | E10-12 | ✅ | The summary bar fits any window | single-line labels and a bar that scrolls sideways; tested at five widths, with the panels and the menu at three |
+| E10-13 | ✅ | Saving a build as a node, explained | its own section in the menu, saying what it will do and where the result goes |
 
 ## E11 — What a build actually costs to run
 

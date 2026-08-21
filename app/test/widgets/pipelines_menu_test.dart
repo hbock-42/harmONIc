@@ -344,10 +344,19 @@ void main() {
     testWidgets('it lands in the palette and can be placed', (tester) async {
       await pumpEditor(tester);
       await openMenu(tester);
-      await tester.tap(find.text('Save as recipe'));
+      // The section says what it will do before you do it.
+      await tester.tap(find.textContaining('USE THIS BUILD IN ANOTHER'));
+      await tester.pump();
+      expect(textContaining('as a single node, under My builds'),
+          findsOneWidget);
+
+      await tester.ensureVisible(find.text('Add to palette'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Add to palette'));
       await tester.pumpAndSettle();
 
-      expect(textContaining('is in the palette now'), findsOneWidget);
+      // And says where it went, and what to do next.
+      expect(textContaining('under My builds'), findsWidgets);
       final saved = library.customProcesses
           .firstWhere((s) => s.name == 'Test build');
       // Water in, and the gases the build does not consume itself out.
@@ -378,10 +387,15 @@ void main() {
       await tester.pump();
 
       await openMenu(tester);
-      await tester.tap(find.text('Save as recipe'));
-      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('USE THIS BUILD IN ANOTHER'));
+      await tester.pump();
 
-      expect(textContaining('Give this build an amount'), findsOneWidget);
+      // Not offered at all until the build has a size, with the reason shown
+      // rather than left to be discovered by clicking.
+      expect(textContaining('Give this build an amount first'), findsOneWidget);
+      final button = tester.widget<OniButton>(
+          find.widgetWithText(OniButton, 'Add to palette'));
+      expect(button.onPressed, isNull);
       expect(library.customProcesses.where((s) => s.name == 'Unscaled'),
           isEmpty);
     });

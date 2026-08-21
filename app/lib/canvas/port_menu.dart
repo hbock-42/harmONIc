@@ -100,6 +100,7 @@ class _PortMenuState extends State<PortMenu> {
                 OniField(
                   controller: _search,
                   hint: 'Search…',
+                  clearable: true,
                   autofocus: true,
                   onChanged: (_) => setState(() {}),
                 ),

@@ -81,6 +81,9 @@ class _PalettePanelState extends State<PalettePanel> {
         ProcessKind.source => 'Supply',
         ProcessKind.sink => 'Output',
         ProcessKind.duplicant => 'Colony',
+        // A build saved as a recipe goes in a group of its own, named after
+        // where it came from rather than after the fact that it is custom.
+        _ when spec.tags.contains('build') => 'My builds',
         _ when spec.tags.contains('pumping') => 'Pumping',
         _ => _capitalise(
             spec.tags.firstWhere((t) => t != 'verified', orElse: () => 'other')),
@@ -173,6 +176,7 @@ class _PalettePanelState extends State<PalettePanel> {
     final names = groups.keys.toList()
       ..sort((a, b) {
         int rank(String g) => switch (g) {
+              'My builds' => 0,
               'Pumping' => 2,
               'Supply' => 3,
               'Output' => 4,
@@ -199,6 +203,7 @@ class _PalettePanelState extends State<PalettePanel> {
             child: OniField(
               controller: _search,
               hint: 'Search…',
+              clearable: true,
               onChanged: (_) => setState(() {}),
             ),
           ),

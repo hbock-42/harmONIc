@@ -514,6 +514,7 @@ class _ItemPickerState extends State<_ItemPicker> {
           key: itemPickerSearchKey,
           controller: _search,
           hint: 'Search or type a new name…',
+          clearable: true,
           autofocus: true,
           onChanged: (_) => setState(() {}),
         ),

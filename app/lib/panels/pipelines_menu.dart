@@ -88,7 +88,9 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       );
       await widget.library.save(spec);
       if (mounted) {
-        setState(() => _message = '"$name" is in the palette now.');
+        setState(() => _message =
+            '"$name" is in the palette under My builds. Close this and search '
+            'for it to place one.');
       }
     } on StateError catch (e) {
       if (mounted) setState(() => _message = e.message);
@@ -111,6 +113,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
   }
 
   bool _templatesOpen = false;
+  bool _reuseOpen = false;
 
   /// Starting points, folded away.
   ///
@@ -160,6 +163,67 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
         ],
       );
 
+  /// Turning this build into something you can place in another one.
+  ///
+  /// It was a button called "Save as recipe" sitting between "Copy code" and
+  /// "Paste build", which told you neither what it did nor where the result
+  /// went. Said properly it is a small idea: this whole build, as one node.
+  Widget _reuse() {
+    final controller = widget.controller;
+    final name = controller.pipeline.name;
+    final scoped = controller.focusedSolution;
+    final ready = scoped.status == SolveStatus.solved;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => setState(() => _reuseOpen = !_reuseOpen),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+            child: Text(
+              _reuseOpen
+                  ? '▾ USE THIS BUILD IN ANOTHER'
+                  : '▸ USE THIS BUILD IN ANOTHER',
+              style: OniType.label,
+            ),
+          ),
+        ),
+        if (_reuseOpen)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+            ready
+                ? 'Adds "$name" to the palette as a single node, under '
+                    'My builds. Place it in another plan and everything in '
+                    'here scales with it — what goes in and out is what '
+                    'crosses its edges today.'
+                : 'Give this build an amount first. Without one there is no '
+                    'telling how big a copy of it would be.',
+                  style: OniType.body
+                      .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+                ),
+                const SizedBox(height: OniSpacing.sm),
+                OniButton(
+                  label: 'Add to palette',
+                  compact: true,
+                  onPressed: workspace.currentId == null || !ready
+                      ? null
+                      : _saveAsRecipe,
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final saved = workspace.saved;
@@ -208,12 +272,6 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
                   onPressed: workspace.currentId == null ? null : _copy,
                 ),
                 OniButton(
-                  label: 'Save as recipe',
-                  compact: true,
-                  onPressed:
-                      workspace.currentId == null ? null : _saveAsRecipe,
-                ),
-                OniButton(
                   label: 'Copy summary',
                   compact: true,
                   onPressed:
@@ -245,6 +303,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
                 // Inside the scroller rather than above it: with the section
                 // expanded, the menu is taller than the window it opens in.
                 _templates(),
+                _reuse(),
                 for (final summary in saved)
                   _Row(
                     summary: summary,

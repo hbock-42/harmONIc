@@ -129,6 +129,7 @@ class OniField extends StatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.textAlign = TextAlign.start,
+    this.clearable = false,
     super.key,
   });
 
@@ -142,6 +143,13 @@ class OniField extends StatefulWidget {
   final String? hint;
   final bool autofocus;
   final TextAlign textAlign;
+
+  /// Shows a cross while there is anything typed, and empties the field.
+  ///
+  /// For searches, where the field is a filter on a list: getting back to the
+  /// whole list should not mean holding backspace down, and on a field this
+  /// small "select all and delete" is not much better.
+  final bool clearable;
 
   @override
   State<OniField> createState() => _OniFieldState();
@@ -190,7 +198,10 @@ class _OniFieldState extends State<OniField> {
               color: _focus.hasFocus ? OniColors.accent : OniColors.border,
             ),
           ),
-          child: Stack(
+          child: Row(
+            children: [
+              Expanded(
+                child: Stack(
             alignment: Alignment.centerLeft,
             children: [
               if (widget.controller.text.isEmpty && widget.hint != null)
@@ -214,10 +225,36 @@ class _OniFieldState extends State<OniField> {
                 onSubmitted: widget.onSubmitted,
               ),
             ],
+                ),
+              ),
+              if (widget.clearable && widget.controller.text.isNotEmpty)
+                GestureDetector(
+                  key: clearFieldKey,
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    widget.controller.clear();
+                    setState(() {});
+                    widget.onChanged?.call('');
+                    _focus.requestFocus();
+                  },
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Text('×',
+                          style: OniType.number
+                              .copyWith(color: OniColors.textMuted)),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       );
 }
+
+/// The cross that empties a search field, named so tests can reach it.
+const Key clearFieldKey = ValueKey('clear-field');
 
 /// A rate, which switches every rate in the app between per second and per
 /// cycle when clicked. Both readings are right; which is useful depends on
