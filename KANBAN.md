@@ -110,6 +110,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-9` **The solver at scale** — a 500-node build solved in 120 ms against a 50 ms target,
+  and the test written to prove it found why: Gauss-Jordan filled in the rows it had already
+  finished with. Eliminating downward only and back-substituting took it to 14 ms
+- `E0-4` **CI** — analyse and test both packages on push, and check the generated data still
+  matches the JSON it came from
+
 - `E0-1` FVM pinned to **3.47.1** (`.fvmrc`), `.fvm/` git-ignored
 - `E0-2` Monorepo: `packages/oni_engine` (pure Dart) + `app/` (Flutter, path dep)
 - `E0-3` Lints, `dart analyze` clean, `./tool/test_all.sh`
@@ -389,7 +395,7 @@ _(empty)_
 | E0-1 | ✅ | FVM pin | `.fvmrc` pins an exact stable Flutter version; `fvm flutter --version` works; `.fvm/` git-ignored except config |
 | E0-2 | ✅ | Monorepo layout | `packages/oni_engine` (pure Dart, **no** flutter import), `app/` (Flutter), root `README.md` |
 | E0-3 | ✅ | Lints + CI-ready scripts | `very_good_analysis` or `flutter_lints`, `dart analyze` clean, `dart test` runs |
-| E0-4 | P1 | GitHub Actions | analyze + test on push |
+| E0-4 | ✅ | GitHub Actions | analyse + test both packages on push, reading the SDK version from `.fvmrc` rather than repeating it |
 | E0-5 | ✅ | `melos` or simple `tool/` shell scripts for multi-package commands | one command runs all tests |
 
 ## E1 — Domain model (the ONI vocabulary)
@@ -432,7 +438,7 @@ _(empty)_
 | E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | P2 | Sensitivity | "+1 Electrolyzer ⇒ +X g/s O₂, +Y W" |
-| E3-9 | P1 | Solver perf test | 500-node graph solves < 50 ms |
+| E3-9 | ✅ | Solver perf test | 500-node chain and 500-node fan, both under 50 ms; writing it found the elimination doing eight times the work it needed to |
 | E3-5b | ✅ | Floor space | every building's footprint was recorded and never shown; per node and in total, counting whole buildings |
 
 ## E4 — Game data

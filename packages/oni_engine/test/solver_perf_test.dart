@@ -1,0 +1,94 @@
+import 'package:oni_engine/oni_engine.dart';
+import 'package:test/test.dart';
+
+void main() {
+  final db = loadDefaultDatabase();
+  final solver = PipelineSolver(db);
+
+  /// A chain of pumps: the deepest graph a build can be, and the shape that
+  /// punishes an elimination that fills in the rows behind it.
+  Pipeline chain(int length) {
+    final b = PipelineBuilder(db, name: 'long')..addSource('water');
+    var previous = 'src_water';
+    var previousPort = sourcePortId;
+    for (var i = 0; i < length; i++) {
+      b.add(pumpSpecId('water'), nodeId: 'p$i');
+      b.connect(previous, previousPort, 'p$i', 'in');
+      previous = 'p$i';
+      previousPort = 'out';
+    }
+    b.pinRate('src_water', sourcePortId, 10000);
+    return b.build();
+  }
+
+  /// The other extreme: one node fed by many, which is a real shape — a power
+  /// bus, or a crew fed by a dozen farms.
+  Pipeline fan(int width) {
+    final b = PipelineBuilder(db, name: 'wide')
+      ..add('duplicant', nodeId: 'dupes')
+      ..pinCount('dupes', 20);
+    for (var i = 0; i < width; i++) {
+      b.add('electrolyzer', nodeId: 'e$i');
+      b.addSource('water', nodeId: 'w$i');
+      b.connect('w$i', sourcePortId, 'e$i', 'water');
+      b.connect('e$i', 'oxygen', 'dupes', 'oxygen',
+          mode: EdgeMode.pull, share: 1 / width);
+    }
+    return b.build();
+  }
+
+  int fastestMillis(Pipeline pipeline) {
+    // Best of three, after a warm-up: the JIT needs one pass before the figure
+    // means anything, and a shared machine can lose a slice of any single run.
+    solver.solve(pipeline);
+    var best = 1 << 30;
+    for (var i = 0; i < 3; i++) {
+      final watch = Stopwatch()..start();
+      solver.solve(pipeline);
+      watch.stop();
+      if (watch.elapsedMilliseconds < best) best = watch.elapsedMilliseconds;
+    }
+    return best;
+  }
+
+  test('a 500-node chain solves in under 50 ms', () {
+    final pipeline = chain(500);
+    expect(pipeline.nodes, hasLength(501));
+
+    final solution = solver.solve(pipeline);
+    expect(solution.status, SolveStatus.solved);
+    // Every pump moves the same 10 kg/s, so the whole chain is one pump long
+    // as far as the answer is concerned. It is the matrix that is 501 wide.
+    expect(solution.nodes['p499']!.count, closeTo(1, 1e-6));
+
+    expect(fastestMillis(pipeline), lessThan(50));
+  });
+
+  test('a 500-wide fan solves in under 50 ms', () {
+    final pipeline = fan(250);
+    expect(pipeline.nodes.length, greaterThan(500));
+
+    final solution = solver.solve(pipeline);
+    expect(solution.status, SolveStatus.solved);
+    expect(fastestMillis(pipeline), lessThan(50));
+  });
+
+  test('the answer does not depend on how the elimination was done', () {
+    // Back substitution replaced Gauss-Jordan for speed. The numbers it
+    // produces have to be the same ones, so here is a system with an exact
+    // answer that is easy to check by hand.
+    final solution = solveLinearSystem(
+      [
+        [2, 1, -1],
+        [-3, -1, 2],
+        [-2, 1, 2],
+      ],
+      [8, -11, -3],
+    );
+
+    expect(solution.status, LinearSolveStatus.unique);
+    expect(solution.values[0], closeTo(2, 1e-9));
+    expect(solution.values[1], closeTo(3, 1e-9));
+    expect(solution.values[2], closeTo(-1, 1e-9));
+  });
+}

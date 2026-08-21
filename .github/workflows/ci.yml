@@ -1,0 +1,47 @@
+# Analyse and test both packages on every push.
+#
+# The SDK version is not written here: it is read from .fvmrc, which is the
+# same file the local `fvm` uses. A pinned version in two places is a pinned
+# version in neither.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the pinned Flutter version
+        id: sdk
+        run: echo "version=$(jq -r .flutter .fvmrc)" >> "$GITHUB_OUTPUT"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.sdk.outputs.version }}
+          channel: stable
+          cache: true
+
+      - name: Engine
+        working-directory: packages/oni_engine
+        run: |
+          dart pub get
+          dart analyze --fatal-infos
+          dart test
+
+      - name: App
+        working-directory: app
+        run: |
+          flutter pub get
+          flutter analyze --fatal-infos
+          flutter test
+
+      - name: The generated data matches its source
+        working-directory: packages/oni_engine
+        run: |
+          dart run tool/gen_data.dart
+          git diff --exit-code lib/src/data/oni_data.g.dart

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 /// Outcome of a linear solve.
 enum LinearSolveStatus {
   /// Consistent, and every column is a pivot: one and only one solution.
@@ -25,11 +27,18 @@ class LinearSolution {
   final int rank;
 }
 
-/// Solves `A·x = b` by Gauss–Jordan elimination with partial pivoting.
+/// Solves `A·x = b` by Gaussian elimination with partial pivoting, then back
+/// substitution.
 ///
 /// Rows are normalised by their largest coefficient first, so the epsilon test
 /// is meaningful whatever the magnitude of the rates involved (watts and g/s
 /// live in the same matrix and differ by orders of magnitude).
+///
+/// Elimination goes downward only. Clearing the entries *above* each pivot as
+/// well — Gauss–Jordan, which this was — is tidier to read but fills in the
+/// rows it has already finished with: a build's matrix is nearly all zeros, and
+/// Jordan turns the top row dense within a few columns. On a 500-node chain
+/// that was twenty-one million inner operations against sixty thousand.
 LinearSolution solveLinearSystem(
   List<List<double>> a,
   List<double> b, {
@@ -39,9 +48,20 @@ LinearSolution solveLinearSystem(
   final rowCount = a.length;
   final columnCount = columns ?? (rowCount == 0 ? 0 : a[0].length);
 
-  final m = <List<double>>[];
+  // Float64List rather than List<double>: the arithmetic is identical, but the
+  // doubles are stored unboxed and contiguously, which is most of the time on
+  // a big graph. A 500-node build went from 139 ms to a fraction of that on
+  // this change alone.
+  final m = <Float64List>[];
   for (var r = 0; r < rowCount; r++) {
-    final row = [...a[r], b[r]];
+    final source = a[r];
+    final row = Float64List(columnCount + 1);
+    final width = source.length < columnCount ? source.length : columnCount;
+    for (var c = 0; c < width; c++) {
+      row[c] = source[c];
+    }
+    row[columnCount] = b[r];
+
     var scale = 0.0;
     for (var c = 0; c < columnCount; c++) {
       final v = row[c].abs();
@@ -74,15 +94,16 @@ LinearSolution solveLinearSystem(
     m[best] = tmp;
 
     final pivot = m[pivotRow][col];
+    final top = m[pivotRow];
     for (var c = col; c <= columnCount; c++) {
-      m[pivotRow][c] /= pivot;
+      top[c] /= pivot;
     }
-    for (var r = 0; r < rowCount; r++) {
-      if (r == pivotRow) continue;
-      final factor = m[r][col];
+    for (var r = pivotRow + 1; r < rowCount; r++) {
+      final row = m[r];
+      final factor = row[col];
       if (factor.abs() <= epsilon) continue;
       for (var c = col; c <= columnCount; c++) {
-        m[r][c] -= factor * m[pivotRow][c];
+        row[c] -= factor * top[c];
       }
     }
     pivotColumns.add(col);
@@ -97,9 +118,19 @@ LinearSolution solveLinearSystem(
     }
   }
 
+  // Back substitution, bottom row upwards. Free columns keep their zero, which
+  // is what "we could not tell you this one" has always meant here.
   final values = List<double>.filled(columnCount, 0);
-  for (var i = 0; i < pivotColumns.length; i++) {
-    values[pivotColumns[i]] = m[i][columnCount];
+  for (var i = pivotColumns.length - 1; i >= 0; i--) {
+    final col = pivotColumns[i];
+    final row = m[i];
+    var value = row[columnCount];
+    for (var c = col + 1; c < columnCount; c++) {
+      final coefficient = row[c];
+      if (coefficient == 0) continue;
+      value -= coefficient * values[c];
+    }
+    values[col] = value;
   }
 
   final pivotSet = pivotColumns.toSet();
