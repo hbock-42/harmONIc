@@ -1,0 +1,174 @@
+import 'package:oni_engine/oni_engine.dart';
+import 'package:test/test.dart';
+
+/// Whole builds, with every number worked out by hand from the recipes before
+/// the test was run.
+///
+/// The unit tests check that the solver does arithmetic. These check that the
+/// arithmetic adds up to the builds people actually make — and, just as much,
+/// that the seeded data is right, because a wrong rate three recipes upstream
+/// shows up here as a ratio somebody would notice in game.
+void main() {
+  final db = loadDefaultDatabase();
+  final solver = PipelineSolver(db);
+
+  group('the petroleum boiler', () {
+    /// Crude oil to petroleum to power, which is the back half of every
+    /// mid-game base.
+    late PipelineSolution solution;
+
+    setUp(() {
+      final pipeline = (PipelineBuilder(db, name: 'boiler')
+            ..addSource('crude_oil')
+            ..add('oil_refinery', nodeId: 'refinery')
+            ..add('petroleum_generator', nodeId: 'gen')
+            ..addSink('natural_gas')
+            ..addSink('polluted_water')
+            ..addSink('carbon_dioxide')
+            ..connectItem('src_crude_oil', 'refinery', 'crude_oil')
+            ..connectItem('refinery', 'gen', 'petroleum')
+            ..connectItem('refinery', 'sink_natural_gas', 'natural_gas')
+            ..connectItem('gen', 'sink_polluted_water', 'polluted_water')
+            ..connectItem('gen', 'sink_carbon_dioxide', 'carbon_dioxide')
+            ..pinCount('gen', 4))
+          .build();
+      solution = solver.solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+    });
+
+    test('four generators need one and three fifths of a refinery', () {
+      // A generator burns 2 kg/s of petroleum; a refinery makes 5 kg/s.
+      // 4 x 2 / 5 = 1.6, so two refineries get built and run 80 % of the time.
+      expect(solution.nodes['gen']!.count, 4);
+      expect(solution.nodes['refinery']!.count, closeTo(1.6, 1e-9));
+      expect(solution.nodes['refinery']!.wholeCount, 2);
+      expect(solution.nodes['refinery']!.utilisation, closeTo(0.8, 1e-9));
+    });
+
+    test('and 16 kg/s of crude oil to feed them', () {
+      // A refinery takes 10 kg/s of crude for its 5 kg/s of petroleum, so the
+      // boiler eats exactly twice what it burns.
+      // A supply node's count *is* its rate, which is the whole point of them.
+      expect(solution.nodes['src_crude_oil']!.count, closeTo(16000, 1e-6));
+    });
+
+    test('the power is 7.5 kW, not the 8 kW the generators make', () {
+      // Four generators make 2 kW each; the refineries draw 480 W apiece and
+      // 1.6 of them is 768 W.
+      expect(solution.powerGeneratedWatts, closeTo(8000, 1e-6));
+      expect(solution.powerConsumedWatts, closeTo(768, 1e-6));
+      expect(solution.netPowerWatts, closeTo(7232, 1e-6));
+    });
+
+    test('and it leaves 3 kg/s of polluted water to deal with', () {
+      // 750 g/s per generator. Worth saying out loud: the boiler is a water
+      // *source* as much as a power source.
+      expect(solution.nodes['sink_polluted_water']!.count, closeTo(3000, 1e-6));
+      expect(solution.nodes['sink_natural_gas']!.count, closeTo(144, 1e-6));
+    });
+  });
+
+  group('the oxylite chain', () {
+    test('a kilogram of oxylite an hour costs 1.2 kW and a gram of gold', () {
+      final pipeline = (PipelineBuilder(db, name: 'oxylite')
+            ..addSource('water')
+            ..addSource('gold')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..add('oxylite_refinery', nodeId: 'refinery')
+            ..addSink('oxylite')
+            ..addSink('hydrogen')
+            ..connectItem('src_water', 'elec', 'water')
+            ..connectItem('elec', 'refinery', 'oxygen')
+            ..connectItem('src_gold', 'refinery', 'gold')
+            ..connectItem('refinery', 'sink_oxylite', 'oxylite')
+            ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+            ..pinCount('refinery', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // The refinery eats 600 g/s of oxygen; an Electrolyzer makes 888.
+      expect(solution.nodes['elec']!.count, closeTo(600 / 888, 1e-9));
+      // Which needs 675.7 g/s of water, and gives back 85.1 g/s of hydrogen.
+      expect(solution.nodes['src_water']!.count, closeTo(1000 * 600 / 888, 1e-6));
+      expect(solution.nodes['sink_hydrogen']!.count,
+          closeTo(112 * 600 / 888, 1e-6));
+      // 1.2 kW for the refinery and 120 W per Electrolyzer.
+      expect(solution.powerConsumedWatts, closeTo(1200 + 120 * 600 / 888, 1e-6));
+      // Gold is a catalyst in all but name: 3 g/s, and none of it comes back.
+      expect(solution.nodes['src_gold']!.count, closeTo(3, 1e-9));
+    });
+  });
+
+  group('the coal farm', () {
+    test('a generator flat out takes nine Hatches and 2.1 t of rock a cycle',
+        () {
+      final pipeline = (PipelineBuilder(db, name: 'coal farm')
+            ..addSource('sedimentary_rock')
+            ..add('hatch', nodeId: 'hatches')
+            ..add('grooming_station', nodeId: 'station')
+            ..add('coal_generator', nodeId: 'gen')
+            ..addSink('power')
+            ..connectItem('src_sedimentary_rock', 'hatches', 'sedimentary_rock')
+            ..connectItem('station', 'hatches', 'grooming')
+            ..connectItem('hatches', 'gen', 'coal')
+            ..connectItem('gen', 'sink_power', 'power')
+            ..pinCount('gen', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // A generator burns 1 kg/s of coal; a Hatch makes 116.67 g/s.
+      expect(solution.nodes['hatches']!.count, closeTo(1000 / 116.6667, 1e-4));
+      expect(solution.nodes['hatches']!.wholeCount, 9);
+      // Each eats twice what it excretes, so the rock bill is 2 kg/s — and
+      // that is the figure that decides whether a coal farm is worth it.
+      expect(solution.nodes['src_sedimentary_rock']!.count, closeTo(2000, 0.01));
+
+      // Eight and a half Hatches at 12 s of grooming a cycle each: 103 s, or a
+      // sixth of one Duplicant's whole day.
+      expect(solution.dupeLabourSecondsPerCycle, closeTo(102.86, 0.01));
+      // A station covers eight critters, and 8.57 of them do not fit in one.
+      // Two stations for nine Hatches is the sort of thing worth knowing
+      // before laying the room out.
+      expect(solution.nodes['station']!.count, closeTo(8.5714 / 8, 1e-3));
+      expect(solution.nodes['station']!.wholeCount, 2);
+    });
+  });
+
+  group('the SPOM', () {
+    test('closes on itself and pays for a crew of twelve', () {
+      final pipeline = (PipelineBuilder(db, name: 'spom')
+            ..addSource('water')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..add('hydrogen_generator', nodeId: 'hgen')
+            ..add('duplicant', nodeId: 'dupes')
+            ..addSink('carbon_dioxide')
+            ..addSink('power')
+            ..connectItem('src_water', 'elec', 'water')
+            ..connectItem('elec', 'hgen', 'hydrogen')
+            ..connectItem('elec', 'dupes', 'oxygen')
+            ..connectItem('hgen', 'sink_power', 'power')
+            ..connectItem('dupes', 'sink_carbon_dioxide', 'carbon_dioxide')
+            ..pinCount('dupes', 12))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // A Duplicant breathes 100 g/s; an Electrolyzer makes 888.
+      expect(solution.nodes['elec']!.count, closeTo(1200 / 888, 1e-6));
+      // The hydrogen it makes runs 1.35 Electrolyzers' worth of generator...
+      expect(solution.nodes['hgen']!.count,
+          closeTo(112 * 1200 / 888 / 100, 1e-6));
+      // ...and it pays for itself with room to spare. 1.35 Electrolyzers draw
+      // 162 W and hand 151 g/s of hydrogen to 1.51 generators making 800 W
+      // each: 1 211 W in, 162 W out, 1 049 W left over. That surplus is the
+      // reason a SPOM is the first thing anybody builds.
+      expect(solution.powerConsumedWatts, closeTo(120 * 1200 / 888, 1e-6));
+      expect(solution.powerGeneratedWatts,
+          closeTo(800 * 112 * 1200 / 888 / 100, 1e-6));
+      expect(solution.netPowerWatts, closeTo(1048.65, 0.01));
+      expect(solution.nodes['src_water']!.count, closeTo(1000 * 1200 / 888, 1e-6));
+    });
+  });
+}

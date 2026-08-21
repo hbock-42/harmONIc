@@ -110,6 +110,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-2` **Golden builds** — the petroleum boiler, the oxylite chain, the coal farm and the
+  SPOM, with every number worked out by hand first. Two of my hand figures were wrong, which
+  is the entire argument for writing them down before running anything
 - `E3-9` **The solver at scale** — a 500-node build solved in 120 ms against a 50 ms target,
   and the test written to prove it found why: Gauss-Jordan filled in the rows it had already
   finished with. Eliminating downward only and back-substituting took it to 14 ms.
@@ -632,7 +635,7 @@ flow, so the solver never had to learn about it.
 | id | P | Task |
 |---|---|---|
 | E8-1 | ✅ | Unit tests for every solver path (DAG, cycle, underdetermined, inconsistent, shortage, surplus) |
-| E8-2 | P1 | Golden real-world scenarios | the SPOM and the pepper-bread chain are pinned with hand-checked numbers; the petroleum boiler, oxylite chain and coal farm are not |
+| E8-2 | ✅ | Golden real-world scenarios | the SPOM, the petroleum boiler, the oxylite chain and the coal farm, every figure worked out by hand before the test was run |
 | E8-3 | ✅ | Property test: any solved graph satisfies mass balance within ε |
 | E8-4 | ✅ | Widget/golden tests for the canvas |
 | E8-5 | P2 | Benchmarks in CI |
