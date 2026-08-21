@@ -352,6 +352,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
             ],
           ),
           _asBuiltNote(controller, result),
+          _buildCost(spec, result),
           const SizedBox(height: OniSpacing.lg),
           if (!_isBoundary)
             Wrap(
@@ -434,6 +435,46 @@ class _NodeInspectorState extends State<_NodeInspector> {
           },
         ),
       ],
+    );
+  }
+
+  /// What it takes to put these up, once.
+  ///
+  /// Priced per building actually placed rather than per fractional one, since
+  /// half an Electrolyzer still costs its whole 200 kg of ore, and shown in the
+  /// class the game asks for: any metal ore will do, and which one you choose
+  /// changes its heat tolerance rather than whether it can be built.
+  Widget _buildCost(ProcessSpec spec, NodeResult? result) {
+    if (result == null || spec.buildCost.isEmpty || result.wholeCount == 0) {
+      return const SizedBox.shrink();
+    }
+    final entries = spec.buildCost.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return Padding(
+      padding: const EdgeInsets.only(top: OniSpacing.md),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 60,
+            child: Text('TO BUILD', style: OniType.label),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final entry in entries)
+                  Text(
+                    '${formatMass(entry.value * result.wholeCount)} '
+                    '${BuildMaterials.nameOf(entry.key)}',
+                    style: OniType.body,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

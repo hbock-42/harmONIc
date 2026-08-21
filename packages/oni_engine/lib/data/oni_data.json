@@ -890,7 +890,10 @@
           "rate": 112,
           "temperatureC": 70
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "algae_terrarium",
@@ -931,7 +934,10 @@
           "rate": 290.33,
           "temperatureC": 30
         }
-      ]
+      ],
+      "build": {
+        "cultivable_soil": 400
+      }
     },
     {
       "id": "algae_distiller",
@@ -964,7 +970,10 @@
           "rate": 400,
           "temperatureC": 30
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "deodorizer",
@@ -1000,7 +1009,10 @@
           "rate": 143.33
         }
       ],
-      "heatKdtuPerSecond": 0.625
+      "heatKdtuPerSecond": 0.625,
+      "build": {
+        "raw_mineral": 100
+      }
     },
     {
       "id": "rust_deoxidizer",
@@ -1044,7 +1056,10 @@
           "rate": 400,
           "temperatureC": 75
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "oxylite_refinery",
@@ -1076,7 +1091,11 @@
           "direction": "output",
           "rate": 600
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 800,
+        "plastic": 100
+      }
     },
     {
       "id": "water_sieve",
@@ -1112,7 +1131,10 @@
           "rate": 200
         }
       ],
-      "heatKdtuPerSecond": 4
+      "heatKdtuPerSecond": 4,
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "carbon_skimmer",
@@ -1143,7 +1165,10 @@
           "rate": 1000
         }
       ],
-      "heatKdtuPerSecond": 1
+      "heatKdtuPerSecond": 1,
+      "build": {
+        "metal_ore": 100
+      }
     },
     {
       "id": "desalinator_brine",
@@ -1174,7 +1199,10 @@
           "direction": "output",
           "rate": 1500
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "oil_refinery",
@@ -1208,7 +1236,10 @@
           "rate": 90,
           "temperatureC": 75
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "polymer_press",
@@ -1247,7 +1278,10 @@
           "rate": 8.33,
           "temperatureC": 150
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "ethanol_distiller",
@@ -1286,7 +1320,10 @@
           "rate": 166.67,
           "temperatureC": 93.4
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "coal_generator",
@@ -1312,7 +1349,10 @@
           "direction": "output",
           "rate": 20
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "hydrogen_generator",
@@ -1333,7 +1373,10 @@
           "direction": "input",
           "rate": 100
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "natural_gas_generator",
@@ -1364,7 +1407,10 @@
           "direction": "output",
           "rate": 67.5
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "petroleum_generator",
@@ -1395,7 +1441,10 @@
           "direction": "output",
           "rate": 750
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "metal_refinery_iron",
@@ -1436,7 +1485,10 @@
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Batch building: 100 kg per 40 s operation. The coolant loop is the same liquid in and out, only hotter — wire it back on itself."
+      "description": "Batch building: 100 kg per 40 s operation. The coolant loop is the same liquid in and out, only hotter — wire it back on itself.",
+      "build": {
+        "raw_mineral": 800
+      }
     },
     {
       "id": "rock_crusher_sand",
@@ -1464,7 +1516,10 @@
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Batch building: 100 kg per 40 s operation. Sedimentary rock crushes 1:1 into sand."
+      "description": "Batch building: 100 kg per 40 s operation. Sedimentary rock crushes 1:1 into sand.",
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "duplicant",
@@ -1521,7 +1576,10 @@
           "direction": "output",
           "rate": 1500
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "desalinator_salt_water",
@@ -1552,7 +1610,10 @@
           "direction": "output",
           "rate": 350
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "desalinator_polluted_brine",
@@ -1584,7 +1645,10 @@
           "direction": "output",
           "rate": 1500
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "tidal_turbine",
@@ -1601,7 +1665,11 @@
         "aquatic",
         "verified"
       ],
-      "ports": []
+      "ports": [],
+      "build": {
+        "metal_ore": 800,
+        "gasket": 1
+      }
     },
     {
       "id": "vulcanizer",
@@ -1634,7 +1702,10 @@
           "direction": "output",
           "rate": 50
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 200
+      }
     },
     {
       "id": "plant_pulverizer_gum_wood",
@@ -1662,7 +1733,10 @@
           "direction": "output",
           "rate": 1250
         }
-      ]
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
     },
     {
       "id": "plant_pulverizer_slime",
@@ -1695,7 +1769,10 @@
           "direction": "output",
           "rate": 750
         }
-      ]
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
     },
     {
       "id": "marine_drill",
@@ -1724,7 +1801,11 @@
           "rate": 0.19,
           "temperatureC": 100
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 400,
+        "gasket": 1
+      }
     },
     {
       "id": "gum_palm",
@@ -2808,7 +2889,10 @@
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "aquatic_grooming_station",
@@ -2828,7 +2912,10 @@
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "shearing_station",
@@ -2849,7 +2936,10 @@
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
     },
     {
       "id": "pip",
@@ -3105,7 +3195,10 @@
           "rate": 40,
           "temperatureC": 110
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "dartle",
@@ -3221,7 +3314,10 @@
           "direction": "output",
           "rate": 36.3875
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "wood_heater",
@@ -3246,7 +3342,10 @@
           "direction": "output",
           "rate": 4
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 100
+      }
     },
     {
       "id": "alveo_vera",
@@ -3729,7 +3828,11 @@
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 400,
+        "gasket": 4
+      }
     },
     {
       "id": "beakon_grazing",
@@ -4219,7 +4322,10 @@
           "direction": "output",
           "rate": 24.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "gas_range_pepper_bread",
@@ -4261,7 +4367,10 @@
           "direction": "output",
           "rate": 80.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "deep_fryer_squash_fries",
@@ -4294,7 +4403,10 @@
           "direction": "output",
           "rate": 108.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "deep_fryer_fish_taco",
@@ -4331,7 +4443,10 @@
           "direction": "output",
           "rate": 84.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "sushi_bar_sushi_roll",
@@ -4368,7 +4483,10 @@
           "direction": "output",
           "rate": 72.0
         }
-      ]
+      ],
+      "build": {
+        "wood": 400
+      }
     },
     {
       "id": "pincha_pepperplant",

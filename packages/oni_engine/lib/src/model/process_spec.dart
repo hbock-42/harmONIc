@@ -40,6 +40,7 @@ class ProcessSpec {
     this.dupeLabourSecondsPerCycle = 0,
     this.footprintWidth = 0,
     this.footprintHeight = 0,
+    this.buildCost = const {},
     this.tags = const {},
   }) : ports = List.unmodifiable(ports) {
     final seen = <String>{};
@@ -99,6 +100,11 @@ class ProcessSpec {
           (json['dupeLabourSecondsPerCycle'] as num?)?.toDouble() ?? 0,
       footprintWidth: (json['footprintWidth'] as num?)?.toInt() ?? 0,
       footprintHeight: (json['footprintHeight'] as num?)?.toInt() ?? 0,
+      buildCost: {
+        for (final entry
+            in (json['build'] as Map<String, dynamic>? ?? const {}).entries)
+          entry.key: (entry.value as num).toDouble(),
+      },
       tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
     );
   }
@@ -114,6 +120,13 @@ class ProcessSpec {
   final double dupeLabourSecondsPerCycle;
   final int footprintWidth;
   final int footprintHeight;
+
+  /// What it takes to put one up: [BuildMaterials] id → kilograms.
+  ///
+  /// Empty for anything that is not a building — nobody constructs a Hatch —
+  /// and empty, too, for a building whose cost has not been checked yet, which
+  /// is why the total says how many buildings it could not price.
+  final Map<String, double> buildCost;
   final Set<String> tags;
 
   Iterable<Port> get inputs => ports.where((p) => p.isInput);
@@ -164,6 +177,7 @@ class ProcessSpec {
           'dupeLabourSecondsPerCycle': dupeLabourSecondsPerCycle,
         if (footprintWidth != 0) 'footprintWidth': footprintWidth,
         if (footprintHeight != 0) 'footprintHeight': footprintHeight,
+        if (buildCost.isNotEmpty) 'build': buildCost,
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 

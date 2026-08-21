@@ -894,7 +894,10 @@ const String oniDataJson = r"""
           "rate": 112,
           "temperatureC": 70
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "algae_terrarium",
@@ -935,7 +938,10 @@ const String oniDataJson = r"""
           "rate": 290.33,
           "temperatureC": 30
         }
-      ]
+      ],
+      "build": {
+        "cultivable_soil": 400
+      }
     },
     {
       "id": "algae_distiller",
@@ -968,7 +974,10 @@ const String oniDataJson = r"""
           "rate": 400,
           "temperatureC": 30
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "deodorizer",
@@ -1004,7 +1013,10 @@ const String oniDataJson = r"""
           "rate": 143.33
         }
       ],
-      "heatKdtuPerSecond": 0.625
+      "heatKdtuPerSecond": 0.625,
+      "build": {
+        "raw_mineral": 100
+      }
     },
     {
       "id": "rust_deoxidizer",
@@ -1048,7 +1060,10 @@ const String oniDataJson = r"""
           "rate": 400,
           "temperatureC": 75
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "oxylite_refinery",
@@ -1080,7 +1095,11 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 600
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 800,
+        "plastic": 100
+      }
     },
     {
       "id": "water_sieve",
@@ -1116,7 +1135,10 @@ const String oniDataJson = r"""
           "rate": 200
         }
       ],
-      "heatKdtuPerSecond": 4
+      "heatKdtuPerSecond": 4,
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "carbon_skimmer",
@@ -1147,7 +1169,10 @@ const String oniDataJson = r"""
           "rate": 1000
         }
       ],
-      "heatKdtuPerSecond": 1
+      "heatKdtuPerSecond": 1,
+      "build": {
+        "metal_ore": 100
+      }
     },
     {
       "id": "desalinator_brine",
@@ -1178,7 +1203,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1500
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "oil_refinery",
@@ -1212,7 +1240,10 @@ const String oniDataJson = r"""
           "rate": 90,
           "temperatureC": 75
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "polymer_press",
@@ -1251,7 +1282,10 @@ const String oniDataJson = r"""
           "rate": 8.33,
           "temperatureC": 150
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "ethanol_distiller",
@@ -1290,7 +1324,10 @@ const String oniDataJson = r"""
           "rate": 166.67,
           "temperatureC": 93.4
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "coal_generator",
@@ -1316,7 +1353,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 20
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "hydrogen_generator",
@@ -1337,7 +1377,10 @@ const String oniDataJson = r"""
           "direction": "input",
           "rate": 100
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "natural_gas_generator",
@@ -1368,7 +1411,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 67.5
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "petroleum_generator",
@@ -1399,7 +1445,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 750
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "metal_refinery_iron",
@@ -1440,7 +1489,10 @@ const String oniDataJson = r"""
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Batch building: 100 kg per 40 s operation. The coolant loop is the same liquid in and out, only hotter — wire it back on itself."
+      "description": "Batch building: 100 kg per 40 s operation. The coolant loop is the same liquid in and out, only hotter — wire it back on itself.",
+      "build": {
+        "raw_mineral": 800
+      }
     },
     {
       "id": "rock_crusher_sand",
@@ -1468,7 +1520,10 @@ const String oniDataJson = r"""
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Batch building: 100 kg per 40 s operation. Sedimentary rock crushes 1:1 into sand."
+      "description": "Batch building: 100 kg per 40 s operation. Sedimentary rock crushes 1:1 into sand.",
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "duplicant",
@@ -1525,7 +1580,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1500
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "desalinator_salt_water",
@@ -1556,7 +1614,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 350
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "desalinator_polluted_brine",
@@ -1588,7 +1649,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1500
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     },
     {
       "id": "tidal_turbine",
@@ -1605,7 +1669,11 @@ const String oniDataJson = r"""
         "aquatic",
         "verified"
       ],
-      "ports": []
+      "ports": [],
+      "build": {
+        "metal_ore": 800,
+        "gasket": 1
+      }
     },
     {
       "id": "vulcanizer",
@@ -1638,7 +1706,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 50
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 200
+      }
     },
     {
       "id": "plant_pulverizer_gum_wood",
@@ -1666,7 +1737,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1250
         }
-      ]
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
     },
     {
       "id": "plant_pulverizer_slime",
@@ -1699,7 +1773,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 750
         }
-      ]
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
     },
     {
       "id": "marine_drill",
@@ -1728,7 +1805,11 @@ const String oniDataJson = r"""
           "rate": 0.19,
           "temperatureC": 100
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 400,
+        "gasket": 1
+      }
     },
     {
       "id": "gum_palm",
@@ -2812,7 +2893,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "aquatic_grooming_station",
@@ -2832,7 +2916,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "shearing_station",
@@ -2853,7 +2940,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
     },
     {
       "id": "pip",
@@ -3109,7 +3199,10 @@ const String oniDataJson = r"""
           "rate": 40,
           "temperatureC": 110
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 800
+      }
     },
     {
       "id": "dartle",
@@ -3225,7 +3318,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 36.3875
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "wood_heater",
@@ -3250,7 +3346,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 4
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 100
+      }
     },
     {
       "id": "alveo_vera",
@@ -3733,7 +3832,11 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 8
         }
-      ]
+      ],
+      "build": {
+        "refined_metal": 400,
+        "gasket": 4
+      }
     },
     {
       "id": "beakon_grazing",
@@ -4223,7 +4326,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 24.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "gas_range_pepper_bread",
@@ -4265,7 +4371,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 80.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "deep_fryer_squash_fries",
@@ -4298,7 +4407,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 108.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "deep_fryer_fish_taco",
@@ -4335,7 +4447,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 84.0
         }
-      ]
+      ],
+      "build": {
+        "metal_ore": 400
+      }
     },
     {
       "id": "sushi_bar_sushi_roll",
@@ -4372,7 +4487,10 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 72.0
         }
-      ]
+      ],
+      "build": {
+        "wood": 400
+      }
     },
     {
       "id": "pincha_pepperplant",

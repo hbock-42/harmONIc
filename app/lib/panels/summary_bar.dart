@@ -19,6 +19,9 @@ class SummaryBar extends StatelessWidget {
   final RateDisplay rateDisplay;
   final VoidCallback onToggleRates;
 
+  Map<String, double> get _materials =>
+      solution.constructionMaterials(database);
+
   @override
   Widget build(BuildContext context) {
     final net = solution.netPowerWatts;
@@ -53,6 +56,16 @@ class SummaryBar extends StatelessWidget {
             OniStat(
               label: 'floor',
               value: '${solution.totalFootprintTiles} tiles',
+            ),
+          ],
+          if (_materials.isNotEmpty) ...[
+            const _Divider(),
+            OniStat(
+              label: 'to build',
+              // A stock, not a flow: this is what you carry to the site once,
+              // so it does not answer to the per-cycle toggle.
+              value: formatMass(
+                  _materials.values.reduce((a, b) => a + b)),
             ),
           ],
           if (solution.dupeLabourSecondsPerCycle > 0) ...[

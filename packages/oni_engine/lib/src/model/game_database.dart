@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'build_material.dart';
 import 'item.dart';
 import 'process_spec.dart';
 
@@ -57,6 +58,12 @@ class GameDatabase {
         if (!_items.containsKey(port.itemId)) {
           problems.add('process "${spec.id}" port "${port.id}" '
               'references unknown item "${port.itemId}"');
+        }
+      }
+      for (final material in spec.buildCost.keys) {
+        if (!BuildMaterials.isKnown(material)) {
+          problems.add('process "${spec.id}" is built of unknown material '
+              '"$material"');
         }
       }
     }

@@ -36,8 +36,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Things the model cannot yet say**
 
-- `E11-7` Construction materials: an Electrolyzer costs 400 kg of refined metal to build,
-  which is data the app does not hold at all
 - `E11-2` Pipe materials: 500 °C steam needs a pipe built of something that survives it,
   which depends on the material's limits rather than the flow's temperature alone
 - `E11-6` Temperature mixing: two flows meeting average out by mass and specific heat; the
@@ -50,6 +48,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
   their outputs the milking station takes and which they give off anyway
 
 **Data still to gather**
+
+- `E11-7b` What a Gasket costs: 50 kg of plastic or rubber makes some number of them, and
+  the wiki does not say how many, so a build wanting four is priced in gaskets rather than
+  in the plastic behind them
 
 - `E4-34b` The Microbe Musher and Smoker: their pages list what each recipe yields but not
   what goes into it, so there is nothing to model yet. Food *quality* likewise — the model
@@ -118,6 +120,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E11-7` **Construction materials** — all 36 buildings priced from the wiki, including the
+  pumps the engine synthesises. Counted per building placed rather than per fractional one,
+  and in the class the game asks for: any metal ore will do
 - `E5-6` **Corrected recipes are named** — a saved build now carries the rates its recipes
   had when it was written, so opening it after a correction says which figure moved instead
   of quietly reporting different numbers. Share codes carry it too

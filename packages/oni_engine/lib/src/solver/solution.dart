@@ -1,5 +1,6 @@
 import '../graph/pipeline.dart';
 import '../graph/validation.dart';
+import '../model/game_database.dart';
 import '../model/port.dart';
 import '../model/process_spec.dart';
 
@@ -194,6 +195,36 @@ class PipelineSolution {
     }
     return total;
   }
+
+  /// The shopping list: [BuildMaterials] id → kilograms, for the whole build.
+  ///
+  /// Counted per building actually placed, not per fractional one — half an
+  /// Electrolyzer still costs 200 kg of ore — and so it moves in steps as a
+  /// build grows, which is the honest shape of the number.
+  Map<String, double> constructionMaterials(GameDatabase database) {
+    final total = <String, double>{};
+    for (final node in nodes.values) {
+      if (node.isBoundary) continue;
+      final spec = database.process(node.specId);
+      if (spec == null) continue;
+      for (final entry in spec.buildCost.entries) {
+        total[entry.key] =
+            (total[entry.key] ?? 0) + entry.value * node.wholeCount;
+      }
+    }
+    return total;
+  }
+
+  /// Buildings in this pipeline whose construction cost nobody has checked.
+  ///
+  /// A shopping list that quietly omits a building is worse than no list, so
+  /// this is what lets the total say "and three I could not price".
+  Set<String> unpricedBuildings(GameDatabase database) => {
+        for (final node in nodes.values)
+          if (!node.isBoundary && node.kind == ProcessKind.building)
+            if ((database.process(node.specId)?.buildCost ?? const {}).isEmpty)
+              node.specId,
+      };
 
   double get dupeLabourSecondsPerCycle {
     var total = 0.0;

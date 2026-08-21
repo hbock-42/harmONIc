@@ -1,3 +1,4 @@
+import '../model/build_material.dart';
 import '../model/game_database.dart';
 import '../model/item.dart';
 import '../model/port.dart';
@@ -85,6 +86,12 @@ ProcessSpec? _pumpFor(Item item) {
     tags: const {'pumping', 'verified'},
     footprintWidth: 2,
     footprintHeight: 2,
+    // A Liquid Pump is 400 kg of ore, a Gas Pump 50 kg — one of the larger
+    // gaps in the game, and worth seeing when a build needs eight of them.
+    buildCost: {
+      BuildMaterials.metalOre:
+          item.category == ItemCategory.liquid ? 400 : 50,
+    },
     ports: [
       Port(
         id: 'in',
