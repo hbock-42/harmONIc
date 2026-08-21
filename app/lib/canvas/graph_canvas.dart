@@ -78,10 +78,68 @@ class GraphCanvasState extends State<GraphCanvas> {
 
   PipelineController get controller => widget.controller;
 
+  /// The selection as it was last time we looked, so that *changing* it can
+  /// bring the new node into view without the view chasing every repaint.
+  Set<String> _lastSelection = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    _lastSelection = {...controller.selectedNodeIds};
+    controller.addListener(_onControllerChanged);
+  }
+
+  @override
+  void didUpdateWidget(GraphCanvas oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onControllerChanged);
+      controller.addListener(_onControllerChanged);
+    }
+  }
+
   @override
   void dispose() {
+    controller.removeListener(_onControllerChanged);
     _focus.dispose();
     super.dispose();
+  }
+
+  void _onControllerChanged() {
+    final selection = controller.selectedNodeIds;
+    if (selection.length == _lastSelection.length &&
+        selection.every(_lastSelection.contains)) {
+      return;
+    }
+    _lastSelection = {...selection};
+    // Selecting one thing — from the problems banner, say — should put it in
+    // front of you. Selecting several is a marquee, which already had them.
+    if (selection.length == 1) revealNode(selection.first);
+  }
+
+  /// Brings a node into view if it is not already there, leaving the zoom alone.
+  ///
+  /// Being told which node is the problem is no help if finding it means
+  /// hunting around a canvas larger than the window.
+  void revealNode(String nodeId) {
+    final node = controller.pipeline.node(nodeId);
+    final spec = node == null ? null : controller.specFor(node);
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    if (node == null || spec == null || box == null) return;
+
+    final rect = NodeLayout.worldRect(node, spec);
+    final visible = Rect.fromPoints(
+      worldFromLocal(Offset.zero),
+      worldFromLocal(Offset(box.size.width, box.size.height)),
+    ).deflate(24 / _scale);
+    if (visible.contains(rect.topLeft) && visible.contains(rect.bottomRight)) {
+      return;
+    }
+
+    setState(() {
+      _offset = Offset(box.size.width / 2, box.size.height / 2) -
+          rect.center * _scale;
+    });
   }
 
   double get scale => _scale;

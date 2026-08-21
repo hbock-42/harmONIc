@@ -31,6 +31,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E7-11` minimap
 - `E7-12` Tidy only the selection, now that a selection can be more than one node
 - `E7-14` Zoom to fit a *selection*, now that there is one
+- `E7-15` Ease the jump when the view goes to find a node — it cuts there instantly, which
+  loses the sense of which direction it travelled
 - `E7-13` Marquee currently needs ⇧ because a plain drag pans. A space-drag-to-pan
   convention would free the plain drag for selection, which is what most editors do
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
@@ -151,6 +153,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-6` **Selecting a node goes to it** — being told which node is the problem is no
+  help if finding it means hunting a canvas larger than the window. Selecting one thing
+  brings it into view, leaves the zoom alone, and does nothing when it is already there
 - `E12-5` **The scale warning speaks English** — it said "Not enough pins: spare could be
   any amount", which used a word the app never teaches and named a node by its internal
   id. It now explains that nothing sets the size of the build, names things as the palette
