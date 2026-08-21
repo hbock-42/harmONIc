@@ -322,12 +322,16 @@ class PipelineController extends ChangeNotifier {
     if (port == null) return const [];
 
     final wantOutput = port.isInput;
+    // What this port really wants, which is not always what the recipe says:
+    // a refinery set to copper wants copper ore, and a port asking for the
+    // class takes any member.
+    final wanted = itemFlowingIn(database, node, spec, port);
     final matches = <ProcessSpec>[];
-    for (final spec in database.processes) {
-      if (spec.id == node.specId) continue;
-      final hasPort = spec.ports.any(
-          (p) => p.itemId == port.itemId && p.isOutput == wantOutput);
-      if (hasPort) matches.add(spec);
+    for (final candidate in database.processes) {
+      if (candidate.id == node.specId) continue;
+      final hasPort = candidate.ports.any((p) =>
+          p.isOutput == wantOutput && database.accepts(wanted, p.itemId));
+      if (hasPort) matches.add(candidate);
     }
 
     int rank(ProcessSpec s) => switch (s.kind) {

@@ -25,12 +25,22 @@ class GraphCanvas extends StatefulWidget {
   const GraphCanvas({
     required this.controller,
     required this.rateDisplay,
+    this.offers = _everything,
     required this.onToggleRates,
     super.key,
   });
 
   final PipelineController controller;
   final RateDisplay rateDisplay;
+
+  /// Whether the palette would offer a given recipe. The port menu is a second
+  /// way of reaching the same catalogue and has to answer the same way.
+  ///
+  /// The canvas has no opinion of its own about packs, so on its own it offers
+  /// the lot; the editor hands it the palette's filter.
+  final bool Function(ProcessSpec) offers;
+
+  static bool _everything(ProcessSpec spec) => true;
 
   /// Switches every rate between per second and per cycle — reachable from the
   /// labels on the wires, which are where most rates are actually read.
@@ -847,6 +857,7 @@ class GraphCanvasState extends State<GraphCanvas>
       top: top,
       child: PortMenu(
         controller: controller,
+        offers: widget.offers,
         ref: ref,
         onDismiss: _closePortMenu,
         onPick: (specId) {

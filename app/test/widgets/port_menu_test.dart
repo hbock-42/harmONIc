@@ -22,6 +22,7 @@ void main() {
   Future<PipelineController> pumpCanvas(
     WidgetTester tester, {
     Pipeline? pipeline,
+    bool Function(ProcessSpec)? offers,
   }) async {
     await useDesktopSurface(tester);
     final controller = testController(pipeline: pipeline ?? loneElectrolyzer());
@@ -30,6 +31,7 @@ void main() {
         key: canvasKey,
         controller: controller,
         rateDisplay: RateDisplay.perSecond,
+        offers: offers ?? (_) => true,
         onToggleRates: () {},
       ),
     ));
@@ -238,6 +240,85 @@ void main() {
 
       expect(find.byType(PortMenu), findsOneWidget);
       expect(textContaining('Where does Hydrogen go?'), findsOneWidget);
+    });
+  });
+
+  group('what a port will take', () {
+    testWidgets('a port asking for a class is offered the members',
+        (tester) async {
+      final controller = await pumpCanvas(
+        tester,
+        pipeline: (PipelineBuilder(testDatabase, name: 'smelting')
+              ..add('metal_refinery', nodeId: 'refinery', x: 300, y: 200)
+              ..pinCount('refinery', 1))
+            .build(),
+      );
+
+      final names = controller
+          .candidatesFor(const PortRef('refinery', 'metal_ore'))
+          .map((s) => s.name)
+          .toList();
+
+      // An Iron Ore supply feeds a port that asks for Metal Ore; before the
+      // classes were taught to this list, it offered nothing at all.
+      expect(names, contains('Iron Ore supply'));
+      expect(names, contains('Copper Ore supply'));
+      expect(names, isNot(contains('Water supply')));
+    });
+
+    testWidgets('and once a metal is chosen, only that one', (tester) async {
+      final controller = await pumpCanvas(
+        tester,
+        pipeline: (PipelineBuilder(testDatabase, name: 'smelting')
+              ..add('metal_refinery', nodeId: 'refinery', x: 300, y: 200)
+              ..pinCount('refinery', 1))
+            .build(),
+      );
+      controller.setMaterial('refinery', 'metal_ore', 'copper_ore');
+      await tester.pump();
+
+      final names = controller
+          .candidatesFor(const PortRef('refinery', 'metal_ore'))
+          .map((s) => s.name)
+          .toList();
+
+      expect(names, contains('Copper Ore supply'));
+      expect(names, isNot(contains('Iron Ore supply')));
+    });
+  });
+
+  group('what the menu is allowed to offer', () {
+    testWidgets('a pack switched off does not come back through the port menu',
+        (tester) async {
+      // The palette hides Aquatic content; clicking a port was a second door
+      // into the same catalogue, and it was not locked.
+      final controller = await pumpCanvas(
+        tester,
+        pipeline: (PipelineBuilder(testDatabase, name: 'sea')
+              ..add('flue_coral', nodeId: 'coral', x: 300, y: 200)
+              ..pinCount('coral', 1))
+            .build(),
+        offers: (spec) => !spec.tags.contains('aquatic'),
+      );
+
+      await tester.tapAt(screenPort(controller, const PortRef('coral', 'salt_water')));
+      await tester.pump();
+
+      expect(find.byType(PortMenu), findsOneWidget);
+      expect(find.text('Desalinator (Salt Water)'), findsNothing);
+      // The supply node is not pack content and is still the quickest answer.
+      expect(find.textContaining('Salt Water supply'), findsWidgets);
+    });
+
+    testWidgets('with nothing left to offer it says so, not nothing',
+        (tester) async {
+      final controller = await pumpCanvas(tester, offers: (_) => false);
+
+      await tester.tapAt(screenPort(controller, const PortRef('elec', 'water')));
+      await tester.pump();
+
+      expect(find.byType(PortMenu), findsOneWidget);
+      expect(find.textContaining('Nothing'), findsWidgets);
     });
   });
 }

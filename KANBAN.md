@@ -49,6 +49,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
+- `E4-12b` The custom-recipe editor's item picker offers every item, pack or not. Items
+  carry pack tags less consistently than processes do, so filtering them wants a check
+  first rather than a guess
+
 - `E12-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
   and most Duplicant food. That is a class this app does not have, and inventing one
   called "organic" without checking what the game really groups would be a guess
@@ -134,6 +138,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-12a` **The port menu obeys the filters too** — and, while there, learned about
+  material classes: clicking a port that asks for Metal Ore now offers the ore supplies,
+  which it had been silently refusing to
 - `E4-12` **Palette filters** — packs and wild variants can be switched off, remembered
   between runs. Two thirds of the catalogue was content a base-game player cannot build.
   The header says how much is being kept back, so a filter set last week is not mistaken

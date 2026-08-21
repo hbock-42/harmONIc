@@ -10,6 +10,7 @@ import '../state/pipeline_controller.dart';
 class PortMenu extends StatefulWidget {
   const PortMenu({
     required this.controller,
+    required this.offers,
     required this.ref,
     required this.onPick,
     required this.onDismiss,
@@ -17,6 +18,10 @@ class PortMenu extends StatefulWidget {
   });
 
   final PipelineController controller;
+
+  /// Whether the palette would offer this, so a pack switched off does not
+  /// come back through the side door.
+  final bool Function(ProcessSpec) offers;
   final PortRef ref;
   final ValueChanged<String> onPick;
   final VoidCallback onDismiss;
@@ -50,6 +55,7 @@ class _PortMenuState extends State<PortMenu> {
     final query = _search.text.trim().toLowerCase();
     final candidates = controller
         .candidatesFor(widget.ref)
+        .where(widget.offers)
         .where((s) => query.isEmpty || s.name.toLowerCase().contains(query))
         .toList();
 
