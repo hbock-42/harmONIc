@@ -3,6 +3,16 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../storage/json_store.dart';
 
+/// The packs this app knows about, and what to call them.
+///
+/// Keyed by the tag the data uses, so a spec belongs to a pack by saying so
+/// rather than by anybody keeping a list of ids in step.
+const Map<String, String> kContentPacks = <String, String>{
+  'aquatic': 'Aquatic',
+  'frosty': 'Frosty',
+  'prehistoric': 'Prehistoric',
+};
+
 /// How the reader wants rates written, remembered between runs.
 ///
 /// A view setting rather than part of any pipeline: the same build read per
@@ -13,7 +23,44 @@ class DisplayController extends ChangeNotifier {
   final JsonStore _store;
   RateDisplay _display = RateDisplay.perSecond;
 
+  /// The packs whose content belongs in the palette.
+  ///
+  /// Two thirds of the catalogue is DLC, and a base-game player being offered a
+  /// Tidal Turbine is being offered something they cannot build. Everything is
+  /// on by default, because most people who install a pack keep it.
+  final Set<String> _packs = {...kContentPacks.keys};
+
+  /// Whether wild variants are offered. They double the length of the critter
+  /// and plant lists, and most builds are farmed.
+  bool _showWild = true;
+
   RateDisplay get display => _display;
+  Set<String> get packs => Set.unmodifiable(_packs);
+  bool get showWild => _showWild;
+
+  bool packEnabled(String pack) => _packs.contains(pack);
+
+  /// Is this something the palette should offer, given what is switched on?
+  bool includes(ProcessSpec spec) {
+    if (!_showWild && spec.tags.contains('wild')) return false;
+    for (final pack in kContentPacks.keys) {
+      if (spec.tags.contains(pack) && !_packs.contains(pack)) return false;
+    }
+    return true;
+  }
+
+  Future<void> setPack(String pack, {required bool enabled}) async {
+    if (enabled ? !_packs.add(pack) : !_packs.remove(pack)) return;
+    notifyListeners();
+    await _save();
+  }
+
+  Future<void> setShowWild({required bool showWild}) async {
+    if (showWild == _showWild) return;
+    _showWild = showWild;
+    notifyListeners();
+    await _save();
+  }
 
   /// The label for what a click would switch *to*, for a button that says
   /// where it takes you rather than where you are.
@@ -28,8 +75,15 @@ class DisplayController extends ChangeNotifier {
     final saved = raw?['rateDisplay'] as String?;
     if (saved == RateDisplay.perCycle.name) {
       _display = RateDisplay.perCycle;
-      notifyListeners();
     }
+    final packs = raw?['packs'] as List<dynamic>?;
+    if (packs != null) {
+      _packs
+        ..clear()
+        ..addAll(packs.cast<String>().where(kContentPacks.containsKey));
+    }
+    _showWild = raw?['showWild'] as bool? ?? true;
+    notifyListeners();
   }
 
   Future<void> toggle() => set(_display.other);
@@ -38,6 +92,12 @@ class DisplayController extends ChangeNotifier {
     if (display == _display) return;
     _display = display;
     notifyListeners();
-    await _store.write(<String, dynamic>{'rateDisplay': display.name});
+    await _save();
   }
+
+  Future<void> _save() => _store.write(<String, dynamic>{
+        'rateDisplay': _display.name,
+        'packs': _packs.toList(),
+        'showWild': _showWild,
+      });
 }

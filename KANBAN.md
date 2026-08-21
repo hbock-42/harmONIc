@@ -88,7 +88,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-11` Nail down the unverified DLC rates: the Vulcanizer's recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2
 - `E4-22` The Grooming Station's power draw, if it is ever published
-- `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
 
 **Saving and sharing**
 
@@ -135,6 +134,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-12` **Palette filters** — packs and wild variants can be switched off, remembered
+  between runs. Two thirds of the catalogue was content a base-game player cannot build.
+  The header says how much is being kept back, so a filter set last week is not mistaken
+  for an empty database
 - `E7-14` **The view follows a drag off the edge** — hold a node, a selection, a rubber band
   or a half-drawn wire against the window edge and the canvas pans, faster the harder you
   press. The dragged thing keeps moving even while the pointer sits still, which is the

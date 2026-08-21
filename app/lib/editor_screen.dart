@@ -153,6 +153,7 @@ class _EditorScreenState extends State<EditorScreen> {
                         children: [
                           PalettePanel(
                             database: controller.database,
+                            display: widget.displaySettings,
                             onAdd: _add,
                             onNewRecipe: () => setState(
                                 () => _editing = widget.library.draft()),

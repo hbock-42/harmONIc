@@ -3,12 +3,14 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import '../design/widgets.dart';
+import '../state/display_controller.dart';
 
 /// The catalogue of things you can place: buildings grouped by what they are
 /// for, plus a supply and an output node per item.
 class PalettePanel extends StatefulWidget {
   const PalettePanel({
     required this.database,
+    required this.display,
     required this.onAdd,
     required this.onNewRecipe,
     required this.onEditRecipe,
@@ -16,6 +18,9 @@ class PalettePanel extends StatefulWidget {
   });
 
   final GameDatabase database;
+
+  /// Which packs are switched on, and whether wild variants are offered.
+  final DisplayController display;
   final ValueChanged<String> onAdd;
   final VoidCallback onNewRecipe;
   final ValueChanged<ProcessSpec> onEditRecipe;
@@ -26,11 +31,42 @@ class PalettePanel extends StatefulWidget {
 
 class _PalettePanelState extends State<PalettePanel> {
   final TextEditingController _search = TextEditingController();
+  bool _filtersOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.display.addListener(_onDisplayChanged);
+  }
+
+  @override
+  void didUpdateWidget(PalettePanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.display != widget.display) {
+      oldWidget.display.removeListener(_onDisplayChanged);
+      widget.display.addListener(_onDisplayChanged);
+    }
+  }
+
+  void _onDisplayChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
+    widget.display.removeListener(_onDisplayChanged);
     _search.dispose();
     super.dispose();
+  }
+
+  /// How much is being kept out of the list right now, so a filter that has
+  /// been on since last week is not mistaken for an empty database.
+  int get _hidden {
+    var hidden = 0;
+    for (final spec in widget.database.processes) {
+      if (!widget.display.includes(spec)) hidden++;
+    }
+    return hidden;
   }
 
   /// Buildings first, grouped by their tag; boundary nodes last, because you
@@ -39,6 +75,7 @@ class _PalettePanelState extends State<PalettePanel> {
     final query = _search.text.trim().toLowerCase();
     final groups = <String, List<ProcessSpec>>{};
     for (final spec in widget.database.processes) {
+      if (!widget.display.includes(spec)) continue;
       if (query.isNotEmpty && !spec.name.toLowerCase().contains(query)) continue;
       final group = switch (spec.kind) {
         ProcessKind.source => 'Supply',
@@ -54,6 +91,77 @@ class _PalettePanelState extends State<PalettePanel> {
       list.sort((a, b) => a.name.compareTo(b.name));
     }
     return groups;
+  }
+
+  /// The pack switches, folded away until asked for: most people set these
+  /// once, and a row of always-visible toggles would cost more list than it
+  /// saves.
+  Widget _filters() {
+    final display = widget.display;
+    final hidden = _hidden;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => setState(() => _filtersOpen = !_filtersOpen),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 2, OniSpacing.md, OniSpacing.sm),
+            child: Row(
+              children: [
+                Text(_filtersOpen ? '▾ SHOWING' : '▸ SHOWING',
+                    style: OniType.label),
+                const SizedBox(width: OniSpacing.sm),
+                Expanded(
+                  child: Text(
+                    hidden == 0 ? 'everything' : '$hidden hidden',
+                    style: OniType.body.copyWith(
+                      fontSize: 11.5,
+                      color: hidden == 0
+                          ? OniColors.textFaint
+                          : OniColors.accent,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (_filtersOpen)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+            child: Wrap(
+              spacing: OniSpacing.sm,
+              runSpacing: OniSpacing.sm,
+              children: [
+                for (final pack in kContentPacks.entries)
+                  OniButton(
+                    label: pack.value,
+                    compact: true,
+                    tone: display.packEnabled(pack.key)
+                        ? OniButtonTone.accent
+                        : OniButtonTone.neutral,
+                    onPressed: () => display.setPack(pack.key,
+                        enabled: !display.packEnabled(pack.key)),
+                  ),
+                OniButton(
+                  label: 'Wild',
+                  compact: true,
+                  tone: display.showWild
+                      ? OniButtonTone.accent
+                      : OniButtonTone.neutral,
+                  onPressed: () =>
+                      display.setShowWild(showWild: !display.showWild),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 
   static String _capitalise(String value) =>
@@ -94,6 +202,7 @@ class _PalettePanelState extends State<PalettePanel> {
               onChanged: (_) => setState(() {}),
             ),
           ),
+          _filters(),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.only(bottom: OniSpacing.lg),
