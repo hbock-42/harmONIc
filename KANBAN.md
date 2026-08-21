@@ -112,7 +112,8 @@ _(empty)_
 
 - `E3-9` **The solver at scale** — a 500-node build solved in 120 ms against a 50 ms target,
   and the test written to prove it found why: Gauss-Jordan filled in the rows it had already
-  finished with. Eliminating downward only and back-substituting took it to 14 ms
+  finished with. Eliminating downward only and back-substituting took it to 14 ms.
+  Written up in `docs/PERFORMANCE.md`
 - `E0-4` **CI** — analyse and test both packages on push, and check the generated data still
   matches the JSON it came from
 

@@ -10,6 +10,7 @@ oxygen"), and every other building, flow, watt and kDTU scales to match.
 packages/oni_engine/   pure Dart — model, solver, game data. No Flutter.
 app/                   Flutter app (macOS, web, iOS, Android).
 docs/SOLVER.md         how the solver works, decided before it was written.
+docs/PERFORMANCE.md    how it was made eight times quicker, and how to do it again.
 KANBAN.md              the plan, epic by epic.
 ```
 
