@@ -12,6 +12,7 @@ import 'panels/pipelines_menu.dart';
 import 'panels/process_editor.dart';
 import 'panels/problems_panel.dart';
 import 'panels/summary_bar.dart';
+import 'state/display_controller.dart';
 import 'state/library_controller.dart';
 import 'state/pipeline_controller.dart';
 import 'state/workspace_controller.dart';
@@ -23,12 +24,14 @@ class EditorScreen extends StatefulWidget {
     required this.controller,
     required this.library,
     required this.workspace,
+    required this.displaySettings,
     super.key,
   });
 
   final PipelineController controller;
   final LibraryController library;
   final WorkspaceController workspace;
+  final DisplayController displaySettings;
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
@@ -66,7 +69,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-        listenable: controller,
+        listenable: Listenable.merge([controller, widget.displaySettings]),
         builder: (context, _) => Shortcuts(
           shortcuts: const <ShortcutActivator, Intent>{
             SingleActivator(LogicalKeyboardKey.keyZ, meta: true):
@@ -98,6 +101,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       controller: controller,
                       workspace: widget.workspace,
                       canvasKey: _canvasKey,
+                      displaySettings: widget.displaySettings,
                       onTogglePipelines: () =>
                           setState(() => _pipelinesOpen = !_pipelinesOpen),
                     ),
@@ -119,15 +123,23 @@ class _EditorScreenState extends State<EditorScreen> {
                                 : GraphCanvas(
                                     key: _canvasKey,
                                     controller: controller,
+                                    rateDisplay:
+                                        widget.displaySettings.display,
                                   ),
                           ),
-                          InspectorPanel(controller: controller),
+                          InspectorPanel(
+                            controller: controller,
+                            rateDisplay: widget.displaySettings.display,
+                            onToggleRates: widget.displaySettings.toggle,
+                          ),
                         ],
                       ),
                     ),
                     SummaryBar(
                       solution: controller.solution,
                       database: controller.database,
+                      rateDisplay: widget.displaySettings.display,
+                      onToggleRates: widget.displaySettings.toggle,
                     ),
                   ],
                 ),
@@ -248,12 +260,14 @@ class _TopBar extends StatefulWidget {
     required this.controller,
     required this.workspace,
     required this.canvasKey,
+    required this.displaySettings,
     required this.onTogglePipelines,
   });
 
   final PipelineController controller;
   final WorkspaceController workspace;
   final GlobalKey<GraphCanvasState> canvasKey;
+  final DisplayController displaySettings;
   final VoidCallback onTogglePipelines;
 
   @override
@@ -331,6 +345,13 @@ class _TopBarState extends State<_TopBar> {
                 ),
               const SizedBox(width: OniSpacing.md),
             ],
+            OniButton(
+              label: widget.displaySettings.currentLabel,
+              compact: true,
+              tone: OniButtonTone.accent,
+              onPressed: widget.displaySettings.toggle,
+            ),
+            const SizedBox(width: OniSpacing.sm),
             OniButton(
               label: 'Undo',
               compact: true,

@@ -28,6 +28,47 @@ void main() {
     expect(coal.netPowerWatts, -600, reason: 'generators consume negative power');
   });
 
+  group('reading rates per cycle', () {
+    test('mass becomes kilograms a cycle', () {
+      final water = db.itemOrThrow('water');
+      // An Electrolyzer's kilogram a second is 600 kg a cycle.
+      expect(water.formatRate(1000, RateDisplay.perSecond), '1.00 kg/s');
+      expect(water.formatRate(1000, RateDisplay.perCycle), '600.00 kg/cycle');
+    });
+
+    test('a trickle finally reads as something picturable', () {
+      final egg = db.itemOrThrow('egg');
+      // One egg every six cycles.
+      final rate = 1 / (6 * secondsPerCycle);
+      expect(egg.formatRate(rate, RateDisplay.perSecond), '0.00');
+      expect(egg.formatRate(rate, RateDisplay.perCycle), '0.17 /cycle');
+    });
+
+    test('power becomes the energy a cycle of it delivers', () {
+      final power = db.itemOrThrow('power');
+      expect(power.formatRate(800, RateDisplay.perSecond), '800.00 W');
+      expect(power.formatRate(800, RateDisplay.perCycle), '480.00 kJ/cycle');
+    });
+
+    test('a capacity is never scaled by time', () {
+      // Eight grooming slots is eight, whichever way you look at it.
+      final grooming = db.itemOrThrow('grooming');
+      expect(grooming.isCapacity, isTrue);
+      expect(grooming.formatRate(8, RateDisplay.perSecond), '8.00');
+      expect(grooming.formatRate(8, RateDisplay.perCycle), '8.00');
+    });
+
+    test('plant growth per cycle matches the figure the wiki quotes', () {
+      final growth = db.itemOrThrow('starnacle_growth');
+      final starnacle = db.processOrThrow('starnacle');
+      final rate = starnacle.outputs
+          .firstWhere((p) => p.itemId == 'starnacle_growth')
+          .ratePerSecond;
+      // The wiki says a domesticated Starnacle ripens over 4 cycles: 25 % each.
+      expect(growth.formatRate(rate, RateDisplay.perCycle), '25.00 /cycle');
+    });
+  });
+
   test('a spec round-trips through JSON', () {
     final spec = db.processOrThrow('water_sieve');
     final copy = ProcessSpec.fromJson(spec.toJson());

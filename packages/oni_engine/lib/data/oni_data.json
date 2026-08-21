@@ -498,7 +498,7 @@
     {
       "id": "grooming",
       "name": "Grooming",
-      "category": "other",
+      "category": "service",
       "tags": [
         "service"
       ]
@@ -506,7 +506,7 @@
     {
       "id": "shearing",
       "name": "Shearing",
-      "category": "other",
+      "category": "service",
       "tags": [
         "service"
       ]
@@ -745,7 +745,7 @@
     {
       "id": "milking",
       "name": "Milking",
-      "category": "other",
+      "category": "service",
       "tags": [
         "service"
       ]

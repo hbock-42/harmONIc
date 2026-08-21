@@ -27,6 +27,7 @@ void main() {
       controller: controller,
       library: testLibrary(),
       workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
     )));
     return controller;
   }
@@ -103,6 +104,7 @@ void main() {
       controller: controller,
       library: testLibrary(),
       workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
     )));
 
     expect(find.text('ALL GEYSERS'), findsNothing);

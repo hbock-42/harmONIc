@@ -502,7 +502,7 @@ const String oniDataJson = r"""
     {
       "id": "grooming",
       "name": "Grooming",
-      "category": "other",
+      "category": "service",
       "tags": [
         "service"
       ]
@@ -510,7 +510,7 @@ const String oniDataJson = r"""
     {
       "id": "shearing",
       "name": "Shearing",
-      "category": "other",
+      "category": "service",
       "tags": [
         "service"
       ]
@@ -749,7 +749,7 @@ const String oniDataJson = r"""
     {
       "id": "milking",
       "name": "Milking",
-      "category": "other",
+      "category": "service",
       "tags": [
         "service"
       ]

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/tokens.dart';
+import 'package:oni_pipeline/state/display_controller.dart';
 import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 import 'package:oni_pipeline/state/workspace_controller.dart';
@@ -41,6 +42,10 @@ LibraryController testLibrary([MemoryJsonStore? store]) => LibraryController(
       bundled: testDatabase,
       store: store ?? MemoryJsonStore(),
     );
+
+/// Display settings backed by memory rather than the disk.
+DisplayController testDisplay([MemoryJsonStore? store]) =>
+    DisplayController(store ?? MemoryJsonStore());
 
 /// A workspace wired to memory, already holding [controller]'s pipeline.
 Future<WorkspaceController> testWorkspace(

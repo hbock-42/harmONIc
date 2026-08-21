@@ -54,6 +54,14 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Per second or per cycle
+
+Click any rate — or the button in the top bar — and every rate in the app switches
+together. Pipes and vents are sized per second; the wiki, the game's tooltips and most
+questions worth asking are per cycle. Mass becomes kg/cycle, power becomes the kilojoules
+a cycle actually delivers, and one egg every six cycles stops reading as `0.00`. Capacities
+like grooming slots are left alone, because eight of them is eight either way.
+
 ## Grazing, grooming and shearing are links too
 
 Not everything that flows is a material. A critter occupies one grooming slot and a

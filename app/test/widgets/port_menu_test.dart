@@ -26,7 +26,11 @@ void main() {
     await useDesktopSurface(tester);
     final controller = testController(pipeline: pipeline ?? loneElectrolyzer());
     await tester.pumpWidget(harness(
-      GraphCanvas(key: canvasKey, controller: controller),
+      GraphCanvas(
+        key: canvasKey,
+        controller: controller,
+        rateDisplay: RateDisplay.perSecond,
+      ),
     ));
     return controller;
   }

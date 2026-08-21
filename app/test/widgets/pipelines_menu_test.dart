@@ -25,6 +25,7 @@ void main() {
       controller: controller,
       library: testLibrary(),
       workspace: workspace,
+      displaySettings: testDisplay(),
     )));
   }
 

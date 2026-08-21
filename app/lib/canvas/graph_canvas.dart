@@ -18,9 +18,14 @@ import 'port_menu.dart';
 /// and hit-testing all work normally — while the wires are painted underneath
 /// in the same world coordinates.
 class GraphCanvas extends StatefulWidget {
-  const GraphCanvas({required this.controller, super.key});
+  const GraphCanvas({
+    required this.controller,
+    required this.rateDisplay,
+    super.key,
+  });
 
   final PipelineController controller;
+  final RateDisplay rateDisplay;
 
   @override
   State<GraphCanvas> createState() => GraphCanvasState();
@@ -290,6 +295,7 @@ class GraphCanvasState extends State<GraphCanvas> {
                             selectedEdgeId: selectedEdgeId,
                             hoveredEdgeId: _hoveredEdgeId,
                             scale: _scale,
+                            rateDisplay: widget.rateDisplay,
                             pendingFrom: _pendingFromWorld(),
                             pendingTo: _pendingWorld,
                             pendingValid: _pendingWorld == null ||
@@ -307,6 +313,7 @@ class GraphCanvasState extends State<GraphCanvas> {
                             controller: controller,
                             selected: node.id == selectedNodeId,
                             scale: _scale,
+                            rateDisplay: widget.rateDisplay,
                             onPortTap: _openPortMenu,
                             onPortDragStart: _onPortDragStart,
                             onPortDragUpdate: _onPortDragUpdate,
@@ -376,6 +383,7 @@ class _DraggableNode extends StatelessWidget {
     required this.controller,
     required this.selected,
     required this.scale,
+    required this.rateDisplay,
     required this.onPortTap,
     required this.onPortDragStart,
     required this.onPortDragUpdate,
@@ -387,6 +395,7 @@ class _DraggableNode extends StatelessWidget {
   final PipelineController controller;
   final bool selected;
   final double scale;
+  final RateDisplay rateDisplay;
   final void Function(PortRef, Offset) onPortTap;
   final void Function(PortRef, Offset) onPortDragStart;
   final void Function(Offset) onPortDragUpdate;
@@ -413,6 +422,7 @@ class _DraggableNode extends StatelessWidget {
             spec: controller.specOf(node),
             controller: controller,
             selected: selected,
+            rateDisplay: rateDisplay,
             onPortTap: onPortTap,
             onPortDragStart: onPortDragStart,
             onPortDragUpdate: onPortDragUpdate,

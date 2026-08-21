@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/canvas/geometry.dart';
 import 'package:oni_pipeline/canvas/node_widget.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
@@ -18,6 +19,7 @@ void main() {
           spec: controller.specOf(node),
           controller: controller,
           selected: false,
+          rateDisplay: RateDisplay.perSecond,
           onPortTap: (_, _) {},
           onPortDragStart: (_, _) {},
           onPortDragUpdate: (_) {},

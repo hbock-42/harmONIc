@@ -198,18 +198,70 @@ class _OniFieldState extends State<OniField> {
       );
 }
 
+/// A rate, which switches every rate in the app between per second and per
+/// cycle when clicked. Both readings are right; which is useful depends on
+/// whether you are sizing a pipe or reading the wiki.
+class OniRate extends StatefulWidget {
+  const OniRate({
+    required this.text,
+    required this.onToggle,
+    this.style,
+    super.key,
+  });
+
+  final String text;
+  final VoidCallback onToggle;
+  final TextStyle? style;
+
+  @override
+  State<OniRate> createState() => _OniRateState();
+}
+
+class _OniRateState extends State<OniRate> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          onTap: widget.onToggle,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: _hover ? OniColors.accent : const Color(0x00000000),
+                ),
+              ),
+            ),
+            child: Text(
+              widget.text,
+              style: (widget.style ?? OniType.number).copyWith(
+                color: _hover ? OniColors.accent : null,
+              ),
+            ),
+          ),
+        ),
+      );
+}
+
 /// Label above a value — the workhorse of the inspector.
 class OniStat extends StatelessWidget {
   const OniStat({
     required this.label,
     required this.value,
     this.valueColour,
+    this.onToggle,
     super.key,
   });
 
   final String label;
   final String value;
   final Color? valueColour;
+
+  /// When given, the value is a rate and clicking it switches the units.
+  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -218,10 +270,14 @@ class OniStat extends StatelessWidget {
         children: [
           Text(label.toUpperCase(), style: OniType.label),
           const SizedBox(height: 2),
-          Text(
-            value,
-            style: OniType.number.copyWith(color: valueColour),
-          ),
+          if (onToggle == null)
+            Text(value, style: OniType.number.copyWith(color: valueColour))
+          else
+            OniRate(
+              text: value,
+              onToggle: onToggle!,
+              style: OniType.number.copyWith(color: valueColour),
+            ),
         ],
       );
 }

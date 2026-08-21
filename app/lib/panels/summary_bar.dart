@@ -9,11 +9,15 @@ class SummaryBar extends StatelessWidget {
   const SummaryBar({
     required this.solution,
     required this.database,
+    required this.rateDisplay,
+    required this.onToggleRates,
     super.key,
   });
 
   final PipelineSolution solution;
   final GameDatabase database;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggleRates;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +33,17 @@ class SummaryBar extends StatelessWidget {
         children: [
           OniStat(
             label: 'net power',
-            value: Unit.watts.format(net),
+            value: database.itemOrThrow(WellKnownItems.power)
+                .formatRate(net, rateDisplay),
             valueColour: net < -1e-6 ? OniColors.danger : OniColors.ok,
+            onToggle: onToggleRates,
           ),
           const _Divider(),
           OniStat(
             label: 'heat',
-            value: Unit.kdtuPerSecond.format(solution.totalHeatKdtu),
+            value: database.itemOrThrow(WellKnownItems.heat)
+                .formatRate(solution.totalHeatKdtu, rateDisplay),
+            onToggle: onToggleRates,
             valueColour: solution.totalHeatKdtu > 0
                 ? OniColors.text
                 : OniColors.ok,
@@ -59,6 +67,8 @@ class SummaryBar extends StatelessWidget {
               label: 'inputs needed',
               flows: solution.externalInputs,
               database: database,
+              rateDisplay: rateDisplay,
+              onToggle: onToggleRates,
             ),
           ),
           const _Divider(),
@@ -67,6 +77,8 @@ class SummaryBar extends StatelessWidget {
               label: 'outputs',
               flows: solution.externalOutputs,
               database: database,
+              rateDisplay: rateDisplay,
+              onToggle: onToggleRates,
             ),
           ),
         ],
@@ -92,11 +104,15 @@ class _Flows extends StatelessWidget {
     required this.label,
     required this.flows,
     required this.database,
+    required this.rateDisplay,
+    required this.onToggle,
   });
 
   final String label;
   final Map<String, double> flows;
   final GameDatabase database;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +146,10 @@ class _Flows extends StatelessWidget {
                         color: OniItemColors.ofItem(item),
                       ),
                     ),
-                    Text(
-                      '${item?.name ?? entries[i].key}  '
-                      '${(item?.unit ?? Unit.gramsPerSecond).format(entries[i].value, precision: 1)}',
+                    OniRate(
+                      text: '${item?.name ?? entries[i].key}  '
+                          '${item?.formatRate(entries[i].value, rateDisplay, precision: 1) ?? entries[i].value.toStringAsFixed(1)}',
+                      onToggle: onToggle,
                       style: OniType.numberSmall
                           .copyWith(color: OniColors.text),
                     ),

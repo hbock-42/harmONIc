@@ -26,6 +26,7 @@ void main() {
       controller: controller,
       library: testLibrary(),
       workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
     )));
     return controller;
   }

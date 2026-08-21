@@ -13,6 +13,7 @@ class NodeWidget extends StatelessWidget {
     required this.spec,
     required this.controller,
     required this.selected,
+    required this.rateDisplay,
     required this.onPortTap,
     required this.onPortDragStart,
     required this.onPortDragUpdate,
@@ -25,6 +26,7 @@ class NodeWidget extends StatelessWidget {
   final ProcessSpec spec;
   final PipelineController controller;
   final bool selected;
+  final RateDisplay rateDisplay;
   final void Function(PortRef ref, Offset globalPosition) onPortTap;
   final void Function(PortRef ref, Offset globalPosition) onPortDragStart;
   final void Function(Offset globalPosition) onPortDragUpdate;
@@ -136,10 +138,9 @@ class NodeWidget extends StatelessWidget {
   String _countLabel(NodeResult result) {
     if (_isBoundary) {
       final port = spec.ports.isEmpty ? null : spec.ports.first;
-      final unit = port == null
-          ? Unit.gramsPerSecond
-          : (controller.database.item(port.itemId)?.unit ?? Unit.gramsPerSecond);
-      return unit.format(result.count, precision: 1);
+      final item = port == null ? null : controller.database.item(port.itemId);
+      return item?.formatRate(result.count, rateDisplay, precision: 1) ??
+          Unit.gramsPerSecond.format(result.count, precision: 1);
     }
     if (result.count <= 0) return '—';
     return '${result.count.toStringAsFixed(2)} ×  ·  build ${result.wholeCount}';

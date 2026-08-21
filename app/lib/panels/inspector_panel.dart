@@ -8,9 +8,16 @@ import '../state/pipeline_controller.dart';
 /// Everything about whatever is selected — and, for a node, the pin control
 /// that drives the entire app.
 class InspectorPanel extends StatelessWidget {
-  const InspectorPanel({required this.controller, super.key});
+  const InspectorPanel({
+    required this.controller,
+    required this.rateDisplay,
+    required this.onToggleRates,
+    super.key,
+  });
 
   final PipelineController controller;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggleRates;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +31,15 @@ class InspectorPanel extends StatelessWidget {
             key: ValueKey(n.id),
             controller: controller,
             node: n,
+            rateDisplay: rateDisplay,
+            onToggleRates: onToggleRates,
           ),
-        (_, final PipelineEdge e) =>
-          _EdgeInspector(controller: controller, edge: e),
+        (_, final PipelineEdge e) => _EdgeInspector(
+            controller: controller,
+            edge: e,
+            rateDisplay: rateDisplay,
+            onToggleRates: onToggleRates,
+          ),
         _ => const _EmptyInspector(),
       },
     );
@@ -51,11 +64,15 @@ class _NodeInspector extends StatefulWidget {
   const _NodeInspector({
     required this.controller,
     required this.node,
+    required this.rateDisplay,
+    required this.onToggleRates,
     super.key,
   });
 
   final PipelineController controller;
   final PipelineNode node;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggleRates;
 
   @override
   State<_NodeInspector> createState() => _NodeInspectorState();
@@ -118,11 +135,10 @@ class _NodeInspectorState extends State<_NodeInspector> {
   Widget build(BuildContext context) {
     final result = controller.solution.nodes[node.id];
     final pinned = controller.pinFor(node.id) != null;
-    final unit = _boundaryPortId == null
+    final boundaryItem = _boundaryPortId == null
         ? null
-        : controller.database
-            .item(spec.portByIdOrThrow(_boundaryPortId!).itemId)
-            ?.unit;
+        : controller.database.item(spec.portByIdOrThrow(_boundaryPortId!).itemId);
+    final unit = boundaryItem?.unit;
 
     return ListView(
       padding: const EdgeInsets.all(OniSpacing.lg),
@@ -205,8 +221,10 @@ class _NodeInspectorState extends State<_NodeInspector> {
                 child: OniStat(
                   label: _isBoundary ? 'rate' : 'needed',
                   value: _isBoundary
-                      ? (unit ?? Unit.gramsPerSecond).format(result.count)
+                      ? (boundaryItem?.formatRate(result.count, widget.rateDisplay) ??
+                          result.count.toStringAsFixed(2))
                       : '${result.count.toStringAsFixed(2)} ×',
+                  onToggle: _isBoundary ? widget.onToggleRates : null,
                 ),
               ),
               if (!_isBoundary)
@@ -236,18 +254,25 @@ class _NodeInspectorState extends State<_NodeInspector> {
                   width: 118,
                   child: OniStat(
                     label: 'power',
-                    value: Unit.watts.format(spec.netPowerWatts * result.count),
+                    value: controller.database
+                        .itemOrThrow(WellKnownItems.power)
+                        .formatRate(
+                            spec.netPowerWatts * result.count, widget.rateDisplay),
                     valueColour: spec.netPowerWatts < 0
                         ? OniColors.ok
                         : OniColors.text,
+                    onToggle: widget.onToggleRates,
                   ),
                 ),
                 SizedBox(
                   width: 118,
                   child: OniStat(
                     label: 'heat',
-                    value: Unit.kdtuPerSecond
-                        .format(spec.netHeatKdtu * result.count),
+                    value: controller.database
+                        .itemOrThrow(WellKnownItems.heat)
+                        .formatRate(
+                            spec.netHeatKdtu * result.count, widget.rateDisplay),
+                    onToggle: widget.onToggleRates,
                   ),
                 ),
                 if (spec.dupeLabourSecondsPerCycle > 0)
@@ -264,13 +289,23 @@ class _NodeInspectorState extends State<_NodeInspector> {
         ],
 
         if (controller.isGeyser(node)) ...[
-          _GeyserActivity(controller: controller, node: node),
+          _GeyserActivity(
+            controller: controller,
+            node: node,
+            rateDisplay: widget.rateDisplay,
+          ),
           const SizedBox(height: OniSpacing.lg),
         ],
         Text('PORTS', style: OniType.label),
         const SizedBox(height: OniSpacing.sm),
         for (final port in spec.ports)
-          _PortRow(controller: controller, node: node, port: port),
+          _PortRow(
+            controller: controller,
+            node: node,
+            port: port,
+            rateDisplay: widget.rateDisplay,
+            onToggleRates: widget.onToggleRates,
+          ),
 
         const SizedBox(height: OniSpacing.xl),
         OniButton(
@@ -292,10 +327,15 @@ class _NodeInspectorState extends State<_NodeInspector> {
 /// the band a geyser can land in, and the field takes the exact figure Field
 /// Research reports for yours.
 class _GeyserActivity extends StatefulWidget {
-  const _GeyserActivity({required this.controller, required this.node});
+  const _GeyserActivity({
+    required this.controller,
+    required this.node,
+    required this.rateDisplay,
+  });
 
   final PipelineController controller;
   final PipelineNode node;
+  final RateDisplay rateDisplay;
 
   @override
   State<_GeyserActivity> createState() => _GeyserActivityState();
@@ -409,10 +449,13 @@ class _GeyserActivityState extends State<_GeyserActivity> {
                   ),
                 ),
                 Text(
-                  (controller.database.item(port.itemId)?.unit ??
-                          Unit.gramsPerSecond)
-                      .format(port.ratePerSecond * widget.node.outputScale,
-                          precision: 1),
+                  controller.database.item(port.itemId)?.formatRate(
+                        port.ratePerSecond * widget.node.outputScale,
+                        widget.rateDisplay,
+                        precision: 1,
+                      ) ??
+                      (port.ratePerSecond * widget.node.outputScale)
+                          .toStringAsFixed(1),
                   style: OniType.numberSmall.copyWith(color: OniColors.text),
                 ),
               ],
@@ -439,11 +482,15 @@ class _PortRow extends StatelessWidget {
     required this.controller,
     required this.node,
     required this.port,
+    required this.rateDisplay,
+    required this.onToggleRates,
   });
 
   final PipelineController controller;
   final PipelineNode node;
   final Port port;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggleRates;
 
   @override
   Widget build(BuildContext context) {
@@ -453,7 +500,6 @@ class _PortRow extends StatelessWidget {
     for (final b in controller.solution.portBalances) {
       if (b.ref == ref) balance = b;
     }
-    final unit = item?.unit ?? Unit.gramsPerSecond;
     final unmet = balance != null && balance.isExternalInput;
     final spare = balance != null && balance.isSurplus;
 
@@ -478,8 +524,11 @@ class _PortRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text(
-            unit.format(balance?.rate ?? 0, precision: 1),
+          OniRate(
+            text: item?.formatRate(balance?.rate ?? 0, rateDisplay,
+                    precision: 1) ??
+                (balance?.rate ?? 0).toStringAsFixed(1),
+            onToggle: onToggleRates,
             style: OniType.numberSmall.copyWith(color: OniColors.text),
           ),
           if (unmet || spare)
@@ -500,10 +549,17 @@ class _PortRow extends StatelessWidget {
 }
 
 class _EdgeInspector extends StatelessWidget {
-  const _EdgeInspector({required this.controller, required this.edge});
+  const _EdgeInspector({
+    required this.controller,
+    required this.edge,
+    required this.rateDisplay,
+    required this.onToggleRates,
+  });
 
   final PipelineController controller;
   final PipelineEdge edge;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggleRates;
 
   @override
   Widget build(BuildContext context) {
@@ -529,7 +585,8 @@ class _EdgeInspector extends StatelessWidget {
         const SizedBox(height: OniSpacing.lg),
         OniStat(
           label: 'flow',
-          value: (item?.unit ?? Unit.gramsPerSecond).format(flow),
+          value: item?.formatRate(flow, rateDisplay) ?? flow.toStringAsFixed(2),
+          onToggle: onToggleRates,
         ),
         const SizedBox(height: OniSpacing.lg),
         Text('WHO DECIDES THE AMOUNT', style: OniType.label),

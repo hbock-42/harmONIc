@@ -50,6 +50,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms
+- `E10-9` Make the canvas edge labels clickable too — they follow the setting but you
+  cannot toggle from one, because a click there selects the edge
 - `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
   Tublia as domesticated ones, purely because wild plants ripen slower
 - `E4-29` **Extend growth links to the remaining grazers** — Pip on Arbor Tree, Flox on
@@ -72,6 +74,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms
+- `E10-9` Make the canvas edge labels clickable too — they follow the setting but you
+  cannot toggle from one, because a click there selects the edge
 - `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
   Tublia as domesticated ones, purely because wild plants ripen slower
 - `E4-29` **Extend growth links to the remaining grazers** — Pip on Arbor Tree, Flox on
@@ -128,6 +132,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E10-7` **Per-second ⇄ per-cycle** — click any rate, or the top-bar button, and every
+  rate in the app switches together: mass to kg/cycle, power to the kJ a cycle delivers,
+  and a trickle like one egg every six cycles to a number a person can picture. Capacities
+  are exempt, since eight grooming slots is eight either way. The choice is remembered
 - `E4-30` **Plant growth as a capacity link** — a grazing critter eats a *fraction of a
   living plant*, not kilograms off a pile. Growth is measured in percentage points of
   maturity per cycle, so a plant's growth *time* decides how many mouths it keeps: a
@@ -339,7 +347,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-4 | P1 | Summary bar | net power, total heat, raw inputs, net outputs, dupe labour — always visible |
 | E10-5 | P1 | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
 | E10-6 | P1 | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
-| E10-7 | P2 | Per-cycle ⇄ per-second toggle |
+| E10-7 | ✅ | Per-cycle ⇄ per-second toggle |
 | E10-8 | P2 | Templates: start from SPOM, petroleum boiler, coal farm |
 
 ## E8 — Quality

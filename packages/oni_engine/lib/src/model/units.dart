@@ -21,6 +21,21 @@ enum Unit {
 /// One ONI cycle in seconds.
 const double secondsPerCycle = 600;
 
+/// Whether rates read per second or per cycle.
+///
+/// Both are right, and which one is useful depends on the question: pipes and
+/// vents are sized per second, while the wiki, the game's own tooltips and any
+/// sentence beginning "how much do I get out of this" are per cycle.
+enum RateDisplay {
+  perSecond,
+  perCycle;
+
+  RateDisplay get other =>
+      this == RateDisplay.perSecond ? RateDisplay.perCycle : RateDisplay.perSecond;
+
+  String get label => this == RateDisplay.perSecond ? 'g/s' : 'kg/cycle';
+}
+
 /// Formatting helpers. Deliberately in the engine so the CLI/tests and the app
 /// print numbers the same way.
 extension UnitFormatting on Unit {

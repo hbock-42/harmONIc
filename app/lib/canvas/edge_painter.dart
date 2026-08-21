@@ -19,6 +19,7 @@ class EdgePainter extends CustomPainter {
     required this.selectedEdgeId,
     required this.hoveredEdgeId,
     required this.scale,
+    required this.rateDisplay,
     this.pendingFrom,
     this.pendingTo,
     this.pendingValid = true,
@@ -30,6 +31,7 @@ class EdgePainter extends CustomPainter {
   final String? selectedEdgeId;
   final String? hoveredEdgeId;
   final double scale;
+  final RateDisplay rateDisplay;
 
   /// The wire being dragged out of a port right now, if any.
   final Offset? pendingFrom;
@@ -142,10 +144,13 @@ class EdgePainter extends CustomPainter {
     final tangent = metrics.first.getTangentForOffset(metrics.first.length * 0.32);
     if (tangent == null) return;
 
-    final unit = item?.unit ?? Unit.gramsPerSecond;
+    final precision = rateDisplay == RateDisplay.perSecond && flow.abs() >= 100
+        ? 0
+        : 1;
     final text = TextPainter(
       text: TextSpan(
-        text: unit.format(flow, precision: flow.abs() >= 100 ? 0 : 1),
+        text: item?.formatRate(flow, rateDisplay, precision: precision) ??
+            Unit.gramsPerSecond.format(flow, precision: precision),
         style: OniType.numberSmall.copyWith(color: OniColors.text),
       ),
       textDirection: TextDirection.ltr,
@@ -173,5 +178,6 @@ class EdgePainter extends CustomPainter {
       old.pendingFrom != pendingFrom ||
       old.pendingTo != pendingTo ||
       old.pendingValid != pendingValid ||
+      old.rateDisplay != rateDisplay ||
       old.scale != scale;
 }

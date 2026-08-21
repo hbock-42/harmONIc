@@ -6,6 +6,7 @@ import 'package:oni_engine/oni_engine.dart';
 
 import 'design/tokens.dart';
 import 'editor_screen.dart';
+import 'state/display_controller.dart';
 import 'state/library_controller.dart';
 import 'state/pipeline_controller.dart';
 import 'state/workspace_controller.dart';
@@ -20,9 +21,12 @@ Future<void> main() async {
   // Recipes the player has written down are part of the catalogue from the
   // first frame, so nothing on screen ever shows the stale numbers.
   await library.load();
+  final display = DisplayController(const FileJsonStore('settings.json'));
+  await display.load();
   runApp(OniPipelineApp(
     library: library,
     pipelineStore: const FileJsonStore('pipelines.json'),
+    displaySettings: display,
   ));
 }
 
@@ -32,12 +36,14 @@ class OniPipelineApp extends StatefulWidget {
   const OniPipelineApp({
     required this.library,
     required this.pipelineStore,
+    this.displaySettings,
     this.initial,
     super.key,
   });
 
   final LibraryController library;
   final JsonStore pipelineStore;
+  final DisplayController? displaySettings;
   final Pipeline? initial;
 
   @override
@@ -53,6 +59,8 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
     store: widget.pipelineStore,
     controller: _controller,
   );
+  late final DisplayController _display =
+      widget.displaySettings ?? DisplayController(MemoryJsonStore());
   bool _ready = false;
 
   @override
@@ -102,6 +110,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
                 controller: _controller,
                 library: widget.library,
                 workspace: _workspace,
+                displaySettings: _display,
               )
             : const ColoredBox(color: OniColors.background),
       );
