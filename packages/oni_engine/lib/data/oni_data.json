@@ -825,6 +825,16 @@
       "name": "Sleet Wheat Grain",
       "category": "solid",
       "tags": []
+    },
+    {
+      "id": "pincha_peppernut",
+      "name": "Pincha Peppernut",
+      "category": "solid"
+    },
+    {
+      "id": "liceloaf",
+      "name": "Liceloaf",
+      "category": "solid"
     }
   ],
   "processes": [
@@ -4187,6 +4197,155 @@
           "item": "calories",
           "direction": "output",
           "rate": 24.0
+        }
+      ]
+    },
+    {
+      "id": "gas_range_pepper_bread",
+      "name": "Gas Range (Pepper Bread)",
+      "kind": "building",
+      "description": "Ten grain and a peppernut become 4000 kcal of the best food in the game, with no pre-cooking. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 200.0
+        },
+        {
+          "item": "pincha_peppernut",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 80.0
+        }
+      ]
+    },
+    {
+      "id": "deep_fryer_squash_fries",
+      "name": "Deep Fryer (Squash Fries)",
+      "kind": "building",
+      "description": "UNVERIFIED RATE: 1 kg of plume squash and 1 kg of tallow make 5400 kcal, but the wiki does not give this building a batch time, so the 50 s the other cookers use is assumed. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 10,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "tags": [
+        "food",
+        "frosty",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "plume_squash",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "tallow",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 108.0
+        }
+      ]
+    },
+    {
+      "id": "deep_fryer_fish_taco",
+      "name": "Deep Fryer (Fish Taco)",
+      "kind": "building",
+      "description": "UNVERIFIED RATE: a fillet, two grain and 2.4 kg of tallow make 4200 kcal. The batch time is assumed at 50 s, as above. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 10,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "fish_fillet",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "tallow",
+          "direction": "input",
+          "rate": 48.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 84.0
+        }
+      ]
+    },
+    {
+      "id": "sushi_bar_sushi_roll",
+      "name": "Sushi Bar (Sushi Roll)",
+      "kind": "building",
+      "description": "UNVERIFIED RATE: liceloaf, nori and a fillet make 3600 kcal and an Aquatic Diet buff this model has no way to represent. Needs no power at all, which is unusual for a cooker. The batch time is assumed at 50 s. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
+      "heatKdtuPerSecond": 0.5,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 2,
+      "tags": [
+        "food",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "liceloaf",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "nori",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 72.0
         }
       ]
     }

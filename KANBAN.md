@@ -53,8 +53,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
-- `E4-34` The rest of the cooking buildings: Microbe Musher, Gas Range, Deep Fryer, Smoker,
-  Sushi Bar — and food *quality*, which the model has no notion of
+- `E4-34b` The Microbe Musher and Smoker: their pages list what each recipe yields but not
+  what goes into it, so there is nothing to model yet. Food *quality* likewise — the model
+  has no notion of it, and morale is half the reason anyone cooks
 - `E4-35` The remaining crops: Pincha Pepper, Nosh Bean, Thimble Reed, Sporechid, and the
   Prehistoric and Aquatic food plants
 - `E4-27` Mercury and cinnabar processing
@@ -122,6 +123,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-34` **Cooking** — the Gas Range, Deep Fryer and Sushi Bar join the Electric Grill,
+  so a kitchen can be planned from the crop to the crew, gas burned and Duplicant time
+  included. The mass-balance audit caught the Gas Range on the way in, exactly as intended
 - `E10-9` **The numbers on the wires are clickable** — most rates are read on the canvas,
   so that is where switching per-second and per-cycle should be reachable. Clicking the
   number switches the units; clicking the wire anywhere else still selects it

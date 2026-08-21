@@ -33,6 +33,9 @@ const Map<String, String> expectedImbalance = <String, String>{
   'alveo_vera': 'ice and CO2 into oxylite, at the published rate',
   'spigot_seal': '30.8 kg of sucrose becomes 40 kg of ethanol',
 
+  // Cooking turns food into calories, which are not matter.
+  'gas_range_pepper_bread': 'grain and gas become calories and a little CO2',
+
   // Plants make more than they are given: the game lets them.
   'arbor_tree': 'a tree grows wood out of water, dirt and nothing else',
   'gas_grass': 'likewise, into plant husk',

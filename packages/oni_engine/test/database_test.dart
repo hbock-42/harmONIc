@@ -450,6 +450,48 @@ void main() {
       expect(solution.dupeLabourSecondsPerCycle, closeTo(500, 1));
     });
 
+    test('a kitchen can be planned from the crop to the crew', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'kitchen')
+            ..add('sleet_wheat', nodeId: 'wheat')
+            ..add('gas_range_pepper_bread', nodeId: 'range')
+            ..add('duplicant', nodeId: 'dupes')
+            ..addSource('pincha_peppernut')
+            ..addSource('natural_gas')
+            ..connectItem('wheat', 'range', 'sleet_wheat_grain')
+            ..connectItem('src_pincha_peppernut', 'range', 'pincha_peppernut')
+            ..connectItem('src_natural_gas', 'range', 'natural_gas')
+            ..connectItem('range', 'dupes', 'calories')
+            ..pinCount('dupes', 20))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // Twenty dupes eat 20,000 kcal a cycle; a range run flat out makes
+      // 48,000, so it is busy under half the time.
+      expect(solution.nodes['range']!.count, closeTo(20000 / 48000, 1e-3));
+      // And the gas it burns is counted: the supply node's count is its g/s.
+      expect(solution.nodes['src_natural_gas']!.count,
+          closeTo(100 * 20000 / 48000, 1e-3));
+    });
+
+    test('a cooker without a published batch time says so', () {
+      for (final id in ['deep_fryer_squash_fries', 'deep_fryer_fish_taco',
+          'sushi_bar_sushi_roll']) {
+        expect(db.processOrThrow(id).tags, contains('unverified'),
+            reason: '"$id" assumes a 50 s batch');
+      }
+      // The Gas Range publishes its 50 s, so it does not need the caveat.
+      expect(db.processOrThrow('gas_range_pepper_bread').tags,
+          contains('verified'));
+    });
+
+    test('the Sushi Bar needs no power, unlike every other cooker', () {
+      expect(db.processOrThrow('sushi_bar_sushi_roll').netPowerWatts, 0);
+      expect(db.processOrThrow('gas_range_pepper_bread').netPowerWatts, 240);
+      expect(db.processOrThrow('deep_fryer_squash_fries').netPowerWatts, 480);
+    });
+
     test('the base-game roster is covered', () {
       for (final id in ['pip', 'pokeshell', 'gassy_moo', 'plug_slug',
           'shove_vole', 'shine_bug']) {
