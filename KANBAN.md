@@ -16,7 +16,13 @@
 | `P0` | Blocking / must exist for the engine to work at all |
 | `P1` | Needed for a usable v1 |
 | `P2` | Nice to have, post-v1 |
+| `P3` | Waiting on something outside this repo, usually a figure nobody has published |
 | `spike` | Research / decide, output is a written decision, not code |
+| ✅ | Done. The board below says what was actually built; the epic tables say what each id *is* |
+
+Every id has exactly one row in its epic's table and, once it is finished, one entry on the
+board. Anything new gets an id from the *next free number in its epic* — E12 and E7-14 were
+each handed out twice, and both took a while to notice.
 
 ---
 
@@ -49,25 +55,25 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
-- `E12-8` Spaced Out as a fourth pack. Liquid Sulfur belongs to it, and so does a great
+- `E13-8` Spaced Out as a fourth pack. Liquid Sulfur belongs to it, and so does a great
   deal else that is not tagged — a filter that hides some of a pack and not the rest would
   be worse than none, so this wants a full audit before it is offered
 
-- `E12-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
+- `E13-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
   and most Duplicant food. That is a class this app does not have, and inventing one
   called "organic" without checking what the game really groups would be a guess
-- `E12-6` Alternative diets: a Plug Slug eats metal ore *or* refined metal, and the model
+- `E13-6` Alternative diets: a Plug Slug eats metal ore *or* refined metal, and the model
   has no "either" — the Beakon pattern (one spec per diet) is the answer, and nobody has
   written the second spec yet
-- `E12-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
-- `E12-4` Lead, and the metals behind galena: the ore is in the class but has nothing to
+- `E13-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
+- `E13-4` Lead, and the metals behind galena: the ore is in the class but has nothing to
   refine into, so a refinery set to galena cannot say what it made
-- `E12-2b` The rest of the roster: Supermaterial Refinery, Molecular Forge, Spice Grinder,
+- `E13-2b` The rest of the roster: Supermaterial Refinery, Molecular Forge, Spice Grinder,
   Dehydrator, Smoker
-- `E12-9` Aquatuner and Thermo Regulator for the other coolants. The heat each moves is
+- `E13-9` Aquatuner and Thermo Regulator for the other coolants. The heat each moves is
   the coolant's specific heat times 14 °C, so a class would be wrong here — every member
   behaves differently, which is the one thing a class must not do
-- `E12-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
+- `E13-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
   plastic makes, which is the one figure a build actually needs
 
 - `E11-7b` What a Gasket costs: 50 kg of plastic or rubber makes some number of them, and
@@ -140,7 +146,7 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
-- `E12-2` **The cooling loop** — a Steam Turbine deletes heat, an Aquatuner only moves it,
+- `E13-2` **The cooling loop** — a Steam Turbine deletes heat, an Aquatuner only moves it,
   and both are now sayable: heat was always an item and a negative rate always made an
   input port, but nothing had ever used it. A build can be asked how many Aquatuners its
   own heat needs, and the answer is a number
@@ -154,20 +160,20 @@ _(empty)_
   between runs. Two thirds of the catalogue was content a base-game player cannot build.
   The header says how much is being kept back, so a filter set last week is not mistaken
   for an empty database
-- `E7-14` **The view follows a drag off the edge** — hold a node, a selection, a rubber band
+- `E7-16` **The view follows a drag off the edge** — hold a node, a selection, a rubber band
   or a half-drawn wire against the window edge and the canvas pans, faster the harder you
   press. The dragged thing keeps moving even while the pointer sits still, which is the
   half that makes it useful
-- `E12-1c` **Classes applied where they were verified** — Filtration Medium (Deodorizer and
+- `E13-1c` **Classes applied where they were verified** — Filtration Medium (Deodorizer and
   Water Sieve take sand *or* regolith), a Hatch eats rock rather than one rock, a Smooth
   Hatch eats any ore and gives back the matching metal at 75 %, and the Ethanol Distiller
   burns wood whichever tree it came off. Plus a Rock Crusher metal recipe, and a
   duplicate-id guard after two shipped specs turned out to be invisible copies
-- `E12-1b` **Naming the metal** — a node can say which member of a class it is using, and
+- `E13-1b` **Naming the metal** — a node can say which member of a class it is using, and
   an output that follows an input takes it: copper ore in, copper out. Unset stays generic
   and feeds anything; chosen feeds only what it really is, and the wiring is checked
   against the choice rather than the recipe
-- `E12-1` **Material classes** — a port can ask for "Metal Ore" and take any of them. It is
+- `E13-1` **Material classes** — a port can ask for "Metal Ore" and take any of them. It is
   a compatibility rule rather than a new kind of flow, so the solver never learned about
   it: everything was already grams. One Metal Refinery in the palette instead of one per
   ore, and 12 more converters seeded — Oxygen Diffuser, Steam Turbine, Oil Well, Glass
@@ -378,9 +384,9 @@ _(empty)_
 
 | id | P | Task | Definition of done |
 |---|---|---|---|
-| E0-1 | P0 | FVM pin | `.fvmrc` pins an exact stable Flutter version; `fvm flutter --version` works; `.fvm/` git-ignored except config |
-| E0-2 | P0 | Monorepo layout | `packages/oni_engine` (pure Dart, **no** flutter import), `app/` (Flutter), root `README.md` |
-| E0-3 | P0 | Lints + CI-ready scripts | `very_good_analysis` or `flutter_lints`, `dart analyze` clean, `dart test` runs |
+| E0-1 | ✅ | FVM pin | `.fvmrc` pins an exact stable Flutter version; `fvm flutter --version` works; `.fvm/` git-ignored except config |
+| E0-2 | ✅ | Monorepo layout | `packages/oni_engine` (pure Dart, **no** flutter import), `app/` (Flutter), root `README.md` |
+| E0-3 | ✅ | Lints + CI-ready scripts | `very_good_analysis` or `flutter_lints`, `dart analyze` clean, `dart test` runs |
 | E0-4 | P1 | GitHub Actions | analyze + test on push |
 | E0-5 | P2 | `melos` or simple `tool/` shell scripts for multi-package commands | one command runs all tests |
 
@@ -393,7 +399,7 @@ _(empty)_
 | E1-3 | P0 | `Port` | `(item, ratePerSecond, direction: input\|output, optional: temperature °C)` |
 | E1-4 | P0 | `ProcessSpec` | id, name, kind (`building` \| `critter` \| `plant` \| `duplicant` \| `source` \| `sink`), ports, `powerDraw`, `heatOutput`, `dupeLabourPerCycle`, `footprint`, tags |
 | E1-5 | P1 | Operating modes | one building = several specs (e.g. Oil Refinery is one, but Metal Refinery has one spec *per* metal; Generators have "on demand" vs "100% uptime") |
-| E1-6 | P1 | `uptime` factor on a node | a building fed at 60 % runs at 60 %; solver works in "effective building-seconds", UI shows both `count` and `physicalCount = ceil(count/uptime)` |
+| E1-6 | ✅ | `uptime` factor on a node | a building fed at 60 % runs at 60 %; solver works in "effective building-seconds", UI shows both `count` and `physicalCount = ceil(count/uptime)` |
 | E1-7 | ✅ | Temperature reported | ports carry a temperature and the app shows it; heat exchange is still not modelled |
 | E1-8 | P2 | Germs / disease | out of scope v1, keep a field so it can be added |
 
@@ -402,12 +408,12 @@ _(empty)_
 | id | P | Task | Notes |
 |---|---|---|---|
 | E2-1 | P0 | `PipelineNode` | `id`, `specId`, `count` (the solved variable), `pin?` |
-| E2-2 | P0 | `PipelineEdge` | `fromNode.outputPort → toNode.inputPort`, carries one item, has a `share` ∈ [0,1] of the source port's output |
+| E2-2 | ✅ | `PipelineEdge` | `fromNode.outputPort → toNode.inputPort`, carries one item, has a `share` ∈ [0,1] of the source port's output |
 | E2-3 | P0 | Auto-share | edges leaving the same output port default to an equal split; user can override. **This is what keeps the system square** — flows become a linear function of node counts only |
 | E2-4 | P0 | `Pin` kinds | `buildingCount(n)`, `itemRate(item, g/s, at a port)`, `itemStock(item, mass, over duration)` → converted to a rate |
 | E2-5 | P0 | Validation | edge item must match both ports; no duplicate edges; unknown spec ids; dangling pins |
 | E2-6 | P1 | Free ports | an input port with no incoming edge = **external supply** (raw resource you must provide); an output port with no outgoing edge = **surplus/vent**. Both reported, never an error |
-| E2-7 | P1 | Cycles | recycling loops (petroleum boiler, SPOM hydrogen return) must solve — the linear system handles them natively, add regression tests |
+| E2-7 | ✅ | Cycles | recycling loops (petroleum boiler, SPOM hydrogen return) must solve — the linear system handles them natively, add regression tests |
 | E2-8 | P2 | Sub-pipelines | a saved pipeline usable as a single node in a bigger one |
 
 ## E3 — Solver (the heart)
@@ -419,12 +425,13 @@ _(empty)_
 | E3-2 | P0 | Gauss-Jordan w/ partial pivoting | dense is fine (graphs are ≤ a few hundred nodes); detect rank, report `underdetermined` (needs another pin) / `inconsistent` (contradictory pins) |
 | E3-3 | P0 | Result object | per-node `count`, per-edge `flow` (g/s), per-item global balance, list of `Shortage` and `Surplus` |
 | E3-4 | ✅ | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
-| E3-5 | P1 | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
-| E3-6 | P1 | Bottleneck detection | which node caps the pipeline when a raw input is capped |
+| E3-5 | ✅ | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
+| E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
 | E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | P2 | Sensitivity | "+1 Electrolyzer ⇒ +X g/s O₂, +Y W" |
 | E3-9 | P1 | Solver perf test | 500-node graph solves < 50 ms |
+| E3-5b | ✅ | Floor space | every building's footprint was recorded and never shown; per node and in total, counting whole buildings |
 
 ## E4 — Game data
 
@@ -438,22 +445,53 @@ _(empty)_
 | E4-5 | P1 | Seed set — refining | Metal Refinery (per ore), Rock Crusher, Kiln, Glass Forge, Molecular Forge |
 | E4-6 | P1 | Seed set — food & farming | plants (per fertiliser/irrigation mode), Grill, Microbe Musher, Electric Grill, Gas Range |
 | E4-7 | P1 | Seed set — duplicants | O₂ consumption, CO₂ / dirt / polluted-water output, calories, so "20 dupes" is a pinnable node |
-| E4-8 | P2 | Ranching | critters: food in, meat/eggs/coal out, per-critter |
+| E4-8 | ✅ | Ranching | critters: food in, meat/eggs/coal out, per-critter |
 | E4-9 | P2 | DLC toggle | Spaced Out! variants (rockets, radiation), base-game filter |
 | E4-11 | P1 | Confirm the unverified DLC rates once the wiki fills them in |
-| E4-12 | P2 | Palette filter by DLC |
+| E4-12 | ✅ | Palette filter by DLC |
 | E4-13 | ✅ | User-defined / overridable processes, edited in the app |
 | E4-17 | P2 | Share a custom recipe pack, so a wiki gap gets filled once for everyone |
 | E4-10 | P1 | Data version stamp | `dataVersion` + game build in the JSON so saved pipelines can warn on mismatch |
+| E4-9b | ✅ | The Aquatic critter roster | Beakon, Slogo, Gildgo, Orehull, Glo Squid, Seaquine, Kelpole — individual pages carry rates the summary table omits |
+| E4-12a | ✅ | The port menu obeys the palette filters | and learned about material classes while there |
+| E4-12b | ✅ | The recipe editor's item picker obeys them too | checking whether item pack tags could be trusted found three that were wrong |
+| E4-14 | ✅ | Geyser activity | `outputScale` scales what a node produces without touching what it consumes; worst/typical/best presets |
+| E4-14a | ✅ | Geysers, vents and volcanoes | 19 natural sources with wiki average rates and output temperatures |
+| E4-15 | ✅ | Six more base-game critters | Pip, Pokeshell, Gassy Moo, Plug Slug, Shove Vole, Shine Bug |
+| E4-16 | ✅ | Ranching costs and yields | eggs per groomed interval, meat over a lifespan, 12 s of Duplicant time a cycle each |
+| E4-18 | ✅ | Measured geyser figures | type the exact active percentage Field Research reports, not just a preset band |
+| E4-19 | ✅ | Ranching buildings | Grooming, Aquatic Grooming and Shearing Stations, sized by a capacity link rather than a pin |
+| E4-20 | P2 | Egg mass and shells | so shell-to-lime and omelette chains can be modelled |
+| E4-21 | ✅ | Wild versus groomed | a `(wild)` twin per ranched critter: no grooming, no Duplicant time, a tenth of the eggs |
+| E4-21b | P3 | Glo Squid and Seaquine wild twins | wants somebody to check in game which outputs the milking station takes |
+| E4-22 | P3 | The Grooming Station's power draw | if it is ever published |
+| E4-23 | P3 | Beeta, Sweetle and Grubgrub | rates unpublished, and a Beeta's 5-cycle life would be misrepresented by a per-cycle average |
+| E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
+| E4-25 | P3 | Firm up the inferred 50 % conversions | Pip and Pokeshell, and the Shine Bug's feed in kilograms |
+| E4-26 | P3 | The rest of both packs | Bammoth, Jawbo, Rhex, Gnit, Mimika, Lumb — yields unpublished or inexpressible |
+| E4-27 | P3 | Mercury and cinnabar processing |  |
+| E4-28 | P3 | Seaquine's ovolene rate |  |
+| E4-29 | ✅ | The remaining grazers, properly | Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real growth links |
+| E4-30 | ✅ | Plant growth as a capacity link | a grazing critter eats a fraction of a living plant, not kilograms off a pile |
+| E4-31 | ✅ | Wild plants | a wild twin per crop: no water, no fertiliser, a quarter of the speed |
+| E4-32 | P3 | Bammoth on Plume Squash | and Thimble Reed as the Pip's other crop |
+| E4-33 | ✅ | The food chain | Bristle Blossom, Dusk Cap, Waterweed, Sleet Wheat and the Electric Grill |
+| E4-34 | ✅ | Cooking | Gas Range, Deep Fryer and Sushi Bar, gas burned and Duplicant time included |
+| E4-34b | P2 | The Microbe Musher and Smoker | pages list what each recipe yields but not what goes into it; food quality likewise |
+| E4-35 | ✅ | Three more crops | Pincha Pepperplant, Thimble Reed, Nosh Sprout, each with a grazed twin |
+| E4-35b | P3 | Sporechid, and the Prehistoric and Aquatic food plants |  |
+| E4-36 | ✅ | Harvested and grazed are separate processes | offering both on one process let a farm be counted twice |
 
 ## E5 — Persistence & interop
 
 | id | P | Task |
 |---|---|---|
-| E5-1 | P1 | `Pipeline` ⇄ JSON (`toJson`/`fromJson`) with a schema version + migrations hook |
+| E5-1 | ✅ | `Pipeline` ⇄ JSON (`toJson`/`fromJson`) with a schema version + migrations hook |
 | E5-2 | P1 | Local save/load of user pipelines (`path_provider` + file, or `hive`/`isar` — decide in a spike) |
 | E5-3 | ✅ | Share a pipeline as a base64 code |
 | E5-4 | P2 | Import/export to clipboard |
+| E5-2a | ✅ | Persistence groundwork |
+| E5-6 | ✅ | Corrected recipes are named |
 
 ## E6 — App shell & foundations
 
@@ -472,7 +510,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E6-2 | P0 | State management | `PipelineController extends ChangeNotifier`: holds the `Pipeline`, the current `PipelineSolution`, selection, and an undo stack. No riverpod — the engine is pure and the app has one document |
 | E6-3 | P0 | Re-solve on every edit | any mutation re-runs the solver and repaints; target < 16 ms for a 100-node graph |
 | E6-4 | P1 | Undo/redo | trivial: `Pipeline` is immutable, so the stack is a `List<Pipeline>` |
-| E6-5 | P1 | Desktop-first window chrome, keyboard shortcuts (⌘Z, ⌫, ⌘F) |
+| E6-5 | ✅ | Desktop-first window chrome, keyboard shortcuts (⌘Z, ⌫, ⌘F) |
 | E6-6 | P2 | Multi-document: open several pipelines in tabs |
 
 ## E9 — Design system (`lib/design/`)
@@ -497,12 +535,17 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E7-3 | P0 | Edge painter | one `CustomPaint` *under* the nodes: bezier per edge, colour by item category, **thickness ∝ flow**, flow label at the midpoint |
 | E7-4 | P0 | Selection | click a node or an edge; selection drives the inspector |
 | E7-5 | P0 | Drag a node | updates `PipelineNode.x/y`, snaps to a grid |
-| E7-6 | P1 | Drag-from-port to connect | live bezier following the cursor; compatible target ports light up, incompatible ones dim; drop on empty space opens the palette filtered to processes that accept that item |
+| E7-6 | ✅ | Drag-from-port to connect | live bezier following the cursor; compatible target ports light up, incompatible ones dim; drop on empty space opens the palette filtered to processes that accept that item |
 | E7-7 | P1 | Delete | node or edge, with the edges of a deleted node going too |
 | E7-8 | P1 | Empty state | a real "add your first node" affordance, not a blank void |
 | E7-9 | ✅ | Auto-layout (layered / Sugiyama) |
-| E7-10 | P2 | Marquee select, group move |
-| E7-11 | P2 | Minimap |
+| E7-10 | ✅ | Marquee select, group move |
+| E7-11 | ✅ | Minimap |
+| E7-12 | ✅ | Tidy a selection |
+| E7-13 | P2 | Space-drag-to-pan |
+| E7-14 | ✅ | Fit a selection |
+| E7-15 | ✅ | The view glides |
+| E7-16 | ✅ | The view follows a drag off the edge |
 
 ## E10 — Panels & the pin interaction
 
@@ -513,19 +556,75 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-3 | P0 | Inspector | selected node: every port with its solved rate, what is connected, power, heat, uptime, and the `unverified` warning if the data ever carries one |
 | E10-4 | P1 | Summary bar | net power, total heat, raw inputs, net outputs, dupe labour — always visible |
 | E10-5 | ✅ | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
-| E10-6 | P1 | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
+| E10-6 | ✅ | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
 | E10-7 | ✅ | Per-cycle ⇄ per-second toggle |
 | E10-8 | P2 | Templates: start from SPOM, petroleum boiler, coal farm |
+| E10-9 | ✅ | The numbers on the wires are clickable |
+
+## E11 — What a build actually costs to run
+
+Started when the model could balance matter perfectly and still describe something
+unbuildable. Everything here is a thing the game charges you for that a flow graph
+does not see.
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E11-1 | ✅ | Conduit capacity | how many pipes, wires and rails a flow needs; a ratio that balances on paper is unbuildable at 40 kg/s down one pipe |
+| E11-2 | P2 | Pipe materials | 500 °C steam needs a pipe built of something that survives it, which depends on the material's limits rather than the flow alone |
+| E11-3 | ✅ | Pumps | generated per fluid the way sources and sinks are, since a pump is the same machine whatever it moves |
+| E11-4 | P2 | Filters and valves | a Gas Filter separates one gas from a mixed stream, and this model has no notion of a mixture |
+| E11-5 | P2 | Conduit heat | a pipe full of 95 °C water heats whatever it runs past |
+| E11-6 | P2 | Temperature mixing | two flows meeting average out by mass and specific heat; the app reports the temperature a port declares, no more |
+| E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
+| E11-7b | P3 | What a Gasket costs | 50 kg of plastic or rubber makes some unstated number of them |
+
+## E12 — What using it turned up
+
+Not planned. Every row here is something that only showed up once the app was being used
+to build something real, which is a different activity from writing it.
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E12-1 | ✅ | Saved builds survive the data changing | splitting the plants removed ports that saved builds were wired by; repair moves a node to the sibling that still has them |
+| E12-2 | ✅ | Zoom that can be found | a trackpad pinch did nothing at all, and the only other way in was a keyboard shortcut nobody had been told about |
+| E12-3 | ✅ | Nodes away from the origin can be clicked | the node layer was laid out at viewport size, so anything outside it was painted and dead |
+| E12-4 | ✅ | A dragged card follows the pointer | three faults compounding: a doubled zoom correction, per-frame snapping discarding remainders, and the drag slop being lost |
+| E12-5 | ✅ | The scale warning speaks English | it said "Not enough pins: spare could be anything", which is three pieces of jargon in six words |
+| E12-6 | ✅ | Selecting a node goes to it | being told which node is the problem is no use when it is off screen |
+| E12-7 | ✅ | Two builds on one canvas | an amount belongs to the build it was given to, not to the page |
+| E12-8 | ✅ | ⌘C / ⌘V for nodes | copy a selection into the same canvas or another build |
+
+## E13 — Materials as classes
+
+Started when the palette was heading for one Metal Refinery per ore. A port can ask for a
+class of material and take any member; it is a compatibility rule rather than a new kind of
+flow, so the solver never had to learn about it.
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E13-1 | ✅ | Material classes | Metal Ore, Refined Metal, Raw Mineral, Compostable, Filtration Medium, Cultivable Soil, Wood; validated on load, no class of classes |
+| E13-1b | ✅ | Naming the metal | a node says which member it uses, and an output that follows an input takes it from there: copper ore in, copper out |
+| E13-1c | ✅ | Classes applied where verified | Deodorizer and Water Sieve on Filtration Medium, a Hatch on rock, a Smooth Hatch on any ore, the Ethanol Distiller on wood |
+| E13-2 | ✅ | The cooling loop | Aquatuner and Thermo Regulator move heat, the Steam Turbine deletes it; heat ports at both ends so a build must say where it went |
+| E13-2b | P2 | The rest of the roster | Supermaterial Refinery, Molecular Forge, Spice Grinder, Dehydrator, Smoker |
+| E13-3 | P2 | The Crafting Station | every recipe is known except how many gaskets 50 kg of plastic makes |
+| E13-4 | P3 | Lead, and the metals behind galena | the ore is in the class with nothing to refine into |
+| E13-5 | P3 | Sage Hatch's organics | polluted dirt, slime, algae, dirt, fertiliser and most Duplicant food: a class this app does not have |
+| E13-6 | P2 | Alternative diets | a Plug Slug eats ore *or* refined metal, and the model has no "either" — one spec per diet is the answer |
+| E13-7 | P3 | Rot Pile | a Pokeshell's second food and the Compost's second input |
+| E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
+| E13-9 | P2 | Aquatuner and Thermo Regulator for other coolants | the heat moved is the coolant's specific heat times 14 °C, so a class would be wrong |
 
 ## E8 — Quality
 
 | id | P | Task |
 |---|---|---|
-| E8-1 | P0 | Unit tests for every solver path (DAG, cycle, underdetermined, inconsistent, shortage, surplus) |
+| E8-1 | ✅ | Unit tests for every solver path (DAG, cycle, underdetermined, inconsistent, shortage, surplus) |
 | E8-2 | P1 | Golden real-world scenarios: SPOM, petroleum boiler, oxylite chain, coal farm — with hand-checked expected numbers |
 | E8-3 | ✅ | Property test: any solved graph satisfies mass balance within ε |
-| E8-4 | P2 | Widget/golden tests for the canvas |
+| E8-4 | ✅ | Widget/golden tests for the canvas |
 | E8-5 | P2 | Benchmarks in CI |
+| E8-3b | ✅ | Mass-balance audit |
 
 ---
 
