@@ -49,12 +49,14 @@ class PipelineBuilder {
   String addSink(String itemId, {String? nodeId, double x = 0, double y = 0}) =>
       add(sinkSpecId(itemId), nodeId: nodeId ?? 'sink_$itemId', x: x, y: y);
 
-  /// Connects two explicit ports.
+  /// Connects two explicit ports. Defaults to [EdgeMode.pull]: the consumer
+  /// takes what it needs and the producer is sized to cover it.
   String connect(
     String fromNodeId,
     String fromPortId,
     String toNodeId,
     String toPortId, {
+    EdgeMode mode = EdgeMode.pull,
     double? share,
     String? edgeId,
   }) {
@@ -66,6 +68,7 @@ class PipelineBuilder {
       fromPortId: fromPortId,
       toNodeId: toNodeId,
       toPortId: toPortId,
+      mode: mode,
       share: share,
     ));
     return resolvedId;
@@ -77,13 +80,14 @@ class PipelineBuilder {
     String fromNodeId,
     String toNodeId,
     String itemId, {
+    EdgeMode mode = EdgeMode.pull,
     double? share,
     String? edgeId,
   }) {
     final fromPort = _solePort(fromNodeId, itemId, PortDirection.output);
     final toPort = _solePort(toNodeId, itemId, PortDirection.input);
     return connect(fromNodeId, fromPort, toNodeId, toPort,
-        share: share, edgeId: edgeId);
+        mode: mode, share: share, edgeId: edgeId);
   }
 
   /// "I have this many of these."

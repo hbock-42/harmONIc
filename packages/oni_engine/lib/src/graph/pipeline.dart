@@ -72,11 +72,30 @@ class PipelineNode {
       };
 }
 
+/// Which end of an edge decides how much flows along it.
+enum EdgeMode {
+  /// The **consumer** decides: this edge carries what its target needs, and the
+  /// producer scales up to cover the total pull. This is the default, because it
+  /// is how you plan a build — "I have 20 dupes, how many Electrolyzers?".
+  pull,
+
+  /// The **producer** decides: this edge carries a fixed fraction of the source
+  /// port's output. Use it to model a deliberate split ("half the oxygen goes
+  /// left"), or to audit a base you have already built.
+  push;
+
+  static EdgeMode parse(String raw) => EdgeMode.values.firstWhere(
+        (m) => m.name == raw,
+        orElse: () => throw FormatException('Unknown edge mode "$raw"'),
+      );
+}
+
 /// A directed link from one node's output port to another node's input port.
 ///
-/// [share] is the fraction of the source port's production that travels here.
-/// `null` means "split what is left equally with the other unshared edges of
-/// that port" — see docs/SOLVER.md §3.
+/// [share] is a fraction between 0 and 1, read against whichever end drives the
+/// edge: the source port's production for [EdgeMode.push], the target port's
+/// demand for [EdgeMode.pull]. `null` means "split what is left equally with the
+/// other unshared edges of that port" — see docs/SOLVER.md §3.
 class PipelineEdge {
   const PipelineEdge({
     required this.id,
@@ -84,6 +103,7 @@ class PipelineEdge {
     required this.fromPortId,
     required this.toNodeId,
     required this.toPortId,
+    this.mode = EdgeMode.pull,
     this.share,
   });
 
@@ -93,6 +113,9 @@ class PipelineEdge {
         fromPortId: json['fromPortId'] as String,
         toNodeId: json['toNodeId'] as String,
         toPortId: json['toPortId'] as String,
+        mode: json['mode'] == null
+            ? EdgeMode.pull
+            : EdgeMode.parse(json['mode'] as String),
         share: (json['share'] as num?)?.toDouble(),
       );
 
@@ -101,14 +124,21 @@ class PipelineEdge {
   final String fromPortId;
   final String toNodeId;
   final String toPortId;
+  final EdgeMode mode;
   final double? share;
 
-  PipelineEdge copyWith({double? share, bool clearShare = false}) => PipelineEdge(
+  PipelineEdge copyWith({
+    EdgeMode? mode,
+    double? share,
+    bool clearShare = false,
+  }) =>
+      PipelineEdge(
         id: id,
         fromNodeId: fromNodeId,
         fromPortId: fromPortId,
         toNodeId: toNodeId,
         toPortId: toPortId,
+        mode: mode ?? this.mode,
         share: clearShare ? null : (share ?? this.share),
       );
 
@@ -118,6 +148,7 @@ class PipelineEdge {
         'fromPortId': fromPortId,
         'toNodeId': toNodeId,
         'toPortId': toPortId,
+        if (mode != EdgeMode.pull) 'mode': mode.name,
         if (share != null) 'share': share,
       };
 }

@@ -39,7 +39,29 @@ class PipelineSolver {
     final index = <String, int>{
       for (var i = 0; i < nodes.length; i++) nodes[i].id: i,
     };
-    final shares = resolveShares(pipeline);
+    final factors = resolveEdgeFactors(pipeline);
+
+    /// The flow along [edge] as a linear term in the node counts, added into
+    /// [row]. Which node it lands on is the whole point of the two modes: a
+    /// push edge is a fraction of what its source makes, a pull edge is a
+    /// fraction of what its target needs.
+    void addFlowTerm(List<double> row, PipelineEdge edge, double sign) {
+      final factor = factors[edge.id];
+      if (factor == null) return;
+      if (factor.mode == EdgeMode.push) {
+        final port = database
+            .processOrThrow(pipeline.nodeOrThrow(edge.fromNodeId).specId)
+            .portByIdOrThrow(edge.fromPortId);
+        row[index[edge.fromNodeId]!] +=
+            sign * factor.fraction * port.ratePerSecond;
+      } else {
+        final port = database
+            .processOrThrow(pipeline.nodeOrThrow(edge.toNodeId).specId)
+            .portByIdOrThrow(edge.toPortId);
+        row[index[edge.toNodeId]!] +=
+            sign * factor.fraction * port.ratePerSecond;
+      }
+    }
 
     final rows = <List<double>>[];
     final rhs = <double>[];
@@ -51,20 +73,30 @@ class PipelineSolver {
       rhs.add(b);
     }
 
-    // Balance: every input port that has at least one incoming edge must be
-    // fed exactly. Unfed input ports are external supply, not an equation.
+    // Balance equations. A port only gets one when the edges attached to it are
+    // driven from the *other* end:
+    //
+    //  - an input port fed by a push edge must add up to its demand;
+    //  - an output port drained by a pull edge must add up to its production.
+    //
+    // A port whose edges are all driven from its own side needs no equation:
+    // pull edges into an input port already sum to that port's demand by
+    // construction, and push edges out of an output port take a fraction of it.
+    // Whatever is left over is external supply, or surplus.
     for (final node in nodes) {
       final spec = database.processOrThrow(node.specId);
-      for (final port in spec.inputs) {
-        final incoming = pipeline.edgesInto(PortRef(node.id, port.id));
-        if (incoming.isEmpty) continue;
+      for (final port in spec.ports) {
+        final ref = PortRef(node.id, port.id);
+        final attached =
+            port.isInput ? pipeline.edgesInto(ref) : pipeline.edgesOutOf(ref);
+        if (attached.isEmpty) continue;
+        final drivenFromFarEnd = port.isInput
+            ? attached.any((e) => e.mode == EdgeMode.push)
+            : attached.any((e) => e.mode == EdgeMode.pull);
+        if (!drivenFromFarEnd) continue;
         addRow((row) {
-          for (final edge in incoming) {
-            final sourceSpec =
-                database.processOrThrow(pipeline.nodeOrThrow(edge.fromNodeId).specId);
-            final sourcePort = sourceSpec.portByIdOrThrow(edge.fromPortId);
-            row[index[edge.fromNodeId]!] +=
-                (shares[edge.id] ?? 0) * sourcePort.ratePerSecond;
+          for (final edge in attached) {
+            addFlowTerm(row, edge, 1);
           }
           row[index[node.id]!] -= port.ratePerSecond;
         }, 0);
@@ -108,8 +140,9 @@ class PipelineSolver {
         status = SolveStatus.inconsistent;
         resolvedIssues.add(const PipelineIssue(
           IssueSeverity.error,
-          'The pins contradict each other — no scale satisfies them all.',
+          'No scale satisfies every constraint at once.',
         ));
+        resolvedIssues.addAll(_overCommittedOutputHints(pipeline));
     }
 
     for (var i = 0; i < counts.length; i++) {
@@ -134,6 +167,7 @@ class PipelineSolver {
       nodeResults[node.id] = NodeResult(
         nodeId: node.id,
         specId: spec.id,
+        kind: spec.kind,
         count: counts[index[node.id]!],
         uptime: node.uptime,
         powerWatts: spec.netPowerWatts,
@@ -142,16 +176,22 @@ class PipelineSolver {
       );
     }
 
-    // Edge flows.
+    // Edge flows, read off whichever end drives each edge.
     final edgeFlows = <String, double>{};
     for (final edge in pipeline.edges) {
-      final sourceNode = pipeline.nodeOrThrow(edge.fromNodeId);
-      final sourcePort = database
-          .processOrThrow(sourceNode.specId)
-          .portByIdOrThrow(edge.fromPortId);
-      edgeFlows[edge.id] = (shares[edge.id] ?? 0) *
-          sourcePort.ratePerSecond *
-          counts[index[edge.fromNodeId]!];
+      final factor = factors[edge.id];
+      if (factor == null) {
+        edgeFlows[edge.id] = 0;
+        continue;
+      }
+      final driving = factor.mode == EdgeMode.push ? edge.fromNodeId : edge.toNodeId;
+      final portId =
+          factor.mode == EdgeMode.push ? edge.fromPortId : edge.toPortId;
+      final port = database
+          .processOrThrow(pipeline.nodeOrThrow(driving).specId)
+          .portByIdOrThrow(portId);
+      edgeFlows[edge.id] =
+          factor.fraction * port.ratePerSecond * counts[index[driving]!];
     }
 
     // Port balances.
@@ -222,6 +262,32 @@ class PipelineSolver {
 extension SolvePinned on PipelineSolver {
   PipelineSolution solvePinned(Pipeline pipeline, Pin pin) =>
       solve(pipeline.withOnlyPin(pin));
+}
+
+/// An inconsistent system is usually not a contradiction between *pins* — it is
+/// a by-product with nowhere to go. A port drained only by pull edges has to
+/// deliver exactly what it makes, so an Electrolyzer whose hydrogen is pulled by
+/// a generator cannot also be free to vent the rest. Naming those ports turns a
+/// baffling failure into a one-click fix.
+List<PipelineIssue> _overCommittedOutputHints(Pipeline pipeline) {
+  final hints = <PipelineIssue>[];
+  for (final node in pipeline.nodes) {
+    final pulled = <String>{};
+    for (final edge in pipeline.edges) {
+      if (edge.fromNodeId != node.id || edge.mode != EdgeMode.pull) continue;
+      pulled.add(edge.fromPortId);
+    }
+    for (final portId in pulled) {
+      hints.add(PipelineIssue(
+        IssueSeverity.info,
+        'Port ${node.id}.$portId must deliver exactly what it produces, because '
+        'everything drawing from it pulls. If some of it should vent or go to '
+        'storage, connect an output node to it.',
+        nodeId: node.id,
+      ));
+    }
+  }
+  return hints;
 }
 
 /// Kept close to the solver so power/heat stay ordinary items everywhere.

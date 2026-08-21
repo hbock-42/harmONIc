@@ -54,10 +54,23 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Edges: who decides the flow
+
+By default an edge **pulls**: the consumer takes what it needs and the producer is
+sized to cover the total. Pin 20 duplicants and the Electrolyzers, the water and
+the power all fall out. Switch an edge to **push** with an explicit `share` when
+you want a deliberate split, or when auditing a base you have already built.
+
+The one thing to know: a port drained only by pull edges must deliver *exactly*
+what it makes — that equality is what sizes the producer. So a by-product you mean
+to vent needs an output node to go to. Forget one and the solver says which port.
+
 ## Game data
 
 `packages/oni_engine/lib/data/oni_data.json` is the source of truth; run
 `fvm dart run tool/gen_data.dart` after editing it to refresh the embedded copy.
 
-⚠️ Processes tagged **`unverified`** were entered from memory and still need
-checking against the wiki — see `KANBAN.md` epic **E4**.
+Every process has been checked against [the wiki](https://oxygennotincluded.wiki.gg)
+and carries a `verified` tag; a test fails if any process loses it. Batch buildings
+(Rock Crusher, Metal Refinery) are stated as continuous rates — 100 kg per 40 s
+operation becomes 2500 g/s, with the duplicant's time booked as 600 s/cycle.

@@ -147,18 +147,21 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
         'Nothing is pinned — pin a node to give the pipeline a scale'));
   }
 
-  // Over-committed output ports.
-  final portShareTotals = <PortRef, double>{};
+  // Ports that promise more than 100 % of themselves. Push edges divide up an
+  // output port's production; pull edges divide up an input port's demand.
+  final claims = <PortRef, double>{};
   for (final edge in pipeline.edges) {
     if (edge.share == null) continue;
-    final ref = PortRef(edge.fromNodeId, edge.fromPortId);
-    portShareTotals[ref] = (portShareTotals[ref] ?? 0) + edge.share!;
+    final ref = edge.mode == EdgeMode.push
+        ? PortRef(edge.fromNodeId, edge.fromPortId)
+        : PortRef(edge.toNodeId, edge.toPortId);
+    claims[ref] = (claims[ref] ?? 0) + edge.share!;
   }
-  portShareTotals.forEach((ref, total) {
+  claims.forEach((ref, total) {
     if (total > 1.0000001) {
       issues.add(PipelineIssue(
           IssueSeverity.error,
-          'Port $ref sends ${(total * 100).toStringAsFixed(0)} % of its output '
+          'Port $ref is divided into ${(total * 100).toStringAsFixed(0)} % '
           '— shares must sum to at most 100 %',
           nodeId: ref.nodeId));
     }

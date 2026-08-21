@@ -1,6 +1,7 @@
 import '../graph/pipeline.dart';
 import '../graph/validation.dart';
 import '../model/port.dart';
+import '../model/process_spec.dart';
 
 enum SolveStatus {
   /// Exactly one solution; the numbers are trustworthy.
@@ -21,6 +22,7 @@ class NodeResult {
   const NodeResult({
     required this.nodeId,
     required this.specId,
+    required this.kind,
     required this.count,
     required this.uptime,
     required this.powerWatts,
@@ -30,6 +32,13 @@ class NodeResult {
 
   final String nodeId;
   final String specId;
+  final ProcessKind kind;
+
+  /// Source and sink nodes stand for the world outside the build, so they are
+  /// left out of the power, heat and labour totals — a spare-power outlet is
+  /// where surplus *goes*, not something that draws.
+  bool get isBoundary =>
+      kind == ProcessKind.source || kind == ProcessKind.sink;
 
   /// Effective running units. Fractional is meaningful: 2.5 Electrolyzers means
   /// three of them, one running half the time.
@@ -162,6 +171,7 @@ class PipelineSolution {
   double get totalHeatKdtu {
     var total = 0.0;
     for (final n in nodes.values) {
+      if (n.isBoundary) continue;
       total += n.heatKdtu * n.count;
     }
     return total;
@@ -170,6 +180,7 @@ class PipelineSolution {
   double get dupeLabourSecondsPerCycle {
     var total = 0.0;
     for (final n in nodes.values) {
+      if (n.isBoundary) continue;
       total += n.dupeLabourSecondsPerCycle * n.count;
     }
     return total;
@@ -193,6 +204,7 @@ class PipelineSolution {
   double _sumPositive(double Function(NodeResult) f) {
     var total = 0.0;
     for (final n in nodes.values) {
+      if (n.isBoundary) continue;
       final v = f(n) * n.count;
       if (v > 0) total += v;
     }
@@ -202,6 +214,7 @@ class PipelineSolution {
   double _sumNegative(double Function(NodeResult) f) {
     var total = 0.0;
     for (final n in nodes.values) {
+      if (n.isBoundary) continue;
       final v = f(n) * n.count;
       if (v < 0) total += v;
     }

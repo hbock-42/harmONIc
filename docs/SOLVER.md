@@ -24,35 +24,55 @@ One variable per node: `x_n` = the number of *effective running units* of that n
 Edge flows are **not** free variables — see §3. That is what keeps the system square and
 lets a single pin determine the whole graph.
 
-## 3. Edges and shares
+## 3. Edges: who decides the flow
 
 An edge leaves an **output port** and enters an **input port**, carrying one item.
-Each edge has a `share` ∈ [0, 1]: the fraction of that output port's production it carries.
+Each edge has a **mode**, and that mode says which end decides how much flows.
 
-- explicit shares are respected;
-- edges with no explicit share split `1 − Σ(explicit)` equally between them;
-- if the shares of a port sum to less than 1, the remainder is **surplus** (vented / stored).
+| mode | the flow is | use it for |
+|---|---|---|
+| `pull` *(default)* | what the **target needs** | planning: "20 dupes breathe 2 kg/s — how many Electrolyzers?" |
+| `push` | a fixed fraction of what the **source makes** | a deliberate split, or auditing a base you already built |
 
-So the flow on edge `e` is a linear function of one variable:
+Each edge also has a `share` ∈ [0, 1], read against whichever end drives it: a fraction of
+the source port's *production* for `push`, of the target port's *demand* for `pull`.
+Explicit shares are respected; unshared edges of the same group split `1 − Σ(explicit)`
+equally. Either way the flow stays a linear function of **one** node count:
 
 ```
-f_e = share_e · outRate(src, srcPort) · x_src
+push:  f_e = share_e · outRate(src, srcPort) · x_src
+pull:  f_e = share_e · inRate(tgt, tgtPort)  · x_tgt
 ```
 
-> **v1 limitation, on purpose.** Equal splitting is a *modelling choice*, not an optimum.
-> `E3-7` upgrades the solver to an LP that picks the shares itself (maximise a target output,
-> minimise a raw input). Until then the UI exposes share sliders.
+On a single edge the two modes are the *same equation* — the difference only bites when a
+port has several edges. Then `push` locks its consumers into a fixed ratio, while `pull`
+lets each consumer size itself and makes the producer cover the sum. That is why `pull` is
+the default: it is the direction you think in when planning a build, and it is what makes
+one output feeding a dupe crew *and* an Oxylite Refinery come out right.
 
 ## 4. Equations
 
-**Balance.** For every input port `p` of node `n` that has at least one incoming edge:
+A port earns an equation only when the edges attached to it are driven from the **far** end:
+
+- an **input** port with at least one `push` edge: what arrives must add up to its demand;
+- an **output** port with at least one `pull` edge: what is taken must add up to its production.
 
 ```
-Σ_{e → (n,p)} share_e · outRate(src_e, port_e) · x_{src_e}  −  inRate(n, p) · x_n  =  0
+input  (n,p):  Σ_{e → (n,p)} f_e  −  inRate(n, p)  · x_n  =  0
+output (n,p):  Σ_{e ← (n,p)} f_e  −  outRate(n, p) · x_n  =  0
 ```
 
-An input port with **no** incoming edge produces no equation: it is an *external supply*
-(a raw resource you are expected to provide) and is reported as such.
+A port whose edges are all driven from its own side needs no equation, because it is already
+an identity: `pull` edges into an input port sum to that port's demand by construction, and
+`push` edges out of an output port each take a fraction of it. Whatever is left unclaimed is
+**external supply** (on an input port) or **surplus** (on an output port), and is reported
+rather than treated as an error.
+
+> **The trade-off to know about.** An output port drained *only* by pull edges must deliver
+> exactly what it makes — that equality is what sizes the producer. So a by-product you mean
+> to vent needs somewhere to go: connect an output node. Forget one and the system comes out
+> inconsistent, so the solver names the offending ports in its diagnostics instead of just
+> shrugging. A future `allowSurplus` flag per port (`E3-7`) would remove the papercut.
 
 **Pin.** One row per pin:
 
@@ -78,6 +98,10 @@ Outcomes:
 Cycles (SPOM hydrogen return, petroleum boiler) need no special handling: they are simply
 a matrix with entries above and below the diagonal.
 
+When the system is inconsistent, the solver additionally lists every output port that is
+drained only by pull edges — the usual culprit is a by-product with nowhere to vent, not a
+genuine contradiction between pins.
+
 ## 6. After the solve
 
 - **edge flows** `f_e = share_e · outRate · x_src`
@@ -94,3 +118,5 @@ a matrix with entries above and below the diagonal.
 2. Mass in = mass out + accumulation, per item, within ε.
 3. Scaling a pin by `k` scales every `x_n` and `f_e` by `k` (the system is homogeneous apart
    from the pin row).
+4. On a single-edge link, `push` and `pull` give identical answers.
+5. Two consumers pulling from one producer size it to their **sum**, and each needs its own pin.

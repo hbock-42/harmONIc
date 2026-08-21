@@ -28,9 +28,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
-- `E4-*` **Verify the game numbers** — every process tagged `unverified` in
-  `oni_data.json` was typed from memory. Check each against the wiki, drop the tag.
-- `E4-3..7` Widen the seed data (power, liquids, refining, food, critters)
+- `E4-3..7` Widen the seed data (more generators, farming, food, critters, ranching)
+- `E3-7b` `allowSurplus` per output port, so a vented by-product does not need a
+  sink node just to keep the system consistent
 - `E3-4` Whole-building rounding as a first-class solver mode (currently only a
   per-node `wholeCount` / `utilisation` getter)
 - `E5-1..2` Save/load pipelines to disk
@@ -56,7 +56,16 @@ _(empty)_
 - `E4-0..2` Data format, generator (`tool/gen_data.dart`), 39 items / 19 processes seeded,
   auto-generated `source:` / `sink:` processes per item
 - `E5-1` `Pipeline` ⇄ JSON with a schema version
-- `E8-1` 30 engine tests: DAG, cycle, splits, underdetermined, inconsistent, surplus, scaling
+- `E8-1` 41 engine tests: DAG, cycle, splits, pull/push, underdetermined, inconsistent,
+  surplus, scaling, wiki-regression numbers
+- `E2-2` **Demand-driven edges** — `EdgeMode.pull` (default) sizes a producer from what
+  its consumers take; `EdgeMode.push` keeps fixed-fraction splits for audits. Two
+  consumers on one output now add up instead of being carved 50/50
+- `E3-6` Inconsistent systems name the output ports with nowhere to vent, instead of
+  just reporting a contradiction
+- `E4-*` **Every process checked against the wiki** (oxygennotincluded.wiki.gg, 2026-08-21).
+  12 of 19 were wrong; the Desalinator split into one spec per recipe; batch buildings
+  restated as continuous rates. A test now fails if any process loses its `verified` tag
 
 ---
 
@@ -108,6 +117,7 @@ _(empty)_
 | E3-5 | P1 | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | P1 | Bottleneck detection | which node caps the pipeline when a raw input is capped |
 | E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |
+| E3-7b | P1 | `allowSurplus` per output port | today a vented by-product needs a sink node, because a pulled output port must balance exactly |
 | E3-8 | P2 | Sensitivity | "+1 Electrolyzer ⇒ +X g/s O₂, +Y W" |
 | E3-9 | P1 | Solver perf test | 500-node graph solves < 50 ms |
 

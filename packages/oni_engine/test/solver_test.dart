@@ -109,13 +109,13 @@ void main() {
       expect(s.issues.where((i) => i.isError), isEmpty);
     });
 
-    test('shares split an output between consumers', () {
+    test('push shares split an output between consumers', () {
       final b = PipelineBuilder(db, name: 'split')
         ..add('electrolyzer', nodeId: 'elec')
         ..addSink('oxygen', nodeId: 'a')
         ..addSink('oxygen', nodeId: 'b')
-        ..connectItem('elec', 'a', 'oxygen')
-        ..connectItem('elec', 'b', 'oxygen')
+        ..connectItem('elec', 'a', 'oxygen', mode: EdgeMode.push)
+        ..connectItem('elec', 'b', 'oxygen', mode: EdgeMode.push)
         ..pinCount('elec', 1);
       final s = solver.solve(b.build());
 
@@ -123,16 +123,136 @@ void main() {
       expect(s.nodes['b']!.count, closeTo(444, 1e-6));
     });
 
-    test('an explicit share leaves the rest as surplus', () {
+    test('an explicit push share leaves the rest as surplus', () {
       final b = PipelineBuilder(db, name: 'partial')
         ..add('electrolyzer', nodeId: 'elec')
         ..addSink('oxygen', nodeId: 'a')
-        ..connect('elec', 'oxygen', 'a', sinkPortId, share: 0.25)
+        ..connect('elec', 'oxygen', 'a', sinkPortId,
+            mode: EdgeMode.push, share: 0.25)
         ..pinCount('elec', 1);
       final s = solver.solve(b.build());
 
       expect(s.nodes['a']!.count, closeTo(222, 1e-6));
       expect(s.externalOutputs['oxygen'], closeTo(666, 1e-6));
+    });
+  });
+
+  group('demand-driven edges', () {
+    test('a producer is sized by what its consumers pull', () {
+      // The whole point: 20 dupes breathe 2000 g/s, so how many Electrolyzers?
+      final b = PipelineBuilder(db, name: 'life support')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('duplicant', nodeId: 'dupes')
+        ..addSink('hydrogen')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'dupes', 'oxygen')
+        ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+        ..pinCount('dupes', 20);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['elec']!.count, closeTo(2000 / 888, 1e-9));
+      expect(s.nodes['src_water']!.count, closeTo(2000 / 0.888, 1e-6));
+    });
+
+    test('two consumers add up instead of splitting a fixed ratio', () {
+      // Each consumer is independent, so both need pinning — and the producer
+      // covers their sum rather than being carved 50/50.
+      final b = PipelineBuilder(db, name: 'shared oxygen')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('duplicant', nodeId: 'dupes')
+        ..add('oxylite_refinery', nodeId: 'oxylite')
+        ..addSink('hydrogen')
+        ..connectItem('elec', 'dupes', 'oxygen')
+        ..connectItem('elec', 'oxylite', 'oxygen')
+        ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+        ..pinCount('dupes', 6)
+        ..pinCount('oxylite', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      // 6 dupes × 100 g/s + one refinery × 600 g/s = 1200 g/s of oxygen.
+      expect(s.nodes['elec']!.count, closeTo(1200 / 888, 1e-9));
+      expect(s.edgeFlows.values.reduce((a, b) => a > b ? a : b),
+          closeTo(600, 1e-6));
+    });
+
+    test('a generator is sized by the grid hanging off it', () {
+      // Two sieves and two skimmers draw 480 W, so 0.8 of a coal generator
+      // covers them — meaning build one and expect it idle a fifth of the time.
+      final b = PipelineBuilder(db, name: 'grid')
+        ..add('coal_generator', nodeId: 'gen')
+        ..add('water_sieve', nodeId: 'sieve')
+        ..add('carbon_skimmer', nodeId: 'skimmer')
+        ..connectItem('gen', 'sieve', 'power')
+        ..connectItem('gen', 'skimmer', 'power')
+        ..pinCount('sieve', 2)
+        ..pinCount('skimmer', 2);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['gen']!.count, closeTo(480 / 600, 1e-9));
+      expect(s.nodes['gen']!.wholeCount, 1);
+      expect(s.nodes['gen']!.utilisation, closeTo(0.8, 1e-9));
+      expect(s.externalInputs['coal'], closeTo(800, 1e-6));
+    });
+
+    test('a spare-power outlet is not counted as a consumer', () {
+      // Regression: sinks stand for the world outside the build, so routing
+      // 360 W of surplus into one must not read as 360 W of extra draw.
+      final b = PipelineBuilder(db, name: 'boundary')
+        ..add('coal_generator', nodeId: 'gen')
+        ..add('water_sieve', nodeId: 'sieve')
+        ..addSink('power', nodeId: 'spare')
+        ..connectItem('gen', 'sieve', 'power')
+        ..connectItem('gen', 'spare', 'power')
+        ..pinCount('gen', 1)
+        ..pinCount('sieve', 2);
+      final s = solver.solve(b.build());
+
+      expect(s.powerConsumedWatts, closeTo(240, 1e-6));
+      expect(s.powerGeneratedWatts, closeTo(600, 1e-6));
+      expect(s.netPowerWatts, closeTo(360, 1e-6));
+      expect(s.totalHeatKdtu, closeTo(9 + 2 * 4, 1e-6),
+          reason: 'generator + two sieves; the sink itself emits nothing');
+    });
+
+    test('a spare-power outlet absorbs what the grid does not use', () {
+      final b = PipelineBuilder(db, name: 'grid with slack')
+        ..add('coal_generator', nodeId: 'gen')
+        ..add('water_sieve', nodeId: 'sieve')
+        ..addSink('power', nodeId: 'spare')
+        ..connectItem('gen', 'sieve', 'power')
+        ..connectItem('gen', 'spare', 'power')
+        ..pinCount('gen', 1)
+        ..pinCount('sieve', 2);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['spare']!.count, closeTo(600 - 240, 1e-6));
+    });
+
+    test('a forgotten outlet is explained, not just rejected', () {
+      // Hydrogen is pulled by the generator, so the Electrolyzer's hydrogen port
+      // must be fully consumed — but the water pin says otherwise.
+      final b = PipelineBuilder(db, name: 'no vent')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('hydrogen_generator', nodeId: 'hgen')
+        ..addSink('power', nodeId: 'spare')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'hgen', 'hydrogen')
+        ..connectItem('hgen', 'spare', 'power')
+        ..pinCount('elec', 1)
+        ..pinCount('hgen', 5);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.inconsistent);
+      expect(
+        s.issues.map((i) => i.message).join('\n'),
+        contains('connect an output node'),
+      );
     });
   });
 
@@ -159,14 +279,17 @@ void main() {
 
     test('a power loop solves without special handling', () {
       // The hydrogen generator feeds the electrolyzer's own power port: a real
-      // cycle in the graph, which the linear system swallows whole.
+      // cycle in the graph, which the linear system swallows whole. The spare
+      // node is where the leftover power goes.
       final b = PipelineBuilder(db, name: 'spom loop')
         ..addSource('water')
         ..add('electrolyzer', nodeId: 'elec')
         ..add('hydrogen_generator', nodeId: 'hgen')
+        ..addSink('power', nodeId: 'spare')
         ..connectItem('src_water', 'elec', 'water')
         ..connectItem('elec', 'hgen', 'hydrogen')
-        ..connect('hgen', 'power_out', 'elec', 'power_in', share: 120 / 896)
+        ..connectItem('hgen', 'elec', 'power')
+        ..connectItem('hgen', 'spare', 'power')
         ..pinCount('elec', 1);
       final s = solver.solve(b.build());
 
@@ -174,7 +297,7 @@ void main() {
       expect(s.nodes['hgen']!.count, closeTo(1.12, 1e-9));
       expect(s.externalInputs['power'] ?? 0, closeTo(0, 1e-6),
           reason: 'the electrolyzer powers itself off its own hydrogen');
-      expect(s.externalOutputs['power'], closeTo(776, 1e-6));
+      expect(s.nodes['spare']!.count, closeTo(776, 1e-6));
     });
   });
 
@@ -236,8 +359,10 @@ void main() {
         ..add('electrolyzer', nodeId: 'elec')
         ..addSink('oxygen', nodeId: 'a')
         ..addSink('oxygen', nodeId: 'b')
-        ..connect('elec', 'oxygen', 'a', sinkPortId, share: 0.8)
-        ..connect('elec', 'oxygen', 'b', sinkPortId, share: 0.8)
+        ..connect('elec', 'oxygen', 'a', sinkPortId,
+            mode: EdgeMode.push, share: 0.8)
+        ..connect('elec', 'oxygen', 'b', sinkPortId,
+            mode: EdgeMode.push, share: 0.8)
         ..pinCount('elec', 1);
       final s = solver.solve(b.build());
       expect(s.status, SolveStatus.invalid);

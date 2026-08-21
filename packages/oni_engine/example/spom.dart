@@ -36,6 +36,28 @@ void main() {
     db,
   ));
 
+  // Demand-driven edges: nothing here is pinned except the crew, and the whole
+  // build sizes itself backwards from how much oxygen they breathe.
+  final lifeSupport = (PipelineBuilder(db, name: 'life support')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('duplicant', nodeId: 'dupes')
+        ..add('hydrogen_generator', nodeId: 'hgen')
+        ..addSink('power', nodeId: 'spare')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'dupes', 'oxygen')
+        ..connectItem('elec', 'hgen', 'hydrogen')
+        ..connectItem('hgen', 'elec', 'power')
+        ..connectItem('hgen', 'spare', 'power'))
+      .build();
+
+  print('=== "I have 12 dupes — build me the life support" ===');
+  print(formatSolution(
+    solver.solvePinned(
+        lifeSupport, const BuildingCountPin(nodeId: 'dupes', count: 12)),
+    db,
+  ));
+
   print('=== "My geyser gives 2 kg/s of water" ===');
   print(formatSolution(
     solver.solvePinned(

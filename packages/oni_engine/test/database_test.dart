@@ -35,11 +35,56 @@ void main() {
     expect(copy.netPowerWatts, spec.netPowerWatts);
   });
 
-  test('unverified game numbers are tagged as such', () {
-    // Honest bookkeeping: everything not yet checked against the wiki carries
-    // the tag, so the UI can warn and KANBAN E4 has a work list.
-    final unverified =
-        db.processes.where((p) => p.tags.contains('unverified')).map((p) => p.id);
-    expect(unverified, contains('metal_refinery_iron'));
+  test('every process has been checked against the wiki', () {
+    final unverified = db.processes
+        .where((p) => !p.tags.contains('source') && !p.tags.contains('sink'))
+        .where((p) => !p.tags.contains('verified'))
+        .map((p) => p.id);
+    expect(unverified, isEmpty);
+  });
+
+  group('numbers that were wrong before the wiki pass', () {
+    double rate(String specId, String itemId, {required bool input}) =>
+        db.processOrThrow(specId).ports.firstWhere(
+              (p) => p.itemId == itemId && p.isInput == input,
+            ).ratePerSecond;
+
+    test('a Deodorizer eats 133.33 g/s of sand, not a trickle', () {
+      expect(rate('deodorizer', 'sand', input: true), closeTo(133.33, 0.01));
+      expect(rate('deodorizer', 'clay', input: false), closeTo(143.33, 0.01));
+    });
+
+    test('a Rust Deoxidizer runs on 750 g/s rust and 250 g/s salt', () {
+      expect(rate('rust_deoxidizer', 'rust', input: true), closeTo(750, 0.01));
+      expect(rate('rust_deoxidizer', 'salt', input: true), closeTo(250, 0.01));
+      expect(rate('rust_deoxidizer', 'oxygen', input: false), closeTo(570, 0.01));
+    });
+
+    test('an Ethanol Distiller makes polluted dirt, not polluted water', () {
+      final spec = db.processOrThrow('ethanol_distiller');
+      expect(spec.outputs.map((p) => p.itemId),
+          containsAll(<String>['ethanol', 'polluted_dirt', 'carbon_dioxide']));
+      expect(spec.outputs.map((p) => p.itemId), isNot(contains('polluted_water')));
+    });
+
+    test('the Desalinator has one spec per recipe', () {
+      expect(rate('desalinator_brine', 'water', input: false), closeTo(3500, 0.01));
+      expect(rate('desalinator_salt_water', 'water', input: false),
+          closeTo(4650, 0.01));
+      expect(db.process('desalinator'), isNull);
+    });
+
+    test('batch buildings are stated as continuous rates', () {
+      // 100 kg per 40 s operation, and a dupe tied up the whole cycle.
+      expect(rate('rock_crusher_sand', 'sand', input: false), closeTo(2500, 0.01));
+      expect(db.processOrThrow('rock_crusher_sand').dupeLabourSecondsPerCycle, 600);
+      expect(rate('metal_refinery_iron', 'iron', input: false), closeTo(2500, 0.01));
+    });
+
+    test('the Metal Refinery coolant loop is the same water in and out', () {
+      final spec = db.processOrThrow('metal_refinery_iron');
+      expect(spec.portByIdOrThrow('coolant_in').ratePerSecond, 10000);
+      expect(spec.portByIdOrThrow('coolant_out').ratePerSecond, 10000);
+    });
   });
 }
