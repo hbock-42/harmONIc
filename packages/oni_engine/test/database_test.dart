@@ -234,6 +234,50 @@ void main() {
       expect(solution.dupeLabourSecondsPerCycle, closeTo(96, 1e-6));
     });
 
+    test('the base-game roster is covered', () {
+      for (final id in ['pip', 'pokeshell', 'gassy_moo', 'plug_slug',
+          'shove_vole', 'shine_bug']) {
+        expect(db.process(id), isNotNull, reason: 'missing critter "$id"');
+        expect(db.processOrThrow(id).kind, ProcessKind.critter);
+      }
+    });
+
+    test('every critter needs a grooming slot, so a stable sizes itself', () {
+      for (final spec in db.processes.where((p) => p.kind == ProcessKind.critter)) {
+        expect(spec.inputs.map((p) => p.itemId), contains('grooming'),
+            reason: '"${spec.id}" should ask for grooming');
+      }
+    });
+
+    test('a Gassy Moo lays no eggs, because it does not', () {
+      // Moos summon another Moo by meteor rather than laying.
+      final moo = db.processOrThrow('gassy_moo');
+      expect(moo.outputs.map((p) => p.itemId), isNot(contains('egg')));
+      expect(
+        moo.outputs.firstWhere((p) => p.itemId == 'natural_gas').ratePerSecond,
+        closeTo(10000 / secondsPerCycle, 1e-3),
+      );
+    });
+
+    test('a Pokeshell is renewable sand', () {
+      final shell = db.processOrThrow('pokeshell');
+      expect(
+        shell.inputs.firstWhere((p) => p.itemId == 'polluted_dirt')
+            .ratePerSecond,
+        closeTo(70000 / secondsPerCycle, 1e-3),
+      );
+      expect(
+        shell.outputs.firstWhere((p) => p.itemId == 'sand').ratePerSecond,
+        closeTo(35000 / secondsPerCycle, 1e-3),
+      );
+    });
+
+    test('a Shove Vole packs back half of what it digs', () {
+      final vole = db.processOrThrow('shove_vole');
+      expect(vole.portByIdOrThrow('packed').ratePerSecond * 2,
+          closeTo(vole.portByIdOrThrow('dug').ratePerSecond, 1e-3));
+    });
+
     test('a ranch of Slicksters sizes itself from your CO2', () {
       final solver = PipelineSolver(db);
       final pipeline = (PipelineBuilder(db, name: 'oily air')

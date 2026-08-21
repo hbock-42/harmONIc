@@ -514,6 +514,21 @@ const String oniDataJson = r"""
       "tags": [
         "service"
       ]
+    },
+    {
+      "id": "regolith",
+      "name": "Regolith",
+      "category": "solid"
+    },
+    {
+      "id": "raw_shellfish",
+      "name": "Raw Shellfish",
+      "category": "solid"
+    },
+    {
+      "id": "pokeshell_molt",
+      "name": "Pokeshell Molt",
+      "category": "solid"
     }
   ],
   "processes": [
@@ -2506,6 +2521,223 @@ const String oniDataJson = r"""
           "item": "shearing",
           "direction": "output",
           "rate": 8
+        }
+      ]
+    },
+    {
+      "id": "pip",
+      "name": "Pip",
+      "kind": "critter",
+      "description": "UNVERIFIED OUTPUT: a Pip eats about 20 kg/cycle of Arbor Tree or Thimble Reed — modelled here as lumber — and excretes dirt. The 50 % conversion is not stated for this critter; it is the ratio the game uses for the ones that do publish it, so treat the output as an estimate and correct it with + Recipe if you measure otherwise. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "lumber",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "pokeshell",
+      "name": "Pokeshell",
+      "kind": "critter",
+      "description": "UNVERIFIED OUTPUT: eats 70 kg/cycle of polluted dirt, rot pile or slime and excretes sand — renewable sand without a Rock Crusher. The 50 % conversion is not stated for this critter; it is the ratio the game uses for the ones that do publish it, so treat the output as an estimate and correct it with + Recipe if you measure otherwise. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "polluted_dirt",
+          "direction": "input",
+          "rate": 116.666667
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 58.333333
+        },
+        {
+          "item": "pokeshell_molt",
+          "direction": "output",
+          "rate": 1.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "raw_shellfish",
+          "direction": "output",
+          "rate": 0.0125
+        }
+      ]
+    },
+    {
+      "id": "gassy_moo",
+      "name": "Gassy Moo",
+      "kind": "critter",
+      "description": "UNVERIFIED INPUT: a Moo makes 10 kg/cycle of natural gas from two Gas Grass plants, which the wiki counts in plants rather than kilograms, so nothing is modelled going in and the mass will not balance. Moos lay no eggs — they summon another Moo by meteor roughly every 16 cycles — so there is no egg output either.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "power",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "natural_gas",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.222222
+        }
+      ]
+    },
+    {
+      "id": "plug_slug",
+      "name": "Plug Slug",
+      "kind": "critter",
+      "description": "UNVERIFIED: eats 60 kg/cycle of metal ore and gives off 3 kg/cycle of hydrogen. Its power output is deliberately absent: a tame slug generates 800–1600 W depending on how well fed it is, and only at night, which this model has no way to express. Treat it as a hydrogen source and size the generator yourself.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "power",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "iron_ore",
+          "direction": "input",
+          "rate": 100.0
+        },
+        {
+          "item": "hydrogen",
+          "direction": "output",
+          "rate": 5.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ]
+    },
+    {
+      "id": "shove_vole",
+      "name": "Shove Vole",
+      "kind": "critter",
+      "description": "UNVERIFIED: shifts 4800 kg/cycle of regolith, dirt or iron ore and packs half of it back as solid tile — modelled as regolith in and out, since the tile it leaves behind is the same stuff. The headline reason to keep them is the meat: 10 kg a life is the most of any base-game critter.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "regolith",
+          "direction": "input",
+          "rate": 8000.0,
+          "id": "dug"
+        },
+        {
+          "item": "regolith",
+          "direction": "output",
+          "rate": 4000.0,
+          "id": "packed"
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.166667
+        }
+      ]
+    },
+    {
+      "id": "shine_bug",
+      "name": "Shine Bug",
+      "kind": "critter",
+      "description": "UNVERIFIED INPUT: a Shine Bug eats only 40 kcal/cycle and the wiki does not put that in kilograms, so the 1 kg/cycle here is a placeholder. It produces no material directly — the point is the eggs, which give 5 kg of resin each at an Egg Cracker, about 2.4 kg/cycle from a happy bug. Light and decor are not modelled. It drops no meat.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 1.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
         }
       ]
     }

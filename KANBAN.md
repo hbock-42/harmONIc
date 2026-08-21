@@ -40,14 +40,26 @@ Everything not pulled into **Ready**. Grouped by epic below.
   Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Aquatic critters: only
   Blowter is seeded — Beakon, Slogo, Gildgo, Seaquine, Orehull, Kelpole and Glo Squid
   list *what* they eat and make but not *how much*. Ranching/food buildings likewise
-- `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole,
+- `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
+  5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
+- `E4-24` The Frosty and Prehistoric Planet Packs — neither DLC is seeded at all, so
+  their critters need their plants and elements first (Flox, Bammoth, Spigot Seal, Lumb,
+  Rhex, Dartle, Jawbo)
+- `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
+  feed in kilograms,
   Plug Slug, and the Frosty/Prehistoric pack critters
 - `E4-22` The Grooming Station's power draw, if it is ever published — modelled as zero
   today, which under-reports the grid
 - `E4-20` Egg mass and shells: eggs are counted, not weighed, so shell-to-lime and
   omelette chains cannot be modelled yet
 - `E4-21` Wild versus groomed as separate specs — the seeded figures assume groomed
-- `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole
+- `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
+  5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
+- `E4-24` The Frosty and Prehistoric Planet Packs — neither DLC is seeded at all, so
+  their critters need their plants and elements first (Flox, Bammoth, Spigot Seal, Lumb,
+  Rhex, Dartle, Jawbo)
+- `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
+  feed in kilograms
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
 - `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
@@ -98,6 +110,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-15` **Six more base-game critters** — Pip, Pokeshell (renewable sand without a Rock
+  Crusher), Gassy Moo, Plug Slug, Shove Vole and Shine Bug, bringing the roster to 20.
+  Where the wiki gives a diet but no conversion, the game-wide 50 % ratio is used and the
+  process says so; where it counts food in plants or calories rather than kilograms, the
+  input is left out and the description admits the mass will not balance
 - `E4-19` **Ranching buildings** — Grooming, Aquatic Grooming and Shearing Stations, sized
   by the critters that need them through a `grooming` / `shearing` capacity link rather
   than a pin, so twenty Hatches asks for three stables on its own. The stations carry no
