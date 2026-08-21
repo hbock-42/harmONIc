@@ -38,7 +38,14 @@ class SummaryBar extends StatelessWidget {
         color: OniColors.surface,
         border: Border(top: BorderSide(color: OniColors.border)),
       ),
-      child: Row(
+      // The whole bar scrolls sideways rather than overflowing. There is no
+      // width at which all of this fits — a build with power, heat, floor,
+      // labour, materials and two lists of flows needs about 1 300 px — and a
+      // total that has fallen off the edge is worse than one you have to reach
+      // for. The toolbar above already works this way.
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
         children: [
           Padding(
             padding: const EdgeInsets.only(right: OniSpacing.lg),
@@ -92,7 +99,8 @@ class SummaryBar extends StatelessWidget {
             ),
           ],
           const _Divider(),
-          Expanded(
+          SizedBox(
+            width: 260,
             child: _Flows(
               label: 'inputs needed',
               flows: solution.externalInputs,
@@ -102,7 +110,8 @@ class SummaryBar extends StatelessWidget {
             ),
           ),
           const _Divider(),
-          Expanded(
+          SizedBox(
+            width: 260,
             child: _Flows(
               label: 'outputs',
               flows: solution.externalOutputs,
@@ -112,6 +121,7 @@ class SummaryBar extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }
@@ -151,8 +161,18 @@ class _Flows extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label.toUpperCase(), style: OniType.label),
+        // One line, whatever the width. Squeezed narrow enough, "inputs
+        // needed" wrapped to three lines and pushed the rates themselves out
+        // of the bar — an overflow here is a total nobody can see.
+        Text(
+          label.toUpperCase(),
+          style: OniType.label,
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.clip,
+        ),
         const SizedBox(height: 3),
         if (entries.isEmpty)
           Text('—', style: OniType.number)

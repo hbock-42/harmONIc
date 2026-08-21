@@ -110,6 +110,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-12` **The summary bar fits any window** — "inputs needed" wrapped to three lines
+  when squeezed and pushed the rates out of the bar entirely. The label holds one line and
+  the bar scrolls sideways, checked at five widths down to 600 px
 - `E10-11` **The toolbar is grouped** — Undo and Redo, then Tidy and Fit, then the units,
   with a rule between each. Evenly spaced buttons had been saying that changing the past,
   the arrangement and the units were all the same kind of thing
@@ -589,6 +592,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-9 | ✅ | The numbers on the wires are clickable |
 | E10-10 | ✅ | Totals scoped to one build | two builds on a canvas were summed together, which described neither; the selection decides which one the bar is about |
 | E10-11 | ✅ | Toolbar grouping | history, arrangement and units separated by a rule, rather than one evenly spaced row |
+| E10-12 | ✅ | The summary bar fits any window | single-line labels and a bar that scrolls sideways; tested at five widths, with the panels and the menu at three |
 
 ## E11 — What a build actually costs to run
 
