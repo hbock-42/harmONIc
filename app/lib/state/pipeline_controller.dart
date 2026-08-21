@@ -85,6 +85,10 @@ class PipelineController extends ChangeNotifier {
 
   ProcessSpec specOf(PipelineNode node) => database.processOrThrow(node.specId);
 
+  /// The spec, or null when a saved build names one this database no longer
+  /// has. Rendering must use this; the solver reports the problem separately.
+  ProcessSpec? specFor(PipelineNode node) => database.process(node.specId);
+
   void select(Selection? selection) {
     _selectedNodeIds.clear();
     _selectedEdgeId = null;
@@ -239,8 +243,9 @@ class PipelineController extends ChangeNotifier {
   /// common answer, and the quickest way to get a number on the board.
   List<ProcessSpec> candidatesFor(PortRef ref) {
     final node = _pipeline.node(ref.nodeId);
-    if (node == null) return const [];
-    final port = specOf(node).portById(ref.portId);
+    final spec = node == null ? null : specFor(node);
+    if (node == null || spec == null) return const [];
+    final port = spec.portById(ref.portId);
     if (port == null) return const [];
 
     final wantOutput = port.isInput;
@@ -429,7 +434,7 @@ class PipelineController extends ChangeNotifier {
       node.outputScale * GeyserActivity.typicalActiveFraction;
 
   bool isGeyser(PipelineNode node) =>
-      database.processOrThrow(node.specId).tags.contains('geyser');
+      database.process(node.specId)?.tags.contains('geyser') ?? false;
 
   /// Lets an output port make more than anything takes from it, so a build can
   /// answer "how much is left over" instead of reading as a contradiction.

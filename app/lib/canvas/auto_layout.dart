@@ -180,6 +180,8 @@ class AutoLayout {
 
   Size _sizeOf(String nodeId) {
     final node = pipeline.nodeOrThrow(nodeId);
-    return NodeLayout.sizeOf(database.processOrThrow(node.specId));
+    final spec = database.process(node.specId);
+    // A node naming a recipe that has gone still needs somewhere to sit.
+    return spec == null ? const Size(NodeLayout.width, 96) : NodeLayout.sizeOf(spec);
   }
 }

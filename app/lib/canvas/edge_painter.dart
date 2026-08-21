@@ -51,8 +51,14 @@ class EdgePainter extends CustomPainter {
       final toSpec = database.process(toNode.specId);
       if (fromSpec == null || toSpec == null) continue;
 
-      final from = NodeLayout.worldPortOffset(fromNode, fromSpec, edge.fromPortId);
-      final to = NodeLayout.worldPortOffset(toNode, toSpec, edge.toPortId);
+      // A port the spec no longer has means the build predates a change to
+      // that recipe. Skip the wire rather than throwing mid-paint; the solver
+      // reports it properly as a problem.
+      final from =
+          NodeLayout.worldPortOffsetOrNull(fromNode, fromSpec, edge.fromPortId);
+      final to =
+          NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
+      if (from == null || to == null) continue;
       final port = fromSpec.portById(edge.fromPortId);
       final item = port == null ? null : database.item(port.itemId);
       final colour = OniItemColors.ofItem(item);

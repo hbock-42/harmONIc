@@ -42,6 +42,7 @@ class WorkspaceController extends ChangeNotifier {
   final Duration debounce;
 
   final Map<String, Pipeline> _pipelines = {};
+  final List<String> _repairNotes = [];
   String? _currentId;
   Timer? _timer;
   Pipeline? _lastSeen;
@@ -50,6 +51,26 @@ class WorkspaceController extends ChangeNotifier {
 
   String? get currentId => _currentId;
   bool get isSaving => _saving;
+
+  /// What had to change to bring saved builds back into line with the recipes.
+  /// Empty when nothing did, which is the usual case.
+  List<String> get repairNotes => List.unmodifiable(_repairNotes);
+
+  void dismissRepairNotes() {
+    _repairNotes.clear();
+    notifyListeners();
+  }
+
+  /// Brings a pipeline up to date, keeping a note of anything that changed.
+  Pipeline _repaired(Pipeline pipeline) {
+    final repair = repairPipeline(pipeline, _controller.database);
+    if (repair.changed) {
+      _repairNotes.addAll(
+        repair.notes.map((note) => '${pipeline.name}: $note'),
+      );
+    }
+    return repair.pipeline;
+  }
 
   /// The saved pipeline with this id, for exporting it.
   Pipeline? pipelineFor(String id) => _pipelines[id];
@@ -79,7 +100,9 @@ class WorkspaceController extends ChangeNotifier {
     var restoredId = raw['lastOpenedId'] as String?;
     for (final entry in (raw['pipelines'] as List<dynamic>? ?? const [])) {
       try {
-        final pipeline = Pipeline.fromJson(entry as Map<String, dynamic>);
+        final pipeline = _repaired(
+          Pipeline.fromJson(entry as Map<String, dynamic>),
+        );
         _pipelines[pipeline.id] = pipeline;
       } on Object {
         // Skip the unreadable one rather than losing every other pipeline.
@@ -87,6 +110,10 @@ class WorkspaceController extends ChangeNotifier {
       }
     }
     if (_pipelines.isEmpty) return false;
+
+    // A build that needed repairing must be written back, or it is repaired
+    // again on every start and the note never stops appearing.
+    if (_repairNotes.isNotEmpty) unawaited(_persist());
 
     restoredId ??= _pipelines.keys.first;
     final pipeline = _pipelines[restoredId] ?? _pipelines.values.first;
@@ -133,8 +160,9 @@ class WorkspaceController extends ChangeNotifier {
   /// Takes in a pipeline from elsewhere, under a fresh id so it can never
   /// overwrite something already here — two people's builds may well share an
   /// id, since ids come from the name they were given.
-  Future<String> import(Pipeline incoming) async {
+  Future<String> import(Pipeline rawIncoming) async {
     await saveNow();
+    final incoming = _repaired(rawIncoming);
     final taken = _pipelines.keys.toSet();
     var id = incoming.id;
     var name = incoming.name;

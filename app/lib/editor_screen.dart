@@ -106,6 +106,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTogglePipelines: () =>
                           setState(() => _pipelinesOpen = !_pipelinesOpen),
                     ),
+                    _RepairNotice(workspace: widget.workspace),
                     ProblemsBanner(controller: controller),
                     Expanded(
                       child: Row(
@@ -238,6 +239,65 @@ class _CanvasAction<T extends Intent> extends Action<T> {
     onInvoke();
     return null;
   }
+}
+
+/// Says what had to change to open a build drawn against older recipes.
+///
+/// Shown once and dismissed, rather than living in the problems banner: it is
+/// history, not something still wrong.
+class _RepairNotice extends StatelessWidget {
+  const _RepairNotice({required this.workspace});
+
+  final WorkspaceController workspace;
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: workspace,
+        builder: (context, _) {
+          final notes = workspace.repairNotes;
+          if (notes.isEmpty) return const SizedBox.shrink();
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+                horizontal: OniSpacing.lg, vertical: OniSpacing.sm),
+            decoration: BoxDecoration(
+              color: OniColors.accent.withValues(alpha: 0.1),
+              border: Border(
+                bottom:
+                    BorderSide(color: OniColors.accent.withValues(alpha: 0.4)),
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Some recipes changed since this was drawn:',
+                        style: OniType.body.copyWith(fontSize: 12),
+                      ),
+                      for (final note in notes.take(4))
+                        Text(note,
+                            style: OniType.numberSmall
+                                .copyWith(color: OniColors.text)),
+                      if (notes.length > 4)
+                        Text('and ${notes.length - 4} more',
+                            style: OniType.numberSmall),
+                    ],
+                  ),
+                ),
+                OniButton(
+                  label: 'Dismiss',
+                  compact: true,
+                  onPressed: workspace.dismissRepairNotes,
+                ),
+              ],
+            ),
+          );
+        },
+      );
 }
 
 class _UndoIntent extends Intent {

@@ -41,8 +41,9 @@ class _PortMenuState extends State<PortMenu> {
   Widget build(BuildContext context) {
     final controller = widget.controller;
     final node = controller.pipeline.node(widget.ref.nodeId);
-    if (node == null) return const SizedBox.shrink();
-    final port = controller.specOf(node).portById(widget.ref.portId);
+    final spec = node == null ? null : controller.specFor(node);
+    if (node == null || spec == null) return const SizedBox.shrink();
+    final port = spec.portById(widget.ref.portId);
     if (port == null) return const SizedBox.shrink();
 
     final item = controller.database.item(port.itemId);

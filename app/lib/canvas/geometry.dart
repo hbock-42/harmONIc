@@ -29,6 +29,23 @@ abstract final class NodeLayout {
         headerHeight + rowCount(spec) * portRowHeight + footerHeight,
       );
 
+  /// The port's dot, or null when the spec has no such port.
+  ///
+  /// A saved pipeline can outlive the recipe it was drawn against: a port that
+  /// existed last week may not exist today. Drawing has to cope with that
+  /// rather than throwing on every frame.
+  static Offset? portOffsetOrNull(ProcessSpec spec, String portId) =>
+      spec.portById(portId) == null ? null : portOffset(spec, portId);
+
+  static Offset? worldPortOffsetOrNull(
+    PipelineNode node,
+    ProcessSpec spec,
+    String portId,
+  ) {
+    final offset = portOffsetOrNull(spec, portId);
+    return offset == null ? null : Offset(node.x, node.y) + offset;
+  }
+
   /// Row index of a port within its own column.
   static int rowOf(ProcessSpec spec, String portId) {
     final port = spec.portByIdOrThrow(portId);

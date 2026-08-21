@@ -191,7 +191,8 @@ class GraphCanvasState extends State<GraphCanvas> {
     PortRef? best;
     var bestDistance = tolerance;
     for (final node in controller.pipeline.nodes) {
-      final spec = controller.specOf(node);
+      final spec = controller.specFor(node);
+      if (spec == null) continue;
       for (final port in spec.ports) {
         final centre = NodeLayout.worldPortOffset(node, spec, port.id);
         final distance = (centre - world).distance;
@@ -207,9 +208,8 @@ class GraphCanvasState extends State<GraphCanvas> {
   /// Every node the rubber band touches, however slightly.
   List<String> _nodesWithin(Rect world) => [
         for (final node in controller.pipeline.nodes)
-          if (NodeLayout.worldRect(node, controller.specOf(node))
-              .overlaps(world))
-            node.id,
+          if (controller.specFor(node) case final ProcessSpec spec)
+            if (NodeLayout.worldRect(node, spec).overlaps(world)) node.id,
       ];
 
   String? _edgeAt(Offset world, {double tolerance = 8}) {
@@ -219,10 +219,14 @@ class GraphCanvasState extends State<GraphCanvas> {
       final fromNode = controller.pipeline.node(edge.fromNodeId);
       final toNode = controller.pipeline.node(edge.toNodeId);
       if (fromNode == null || toNode == null) continue;
-      final from = NodeLayout.worldPortOffset(
-          fromNode, controller.specOf(fromNode), edge.fromPortId);
-      final to = NodeLayout.worldPortOffset(
-          toNode, controller.specOf(toNode), edge.toPortId);
+      final fromSpec = controller.specFor(fromNode);
+      final toSpec = controller.specFor(toNode);
+      if (fromSpec == null || toSpec == null) continue;
+      final from = NodeLayout.worldPortOffsetOrNull(
+          fromNode, fromSpec, edge.fromPortId);
+      final to =
+          NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
+      if (from == null || to == null) continue;
       final distance = distanceToEdge(from, to, world);
       if (distance < bestDistance) {
         bestDistance = distance;
@@ -356,6 +360,9 @@ class GraphCanvasState extends State<GraphCanvas> {
                         ),
                       ),
                       for (final node in controller.pipeline.nodes)
+                        // A node naming a recipe this database no longer has
+                        // cannot be drawn. The problems banner says so.
+                        if (controller.specFor(node) != null)
                         Positioned(
                           left: node.x,
                           top: node.y,
@@ -446,9 +453,9 @@ class GraphCanvasState extends State<GraphCanvas> {
     final from = _pendingFrom;
     if (from == null) return null;
     final node = controller.pipeline.node(from.nodeId);
-    if (node == null) return null;
-    return NodeLayout.worldPortOffset(
-        node, controller.specOf(node), from.portId);
+    final spec = node == null ? null : controller.specFor(node);
+    if (node == null || spec == null) return null;
+    return NodeLayout.worldPortOffsetOrNull(node, spec, from.portId);
   }
 }
 

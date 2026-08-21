@@ -47,8 +47,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
 - `E5-4` Export to a *file*, for archiving a build rather than pasting it — wants a file
   picker dependency, which nothing else has needed yet
-- `E5-5` Warn on import when a build was made against a different `dataVersion`, since a
-  recipe may have been corrected since
+- `E5-6` Repair should say when a *rate* changed under a build, not only when a port or a
+  process did — a corrected recipe silently changes what a saved build reports
 - `E6-6` Tabs, so two pipelines can be compared side by side
 - `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
 - `E4-9` Aquatic plants: 5 of 12 seeded. Sodicane (no quantified yield), Bulbloom (decor
@@ -150,6 +150,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-1` **Saved builds survive the data changing** — splitting the plants removed ports
+  that saved pipelines were wired to, and the canvas threw on every frame trying to draw
+  them. Drawing now tolerates anything it cannot resolve, and a repair pass moves a node to
+  the process that still has its ports rather than cutting the wire, saying what it changed
 - `E8-3b` **Mass-balance audit** — every process is checked for matter in versus matter
   out. The game does not conserve mass, so the rule has exceptions, but each one is now
   named and reasoned in a table that a test keeps honest in both directions: an unexplained
