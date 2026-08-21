@@ -122,7 +122,7 @@ class NodeWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: Text(
-                    'PIN',
+                    'SET',
                     style: OniType.numberSmall.copyWith(
                       color: OniColors.accent,
                       fontSize: 9,

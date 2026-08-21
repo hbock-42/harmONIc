@@ -142,10 +142,21 @@ class PipelineSolver {
         status = SolveStatus.solved;
       case LinearSolveStatus.underdetermined:
         status = SolveStatus.underdetermined;
+        // Named by what they are, in the words the rest of the app uses. The
+        // reader has not met the word "pin" and should not have to.
+        final names = [
+          for (final id in freeNodeIds)
+            database.process(pipeline.nodeOrThrow(id).specId)?.name ?? id,
+        ];
         resolvedIssues.add(PipelineIssue(
           IssueSeverity.warning,
-          'Not enough pins: ${freeNodeIds.join(', ')} could be any amount. '
-          'Pin one of them.',
+          names.length == 1
+              ? 'Nothing sets the size of this build yet, so every amount in it '
+                  'could be anything. Give an amount for the ${names.single} '
+                  'and everything else follows from it.'
+              : 'Nothing sets the size of this build yet, so every amount in it '
+                  'could be anything. Give an amount for one of: '
+                  '${names.join(', ')}.',
         ));
       case LinearSolveStatus.inconsistent:
         status = SolveStatus.inconsistent;

@@ -91,7 +91,7 @@ void main() {
 
     expect(controller.pipeline.pins, isEmpty);
     expect(controller.solution.status, SolveStatus.underdetermined);
-    expect(textContaining('Not enough pins'), findsOneWidget);
+    expect(textContaining('Nothing sets the size'), findsOneWidget);
   });
 
   testWidgets('the summary bar reports the build totals', (tester) async {

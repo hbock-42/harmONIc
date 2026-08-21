@@ -25,8 +25,8 @@ void main() {
   testWidgets('a solved build says nothing at all', (tester) async {
     await pumpEditor(tester);
     expect(find.byType(ProblemsBanner), findsOneWidget);
-    expect(find.text('PIN ONE OF'), findsNothing);
-    expect(textContaining('Not enough pins'), findsNothing);
+    expect(find.text('GIVE AN AMOUNT FOR'), findsNothing);
+    expect(textContaining('Nothing sets the size'), findsNothing);
   });
 
   group('not enough pins', () {
@@ -36,7 +36,7 @@ void main() {
       await tester.pump();
 
       expect(controller.solution.status, SolveStatus.underdetermined);
-      expect(find.text('PIN ONE OF'), findsOneWidget);
+      expect(find.text('GIVE AN AMOUNT FOR'), findsOneWidget);
 
       // Each free node gets a button, named by what it is rather than by the
       // internal id the message used to quote.
@@ -78,13 +78,13 @@ void main() {
     testWidgets('pinning from there clears the problem', (tester) async {
       final controller = await pumpEditor(tester)..clearPin();
       await tester.pump();
-      expect(find.text('PIN ONE OF'), findsOneWidget);
+      expect(find.text('GIVE AN AMOUNT FOR'), findsOneWidget);
 
       controller.pin(const BuildingCountPin(nodeId: 'dupes', count: 6));
       await tester.pump();
 
       expect(controller.solution.status, SolveStatus.solved);
-      expect(find.text('PIN ONE OF'), findsNothing);
+      expect(find.text('GIVE AN AMOUNT FOR'), findsNothing);
     });
   });
 

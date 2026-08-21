@@ -309,6 +309,50 @@ void main() {
       expect(s.isUsable, isTrue, reason: 'the UI still shows a zeroed graph');
     });
 
+    group('the message it gives when it cannot work out a scale', () {
+      PipelineSolution unscaled() {
+        final b = PipelineBuilder(db, name: 'no scale')
+          ..addSource('water')
+          ..add('electrolyzer', nodeId: 'elec')
+          ..connectItem('src_water', 'elec', 'water');
+        return solver.solve(b.build());
+      }
+
+      String messageOf(PipelineSolution solution) => solution.issues
+          .firstWhere((i) => i.severity == IssueSeverity.warning &&
+              i.message.contains('size of this build'))
+          .message;
+
+      test('names the thing, not its internal id', () {
+        final solution = unscaled();
+        final free = solution.freeNodeIds.single;
+        // "Electrolyzer", not "elec".
+        expect(messageOf(solution), contains('Electrolyzer'));
+        expect(messageOf(solution), isNot(contains(free)));
+      });
+
+      test('avoids words the reader has never been taught', () {
+        final message = messageOf(unscaled()).toLowerCase();
+        // "Pin" is what the code calls it. Nothing on screen ever explains it.
+        expect(message, isNot(contains('pin')));
+        expect(message, isNot(contains('underdetermined')));
+        expect(message, isNot(contains('node')));
+      });
+
+      test('says what to do about it, in the words the buttons use', () {
+        expect(messageOf(unscaled()), contains('Give an amount for'));
+      });
+
+      test('lists the candidates when there is more than one', () {
+        final b = PipelineBuilder(db, name: 'two islands')
+          ..add('electrolyzer', nodeId: 'elec')
+          ..add('coal_generator', nodeId: 'gen');
+        final message = messageOf(solver.solve(b.build()));
+        expect(message, contains('Electrolyzer'));
+        expect(message, contains('Coal Generator'));
+      });
+    });
+
     test('a disconnected island needs its own pin', () {
       final b = basic()
         ..pinCount('elec', 1)

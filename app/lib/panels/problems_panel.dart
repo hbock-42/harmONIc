@@ -139,8 +139,8 @@ class _IssueRow extends StatelessWidget {
       );
 }
 
-/// The nodes worth pinning, as buttons. Clicking one selects it, which puts the
-/// cursor in the field that fixes the problem.
+/// The nodes worth giving an amount, as buttons. Clicking one selects it, which
+/// puts the cursor in the field that fixes the problem.
 class _PinSuggestions extends StatelessWidget {
   const _PinSuggestions({required this.controller});
 
@@ -154,7 +154,7 @@ class _PinSuggestions extends StatelessWidget {
           runSpacing: OniSpacing.sm,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text('PIN ONE OF', style: OniType.label),
+            Text('GIVE AN AMOUNT FOR', style: OniType.label),
             for (final id in controller.solution.freeNodeIds.take(6))
               if (controller.pipeline.node(id) case final PipelineNode node)
                 OniButton(
