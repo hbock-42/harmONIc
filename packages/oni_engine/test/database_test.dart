@@ -395,8 +395,71 @@ void main() {
       final solution = solver.solve(pipeline);
 
       expect(solution.status, SolveStatus.solved);
-      // Four Beakons make 20 kg/cycle of lime; a coral wants 5 kg/cycle.
-      expect(solution.nodes['coral']!.count, closeTo(4 * 5 / 5, 1e-3));
+      // Four Beakons make 2.5 kg/cycle each; a coral wants 5 kg/cycle.
+      expect(solution.nodes['coral']!.count, closeTo(4 * 2.5 / 5, 1e-3));
+    });
+
+    group('grazing on a plant instead of a stockpile', () {
+      test('a Beakon takes an eighth of a Starnacle', () {
+        final solver = PipelineSolver(db);
+        final pipeline = (PipelineBuilder(db, name: 'reef grazing')
+              ..add('beakon_grazing', nodeId: 'beakons')
+              ..add('starnacle', nodeId: 'starnacles')
+              ..connectItem('starnacles', 'beakons', 'starnacle_growth')
+              ..pinCount('beakons', 24))
+            .build();
+        final solution = solver.solve(pipeline);
+
+        expect(solution.status, SolveStatus.solved);
+        // 12.5 % of a plant each, so 24 Beakons need exactly 3 Starnacles.
+        expect(solution.nodes['starnacles']!.count, closeTo(3, 1e-9));
+      });
+
+      test('it works the other way round: one plant feeds eight', () {
+        final solver = PipelineSolver(db);
+        final pipeline = (PipelineBuilder(db, name: 'one plant')
+              ..add('beakon_grazing', nodeId: 'beakons')
+              ..add('starnacle', nodeId: 'starnacles')
+              ..connectItem('starnacles', 'beakons', 'starnacle_growth')
+              ..pinCount('starnacles', 1))
+            .build();
+        final solution = solver.solve(pipeline);
+
+        expect(solution.nodes['beakons']!.count, closeTo(8, 1e-9));
+      });
+
+      test('the grazing Beakon eats no phosphorite at all', () {
+        final grazing = db.processOrThrow('beakon_grazing');
+        expect(grazing.inputs.map((p) => p.itemId),
+            isNot(contains('phosphorite')));
+        expect(grazing.inputs.map((p) => p.itemId),
+            contains('starnacle_growth'));
+      });
+
+      test('a Gassy Moo grazes two Gas Grass', () {
+        final solver = PipelineSolver(db);
+        final pipeline = (PipelineBuilder(db, name: 'moo pasture')
+              ..add('gassy_moo', nodeId: 'moos')
+              ..add('gas_grass', nodeId: 'grass')
+              ..connectItem('grass', 'moos', 'gas_grass_growth')
+              ..pinCount('moos', 5))
+            .build();
+        final solution = solver.solve(pipeline);
+
+        expect(solution.nodes['grass']!.count, closeTo(10, 1e-9));
+        // And the pasture's own needs follow: 25 kg/cycle of dirt per plant.
+        expect(solution.externalInputs['dirt'],
+            closeTo(10 * 25000 / secondsPerCycle, 1e-3));
+      });
+
+      test('a Glo Squid grazes two Tublia', () {
+        final squid = db.processOrThrow('glo_squid');
+        expect(
+          squid.inputs.firstWhere((p) => p.itemId == 'tublia_growth')
+              .ratePerSecond,
+          2,
+        );
+      });
     });
 
     test('an Orehull is sheared as well as groomed', () {

@@ -747,21 +747,50 @@ const String oniDataJson = r"""
       ]
     },
     {
-      "id": "tublia_frond",
-      "name": "Tublia Frond",
-      "category": "solid",
-      "tags": [
-        "aquatic",
-        "plant-matter"
-      ]
-    },
-    {
       "id": "milking",
       "name": "Milking",
       "category": "other",
       "tags": [
         "service"
       ]
+    },
+    {
+      "id": "starnacle_growth",
+      "name": "Starnacle growth",
+      "category": "other",
+      "tags": [
+        "growth",
+        "aquatic"
+      ]
+    },
+    {
+      "id": "tublia_growth",
+      "name": "Tublia growth",
+      "category": "other",
+      "tags": [
+        "growth",
+        "aquatic"
+      ]
+    },
+    {
+      "id": "gas_grass_growth",
+      "name": "Gas Grass growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "plant_husk",
+      "name": "Plant Husk",
+      "category": "solid",
+      "tags": []
+    },
+    {
+      "id": "liquid_chlorine",
+      "name": "Liquid Chlorine",
+      "category": "liquid",
+      "tags": []
     }
   ],
   "processes": [
@@ -1724,7 +1753,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled.",
+      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled. One plant supplies one unit of growth, and a grazing critter takes a fraction of it, so wiring the two together sizes the farm from the herd.",
       "tags": [
         "farming",
         "aquatic",
@@ -1745,6 +1774,11 @@ const String oniDataJson = r"""
           "item": "plastic",
           "direction": "output",
           "rate": 41.666666666666664
+        },
+        {
+          "item": "tublia_growth",
+          "direction": "output",
+          "rate": 1
         }
       ]
     },
@@ -1754,7 +1788,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 1,
-      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs.",
+      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs. One plant supplies one unit of growth, and a grazing critter takes a fraction of it, so wiring the two together sizes the farm from the herd.",
       "tags": [
         "farming",
         "aquatic",
@@ -1770,6 +1804,11 @@ const String oniDataJson = r"""
           "item": "phosphorite",
           "direction": "output",
           "rate": 33.333333333333336
+        },
+        {
+          "item": "starnacle_growth",
+          "direction": "output",
+          "rate": 1
         }
       ]
     },
@@ -2842,14 +2881,19 @@ const String oniDataJson = r"""
       "id": "gassy_moo",
       "name": "Gassy Moo",
       "kind": "critter",
-      "description": "UNVERIFIED INPUT: a Moo makes 10 kg/cycle of natural gas from two Gas Grass plants, which the wiki counts in plants rather than kilograms, so nothing is modelled going in and the mass will not balance. Moos lay no eggs — they summon another Moo by meteor roughly every 16 cycles — so there is no egg output either.",
+      "description": "A Moo grazes two Gas Grass plants and makes 10 kg/cycle of natural gas. Moos lay no eggs — they summon another by meteor roughly every 16 cycles — so there is no egg output either.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
         "power",
-        "unverified"
+        "verified"
       ],
       "ports": [
+        {
+          "item": "gas_grass_growth",
+          "direction": "input",
+          "rate": 2
+        },
         {
           "item": "grooming",
           "direction": "input",
@@ -3310,7 +3354,7 @@ const String oniDataJson = r"""
       "id": "beakon",
       "name": "Beakon",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: eats 10 kg/cycle, half phosphorite and half Starnacle, and excretes lime — which it will fertilise a Flue Coral with if you let it. The wiki does not give the lime rate, so the 50 % here follows the ratio the documented critters use. Lays every 1.5 cycles when groomed, across a short 25-cycle life.",
+      "description": "UNVERIFIED OUTPUT: eats 5 kg/cycle of phosphorite and excretes lime, which it will fertilise a Flue Coral with if you let it. The wiki does not give the lime rate, so the 50 % here follows the ratio the documented critters use. Lays every 1.5 cycles when groomed, across a short 25-cycle life. If you would rather graze it, use the Starnacle variant.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3326,12 +3370,12 @@ const String oniDataJson = r"""
         {
           "item": "phosphorite",
           "direction": "input",
-          "rate": 16.666667
+          "rate": 8.333333
         },
         {
           "item": "lime",
           "direction": "output",
-          "rate": 8.333333
+          "rate": 4.166667
         },
         {
           "item": "egg",
@@ -3496,7 +3540,7 @@ const String oniDataJson = r"""
       "id": "glo_squid",
       "name": "Glo Squid",
       "kind": "critter",
-      "description": "UNVERIFIED: eats 20 kg/cycle of Tublia and excretes abyssalite, at the 50 % ratio the documented critters use rather than a published figure. Milking gives 200 kg/cycle of squid ink. Each one needs two domestic Tublia, which is 60 kg/cycle of polluted brine and 40 kg of sulfur to keep fed.",
+      "description": "UNVERIFIED OUTPUT: grazes two domestic Tublia and excretes abyssalite, at the 50 % ratio the documented critters use rather than a published figure. Milking gives 200 kg/cycle of squid ink. Wiring it to Tublia sizes the farm for you, and those plants want 60 kg/cycle of polluted brine and 40 kg of sulfur each.",
       "dupeLabourSecondsPerCycle": 24.0,
       "tags": [
         "ranching",
@@ -3515,9 +3559,9 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
-          "item": "tublia_frond",
+          "item": "tublia_growth",
           "direction": "input",
-          "rate": 33.333333
+          "rate": 2
         },
         {
           "item": "abyssalite",
@@ -3629,6 +3673,79 @@ const String oniDataJson = r"""
           "item": "milking",
           "direction": "output",
           "rate": 8
+        }
+      ]
+    },
+    {
+      "id": "beakon_grazing",
+      "name": "Beakon (grazing Starnacles)",
+      "kind": "critter",
+      "description": "UNVERIFIED OUTPUT: the same Beakon, fed on living Starnacles instead of mined phosphorite. It takes 12.5 % of one plant’s growth a cycle, so one Starnacle keeps exactly eight of them. The lime rate is still the 50 % ratio rather than a published figure.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "starnacle_growth",
+          "direction": "input",
+          "rate": 0.125
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 4.166667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
+        }
+      ]
+    },
+    {
+      "id": "gas_grass",
+      "name": "Gas Grass",
+      "kind": "plant",
+      "description": "Domesticated: 500 g/cycle of chlorine and 25 kg/cycle of dirt, yielding 400 kg of plant husk every 4 cycles. Needs 10,000 lux, which this model does not represent. One plant supplies one unit of growth, and a grazing critter takes a fraction of it, so wiring the two together sizes the farm from the herd.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "liquid_chlorine",
+          "direction": "input",
+          "rate": 0.833333
+        },
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 41.666667
+        },
+        {
+          "item": "plant_husk",
+          "direction": "output",
+          "rate": 166.666667
+        },
+        {
+          "item": "gas_grass_growth",
+          "direction": "output",
+          "rate": 1
         }
       ]
     }

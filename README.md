@@ -54,6 +54,14 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Grazing, grooming and shearing are links too
+
+Not everything that flows is a material. A critter occupies one grooming slot and a
+station supplies eight; a grazing critter eats a *fraction of a living plant* rather than
+kilograms off a pile. Wire a Beakon to a Starnacle and, because it takes 12.5 % of the
+plant's growth, one Starnacle feeds exactly eight Beakons — the farm sizes itself from the
+herd, with no arithmetic and no extra pin.
+
 ## A ranch is not free
 
 Critters lay eggs, drop meat over their lifespan, and cost 12 s of Duplicant time each
