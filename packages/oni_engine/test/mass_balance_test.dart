@@ -92,11 +92,13 @@ void main() {
     for (final spec in weighable()) {
       if (driftOf(spec).abs() <= 0.01) continue;
       if (spec.tags.contains('unverified')) continue;
-      // A wild critter is its tame twin with the services cut and the eggs
-      // slowed to a tenth, so its books drift by exactly the egg mass it no
-      // longer lays. Auditing it says nothing the twin has not already said;
-      // what is worth checking is that the derivation held, and
-      // "a wild critter is its tame twin, laying a tenth as often" does that.
+      // Wild things are derived from their farmed twin rather than measured,
+      // so the derivation is what is worth checking, and the two tests named
+      // "a wild critter is its tame twin" and "a wild plant takes nothing" do
+      // that. A wild critter drifts by exactly the egg mass it no longer lays.
+      // A wild plant drifts by everything, because it takes nothing at all and
+      // still fruits — matter out of nowhere, which is the actual game rule and
+      // the whole reason wild farms are worth the floor space.
       if (spec.tags.contains('wild')) continue;
       if (expectedImbalance.containsKey(spec.id)) continue;
       unexplained.add('${spec.id} '

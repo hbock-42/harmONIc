@@ -55,6 +55,28 @@ void main() {
     expect(find.text('DUPE TIME'), findsNothing);
   });
 
+  testWidgets('grazing a wild patch takes four times the plants',
+      (tester) async {
+    Pipeline grazing(String plant) =>
+        (PipelineBuilder(testDatabase, name: 'Squid pen')
+              ..add(plant, nodeId: 'plants', x: 0, y: 100)
+              ..add('glo_squid', nodeId: 'squid', x: 340, y: 100)
+              ..connectItem('plants', 'squid', 'tublia_growth')
+              ..pinCount('squid', 4))
+            .build();
+
+    final farmed = await pumpEditor(tester, pipeline: grazing('tublia_grazed'));
+    final farmedCount = farmed.solution.nodes['plants']!.count;
+
+    final wild =
+        await pumpEditor(tester, pipeline: grazing('tublia_grazed_wild'));
+
+    expect(wild.solution.nodes['plants']!.count,
+        closeTo(farmedCount * 4, 1e-6));
+    // Nobody is watering the wild patch, so no brine is being asked for.
+    expect(wild.solution.itemBalances.containsKey('polluted_brine'), isFalse);
+  });
+
   testWidgets('a pipeline with no labour hides the figure', (tester) async {
     await pumpEditor(tester, pipeline: testPipeline());
     expect(find.text('DUPE TIME'), findsNothing);

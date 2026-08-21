@@ -49,8 +49,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-20` Egg mass and shells, so shell-to-lime and omelette chains can be modelled
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
   their outputs the milking station takes and which they give off anyway
-- `E4-31` Wild variants of grazed plants: a wild Tublia ripens four times slower, so the
-  same critter needs four times as many
 
 **Data still to gather**
 
@@ -123,6 +121,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-31` **Wild plants** — every crop has a wild twin: no water, no fertiliser, a quarter
+  of the speed. Grazing follows from it, since growth is already an item — one Glo Squid
+  takes two farmed Tublia or eight wild ones, which is the wiki's own figure
 - `E4-21` **Wild versus groomed** — every ranched critter now has a `(wild)` twin sitting
   next to it in the palette: no grooming, no Duplicant time, a tenth of the eggs, and no
   fibre or plastic if a station was what took it off them. A wild ranch makes the same coal

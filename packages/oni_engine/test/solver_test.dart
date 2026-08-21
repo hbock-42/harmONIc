@@ -657,6 +657,30 @@ void main() {
     });
   });
 
+  group('wild farming', () {
+    test('a wild plant feeds a quarter of the critters', () {
+      final db = loadDefaultDatabase();
+      final solver = PipelineSolver(db);
+
+      double plantsFor(String plant) {
+        final pipeline = (PipelineBuilder(db, name: 'grazing')
+              ..add(plant, nodeId: 'plants')
+              ..add('glo_squid', nodeId: 'squid')
+              ..connectItem('plants', 'squid', 'tublia_growth')
+              ..pinCount('squid', 1))
+            .build();
+        final solution = solver.solve(pipeline);
+        expect(solution.status, SolveStatus.solved);
+        return solution.nodes['plants']!.count;
+      }
+
+      // The wiki's own numbers: one Glo Squid needs two farmed Tublia or eight
+      // wild ones, because a wild plant ripens at a quarter of the speed.
+      expect(plantsFor('tublia_grazed_wild'),
+          closeTo(plantsFor('tublia_grazed') * 4, 1e-6));
+    });
+  });
+
   group('wild ranching', () {
     test('the same coal, none of the Duplicant time, a tenth of the meat', () {
       PipelineSolution ranch(String critter) {

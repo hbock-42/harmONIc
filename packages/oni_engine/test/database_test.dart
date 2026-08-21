@@ -533,7 +533,8 @@ void main() {
 
     test('a wild critter is its tame twin, laying a tenth as often', () {
       const services = {'grooming', 'shearing', 'milking'};
-      final wild = db.processes.where((p) => p.tags.contains('wild'));
+      final wild = db.processes.where(
+          (p) => p.tags.contains('wild') && p.kind == ProcessKind.critter);
       expect(wild, isNotEmpty);
 
       for (final spec in wild) {
@@ -561,6 +562,36 @@ void main() {
           expect((spec.description ?? '').toLowerCase(),
               contains(lost.replaceAll('_', ' ')),
               reason: '"${spec.id}" drops "$lost" without saying so');
+        }
+      }
+    });
+
+    test('a wild plant takes nothing and ripens four times slower', () {
+      final wild = db.processes
+          .where((p) => p.tags.contains('wild') && p.kind == ProcessKind.plant);
+      expect(wild, isNotEmpty);
+
+      for (final spec in wild) {
+        final farmed = db.processOrThrow(
+            spec.id.substring(0, spec.id.length - '_wild'.length));
+
+        // Nobody waters it, so it asks for nothing at all.
+        expect(spec.inputs, isEmpty, reason: '"${spec.id}" still wants feeding');
+        expect(farmed.inputs, isNotEmpty);
+        // And the description says what it stopped taking, since that is the
+        // half of the trade a farm sheet would otherwise hide.
+        for (final gone in farmed.inputs) {
+          expect((spec.description ?? '').toLowerCase(),
+              contains(gone.itemId.replaceAll('_', ' ')),
+              reason: '"${spec.id}" drops "${gone.itemId}" without saying so');
+        }
+
+        expect(spec.outputs.length, farmed.outputs.length);
+        for (final port in spec.outputs) {
+          final twin =
+              farmed.outputs.firstWhere((p) => p.itemId == port.itemId);
+          expect(port.ratePerSecond, closeTo(twin.ratePerSecond / 4, 1e-9),
+              reason: '"${spec.id}" output "${port.itemId}"');
         }
       }
     });

@@ -5564,6 +5564,566 @@
           "rate": 0.041667
         }
       ]
+    },
+    {
+      "id": "gum_palm_wild",
+      "name": "Gum Palm (wild)",
+      "kind": "plant",
+      "footprintWidth": 3,
+      "footprintHeight": 4,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no sulfur at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "gum_wood",
+          "direction": "output",
+          "rate": 29.16675
+        }
+      ]
+    },
+    {
+      "id": "flue_coral_wild",
+      "name": "Flue Coral (wild)",
+      "kind": "plant",
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no lime, salt water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "oxygen",
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "oxygen",
+          "direction": "output",
+          "rate": 37.5
+        }
+      ]
+    },
+    {
+      "id": "tower_kelp_wild",
+      "name": "Tower Kelp (wild)",
+      "kind": "plant",
+      "footprintWidth": 2,
+      "footprintHeight": 10,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted dirt, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "kelpole",
+          "direction": "output",
+          "rate": 0.001125
+        }
+      ]
+    },
+    {
+      "id": "tublia_wild",
+      "name": "Tublia (wild)",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted brine, sulfur at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "plastic",
+          "direction": "output",
+          "rate": 10.4166666667
+        }
+      ]
+    },
+    {
+      "id": "starnacle_wild",
+      "name": "Starnacle (wild)",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no coquina at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "phosphorite",
+          "direction": "output",
+          "rate": 8.3333333333
+        }
+      ]
+    },
+    {
+      "id": "alveo_vera_wild",
+      "name": "Alveo Vera (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no carbon dioxide, ice at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "oxygen",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "oxylite",
+          "direction": "output",
+          "rate": 7.5
+        }
+      ]
+    },
+    {
+      "id": "gas_grass_wild",
+      "name": "Gas Grass (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, liquid chlorine at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "plant_husk",
+          "direction": "output",
+          "rate": 41.66666675
+        }
+      ]
+    },
+    {
+      "id": "mealwood_wild",
+      "name": "Mealwood (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.0833333333
+        }
+      ]
+    },
+    {
+      "id": "arbor_tree_wild",
+      "name": "Arbor Tree (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 3,
+      "footprintHeight": 4,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "lumber",
+          "direction": "output",
+          "rate": 138.8875
+        }
+      ]
+    },
+    {
+      "id": "pikeapple_bush_wild",
+      "name": "Pikeapple Bush (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.1111083333
+        }
+      ]
+    },
+    {
+      "id": "mealwood_grazed_wild",
+      "name": "Mealwood (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mealwood_growth",
+          "direction": "output",
+          "rate": 0.0138888889
+        }
+      ]
+    },
+    {
+      "id": "arbor_tree_grazed_wild",
+      "name": "Arbor Tree (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 3,
+      "footprintHeight": 4,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "arbor_tree_growth",
+          "direction": "output",
+          "rate": 0.0046296296
+        }
+      ]
+    },
+    {
+      "id": "pikeapple_bush_grazed_wild",
+      "name": "Pikeapple Bush (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pikeapple_growth",
+          "direction": "output",
+          "rate": 0.0138888889
+        }
+      ]
+    },
+    {
+      "id": "starnacle_grazed_wild",
+      "name": "Starnacle (wild, grazed)",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no coquina at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "starnacle_growth",
+          "direction": "output",
+          "rate": 0.0104166667
+        }
+      ]
+    },
+    {
+      "id": "tublia_grazed_wild",
+      "name": "Tublia (wild, grazed)",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted brine, sulfur at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified",
+        "wild"
+      ],
+      "ports": [
+        {
+          "item": "tublia_growth",
+          "direction": "output",
+          "rate": 0.0052083333
+        }
+      ]
+    },
+    {
+      "id": "gas_grass_grazed_wild",
+      "name": "Gas Grass (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, liquid chlorine at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "gas_grass_growth",
+          "direction": "output",
+          "rate": 0.0104166667
+        }
+      ]
+    },
+    {
+      "id": "bristle_blossom_wild",
+      "name": "Bristle Blossom (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.1111111111
+        }
+      ]
+    },
+    {
+      "id": "bristle_blossom_grazed_wild",
+      "name": "Bristle Blossom (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "bristle_blossom_growth",
+          "direction": "output",
+          "rate": 0.0069444445
+        }
+      ]
+    },
+    {
+      "id": "dusk_cap_wild",
+      "name": "Dusk Cap (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no slime at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.1333333333
+        }
+      ]
+    },
+    {
+      "id": "waterweed_wild",
+      "name": "Waterweed (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no salt water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "aquatic",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.1666666667
+        }
+      ]
+    },
+    {
+      "id": "waterweed_grazed_wild",
+      "name": "Waterweed (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no salt water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "aquatic",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "waterweed_growth",
+          "direction": "output",
+          "rate": 0.0034722222
+        }
+      ]
+    },
+    {
+      "id": "sleet_wheat_wild",
+      "name": "Sleet Wheat (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "output",
+          "rate": 0.41666675
+        }
+      ]
+    },
+    {
+      "id": "pincha_pepperplant_wild",
+      "name": "Pincha Pepperplant (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pincha_peppernut",
+          "direction": "output",
+          "rate": 1.66666675
+        }
+      ]
+    },
+    {
+      "id": "pincha_pepperplant_grazed_wild",
+      "name": "Pincha Pepperplant (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pincha_pepperplant_growth",
+          "direction": "output",
+          "rate": 0.0052083333
+        }
+      ]
+    },
+    {
+      "id": "thimble_reed_wild",
+      "name": "Thimble Reed (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "reed_fiber",
+          "direction": "output",
+          "rate": 0.41666675
+        }
+      ]
+    },
+    {
+      "id": "thimble_reed_grazed_wild",
+      "name": "Thimble Reed (wild, grazed)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "thimble_reed_growth",
+          "direction": "output",
+          "rate": 0.0208333333
+        }
+      ]
+    },
+    {
+      "id": "nosh_sprout_wild",
+      "name": "Nosh Sprout (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, ethanol at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "footprintWidth": 1,
+      "footprintHeight": 3,
+      "tags": [
+        "farming",
+        "food",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "nosh_bean",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ]
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
