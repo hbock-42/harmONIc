@@ -37,6 +37,7 @@ dependencies:
   oni_engine:
     path: ../packages/oni_engine
   forui: ^0.25.0
+  path_provider: ^2.1.6
 
 dev_dependencies:
   flutter_test:

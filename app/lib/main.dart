@@ -4,16 +4,28 @@ import 'package:oni_engine/oni_engine.dart';
 
 import 'design/tokens.dart';
 import 'editor_screen.dart';
+import 'state/library_controller.dart';
 import 'state/pipeline_controller.dart';
+import 'storage/user_data_store.dart';
 
-void main() => runApp(OniPipelineApp(database: loadDefaultDatabase()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final library = LibraryController(
+    bundled: loadDefaultDatabase(),
+    store: const FileUserDataStore(),
+  );
+  // Recipes the player has written down are part of the catalogue from the
+  // first frame, so nothing on screen ever shows the stale numbers.
+  await library.load();
+  runApp(OniPipelineApp(library: library));
+}
 
 /// No `MaterialApp`: the app is hosted on a bare [WidgetsApp] with forui's
 /// theme layered on top, so nothing imposes a design language we did not pick.
 class OniPipelineApp extends StatefulWidget {
-  const OniPipelineApp({required this.database, this.initial, super.key});
+  const OniPipelineApp({required this.library, this.initial, super.key});
 
-  final GameDatabase database;
+  final LibraryController library;
   final Pipeline? initial;
 
   @override
@@ -22,8 +34,8 @@ class OniPipelineApp extends StatefulWidget {
 
 class _OniPipelineAppState extends State<OniPipelineApp> {
   late final PipelineController _controller = PipelineController(
-    widget.database,
-    initial: widget.initial ?? starterPipeline(widget.database),
+    widget.library.database,
+    initial: widget.initial ?? starterPipeline(widget.library.database),
   );
 
   @override
@@ -50,7 +62,10 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
             child: child ?? const SizedBox.shrink(),
           ),
         ),
-        home: EditorScreen(controller: _controller),
+        home: EditorScreen(
+          controller: _controller,
+          library: widget.library,
+        ),
       );
 }
 

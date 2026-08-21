@@ -13,7 +13,9 @@ void main() {
   Future<PipelineController> pumpEditor(WidgetTester tester) async {
     await useDesktopSurface(tester);
     final controller = testController();
-    await tester.pumpWidget(harness(EditorScreen(controller: controller)));
+    await tester.pumpWidget(harness(
+      EditorScreen(controller: controller, library: testLibrary()),
+    ));
     return controller;
   }
 

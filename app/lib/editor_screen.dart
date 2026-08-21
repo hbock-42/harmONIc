@@ -5,17 +5,26 @@ import 'canvas/graph_canvas.dart';
 import 'design/tokens.dart';
 import 'design/widgets.dart';
 import 'panels/inspector_panel.dart';
+import 'package:oni_engine/oni_engine.dart';
+
 import 'panels/palette_panel.dart';
+import 'panels/process_editor.dart';
 import 'panels/problems_panel.dart';
 import 'panels/summary_bar.dart';
+import 'state/library_controller.dart';
 import 'state/pipeline_controller.dart';
 
 /// The whole app: palette on the left, canvas in the middle, inspector on the
 /// right, totals along the bottom.
 class EditorScreen extends StatefulWidget {
-  const EditorScreen({required this.controller, super.key});
+  const EditorScreen({
+    required this.controller,
+    required this.library,
+    super.key,
+  });
 
   final PipelineController controller;
+  final LibraryController library;
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
@@ -25,6 +34,24 @@ class _EditorScreenState extends State<EditorScreen> {
   final GlobalKey<GraphCanvasState> _canvasKey = GlobalKey<GraphCanvasState>();
 
   PipelineController get controller => widget.controller;
+
+  /// The recipe being edited, shown over the whole editor.
+  ProcessSpec? _editing;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.library.addListener(_onLibraryChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.library.removeListener(_onLibraryChanged);
+    super.dispose();
+  }
+
+  void _onLibraryChanged() =>
+      controller.useDatabase(widget.library.database);
 
   void _add(String specId) {
     final centre = _canvasKey.currentState?.viewportCentreWorld ??
@@ -56,7 +83,9 @@ class _EditorScreenState extends State<EditorScreen> {
             },
             child: Focus(
               autofocus: true,
-              child: DecoratedBox(
+              child: Stack(
+                children: [
+              DecoratedBox(
                 decoration: const BoxDecoration(color: OniColors.background),
                 child: Column(
                   children: [
@@ -68,6 +97,10 @@ class _EditorScreenState extends State<EditorScreen> {
                           PalettePanel(
                             database: controller.database,
                             onAdd: _add,
+                            onNewRecipe: () => setState(
+                                () => _editing = widget.library.draft()),
+                            onEditRecipe: (spec) => setState(() =>
+                                _editing = widget.library.editable(spec)),
                           ),
                           Expanded(
                             child: controller.pipeline.nodes.isEmpty
@@ -88,10 +121,36 @@ class _EditorScreenState extends State<EditorScreen> {
                   ],
                 ),
               ),
+              ?_recipeEditor(),
+                ],
+              ),
             ),
           ),
         ),
       );
+
+  Widget? _recipeEditor() {
+    final spec = _editing;
+    if (spec == null) return null;
+    return Positioned.fill(
+      child: GestureDetector(
+        onTap: () => setState(() => _editing = null),
+        child: ColoredBox(
+          color: const Color(0xB3000000),
+          child: Center(
+            child: GestureDetector(
+              onTap: () {},
+              child: ProcessEditor(
+                library: widget.library,
+                spec: spec,
+                onClose: () => setState(() => _editing = null),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// True when the keyboard belongs to a text field rather than the canvas.

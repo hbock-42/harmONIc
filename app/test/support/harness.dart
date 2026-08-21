@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/tokens.dart';
+import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
+import 'package:oni_pipeline/storage/user_data_store.dart';
 
 /// The database is immutable and parsing it is not free — share one.
 final GameDatabase testDatabase = loadDefaultDatabase();
@@ -32,6 +34,12 @@ Future<void> useDesktopSurface(WidgetTester tester) async {
   await tester.binding.setSurfaceSize(const Size(1440, 900));
   addTearDown(() => tester.binding.setSurfaceSize(null));
 }
+
+/// A catalogue backed by memory rather than the disk.
+LibraryController testLibrary([MemoryUserDataStore? store]) => LibraryController(
+      bundled: testDatabase,
+      store: store ?? MemoryUserDataStore(),
+    );
 
 /// water → electrolyzer → dupes, with the hydrogen vented. Small enough to
 /// assert on, big enough to exercise pulling.

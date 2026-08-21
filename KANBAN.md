@@ -45,9 +45,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
   Plug Slug, and the Frosty/Prehistoric pack critters
 - `E4-16` Model eggs, meat and grooming labour — a ranch is also a dupe-time cost and an
   egg supply, neither of which is represented
-- `E4-13` **User-defined processes** — the real fix for the above: let a player add or
-  override a recipe from inside the app, since the wiki will keep lagging each DLC.
-  Would also let someone correct a number we got wrong without waiting for a release
+- `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
 - `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
@@ -99,6 +97,13 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-13` **User-defined recipes** — add or correct a process from inside the app, saved
+  to disk and merged over the bundled data by id. A hand-entered recipe is always tagged
+  `unverified`, new items can be invented on the spot for content the app has never heard
+  of, and an override can be reverted to restore the shipped numbers. The canvas re-solves
+  the moment you save
+- `E5-2a` Persistence groundwork: `UserDataStore` behind an interface, so the pipeline
+  save/load in `E5` reuses it and tests never touch the disk
 - `E4-8` **Critters**: 14 ranching staples with wiki rates — Hatch/Sage/Smooth, Slickster
   and Molten Slickster, the four Pufts, Drecko and Glossy Drecko, Pacu, Gulp Fish and
   Blowter. Feed in, product out, so a ranch sizes itself from your CO2 or your algae
@@ -187,7 +192,8 @@ _(empty)_
 | E4-9 | P2 | DLC toggle | Spaced Out! variants (rockets, radiation), base-game filter |
 | E4-11 | P1 | Confirm the unverified DLC rates once the wiki fills them in |
 | E4-12 | P2 | Palette filter by DLC |
-| E4-13 | P1 | User-defined / overridable processes, edited in the app |
+| E4-13 | ✅ | User-defined / overridable processes, edited in the app |
+| E4-17 | P2 | Share a custom recipe pack, so a wiki gap gets filled once for everyone |
 | E4-10 | P1 | Data version stamp | `dataVersion` + game build in the JSON so saved pipelines can warn on mismatch |
 
 ## E5 — Persistence & interop

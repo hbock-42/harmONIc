@@ -24,16 +24,28 @@ class EdgeSelection extends Selection {
 /// stack. No state-management package — [Pipeline] is immutable, so undo is a
 /// list of them and "re-solve" is one call.
 class PipelineController extends ChangeNotifier {
-  PipelineController(this.database, {Pipeline? initial})
-      : _solver = PipelineSolver(database),
+  PipelineController(GameDatabase database, {Pipeline? initial})
+      : _database = database,
+        _solver = PipelineSolver(database),
         _pipeline = initial ??
             Pipeline(id: 'untitled', name: 'Untitled pipeline',
                 dataVersion: database.dataVersion) {
     _solution = _solver.solve(_pipeline);
   }
 
-  final GameDatabase database;
-  final PipelineSolver _solver;
+  GameDatabase _database;
+  PipelineSolver _solver;
+
+  GameDatabase get database => _database;
+
+  /// Swaps in a new catalogue — after the player edits a recipe — and re-solves
+  /// against it, so a corrected number shows up on the canvas immediately.
+  void useDatabase(GameDatabase database) {
+    _database = database;
+    _solver = PipelineSolver(database);
+    _solution = _solver.solve(_pipeline);
+    notifyListeners();
+  }
 
   Pipeline _pipeline;
   late PipelineSolution _solution;

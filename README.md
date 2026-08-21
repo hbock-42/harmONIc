@@ -70,6 +70,11 @@ to vent needs an output node to go to. Forget one and the solver says which port
 `packages/oni_engine/lib/data/oni_data.json` is the source of truth; run
 `fvm dart run tool/gen_data.dart` after editing it to refresh the embedded copy.
 
+**Missing something?** Add it yourself: `+ Recipe` in the palette, or hover any entry and
+hit `edit` to correct one. Hand-entered recipes are saved to disk, merged over the bundled
+data, always tagged `unverified`, and can be reverted. New items can be invented on the
+spot, so a DLC the app has never heard of is no longer a dead end.
+
 Covers the base game, Spaced Out! and **The Aquatic Planet Pack**. Every process is
 checked against [the wiki](https://oxygennotincluded.wiki.gg) and must carry either a
 `verified` or an `unverified` tag — a test enforces it, an `unverified` process has to

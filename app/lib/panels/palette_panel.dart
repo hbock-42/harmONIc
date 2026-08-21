@@ -10,11 +10,15 @@ class PalettePanel extends StatefulWidget {
   const PalettePanel({
     required this.database,
     required this.onAdd,
+    required this.onNewRecipe,
+    required this.onEditRecipe,
     super.key,
   });
 
   final GameDatabase database;
   final ValueChanged<String> onAdd;
+  final VoidCallback onNewRecipe;
+  final ValueChanged<ProcessSpec> onEditRecipe;
 
   @override
   State<PalettePanel> createState() => _PalettePanelState();
@@ -71,6 +75,12 @@ class _PalettePanelState extends State<PalettePanel> {
     return OniPanel(
       title: 'Add',
       width: 232,
+      trailing: OniButton(
+        label: '+ Recipe',
+        compact: true,
+        tone: OniButtonTone.accent,
+        onPressed: widget.onNewRecipe,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -97,6 +107,7 @@ class _PalettePanelState extends State<PalettePanel> {
                       spec: spec,
                       database: widget.database,
                       onTap: () => widget.onAdd(spec.id),
+                      onEdit: () => widget.onEditRecipe(spec),
                     ),
                 ],
               ],
@@ -113,11 +124,13 @@ class _PaletteRow extends StatefulWidget {
     required this.spec,
     required this.database,
     required this.onTap,
+    required this.onEdit,
   });
 
   final ProcessSpec spec;
   final GameDatabase database;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
 
   @override
   State<_PaletteRow> createState() => _PaletteRowState();
@@ -155,6 +168,13 @@ class _PaletteRowState extends State<_PaletteRow> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              if (_hover)
+                GestureDetector(
+                  onTap: widget.onEdit,
+                  child: Text('edit',
+                      style: OniType.numberSmall
+                          .copyWith(color: OniColors.accent)),
+                ),
             ],
           ),
         ),

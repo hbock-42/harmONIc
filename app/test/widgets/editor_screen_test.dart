@@ -14,13 +14,15 @@ void main() {
   Future<PipelineController> pumpEditor(WidgetTester tester) async {
     await useDesktopSurface(tester);
     final controller = testController();
-    await tester.pumpWidget(harness(EditorScreen(controller: controller)));
+    await tester.pumpWidget(harness(
+      EditorScreen(controller: controller, library: testLibrary()),
+    ));
     return controller;
   }
 
   testWidgets('the app boots with a solved starter pipeline', (tester) async {
     await useDesktopSurface(tester);
-    await tester.pumpWidget(OniPipelineApp(database: testDatabase));
+    await tester.pumpWidget(OniPipelineApp(library: testLibrary()));
 
     expect(find.text('Oxygen for the crew'), findsOneWidget);
     expect(find.byType(GraphCanvas), findsOneWidget);
@@ -160,7 +162,9 @@ void main() {
   testWidgets('an empty pipeline explains what to do', (tester) async {
     await useDesktopSurface(tester);
     final controller = PipelineController(testDatabase);
-    await tester.pumpWidget(harness(EditorScreen(controller: controller)));
+    await tester.pumpWidget(harness(
+      EditorScreen(controller: controller, library: testLibrary()),
+    ));
 
     expect(find.text('Nothing here yet'), findsOneWidget);
     expect(find.byType(GraphCanvas), findsNothing);
