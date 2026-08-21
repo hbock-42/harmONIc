@@ -51,6 +51,9 @@ class WorkspaceController extends ChangeNotifier {
   String? get currentId => _currentId;
   bool get isSaving => _saving;
 
+  /// The saved pipeline with this id, for exporting it.
+  Pipeline? pipelineFor(String id) => _pipelines[id];
+
   List<PipelineSummary> get saved {
     final list = [
       for (final p in _pipelines.values)
@@ -126,6 +129,33 @@ class WorkspaceController extends ChangeNotifier {
         name: name,
         dataVersion: _controller.database.dataVersion,
       );
+
+  /// Takes in a pipeline from elsewhere, under a fresh id so it can never
+  /// overwrite something already here — two people's builds may well share an
+  /// id, since ids come from the name they were given.
+  Future<String> import(Pipeline incoming) async {
+    await saveNow();
+    final taken = _pipelines.keys.toSet();
+    var id = incoming.id;
+    var name = incoming.name;
+    if (taken.contains(id)) {
+      id = 'imported_${DateTime.now().microsecondsSinceEpoch}';
+      name = '$name (imported)';
+    }
+    final pipeline = Pipeline(
+      id: id,
+      name: name,
+      nodes: incoming.nodes,
+      edges: incoming.edges,
+      pins: incoming.pins,
+      dataVersion: incoming.dataVersion,
+    );
+    _pipelines[id] = pipeline;
+    _openWithoutSaving(pipeline);
+    await _persist();
+    notifyListeners();
+    return id;
+  }
 
   /// A copy under a new id, so experimenting never risks the original.
   Future<String> duplicate(String id) async {

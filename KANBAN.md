@@ -35,7 +35,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
 - `E10-5` a real problems *panel* (the banner shows the first three)
-- `E5-3` Export/import a pipeline as a file or a link, to share a build
+- `E5-4` Export to a *file*, for archiving a build rather than pasting it — wants a file
+  picker dependency, which nothing else has needed yet
+- `E5-5` Warn on import when a build was made against a different `dataVersion`, since a
+  recipe may have been corrected since
 - `E6-6` Tabs, so two pipelines can be compared side by side
 - `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
 - `E4-9` Aquatic plants: 5 of 12 seeded. Sodicane (no quantified yield), Bulbloom (decor
@@ -137,6 +140,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E5-3` **Share a build** — Copy code puts the open pipeline on the clipboard as one
+  base64 line that survives a forum post; Paste build reads a code *or* raw JSON, since
+  anyone handed a `pipelines.json` will paste that and be right to expect it to work. An
+  import always lands under a fresh id, so someone else's build can never overwrite yours
 - `E7-10` **Multi-select** — ⇧-click to add, ⇧-drag to rubber-band, and dragging any
   member of a group carries the rest. Delete takes the whole selection with its edges and
   pins, in one undo step, and the inspector summarises a group's power, heat and labour
@@ -315,7 +322,7 @@ _(empty)_
 |---|---|---|
 | E5-1 | P1 | `Pipeline` ⇄ JSON (`toJson`/`fromJson`) with a schema version + migrations hook |
 | E5-2 | P1 | Local save/load of user pipelines (`path_provider` + file, or `hive`/`isar` — decide in a spike) |
-| E5-3 | P2 | Share a pipeline as a link / base64 blob |
+| E5-3 | ✅ | Share a pipeline as a base64 code |
 | E5-4 | P2 | Import/export to clipboard |
 
 ## E6 — App shell & foundations

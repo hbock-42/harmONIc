@@ -1,11 +1,13 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import '../design/widgets.dart';
 import '../state/workspace_controller.dart';
 
 /// The list of saved pipelines: open one, copy one, throw one away.
-class PipelinesMenu extends StatelessWidget {
+class PipelinesMenu extends StatefulWidget {
   const PipelinesMenu({
     required this.workspace,
     required this.onClose,
@@ -18,10 +20,47 @@ class PipelinesMenu extends StatelessWidget {
   static const double width = 280;
 
   @override
+  State<PipelinesMenu> createState() => _PipelinesMenuState();
+}
+
+class _PipelinesMenuState extends State<PipelinesMenu> {
+  String? _message;
+
+  WorkspaceController get workspace => widget.workspace;
+  VoidCallback get onClose => widget.onClose;
+
+  /// Copies the open build as a one-line code, which is the format that
+  /// survives a forum post or a chat message intact.
+  Future<void> _copy() async {
+    final id = workspace.currentId;
+    final pipeline = id == null ? null : workspace.pipelineFor(id);
+    if (pipeline == null) return;
+    await Clipboard.setData(
+      ClipboardData(text: PipelineShareCode.encode(pipeline)),
+    );
+    if (mounted) setState(() => _message = 'Share code copied.');
+  }
+
+  Future<void> _paste() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = data?.text ?? '';
+    try {
+      await workspace.import(PipelineShareCode.decode(text));
+      onClose();
+    } on FormatException catch (error) {
+      if (mounted) setState(() => _message = error.message);
+    } on Object {
+      if (mounted) {
+        setState(() => _message = 'That build could not be read.');
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final saved = workspace.saved;
     return Container(
-      width: width,
+      width: PipelinesMenu.width,
       constraints: const BoxConstraints(maxHeight: 420),
       decoration: BoxDecoration(
         color: OniColors.surfaceRaised,
@@ -52,6 +91,36 @@ class PipelinesMenu extends StatelessWidget {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+            child: Wrap(
+              spacing: OniSpacing.sm,
+              runSpacing: OniSpacing.sm,
+              children: [
+                OniButton(
+                  label: 'Copy code',
+                  compact: true,
+                  onPressed: workspace.currentId == null ? null : _copy,
+                ),
+                OniButton(
+                  label: 'Paste build',
+                  compact: true,
+                  onPressed: _paste,
+                ),
+              ],
+            ),
+          ),
+          if (_message != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+              child: Text(
+                _message!,
+                style: OniType.body
+                    .copyWith(fontSize: 11.5, color: OniColors.textMuted),
+              ),
+            ),
           Flexible(
             child: ListView(
               shrinkWrap: true,

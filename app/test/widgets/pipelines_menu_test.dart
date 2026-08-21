@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:oni_engine/oni_engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_pipeline/canvas/node_widget.dart';
 import 'package:oni_pipeline/design/widgets.dart';
@@ -112,6 +114,111 @@ void main() {
     final saved = (store.data!['pipelines'] as List<dynamic>).first
         as Map<String, dynamic>;
     expect((saved['nodes'] as List<dynamic>).length, 5);
+  });
+
+  group('sharing a build', () {
+    /// Stands in for the system clipboard.
+    String? clipboard;
+
+    setUp(() {
+      clipboard = null;
+      TestDefaultBinaryMessengerBinding
+          .instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+        if (call.method == 'Clipboard.setData') {
+          clipboard = (call.arguments as Map<Object?, Object?>)['text'] as String?;
+          return null;
+        }
+        if (call.method == 'Clipboard.getData') {
+          return <String, Object?>{'text': clipboard};
+        }
+        return null;
+      });
+    });
+
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null);
+    });
+
+    testWidgets('copying puts a one-line code on the clipboard',
+        (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+      await tester.tap(find.text('Copy code'));
+      await tester.pumpAndSettle();
+
+      expect(clipboard, isNotNull);
+      expect(clipboard, isNot(contains('\n')));
+      expect(PipelineShareCode.decode(clipboard!).nodes, hasLength(4));
+      expect(find.text('Share code copied.'), findsOneWidget);
+    });
+
+    testWidgets('pasting a code opens it as a new build', (tester) async {
+      await pumpEditor(tester);
+      final incoming = (PipelineBuilder(testDatabase, name: 'Someone else\'s')
+            ..add('coal_generator', nodeId: 'gen')
+            ..pinCount('gen', 2))
+          .build();
+      clipboard = PipelineShareCode.encode(incoming);
+
+      await openMenu(tester);
+      await tester.tap(find.text('Paste build'));
+      await tester.pumpAndSettle();
+
+      expect(controller.pipeline.name, "Someone else's");
+      expect(controller.pipeline.nodes, hasLength(1));
+      expect(controller.solution.status, SolveStatus.solved);
+      // The build that was open is still there.
+      expect(workspace.saved.map((s) => s.name), contains('Test build'));
+    });
+
+    testWidgets('an imported build never overwrites one with the same id',
+        (tester) async {
+      await pumpEditor(tester);
+      final mine = controller.pipeline;
+      clipboard = PipelineShareCode.encode(mine);
+
+      await openMenu(tester);
+      await tester.tap(find.text('Paste build'));
+      await tester.pumpAndSettle();
+
+      expect(workspace.saved, hasLength(2));
+      expect(workspace.saved.map((s) => s.name),
+          contains('${mine.name} (imported)'));
+    });
+
+    testWidgets('a paste that is not a build says so and changes nothing',
+        (tester) async {
+      await pumpEditor(tester);
+      clipboard = 'hello there';
+      final before = workspace.saved.length;
+
+      await openMenu(tester);
+      await tester.tap(find.text('Paste build'));
+      await tester.pumpAndSettle();
+
+      expect(textContaining('does not look like a pipeline'), findsOneWidget);
+      expect(workspace.saved, hasLength(before));
+    });
+
+    testWidgets('a shared build round-trips through the clipboard',
+        (tester) async {
+      await pumpEditor(tester);
+      controller.pin(const BuildingCountPin(nodeId: 'dupes', count: 21));
+      await tester.pumpAndSettle();
+      final expected = controller.solution.nodes['elec']!.count;
+
+      await openMenu(tester);
+      await tester.tap(find.text('Copy code'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Paste build'));
+      await tester.pumpAndSettle();
+
+      expect(controller.solution.nodes['elec']!.count,
+          closeTo(expected, 1e-9),
+          reason: 'the copy solves to the same numbers');
+    });
   });
 
   testWidgets('the whole app reopens where it left off', (tester) async {

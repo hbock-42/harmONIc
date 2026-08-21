@@ -63,6 +63,13 @@ the cook's time counted against your Duplicant budget like any other labour.
 A plant comes in two forms, harvested and grazed, because its growth is either eaten by a
 critter or taken as a crop and never both.
 
+## Sharing a build
+
+`Pipelines` → `Copy code` puts the open build on the clipboard as a single base64 line
+that survives being pasted into a forum post or a chat message. `Paste build` reads one
+back — or raw JSON, so a `pipelines.json` someone sends you works too. Imports always land
+under a fresh id and never overwrite what you already have.
+
 ## Working with more than one node
 
 ⇧-click adds to the selection, ⇧-drag rubber-bands a region, and dragging any member of a
