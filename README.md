@@ -54,6 +54,13 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Tidy
+
+`Tidy` in the top bar arranges the graph left to right — every node one column right of
+whatever feeds it, ordered within its column to keep the wires from crossing. A recycling
+loop is laid out by ignoring the edge that closes it, so a SPOM still reads forwards and
+the returning wire doubles back on itself.
+
 ## Per second or per cycle
 
 Click any rate — or the button in the top bar — and every rate in the app switches

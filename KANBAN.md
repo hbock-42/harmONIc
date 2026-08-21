@@ -28,7 +28,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
-- `E7-9` auto-layout, `E7-10` marquee select, `E7-11` minimap
+- `E7-10` marquee select, `E7-11` minimap
+- `E7-12` Tidy only the selection, for someone who has arranged part of a build by hand
+  and does not want it moved
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
 - `E10-5` a real problems *panel* (the banner shows the first three)
@@ -134,6 +136,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E7-9` **Auto-layout** — `Tidy` arranges the graph left to right: every node one column
+  right of whatever feeds it, ordered within columns to keep the wires from crossing.
+  Recycling loops are laid out by ignoring the edge that closes them, so a SPOM reads
+  forwards and the returning wire doubles back. One undo step, then it frames the result
 - `E4-29` **The remaining grazers, properly** — Mealwood, Arbor Tree and Pikeapple Bush
   seeded, and Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real
   growth links. The ratios ONI players already know now fall out of the model rather than
@@ -340,7 +346,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E7-6 | P1 | Drag-from-port to connect | live bezier following the cursor; compatible target ports light up, incompatible ones dim; drop on empty space opens the palette filtered to processes that accept that item |
 | E7-7 | P1 | Delete | node or edge, with the edges of a deleted node going too |
 | E7-8 | P1 | Empty state | a real "add your first node" affordance, not a blank void |
-| E7-9 | P2 | Auto-layout (layered / Sugiyama) |
+| E7-9 | ✅ | Auto-layout (layered / Sugiyama) |
 | E7-10 | P2 | Marquee select, group move |
 | E7-11 | P2 | Minimap |
 

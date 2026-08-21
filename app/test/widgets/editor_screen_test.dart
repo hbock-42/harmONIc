@@ -173,6 +173,41 @@ void main() {
     expect(textContaining('could not be confirmed'), findsNothing);
   });
 
+  testWidgets('Tidy rearranges the graph in one undo step', (tester) async {
+    final controller = await pumpEditor(tester);
+    controller.beginNodeDrag();
+    controller.moveNode('elec', const Offset(1600, 1200));
+    await tester.pump();
+
+    await tester.tap(find.text('Tidy'));
+    await tester.pump();
+
+    final elec = controller.pipeline.nodeOrThrow('elec');
+    expect(elec.x, lessThan(1600), reason: 'pulled back into the layout');
+    // Left to right: the water supply feeds it, so it must sit further right.
+    expect(elec.x, greaterThan(controller.pipeline.nodeOrThrow('src_water').x));
+
+    controller.undo();
+    expect(controller.pipeline.nodeOrThrow('elec').x, 1600,
+        reason: 'one tidy is one undo');
+  });
+
+  testWidgets('Tidy is unavailable with nothing to tidy', (tester) async {
+    await useDesktopSurface(tester);
+    final controller = PipelineController(testDatabase);
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+
+    await tester.tap(find.text('Tidy'));
+    await tester.pump();
+    expect(controller.pipeline.nodes, isEmpty);
+    expect(controller.canUndo, isFalse);
+  });
+
   testWidgets('an empty pipeline explains what to do', (tester) async {
     await useDesktopSurface(tester);
     final controller = PipelineController(testDatabase);

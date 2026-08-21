@@ -373,6 +373,19 @@ class PipelineController extends ChangeNotifier {
         ],
       ));
 
+  /// Moves every node at once — one edit, one undo step.
+  void applyLayout(Map<String, Offset> positions) => _apply(
+        _pipeline.copyWith(
+          nodes: [
+            for (final n in _pipeline.nodes)
+              if (positions[n.id] case final Offset p)
+                n.copyWith(x: p.dx, y: p.dy)
+              else
+                n,
+          ],
+        ),
+      );
+
   void rename(String name) => _apply(_pipeline.copyWith(name: name));
 
   void load(Pipeline pipeline) {

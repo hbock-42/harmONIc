@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import 'canvas/auto_layout.dart';
 import 'canvas/graph_canvas.dart';
 import 'design/tokens.dart';
 import 'design/widgets.dart';
@@ -362,6 +363,22 @@ class _TopBarState extends State<_TopBar> {
               label: 'Redo',
               compact: true,
               onPressed: controller.canRedo ? controller.redo : null,
+            ),
+            const SizedBox(width: OniSpacing.sm),
+            OniButton(
+              label: 'Tidy',
+              compact: true,
+              onPressed: controller.pipeline.nodes.isEmpty
+                  ? null
+                  : () {
+                      controller.applyLayout(
+                        AutoLayout(
+                          pipeline: controller.pipeline,
+                          database: controller.database,
+                        ).positions(),
+                      );
+                      canvasKey.currentState?.fitToContent();
+                    },
             ),
             const SizedBox(width: OniSpacing.sm),
             OniButton(
