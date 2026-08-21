@@ -302,6 +302,8 @@ class _PortDotState extends State<_PortDot> {
       onExit: (_) => setState(() => _hovering = false),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
+        // Same as the card: scrolling over a port dot should scroll.
+        supportedDevices: kGrabDevices,
         onTapUp: (d) => widget.onTap(d.globalPosition),
         onPanStart: (d) => widget.onDragStart(d.globalPosition),
         onPanUpdate: (d) => widget.onDragUpdate(d.globalPosition),

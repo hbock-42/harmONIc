@@ -987,6 +987,18 @@ const String oniDataJson = r"""
       "tags": [
         "class"
       ]
+    },
+    {
+      "id": "filtration_medium",
+      "name": "Filtration Medium",
+      "category": "solid",
+      "members": [
+        "sand",
+        "regolith"
+      ],
+      "tags": [
+        "class"
+      ]
     }
   ],
   "processes": [
@@ -1125,7 +1137,7 @@ const String oniDataJson = r"""
           "rate": 100
         },
         {
-          "item": "sand",
+          "item": "filtration_medium",
           "direction": "input",
           "rate": 133.33
         },
@@ -1247,7 +1259,7 @@ const String oniDataJson = r"""
           "rate": 5000
         },
         {
-          "item": "sand",
+          "item": "filtration_medium",
           "direction": "input",
           "rate": 1000
         },
@@ -1429,7 +1441,7 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "lumber",
+          "item": "wood",
           "direction": "input",
           "rate": 1000
         },
@@ -1678,40 +1690,6 @@ const String oniDataJson = r"""
           "rate": 2
         }
       ]
-    },
-    {
-      "id": "desalinator_brine",
-      "name": "Desalinator (Brine)",
-      "kind": "building",
-      "buildingId": "desalinator",
-      "powerWatts": 480,
-      "heatKdtuPerSecond": 8,
-      "footprintWidth": 3,
-      "footprintHeight": 3,
-      "tags": [
-        "liquid",
-        "verified"
-      ],
-      "ports": [
-        {
-          "item": "brine",
-          "direction": "input",
-          "rate": 5000
-        },
-        {
-          "item": "water",
-          "direction": "output",
-          "rate": 3500
-        },
-        {
-          "item": "salt",
-          "direction": "output",
-          "rate": 1500
-        }
-      ],
-      "build": {
-        "metal_ore": 200
-      }
     },
     {
       "id": "desalinator_salt_water",
@@ -2471,7 +2449,7 @@ const String oniDataJson = r"""
       "id": "hatch",
       "name": "Hatch",
       "kind": "critter",
-      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner. Eats rock of any sort, which is what the class here means. It will also take some ores and most of what a Duplicant eats; neither is modelled, because a ranch fed on rock is the one anybody builds.",
       "tags": [
         "ranching",
         "verified"
@@ -2483,7 +2461,7 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
-          "item": "sedimentary_rock",
+          "item": "raw_mineral",
           "direction": "input",
           "rate": 233.3333
         },
@@ -2559,14 +2537,15 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
-          "item": "iron_ore",
+          "item": "metal_ore",
           "direction": "input",
           "rate": 166.6667
         },
         {
-          "item": "iron",
+          "item": "refined_metal",
           "direction": "output",
-          "rate": 125.0
+          "rate": 125.0,
+          "follows": "metal_ore"
         },
         {
           "item": "egg",
@@ -4762,7 +4741,7 @@ const String oniDataJson = r"""
       "id": "hatch_wild",
       "name": "Hatch (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged. Eats rock of any sort, which is what the class here means. It will also take some ores and most of what a Duplicant eats; neither is modelled, because a ranch fed on rock is the one anybody builds.",
       "tags": [
         "ranching",
         "wild",
@@ -4770,7 +4749,7 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "sedimentary_rock",
+          "item": "raw_mineral",
           "direction": "input",
           "rate": 233.3333
         },
@@ -4838,14 +4817,15 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "iron_ore",
+          "item": "metal_ore",
           "direction": "input",
           "rate": 166.6667
         },
         {
-          "item": "iron",
+          "item": "refined_metal",
           "direction": "output",
-          "rate": 125.0
+          "rate": 125.0,
+          "follows": "metal_ore"
         },
         {
           "item": "egg",
@@ -6376,51 +6356,6 @@ const String oniDataJson = r"""
       ]
     },
     {
-      "id": "metal_refinery",
-      "name": "Metal Refinery",
-      "kind": "building",
-      "buildingId": "metal_refinery",
-      "powerWatts": 1200,
-      "dupeLabourSecondsPerCycle": 600,
-      "footprintWidth": 5,
-      "footprintHeight": 3,
-      "tags": [
-        "refining",
-        "verified"
-      ],
-      "ports": [
-        {
-          "item": "metal_ore",
-          "direction": "input",
-          "rate": 2500
-        },
-        {
-          "id": "coolant_in",
-          "item": "water",
-          "direction": "input",
-          "rate": 10000
-        },
-        {
-          "item": "refined_metal",
-          "direction": "output",
-          "rate": 2500,
-          "temperatureC": 40,
-          "follows": "metal_ore"
-        },
-        {
-          "id": "coolant_out",
-          "item": "water",
-          "direction": "output",
-          "rate": 10000
-        }
-      ],
-      "heatKdtuPerSecond": 16,
-      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is. The coolant comes back 14 °C hotter per kilogram refined; the figure here is water.",
-      "build": {
-        "raw_mineral": 800
-      }
-    },
-    {
       "id": "oxygen_diffuser",
       "name": "Oxygen Diffuser",
       "kind": "building",
@@ -6801,6 +6736,44 @@ const String oniDataJson = r"""
       ],
       "build": {
         "metal_ore": 400
+      }
+    },
+    {
+      "id": "rock_crusher_metal",
+      "name": "Rock Crusher (Metal)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "metal_ore",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "id": "refined_metal",
+          "item": "refined_metal",
+          "direction": "output",
+          "rate": 1250,
+          "follows": "metal_ore"
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 1250
+        }
+      ],
+      "heatKdtuPerSecond": 16,
+      "description": "Any metal ore, half of it back as the matching metal and half as sand. Worse than a Metal Refinery, and it needs no power grid or coolant loop to run.",
+      "build": {
+        "metal_ore": 800
       }
     }
   ],

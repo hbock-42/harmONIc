@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
@@ -99,3 +100,19 @@ double distanceToEdge(Offset from, Offset to, Offset point, {int samples = 24}) 
   }
   return best;
 }
+
+/// Every pointer a drag should listen to, which is all of them bar the
+/// trackpad.
+///
+/// Flutter hands a two-finger trackpad gesture to whatever drag recogniser is
+/// under the cursor, so scrolling with the pointer resting on a node dragged
+/// the node instead of panning the view. On the canvas background that same
+/// gesture is exactly what should pan, so the exclusion belongs on the things
+/// you grab, not on the thing you scroll.
+const Set<PointerDeviceKind> kGrabDevices = <PointerDeviceKind>{
+  PointerDeviceKind.touch,
+  PointerDeviceKind.mouse,
+  PointerDeviceKind.stylus,
+  PointerDeviceKind.invertedStylus,
+  PointerDeviceKind.unknown,
+};

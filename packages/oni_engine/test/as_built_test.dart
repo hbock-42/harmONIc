@@ -42,7 +42,7 @@ void main() {
       // more rock in to pay for it.
       final coal = report.drifts.firstWhere((d) => d.itemId == 'coal');
       final rock =
-          report.drifts.firstWhere((d) => d.itemId == 'sedimentary_rock');
+          report.drifts.firstWhere((d) => d.itemId == 'raw_mineral');
       expect(coal.change, greaterThan(0));
       expect(rock.change, lessThan(0));
 

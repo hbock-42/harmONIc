@@ -824,6 +824,9 @@ class _DraggableNodeState extends State<_DraggableNode> {
   @override
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.opaque,
+        // A two-finger trackpad scroll is not a grab: without this it dragged
+        // whichever node happened to be under the cursor.
+        supportedDevices: kGrabDevices,
         // Report the drag from where the pointer went *down*, not from where
         // the gesture was finally recognised as a drag. Otherwise the first
         // stretch of every drag — the distance the recogniser waits out before

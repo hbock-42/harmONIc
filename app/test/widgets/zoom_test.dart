@@ -117,6 +117,29 @@ void main() {
 
       await tester.sendEventToBinding(pointer.panZoomEnd());
     });
+
+    testWidgets('two-finger panning over a node pans, and leaves it alone',
+        (tester) async {
+      // Flutter hands a trackpad gesture to whichever drag recogniser is under
+      // the cursor, so scrolling with the pointer resting on a node used to
+      // drag the node across the canvas instead of moving the view.
+      final controller = await pumpCanvas(tester);
+      final node = controller.pipeline.nodeOrThrow('elec');
+      final where = tester.getCenter(find.text('Electrolyzer'));
+      final before = canvasKey.currentState!.offset;
+      final pointer = TestPointer(1, PointerDeviceKind.trackpad);
+
+      await tester.sendEventToBinding(pointer.panZoomStart(where));
+      await tester.sendEventToBinding(
+          pointer.panZoomUpdate(where, pan: const Offset(-40, 20)));
+      await tester.pump();
+
+      expect(canvasKey.currentState!.offset, before + const Offset(-40, 20));
+      final after = controller.pipeline.nodeOrThrow(node.id);
+      expect(Offset(after.x, after.y), Offset(node.x, node.y));
+
+      await tester.sendEventToBinding(pointer.panZoomEnd());
+    });
   });
 
   group('the keyboard', () {

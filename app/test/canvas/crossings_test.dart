@@ -99,13 +99,14 @@ void main() {
     // A fixed pseudo-random corpus of buildings wired by whatever they happen
     // to share. The absolute number means nothing on its own; it is a ratchet.
     // Without dummy vertices for edges that skip a column — Sugiyama's third
-    // phase, which this had been missing — the same corpus scores 340. If a
+    // phase, which this had been missing — the same corpus scores 237. If a
     // change to the layout pushes it back up, that is the change making
     // pictures worse, and this is where it gets caught.
     //
-    // The corpus grew from 364 graphs to 512 when material classes arrived,
-    // because a port asking for Metal Ore now pairs with far more buildings.
-    // Both numbers were re-measured against both layouts rather than scaled.
+    // The corpus is generated, so it moves when the database does: 364 graphs
+    // before material classes, 512 with them, and 460 once ports that named one
+    // material were widened to the class they belong to. Both numbers are
+    // re-measured against both layouts each time rather than scaled.
     final specs = testDatabase.processes
         .where((s) => s.kind != ProcessKind.source && s.kind != ProcessKind.sink)
         .toList();
@@ -152,8 +153,8 @@ void main() {
       graphs++;
     }
 
-    expect(graphs, 512, reason: 'the corpus itself changed, so the score below '
+    expect(graphs, 460, reason: 'the corpus itself changed, so the score below '
         'is no longer comparable — re-measure before moving it');
-    expect(total, lessThanOrEqualTo(278));
+    expect(total, lessThanOrEqualTo(206));
   });
 }

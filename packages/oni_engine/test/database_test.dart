@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:oni_engine/src/data/oni_data.g.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:test/test.dart';
 
@@ -161,6 +163,31 @@ void main() {
     });
   });
 
+  test('no two processes share an id', () {
+    // A duplicated spec is invisible: the database is keyed by id, so it keeps
+    // whichever it read last and nothing complains. One shipped for a while.
+    final raw = jsonDecode(oniDataJson) as Map<String, dynamic>;
+    final ids = [
+      for (final spec in raw['processes'] as List<dynamic>)
+        (spec as Map<String, dynamic>)['id'] as String,
+    ];
+    final duplicates = <String>{};
+    final seen = <String>{};
+    for (final id in ids) {
+      if (!seen.add(id)) duplicates.add(id);
+    }
+    expect(duplicates, isEmpty);
+  });
+
+  test('no two items share an id', () {
+    final raw = jsonDecode(oniDataJson) as Map<String, dynamic>;
+    final ids = [
+      for (final item in raw['items'] as List<dynamic>)
+        (item as Map<String, dynamic>)['id'] as String,
+    ];
+    expect(ids.toSet(), hasLength(ids.length));
+  });
+
   test('a spec round-trips through JSON', () {
     final spec = db.processOrThrow('water_sieve');
     final copy = ProcessSpec.fromJson(spec.toJson());
@@ -254,7 +281,7 @@ void main() {
     test('a Hatch converts half its feed into coal', () {
       final hatch = db.processOrThrow('hatch');
       final eats = hatch.inputs
-          .firstWhere((p) => p.itemId == 'sedimentary_rock')
+          .firstWhere((p) => p.itemId == 'raw_mineral')
           .ratePerSecond;
       final coal = hatch.outputs
           .firstWhere((p) => p.itemId == 'coal')
@@ -923,8 +950,10 @@ void main() {
               (p) => p.itemId == itemId && p.isInput == input,
             ).ratePerSecond;
 
-    test('a Deodorizer eats 133.33 g/s of sand, not a trickle', () {
-      expect(rate('deodorizer', 'sand', input: true), closeTo(133.33, 0.01));
+    test('a Deodorizer eats 133.33 g/s of filtration medium, not a trickle',
+        () {
+      expect(rate('deodorizer', 'filtration_medium', input: true),
+          closeTo(133.33, 0.01));
       expect(rate('deodorizer', 'clay', input: false), closeTo(143.33, 0.01));
     });
 

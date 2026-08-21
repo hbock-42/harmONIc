@@ -49,6 +49,13 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
+- `E12-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
+  and most Duplicant food. That is a class this app does not have, and inventing one
+  called "organic" without checking what the game really groups would be a guess
+- `E12-6` Alternative diets: a Plug Slug eats metal ore *or* refined metal, and the model
+  has no "either" — the Beakon pattern (one spec per diet) is the answer, and nobody has
+  written the second spec yet
+- `E12-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
 - `E12-4` Lead, and the metals behind galena: the ore is in the class but has nothing to
   refine into, so a refinery set to galena cannot say what it made
 - `E12-2` The rest of the roster now that classes make it cheap: Aquatuner and Thermo
@@ -128,6 +135,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-1c` **Classes applied where they were verified** — Filtration Medium (Deodorizer and
+  Water Sieve take sand *or* regolith), a Hatch eats rock rather than one rock, a Smooth
+  Hatch eats any ore and gives back the matching metal at 75 %, and the Ethanol Distiller
+  burns wood whichever tree it came off. Plus a Rock Crusher metal recipe, and a
+  duplicate-id guard after two shipped specs turned out to be invisible copies
 - `E12-1b` **Naming the metal** — a node can say which member of a class it is using, and
   an output that follows an input takes it: copper ore in, copper out. Unset stays generic
   and feeds anything; chosen feeds only what it really is, and the wiring is checked

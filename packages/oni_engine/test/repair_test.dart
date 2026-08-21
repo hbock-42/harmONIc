@@ -55,19 +55,20 @@ void main() {
           ..pinCount('deo', 4))
         .build();
 
-    // The Deodorizer's sand was wrong for a long time: 5 g/s where the game
-    // uses 133 g/s. A build saved against the old figure needs 27 times the
+    // The Deodorizer's filtration medium was wrong for a long time: 5 g/s
+    // where the game uses 133 g/s. A build saved against the old figure needs 27 times the
     // sand once it is opened again, and must say so.
     final stale = saved.copyWith(recipeSnapshot: {
       'deodorizer': {
         for (final port in db.processOrThrow('deodorizer').ports)
-          port.id: port.itemId == 'sand' ? 5.0 : port.ratePerSecond,
+          port.id:
+              port.itemId == 'filtration_medium' ? 5.0 : port.ratePerSecond,
       },
     });
 
     final repair = repairPipeline(stale, db);
     expect(repair.changed, isTrue);
-    expect(repair.notes.single, contains('Sand'));
+    expect(repair.notes.single, contains('Filtration Medium'));
     expect(repair.notes.single, contains('not 5'));
     expect(repair.notes.single, contains('takes'));
 

@@ -117,8 +117,8 @@ void main() {
   testWidgets('a corrected rate is named, and the build reports the new one',
       (tester) async {
     await useDesktopSurface(tester);
-    // Saved when the Deodorizer was believed to take 5 g/s of sand rather than
-    // the 133 g/s it really takes — the longest-lived wrong number this app
+    // Saved when the Deodorizer was believed to take 5 g/s of filtration
+    // medium rather than the 133 g/s it really takes — the longest-lived wrong number this app
     // has shipped, and exactly the kind that changes every figure in a build.
     final saved = <String, dynamic>{
       'schemaVersion': 1,
@@ -138,7 +138,9 @@ void main() {
           'recipes': {
             'deodorizer': {
               for (final port in testDatabase.processOrThrow('deodorizer').ports)
-                port.id: port.itemId == 'sand' ? 5.0 : port.ratePerSecond,
+                port.id: port.itemId == 'filtration_medium'
+                    ? 5.0
+                    : port.ratePerSecond,
             },
           },
         },

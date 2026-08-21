@@ -39,7 +39,7 @@ void main() {
     expect(textContaining('does not idle'), findsOneWidget);
     expect(textContaining('makes'), findsWidgets);
     expect(textContaining('more coal'), findsOneWidget);
-    expect(textContaining('more sedimentary rock'), findsOneWidget);
+    expect(textContaining('more raw mineral'), findsOneWidget);
   });
 
   testWidgets('a machine idles instead, so it says nothing', (tester) async {

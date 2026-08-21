@@ -140,7 +140,7 @@ void main() {
       tags: const {'verified'},
       ports: [
         for (final port in deodorizer.ports)
-          if (port.itemId == 'sand')
+          if (port.itemId == 'filtration_medium')
             Port(
               id: port.id,
               itemId: port.itemId,
