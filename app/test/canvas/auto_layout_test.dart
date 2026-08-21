@@ -138,4 +138,45 @@ void main() {
       lessThanOrEqualTo(NodeLayout.gridSize),
     );
   });
+
+  group('two builds on one canvas', () {
+    /// Two chains that share nothing but the page, drawn interleaved so a
+    /// naive layout would mix them.
+    Pipeline twoBuilds() => build((b) => b
+      ..addSource('water', x: 0, y: 0)
+      ..add('electrolyzer', nodeId: 'elec', x: 300, y: 0)
+      ..connectItem('src_water', 'elec', 'water')
+      ..addSource('coquina', x: 0, y: 60)
+      ..add('starnacle_grazed', nodeId: 'plants', x: 300, y: 60)
+      ..connectItem('src_coquina', 'plants', 'coquina'));
+
+    test('neither build has a node in the other one\'s rows', () {
+      final at = layoutOf(twoBuilds());
+      final first = {'src_water', 'elec'};
+
+      double lowest(Iterable<String> ids) =>
+          ids.map((id) => at[id]!.dy).reduce((a, b) => a > b ? a : b);
+      double highest(Iterable<String> ids) =>
+          ids.map((id) => at[id]!.dy).reduce((a, b) => a < b ? a : b);
+
+      final other = at.keys.where((id) => !first.contains(id));
+      // Every node of one build sits above every node of the other. Sharing a
+      // row is exactly what made two tidy builds read as one tangled one.
+      expect(lowest(first), lessThan(highest(other)));
+    });
+
+    test('both builds still read left to right from the same margin', () {
+      final at = layoutOf(twoBuilds());
+      expect(at['src_water']!.dx, lessThan(at['elec']!.dx));
+      expect(at['src_coquina']!.dx, lessThan(at['plants']!.dx));
+      expect(at['src_water']!.dx, at['src_coquina']!.dx);
+    });
+
+    test('tidying keeps the builds in the order they were already in', () {
+      final at = layoutOf(twoBuilds());
+      // The water build was drawn above the coquina one, and stays above it,
+      // so tidying does not shuffle which build is which.
+      expect(at['src_water']!.dy, lessThan(at['src_coquina']!.dy));
+    });
+  });
 }

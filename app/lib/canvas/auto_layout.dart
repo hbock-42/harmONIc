@@ -17,6 +17,7 @@ class AutoLayout {
     this.only = const {},
     this.columnGap = 112,
     this.rowGap = 36,
+    this.buildGap = 160,
   });
 
   final Pipeline pipeline;
@@ -29,14 +30,69 @@ class AutoLayout {
   final double columnGap;
   final double rowGap;
 
+  /// The clear air between one build and the next. Wider than [rowGap] on
+  /// purpose: the gap is the only thing saying these are two separate things
+  /// that happen to share a page.
+  final double buildGap;
+
   /// New positions for the nodes in scope, ready to be applied as one edit.
+  ///
+  /// Each build is arranged on its own and the builds are then stacked down the
+  /// page. Laying them out together would put a node from one build in the same
+  /// column as a node from the other, which is how two tidy builds come out
+  /// looking like one tangled one.
   Map<String, Offset> positions() {
     if (_nodes.isEmpty) return const {};
 
-    final forward = _forwardEdges();
-    final layers = _assignLayers(forward);
-    final columns = _orderWithinColumns(layers, forward);
-    return _placeColumns(columns);
+    final scope = {for (final node in _nodes) node.id};
+    final builds = [
+      for (final component in connectedComponents(pipeline))
+        if (component.intersection(scope).isNotEmpty)
+          component.intersection(scope),
+    ];
+    if (builds.length <= 1) return _arrange(scope);
+
+    // Keep the builds in the order they already sit in, top to bottom, so
+    // tidying rearranges a build without shuffling which is which.
+    double topOf(Set<String> build) => build
+        .map((id) => pipeline.nodeOrThrow(id).y)
+        .reduce(math.min);
+    builds.sort((a, b) => topOf(a).compareTo(topOf(b)));
+
+    final positions = <String, Offset>{};
+    var top = 0.0;
+    for (final build in builds) {
+      final laid = _arrange(build);
+      if (laid.isEmpty) continue;
+      final highest =
+          laid.values.map((p) => p.dy).reduce(math.min);
+      final lowest = laid.entries
+          .map((e) => e.value.dy + _sizeOf(e.key).height)
+          .reduce(math.max);
+      final shift = NodeLayout.snap(top - highest);
+      for (final entry in laid.entries) {
+        positions[entry.key] = entry.value.translate(0, shift);
+      }
+      top = lowest + shift + buildGap;
+    }
+    return positions;
+  }
+
+  /// One build, arranged left to right.
+  Map<String, Offset> _arrange(Set<String> build) {
+    final layout = only.isEmpty && build.length == pipeline.nodes.length
+        ? this
+        : AutoLayout(
+            pipeline: pipeline,
+            database: database,
+            only: build,
+            columnGap: columnGap,
+            rowGap: rowGap,
+            buildGap: buildGap,
+          );
+    final forward = layout._forwardEdges();
+    final layers = layout._assignLayers(forward);
+    return layout._placeColumns(layout._orderWithinColumns(layers, forward));
   }
 
   /// Edges that go "forwards", with the ones closing a cycle left out.
