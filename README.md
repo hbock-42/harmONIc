@@ -54,6 +54,12 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## A ranch is not free
+
+Critters lay eggs, drop meat over their lifespan, and cost 12 s of Duplicant time each
+per cycle to keep groomed. The summary bar reports that labour in seconds and in whole
+Duplicants, so twelve Hatches read as 144 s — a quarter of somebody's day.
+
 ## Geysers are not constant
 
 A geyser's shipped rate is a *lifetime* average at a typical roll. The real one in your

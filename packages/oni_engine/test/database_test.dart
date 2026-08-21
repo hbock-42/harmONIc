@@ -121,7 +121,9 @@ void main() {
     test('a Hatch converts half its feed into coal', () {
       final hatch = db.processOrThrow('hatch');
       final eats = hatch.inputs.single.ratePerSecond;
-      final coal = hatch.outputs.single.ratePerSecond;
+      final coal = hatch.outputs
+          .firstWhere((p) => p.itemId == 'coal')
+          .ratePerSecond;
       // Rates are stored to 4 decimal places of g/s, so allow for that.
       expect(coal / eats, closeTo(0.5, 1e-6));
       expect(eats, closeTo(140000 / secondsPerCycle, 1e-3));
@@ -129,8 +131,10 @@ void main() {
 
     test('a Sage Hatch converts all of it', () {
       final sage = db.processOrThrow('sage_hatch');
-      expect(sage.outputs.single.ratePerSecond,
-          closeTo(sage.inputs.single.ratePerSecond, 1e-6));
+      expect(
+        sage.outputs.firstWhere((p) => p.itemId == 'coal').ratePerSecond,
+        closeTo(sage.inputs.single.ratePerSecond, 1e-6),
+      );
     });
 
     test('a Gulp Fish cleans water at 200 g/s', () {
@@ -140,15 +144,57 @@ void main() {
             .ratePerSecond,
         200,
       );
-      expect(gulp.outputs.single.ratePerSecond, 200);
+      expect(
+        gulp.outputs.firstWhere((p) => p.itemId == 'water').ratePerSecond,
+        200,
+      );
     });
 
     test('a Blowter breathes out as much as it eats', () {
       final blowter = db.processOrThrow('blowter');
-      expect(blowter.outputs.single.itemId, 'oxygen');
-      expect(blowter.outputs.single.ratePerSecond,
-          closeTo(15000 / secondsPerCycle, 1e-3));
+      final oxygen = blowter.outputs.firstWhere((p) => p.itemId == 'oxygen');
+      expect(oxygen.ratePerSecond, closeTo(15000 / secondsPerCycle, 1e-3));
       expect(blowter.tags, contains('unverified'));
+    });
+
+    test('a groomed critter lays eggs and costs Duplicant time', () {
+      final hatch = db.processOrThrow('hatch');
+      // One egg every 6 cycles when groomed.
+      expect(
+        hatch.outputs.firstWhere((p) => p.itemId == 'egg').ratePerSecond,
+        closeTo(1 / (6 * secondsPerCycle), 1e-6),
+      );
+      // 12 s of grooming a cycle is what buys that rate.
+      expect(hatch.dupeLabourSecondsPerCycle, 12);
+    });
+
+    test('meat is what it drops at the end, spread over its life', () {
+      // A Hatch drops 2 kg after 100 cycles.
+      expect(
+        db.processOrThrow('hatch').outputs
+            .firstWhere((p) => p.itemId == 'meat').ratePerSecond,
+        closeTo(2000 / (100 * secondsPerCycle), 1e-6),
+      );
+      // A Drecko lives half as long again, so its meat trickles more slowly.
+      expect(
+        db.processOrThrow('drecko').outputs
+            .firstWhere((p) => p.itemId == 'meat').ratePerSecond,
+        closeTo(2000 / (150 * secondsPerCycle), 1e-6),
+      );
+    });
+
+    test('a stable of Hatches is a real Duplicant cost', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'hatch ranch')
+            ..add('hatch', nodeId: 'hatches')
+            ..addSink('coal')
+            ..connectItem('hatches', 'sink_coal', 'coal')
+            ..pinCount('hatches', 8))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      // Eight hatches groomed daily is 96 s a cycle — a sixth of a Duplicant.
+      expect(solution.dupeLabourSecondsPerCycle, closeTo(96, 1e-6));
     });
 
     test('a ranch of Slicksters sizes itself from your CO2', () {

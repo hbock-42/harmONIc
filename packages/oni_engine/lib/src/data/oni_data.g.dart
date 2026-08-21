@@ -483,6 +483,21 @@ const String oniDataJson = r"""
         "plant-matter",
         "aquatic"
       ]
+    },
+    {
+      "id": "egg",
+      "name": "Egg",
+      "category": "entity"
+    },
+    {
+      "id": "meat",
+      "name": "Meat",
+      "category": "solid"
+    },
+    {
+      "id": "fish_fillet",
+      "name": "Fish Fillet",
+      "category": "solid"
     }
   ],
   "processes": [
@@ -1885,7 +1900,7 @@ const String oniDataJson = r"""
       "id": "hatch",
       "name": "Hatch",
       "kind": "critter",
-      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal.",
+      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -1900,14 +1915,25 @@ const String oniDataJson = r"""
           "item": "coal",
           "direction": "output",
           "rate": 116.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "sage_hatch",
       "name": "Sage Hatch",
       "kind": "critter",
-      "description": "The efficient one: 100 % of what it eats comes back as coal.",
+      "description": "The efficient one: 100 % of what it eats comes back as coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -1922,14 +1948,25 @@ const String oniDataJson = r"""
           "item": "coal",
           "direction": "output",
           "rate": 233.3333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "smooth_hatch",
       "name": "Smooth Hatch",
       "kind": "critter",
-      "description": "Refines metal ore without a Metal Refinery, at 75 % conversion.",
+      "description": "Refines metal ore without a Metal Refinery, at 75 % conversion. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -1944,14 +1981,25 @@ const String oniDataJson = r"""
           "item": "iron",
           "direction": "output",
           "rate": 125.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "slickster",
       "name": "Slickster",
       "kind": "critter",
-      "description": "Turns your CO2 problem into oil, at half the mass.",
+      "description": "Turns your CO2 problem into oil, at half the mass. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -1966,8 +2014,19 @@ const String oniDataJson = r"""
           "item": "crude_oil",
           "direction": "output",
           "rate": 16.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "molten_slickster",
@@ -1987,14 +2046,26 @@ const String oniDataJson = r"""
           "item": "petroleum",
           "direction": "output",
           "rate": 16.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0,
+      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner."
     },
     {
       "id": "puft",
       "name": "Puft",
       "kind": "critter",
-      "description": "95 % of the polluted oxygen it breathes comes back as slime.",
+      "description": "95 % of the polluted oxygen it breathes comes back as slime. Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2009,8 +2080,19 @@ const String oniDataJson = r"""
           "item": "slime",
           "direction": "output",
           "rate": 79.1667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.00037
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "dense_puft",
@@ -2030,8 +2112,20 @@ const String oniDataJson = r"""
           "item": "oxylite",
           "direction": "output",
           "rate": 79.1667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.00037
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0,
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
     },
     {
       "id": "squeaky_puft",
@@ -2051,14 +2145,26 @@ const String oniDataJson = r"""
           "item": "bleach_stone",
           "direction": "output",
           "rate": 47.5
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.00037
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0,
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
     },
     {
       "id": "puft_prince",
       "name": "Puft Prince",
       "kind": "critter",
-      "description": "Only 10 % efficient — kept for its eggs, not its slime.",
+      "description": "Only 10 % efficient — kept for its eggs, not its slime. Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2073,14 +2179,25 @@ const String oniDataJson = r"""
           "item": "slime",
           "direction": "output",
           "rate": 5.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.00037
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "drecko",
       "name": "Drecko",
       "kind": "critter",
-      "description": "Sheared for 2 kg of reed fibre about every 8 cycles, averaged here.",
+      "description": "Sheared for 2 kg of reed fibre about every 8 cycles, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2095,14 +2212,25 @@ const String oniDataJson = r"""
           "item": "reed_fiber",
           "direction": "output",
           "rate": 0.4167
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000185
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "glossy_drecko",
       "name": "Glossy Drecko",
       "kind": "critter",
-      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here.",
+      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2117,14 +2245,25 @@ const String oniDataJson = r"""
           "item": "plastic",
           "direction": "output",
           "rate": 83.3333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000185
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.022222
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "gulp_fish",
       "name": "Gulp Fish",
       "kind": "critter",
-      "description": "A living Water Sieve: 200 g/s of polluted water in, clean water out.",
+      "description": "A living Water Sieve: 200 g/s of polluted water in, clean water out. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2144,14 +2283,25 @@ const String oniDataJson = r"""
           "item": "water",
           "direction": "output",
           "rate": 200
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "pacu",
       "name": "Pacu",
       "kind": "critter",
-      "description": "UNVERIFIED: the wiki gives the 7.5 kg/cycle of algae it eats, but not the rate at which it produces polluted dirt, so that output is missing. Its fillets and eggs are not modelled either.",
+      "description": "UNVERIFIED: the wiki gives the 7.5 kg/cycle of algae it eats, but not the rate at which it produces polluted dirt, so that output is missing. Its fillets and eggs are not modelled either. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "unverified"
@@ -2161,14 +2311,25 @@ const String oniDataJson = r"""
           "item": "algae",
           "direction": "input",
           "rate": 12.5
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     },
     {
       "id": "blowter",
       "name": "Blowter",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: eats 15 kg/cycle of waterweed or lettuce for 400 kcal/cycle, which the wiki does state. The 15 kg/cycle of oxygen — a tidy 100 % conversion, 25 g/s — comes from a Steam discussion citing the wiki rather than from the wiki itself, so confirm it before you build around it. Its liquid oxygen output is not modelled.",
+      "description": "UNVERIFIED OUTPUT: eats 15 kg/cycle of waterweed or lettuce for 400 kcal/cycle, which the wiki does state. The 15 kg/cycle of oxygen — a tidy 100 % conversion, 25 g/s — comes from a Steam discussion citing the wiki rather than from the wiki itself, so confirm it before you build around it. Its liquid oxygen output is not modelled. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "oxygen",
         "ranching",
@@ -2185,8 +2346,14 @@ const String oniDataJson = r"""
           "item": "oxygen",
           "direction": "output",
           "rate": 25.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
         }
-      ]
+      ],
+      "dupeLabourSecondsPerCycle": 12.0
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"

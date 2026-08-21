@@ -40,6 +40,19 @@ class SummaryBar extends StatelessWidget {
                 ? OniColors.text
                 : OniColors.ok,
           ),
+          if (solution.dupeLabourSecondsPerCycle > 0) ...[
+            const _Divider(),
+            OniStat(
+              label: 'dupe time',
+              // 600 s is one Duplicant's whole cycle, which is how the rest of
+              // the data books labour too.
+              value: '${solution.dupeLabourSecondsPerCycle.toStringAsFixed(0)} s'
+                  '  ·  ${(solution.dupeLabourSecondsPerCycle / secondsPerCycle).toStringAsFixed(2)} dupes',
+              valueColour: solution.dupeLabourSecondsPerCycle > secondsPerCycle
+                  ? OniColors.warning
+                  : OniColors.text,
+            ),
+          ],
           const _Divider(),
           Expanded(
             child: _Flows(

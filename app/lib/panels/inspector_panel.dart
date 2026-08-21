@@ -246,6 +246,13 @@ class _NodeInspectorState extends State<_NodeInspector> {
                         .format(spec.netHeatKdtu * result.count),
                   ),
                 ),
+                if (spec.dupeLabourSecondsPerCycle > 0)
+                  Expanded(
+                    child: OniStat(
+                      label: 'dupe time',
+                      value: '${(spec.dupeLabourSecondsPerCycle * result.count).toStringAsFixed(0)} s/cycle',
+                    ),
+                  ),
               ],
             ),
           const SizedBox(height: OniSpacing.lg),

@@ -42,8 +42,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
   list *what* they eat and make but not *how much*. Ranching/food buildings likewise
 - `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole,
   Plug Slug, and the Frosty/Prehistoric pack critters
-- `E4-16` Model eggs, meat and grooming labour — a ranch is also a dupe-time cost and an
-  egg supply, neither of which is represented
+- `E4-19` The Grooming Station as a building: its power draw is undocumented on the wiki,
+  and putting it on the canvas alongside the critters would double-count the labour that
+  now sits on the critter itself
+- `E4-20` Egg mass and shells: eggs are counted, not weighed, so shell-to-lime and
+  omelette chains cannot be modelled yet
+- `E4-21` Wild versus groomed as separate specs — the seeded figures assume groomed
 - `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
@@ -95,6 +99,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-16` **Ranching costs and yields** — critters lay eggs (one per groomed interval),
+  drop meat spread over their lifespan, and cost 12 s of Duplicant time a cycle each to
+  keep groomed. The summary bar shows total labour in seconds *and* in Duplicants, and
+  turns amber past a whole one, so a ranch stops reading as free
 - `E4-18` **Measured geyser figures** — type the exact active percentage Field Research
   reports, not just a preset band. The field shows the resulting output rate beside it,
   refuses anything outside 1–100 rather than clamping silently, and stays in step when the
