@@ -1,3 +1,4 @@
+import '../model/build_material.dart';
 import '../model/game_database.dart';
 import '../model/item.dart';
 import '../model/process_spec.dart';
@@ -14,13 +15,15 @@ String formatSolution(
   bool perCycle = false,
 }) {
   final out = StringBuffer();
+  final display = perCycle ? RateDisplay.perCycle : RateDisplay.perSecond;
+
+  // The same formatter the app uses, so a pasted summary reads exactly like
+  // the screen it was copied from. Its own version printed "Egg: 0.00",
+  // because an egg every four cycles is a very small number per second.
   String rate(String itemId, double value) {
     final item = database.item(itemId);
-    final unit = item?.unit ?? Unit.gramsPerSecond;
-    if (perCycle && unit == Unit.gramsPerSecond) {
-      return '${(value * secondsPerCycle / 1000).toStringAsFixed(1)} kg/cycle';
-    }
-    return unit.format(value);
+    if (item == null) return value.toStringAsFixed(2);
+    return item.formatRate(value, display);
   }
 
   out.writeln('Status: ${solution.status.name}');
@@ -76,6 +79,20 @@ String formatSolution(
   final labour = solution.dupeLabourSecondsPerCycle;
   if (labour > 0) {
     out.writeln('Dupe labour: ${labour.toStringAsFixed(0)} s/cycle');
+  }
+
+  final materials = solution.constructionMaterials(database);
+  if (materials.isNotEmpty || solution.totalFootprintTiles > 0) {
+    out.writeln('\nTo build');
+    final sorted = materials.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    for (final entry in sorted) {
+      out.writeln('  ${database.item(entry.key)?.name ?? entry.key}: '
+          '${formatMass(entry.value)}');
+    }
+    if (solution.totalFootprintTiles > 0) {
+      out.writeln('  Floor: ${solution.totalFootprintTiles} tiles');
+    }
   }
 
   if (solution.shortages.isNotEmpty) {

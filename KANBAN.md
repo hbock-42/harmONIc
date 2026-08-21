@@ -110,6 +110,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-8` **Copy the build as text** — the engine has been able to write a plain-text summary
+  since before there was a canvas, and nothing ever showed it. Now it is a button, scoped to
+  the build you are in, and it gained the materials and floor space it was missing
 - `E10-12` **The summary bar fits any window** — "inputs needed" wrapped to three lines
   when squeezed and pushed the rates out of the bar entirely. The label holds one line and
   the bar scrolls sideways, checked at five widths down to 600 px
@@ -522,6 +525,7 @@ _(empty)_
 | E5-2a | ✅ | Persistence groundwork |
 | E5-6 | ✅ | Corrected recipes are named |
 | E5-7 | P2 | Export to a file | for archiving rather than pasting; wants a file-picker dependency nothing else has needed |
+| E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
 
 ## E6 — App shell & foundations
 

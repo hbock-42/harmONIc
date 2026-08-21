@@ -134,8 +134,22 @@ void main() {
       final egg = db.itemOrThrow('egg');
       // One egg every six cycles.
       final rate = 1 / (6 * secondsPerCycle);
-      expect(egg.formatRate(rate, RateDisplay.perSecond), '0.00');
+      // Per cycle it is a figure you can hold in your head. Per second it is
+      // awkward — but awkward and true, where "0.00" would have said the ranch
+      // lays no eggs at all.
       expect(egg.formatRate(rate, RateDisplay.perCycle), '0.17 /cycle');
+      expect(egg.formatRate(rate, RateDisplay.perSecond), '0.0003');
+    });
+
+    test('a rate too small for its decimals grows them rather than lying', () {
+      final water = db.itemOrThrow('water');
+      expect(water.formatRate(0.004, RateDisplay.perSecond), '0.004 g/s');
+      expect(water.formatRate(0.0000004, RateDisplay.perSecond), '0.000000 g/s',
+          reason: 'past six places the honest answer is that it is nothing '
+              'worth planning around');
+      // And a rate with room to spare is left exactly as it was.
+      expect(water.formatRate(1000, RateDisplay.perSecond), '1.00 kg/s');
+      expect(water.formatRate(0, RateDisplay.perSecond), '0.00 g/s');
     });
 
     test('power becomes the energy a cycle of it delivers', () {

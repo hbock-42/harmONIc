@@ -281,4 +281,56 @@ void main() {
       expect(positions, hasLength(controller.pipeline.nodes.length));
     });
   });
+
+  group('copying a summary', () {
+    testWidgets('puts the whole build on the clipboard as readable text',
+        (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+
+      String? copied;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            copied = (call.arguments as Map)['text'] as String;
+          }
+          return null;
+        },
+      );
+      addTearDown(() => tester.binding.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null));
+
+      await tester.tap(find.text('Copy summary'));
+      await tester.pump();
+
+      expect(copied, isNotNull);
+      // The build's name, what to build, and what it needs — not a share code.
+      expect(copied, startsWith('Test build'));
+      expect(copied, contains('Electrolyzer'));
+      expect(copied, contains('Inputs needed'));
+      expect(copied, contains('Water'));
+      expect(copied, isNot(contains('eyJ')));
+      expect(find.text('Summary copied.'), findsOneWidget);
+    });
+
+    testWidgets('and a rate too small to print is not printed as nothing',
+        (tester) async {
+      // A Hatch lays an egg every 1.4 cycles, which is 0.0024 a second. The
+      // report used to call that "0.00", which reads as a ranch laying none.
+      final ranch = (PipelineBuilder(testDatabase, name: 'Ranch')
+            ..add('hatch', nodeId: 'hatches')
+            ..addSink('egg')
+            ..connectItem('hatches', 'sink_egg', 'egg')
+            ..pinCount('hatches', 9))
+          .build();
+      await pumpEditor(tester);
+      controller.load(ranch);
+      await tester.pump();
+
+      final report = formatSolution(controller.solution, testDatabase);
+      expect(report, contains('Egg'));
+      expect(report, isNot(contains('Egg: 0.00\n')));
+    });
+  });
 }

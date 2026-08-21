@@ -90,6 +90,31 @@ class Item {
           Unit.count,
       };
 
+  /// Enough decimal places that a real rate is not printed as nothing.
+  ///
+  /// A Hatch lays an egg every 1.4 cycles, which is 0.0024 a second, which at
+  /// two decimal places is "0.00" — and "0.00" does not mean "a small number",
+  /// it means "none". A ranch reporting no eggs is worse than one reporting an
+  /// awkward figure. Capped, because past a point the honest answer is that the
+  /// number is too small to matter and the extra digits are noise.
+  static int _enoughDigitsFor(double value, int precision) {
+    final magnitude = value.abs();
+    if (magnitude == 0) return precision;
+    var digits = precision;
+    while (digits < 6 && magnitude < 0.5 / _powerOfTen(digits)) {
+      digits++;
+    }
+    return digits;
+  }
+
+  static double _powerOfTen(int n) {
+    var result = 1.0;
+    for (var i = 0; i < n; i++) {
+      result *= 10;
+    }
+    return result;
+  }
+
   /// A capacity, not a flow — see [ItemCategory.service].
   bool get isCapacity => category == ItemCategory.service;
 
@@ -104,6 +129,9 @@ class Item {
     int precision = 2,
   }) {
     if (isCapacity) return value.toStringAsFixed(precision);
+    precision = _enoughDigitsFor(
+        display == RateDisplay.perSecond ? value : value * secondsPerCycle,
+        precision);
     if (display == RateDisplay.perSecond) {
       return unit.format(value, precision: precision);
     }

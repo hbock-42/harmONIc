@@ -4,17 +4,25 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import '../design/widgets.dart';
+import '../state/pipeline_controller.dart';
 import '../state/workspace_controller.dart';
 
 /// The list of saved pipelines: open one, copy one, throw one away.
 class PipelinesMenu extends StatefulWidget {
   const PipelinesMenu({
     required this.workspace,
+    required this.controller,
+    required this.rateDisplay,
     required this.onClose,
     super.key,
   });
 
   final WorkspaceController workspace;
+
+  /// The open build, for the summary — which is about what is on screen now
+  /// rather than about what was last saved.
+  final PipelineController controller;
+  final RateDisplay rateDisplay;
   final VoidCallback onClose;
 
   static const double width = 280;
@@ -39,6 +47,25 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       ClipboardData(text: PipelineShareCode.encode(pipeline)),
     );
     if (mounted) setState(() => _message = 'Share code copied.');
+  }
+
+  /// The whole build as text, for pasting somewhere that is not this app.
+  ///
+  /// The engine has been able to write this since before there was a canvas
+  /// and nobody could ever see it. A share code is for another copy of this
+  /// app; this is for a forum post, a note, or somebody who just wants to know
+  /// what to build.
+  Future<void> _copySummary() async {
+    final controller = widget.controller;
+    final report = formatSolution(
+      controller.focusedSolution,
+      controller.database,
+      perCycle: widget.rateDisplay == RateDisplay.perCycle,
+    );
+    await Clipboard.setData(ClipboardData(
+      text: '${controller.pipeline.name}\n\n$report',
+    ));
+    if (mounted) setState(() => _message = 'Summary copied.');
   }
 
   Future<void> _paste() async {
@@ -152,6 +179,12 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
                   label: 'Copy code',
                   compact: true,
                   onPressed: workspace.currentId == null ? null : _copy,
+                ),
+                OniButton(
+                  label: 'Copy summary',
+                  compact: true,
+                  onPressed:
+                      workspace.currentId == null ? null : _copySummary,
                 ),
                 OniButton(
                   label: 'Paste build',
