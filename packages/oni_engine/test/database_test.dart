@@ -120,7 +120,9 @@ void main() {
 
     test('a Hatch converts half its feed into coal', () {
       final hatch = db.processOrThrow('hatch');
-      final eats = hatch.inputs.single.ratePerSecond;
+      final eats = hatch.inputs
+          .firstWhere((p) => p.itemId == 'sedimentary_rock')
+          .ratePerSecond;
       final coal = hatch.outputs
           .firstWhere((p) => p.itemId == 'coal')
           .ratePerSecond;
@@ -133,7 +135,10 @@ void main() {
       final sage = db.processOrThrow('sage_hatch');
       expect(
         sage.outputs.firstWhere((p) => p.itemId == 'coal').ratePerSecond,
-        closeTo(sage.inputs.single.ratePerSecond, 1e-6),
+        closeTo(
+          sage.inputs.firstWhere((p) => p.itemId == 'dirt').ratePerSecond,
+          1e-6,
+        ),
       );
     });
 
@@ -181,6 +186,38 @@ void main() {
             .firstWhere((p) => p.itemId == 'meat').ratePerSecond,
         closeTo(2000 / (150 * secondsPerCycle), 1e-6),
       );
+    });
+
+    test('a station is sized by the critters that need it', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'stables')
+            ..add('hatch', nodeId: 'hatches')
+            ..add('grooming_station', nodeId: 'station')
+            ..connectItem('station', 'hatches', 'grooming')
+            ..pinCount('hatches', 20))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      // Twenty hatches at eight to a stable is two and a half stables.
+      expect(solution.nodes['station']!.count, closeTo(20 / 8, 1e-9));
+      expect(solution.nodes['station']!.wholeCount, 3);
+    });
+
+    test('a station adds no labour of its own', () {
+      // The grooming time lives on the critter; charging it here as well would
+      // double the cost of every ranch.
+      expect(db.processOrThrow('grooming_station').dupeLabourSecondsPerCycle, 0);
+      expect(db.processOrThrow('shearing_station').dupeLabourSecondsPerCycle, 0);
+    });
+
+    test('a sheared critter costs more Duplicant time than a groomed one', () {
+      final hatch = db.processOrThrow('hatch').dupeLabourSecondsPerCycle;
+      final drecko = db.processOrThrow('drecko').dupeLabourSecondsPerCycle;
+      final glossy = db.processOrThrow('glossy_drecko').dupeLabourSecondsPerCycle;
+
+      expect(hatch, 12, reason: 'grooming only');
+      expect(drecko, closeTo(12 + 12 / 8, 1e-6), reason: 'sheared every 8 cycles');
+      expect(glossy, closeTo(12 + 12 / 3, 1e-6), reason: 'and every 3 for glossy');
     });
 
     test('a stable of Hatches is a real Duplicant cost', () {

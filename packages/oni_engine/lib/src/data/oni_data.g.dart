@@ -498,6 +498,22 @@ const String oniDataJson = r"""
       "id": "fish_fillet",
       "name": "Fish Fillet",
       "category": "solid"
+    },
+    {
+      "id": "grooming",
+      "name": "Grooming",
+      "category": "other",
+      "tags": [
+        "service"
+      ]
+    },
+    {
+      "id": "shearing",
+      "name": "Shearing",
+      "category": "other",
+      "tags": [
+        "service"
+      ]
     }
   ],
   "processes": [
@@ -1907,6 +1923,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "sedimentary_rock",
           "direction": "input",
           "rate": 233.3333
@@ -1939,6 +1960,11 @@ const String oniDataJson = r"""
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "dirt",
           "direction": "input",
@@ -1973,6 +1999,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "iron_ore",
           "direction": "input",
           "rate": 166.6667
@@ -2006,6 +2037,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "carbon_dioxide",
           "direction": "input",
           "rate": 33.3333
@@ -2037,6 +2073,11 @@ const String oniDataJson = r"""
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "carbon_dioxide",
           "direction": "input",
@@ -2072,6 +2113,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "polluted_oxygen",
           "direction": "input",
           "rate": 83.3333
@@ -2103,6 +2149,11 @@ const String oniDataJson = r"""
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "oxygen",
           "direction": "input",
@@ -2136,6 +2187,11 @@ const String oniDataJson = r"""
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "chlorine",
           "direction": "input",
@@ -2171,6 +2227,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "polluted_oxygen",
           "direction": "input",
           "rate": 50.0
@@ -2197,12 +2258,22 @@ const String oniDataJson = r"""
       "id": "drecko",
       "name": "Drecko",
       "kind": "critter",
-      "description": "Sheared for 2 kg of reed fibre about every 8 cycles, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Sheared for 2 kg of reed fibre about every 8 cycles, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner. Shearing adds 1.5 s a cycle on top: 12 s every 8 cycles.",
       "tags": [
         "ranching",
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "shearing",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "mealwood",
           "direction": "input",
@@ -2224,18 +2295,28 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 13.5
     },
     {
       "id": "glossy_drecko",
       "name": "Glossy Drecko",
       "kind": "critter",
-      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner. Shearing adds 4 s a cycle on top: 12 s every 3 cycles.",
       "tags": [
         "ranching",
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "shearing",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "mealwood",
           "direction": "input",
@@ -2257,7 +2338,7 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 16.0
     },
     {
       "id": "gulp_fish",
@@ -2269,6 +2350,11 @@ const String oniDataJson = r"""
         "verified"
       ],
       "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
         {
           "item": "algae",
           "direction": "input",
@@ -2308,6 +2394,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "algae",
           "direction": "input",
           "rate": 12.5
@@ -2338,6 +2429,11 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
           "item": "lettuce",
           "direction": "input",
           "rate": 25.0
@@ -2354,6 +2450,64 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0
+    },
+    {
+      "id": "grooming_station",
+      "name": "Grooming Station",
+      "kind": "building",
+      "description": "UNVERIFIED: the wiki does not publish this building’s power draw, so it is modelled as drawing none and will under-report your grid. Capacity is the sticking point: a stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "output",
+          "rate": 8
+        }
+      ]
+    },
+    {
+      "id": "aquatic_grooming_station",
+      "name": "Aquatic Grooming Station",
+      "kind": "building",
+      "description": "UNVERIFIED: like its dry sibling, the wiki gives the 2×3 footprint but no power draw, so none is modelled. Capacity is the sticking point: a stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "output",
+          "rate": 8
+        }
+      ]
+    },
+    {
+      "id": "shearing_station",
+      "name": "Shearing Station",
+      "kind": "building",
+      "description": "UNVERIFIED CAPACITY: the 60 W, the 3×3 footprint and the 12 s shearing are all from the wiki; only how many critters one station keeps up with is a judgement. Capacity is the sticking point: a stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.625,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "shearing",
+          "direction": "output",
+          "rate": 8
+        }
+      ]
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"

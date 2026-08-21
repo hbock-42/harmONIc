@@ -71,6 +71,47 @@ void main() {
         closeTo(12 * 70000 / secondsPerCycle / 1000, 1e-3));
   });
 
+  testWidgets('an ungroomed ranch says it needs stabling', (tester) async {
+    final controller = await pumpEditor(tester);
+    // Nothing supplies grooming yet, so it shows up as something to provide.
+    expect(controller.solution.externalInputs['grooming'], closeTo(12, 1e-6));
+  });
+
+  testWidgets('adding a station covers the critters and sizes itself',
+      (tester) async {
+    final controller = await pumpEditor(tester);
+    final stationId =
+        controller.addNode('grooming_station', const Offset(-300, 100));
+    controller.connect(
+      PortRef(stationId, 'grooming'),
+      const PortRef('hatches', 'grooming'),
+    );
+    await tester.pump();
+
+    expect(controller.solution.externalInputs['grooming'], isNull,
+        reason: 'the stable covers them now');
+    // Twelve hatches at eight to a stable.
+    expect(controller.solution.nodes[stationId]!.count, closeTo(12 / 8, 1e-9));
+    expect(controller.solution.nodes[stationId]!.wholeCount, 2);
+  });
+
+  testWidgets('a station does not double-charge the grooming time',
+      (tester) async {
+    final controller = await pumpEditor(tester);
+    final before = controller.solution.dupeLabourSecondsPerCycle;
+
+    final stationId =
+        controller.addNode('grooming_station', const Offset(-300, 100));
+    controller.connect(
+      PortRef(stationId, 'grooming'),
+      const PortRef('hatches', 'grooming'),
+    );
+    await tester.pump();
+
+    expect(controller.solution.dupeLabourSecondsPerCycle, closeTo(before, 1e-6),
+        reason: 'the labour is booked on the critters, once');
+  });
+
   testWidgets('the inspector shows a critter its own grooming cost',
       (tester) async {
     final controller = await pumpEditor(tester);

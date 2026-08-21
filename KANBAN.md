@@ -42,9 +42,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
   list *what* they eat and make but not *how much*. Ranching/food buildings likewise
 - `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole,
   Plug Slug, and the Frosty/Prehistoric pack critters
-- `E4-19` The Grooming Station as a building: its power draw is undocumented on the wiki,
-  and putting it on the canvas alongside the critters would double-count the labour that
-  now sits on the critter itself
+- `E4-22` The Grooming Station's power draw, if it is ever published — modelled as zero
+  today, which under-reports the grid
 - `E4-20` Egg mass and shells: eggs are counted, not weighed, so shell-to-lime and
   omelette chains cannot be modelled yet
 - `E4-21` Wild versus groomed as separate specs — the seeded figures assume groomed
@@ -99,6 +98,12 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-19` **Ranching buildings** — Grooming, Aquatic Grooming and Shearing Stations, sized
+  by the critters that need them through a `grooming` / `shearing` capacity link rather
+  than a pin, so twenty Hatches asks for three stables on its own. The stations carry no
+  labour: the Duplicant time is booked on the critters, and charging it twice would be
+  worse than not charging it at all. Shearing adds its own time on top — 12 s every
+  8 cycles for a Drecko, every 3 for a Glossy
 - `E4-16` **Ranching costs and yields** — critters lay eggs (one per groomed interval),
   drop meat spread over their lifespan, and cost 12 s of Duplicant time a cycle each to
   keep groomed. The summary bar shows total labour in seconds *and* in Duplicants, and

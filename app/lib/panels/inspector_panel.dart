@@ -228,9 +228,12 @@ class _NodeInspectorState extends State<_NodeInspector> {
           ),
           const SizedBox(height: OniSpacing.lg),
           if (!_isBoundary)
-            Row(
+            Wrap(
+              spacing: OniSpacing.md,
+              runSpacing: OniSpacing.md,
               children: [
-                Expanded(
+                SizedBox(
+                  width: 118,
                   child: OniStat(
                     label: 'power',
                     value: Unit.watts.format(spec.netPowerWatts * result.count),
@@ -239,7 +242,8 @@ class _NodeInspectorState extends State<_NodeInspector> {
                         : OniColors.text,
                   ),
                 ),
-                Expanded(
+                SizedBox(
+                  width: 118,
                   child: OniStat(
                     label: 'heat',
                     value: Unit.kdtuPerSecond
@@ -247,7 +251,8 @@ class _NodeInspectorState extends State<_NodeInspector> {
                   ),
                 ),
                 if (spec.dupeLabourSecondsPerCycle > 0)
-                  Expanded(
+                  SizedBox(
+                    width: 118,
                     child: OniStat(
                       label: 'dupe time',
                       value: '${(spec.dupeLabourSecondsPerCycle * result.count).toStringAsFixed(0)} s/cycle',
@@ -529,7 +534,9 @@ class _EdgeInspector extends StatelessWidget {
         const SizedBox(height: OniSpacing.lg),
         Text('WHO DECIDES THE AMOUNT', style: OniType.label),
         const SizedBox(height: OniSpacing.sm),
-        Row(
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.sm,
           children: [
             OniButton(
               label: 'The consumer',
@@ -539,7 +546,6 @@ class _EdgeInspector extends StatelessWidget {
                   : OniButtonTone.neutral,
               onPressed: () => controller.setEdgeMode(edge.id, EdgeMode.pull),
             ),
-            const SizedBox(width: OniSpacing.sm),
             OniButton(
               label: 'The producer',
               compact: true,
