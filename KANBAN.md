@@ -28,6 +28,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
+- `E7-9` auto-layout, `E7-10` marquee select, `E7-11` minimap
+- `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
+  reload loses your build. Next most valuable thing after the canvas
+- `E10-5` a real problems *panel* (the banner shows the first three)
 - `E4-3..7` Widen the seed data (more generators, farming, food, critters, ranching)
 - `E3-7b` `allowSurplus` per output port, so a vented by-product does not need a
   sink node just to keep the system consistent
@@ -63,6 +67,20 @@ _(empty)_
   consumers on one output now add up instead of being carved 50/50
 - `E3-6` Inconsistent systems name the output ports with nowhere to vent, instead of
   just reporting a contradiction
+- `E6-1..4` forui wired up, **no Material anywhere in `app/lib`** (bare `WidgetsApp`),
+  `PipelineController` with re-solve-on-edit and undo/redo
+- `E9-1..3` Design tokens, the item-category palette, and the `lib/design/` wrappers
+- `E7-1..8` **The canvas**: pan/zoom, node widgets, bezier wires with thickness ∝ flow,
+  selection, node dragging with grid snap, drag-from-port to connect, delete, empty state
+- `E10-1..4` Palette with search, the **pin control**, node/edge inspectors, summary bar,
+  problems banner
+- `E7-6`+ **Click a port to fill it** — clicking any port asks what belongs on the other
+  end, filtered to processes with a matching port, and places *and* wires the choice in
+  one undo step, lined up so the wire runs flat. Dropping a wire on empty canvas opens
+  the same menu instead of discarding the gesture. Following the hollow dots outwards
+  is now the fastest way to build a chain
+- `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
+  editor flows
 - `E4-*` **Every process checked against the wiki** (oxygennotincluded.wiki.gg, 2026-08-21).
   12 of 19 were wrong; the Desalinator split into one spec per recipe; batch buildings
   restated as continuous rates. A test now fails if any process loses its `verified` tag
@@ -146,30 +164,67 @@ _(empty)_
 | E5-3 | P2 | Share a pipeline as a link / base64 blob |
 | E5-4 | P2 | Import/export to clipboard |
 
-## E6 — App shell (Flutter)
+## E6 — App shell & foundations
 
-| id | P | Task |
-|---|---|---|
-| E6-1 | P1 | App scaffold, theming (dark, ONI-ish palette), routing (`go_router`) |
-| E6-2 | P1 | State management decision `spike` → `riverpod` (recommended: pure-Dart engine + riverpod providers) |
-| E6-3 | P1 | Pipeline list / new / open / delete |
-| E6-4 | P1 | Desktop + web targets first (canvas work is mouse-first), mobile later |
+**Decided (2026-08-21):** [`forui`](https://pub.dev/packages/forui) `^0.25` for the chrome,
+hand-written canvas on `package:flutter/widgets.dart`. Every forui call sits behind an
+app-local wrapper in `lib/design/`, so a `0.x` breaking change lands in one folder.
+Visual direction: **technical planner** — dark, dense, colour used as data.
 
-## E7 — Graph canvas UI
+> Flutter 3.47 decoupled Material/Cupertino into standalone `material_ui` / `cupertino_ui`
+> packages (opt-in; bundled imports deprecate in the Fall 2026 stable). We depend on
+> neither — forui has no Material dependency — so there is nothing to migrate in November.
 
-| id | P | Task |
-|---|---|---|
-| E7-1 | P1 | Pan/zoom canvas (`InteractiveViewer` or custom `Transform` + gesture layer) |
-| E7-2 | P1 | Node widget: icon, name, solved count, ports as dots |
-| E7-3 | P1 | Edge rendering: bezier `CustomPainter`, thickness ∝ flow, colour by item category |
-| E7-4 | P1 | Drag-from-port to create an edge, with type-compat highlighting |
-| E7-5 | P1 | Node palette / search to add a process |
-| E7-6 | P1 | **Pin UI** — the headline feature: click a node → "I have ▢ of these" / "I want ▢ g/s out"; pinned node gets a lock badge; everything else recomputes live |
-| E7-7 | P1 | Inspector panel: per-node inputs/outputs, power, heat, uptime |
-| E7-8 | P1 | Summary bar: net power, net heat, raw inputs, net outputs, shortages |
-| E7-9 | P2 | Auto-layout (layered / Sugiyama) for imported or generated graphs |
-| E7-10 | P2 | Undo/redo |
-| E7-11 | P2 | Multi-select, group, collapse into sub-pipeline |
+| id | P | Task | Definition of done |
+|---|---|---|---|
+| E6-1 | P0 | forui wired up, Material dropped | no `package:flutter/material.dart` anywhere in `app/lib` |
+| E6-2 | P0 | State management | `PipelineController extends ChangeNotifier`: holds the `Pipeline`, the current `PipelineSolution`, selection, and an undo stack. No riverpod — the engine is pure and the app has one document |
+| E6-3 | P0 | Re-solve on every edit | any mutation re-runs the solver and repaints; target < 16 ms for a 100-node graph |
+| E6-4 | P1 | Undo/redo | trivial: `Pipeline` is immutable, so the stack is a `List<Pipeline>` |
+| E6-5 | P1 | Desktop-first window chrome, keyboard shortcuts (⌘Z, ⌫, ⌘F) |
+| E6-6 | P2 | Multi-document: open several pipelines in tabs |
+
+## E9 — Design system (`lib/design/`)
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E9-1 | P0 | Tokens | `OniColors`, `OniSpacing`, `OniTypography`. One dark palette; colour is *data*, not decoration |
+| E9-2 | P0 | Item-category palette | solid / liquid / gas / power / heat each get a hue, used identically on ports, edges and legends — the single most important visual rule in the app |
+| E9-3 | P0 | Wrappers | `OniPanel`, `OniButton`, `OniField`, `OniSelect`, `OniTooltip` over forui equivalents |
+| E9-4 | P1 | Numeric formatting widget | reuses the engine's `Unit.format`; per-second ⇄ per-cycle toggle in one place |
+| E9-5 | P1 | Icon set | no game sprites (copyright) — generated glyphs per item category |
+| E9-6 | P2 | Light theme |
+
+## E7 — The canvas
+
+The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E7-1 | P0 | Viewport | `Matrix4` pan/zoom driven by `Listener` + `GestureDetector`; explicit screen ⇄ world coordinate conversion, because every hit test needs it. Trackpad pinch and scroll-to-pan |
+| E7-2 | P0 | Node widget | real widgets inside a `Stack` (not painted), so text, focus and hit-testing come free. Shows name, solved count, `build N`, a utilisation bar, and its ports as dots |
+| E7-3 | P0 | Edge painter | one `CustomPaint` *under* the nodes: bezier per edge, colour by item category, **thickness ∝ flow**, flow label at the midpoint |
+| E7-4 | P0 | Selection | click a node or an edge; selection drives the inspector |
+| E7-5 | P0 | Drag a node | updates `PipelineNode.x/y`, snaps to a grid |
+| E7-6 | P1 | Drag-from-port to connect | live bezier following the cursor; compatible target ports light up, incompatible ones dim; drop on empty space opens the palette filtered to processes that accept that item |
+| E7-7 | P1 | Delete | node or edge, with the edges of a deleted node going too |
+| E7-8 | P1 | Empty state | a real "add your first node" affordance, not a blank void |
+| E7-9 | P2 | Auto-layout (layered / Sugiyama) |
+| E7-10 | P2 | Marquee select, group move |
+| E7-11 | P2 | Minimap |
+
+## E10 — Panels & the pin interaction
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E10-1 | P0 | Process palette | searchable, grouped by tag (oxygen / power / liquid / refining), click or drag to place. Sources and sinks listed per item |
+| E10-2 | P0 | **Pin control** — the headline | select a node → "I have ▢ of these" (buildings) or "▢ g/s" (source/sink). Pinned node wears a lock badge; clearing it is one click |
+| E10-3 | P0 | Inspector | selected node: every port with its solved rate, what is connected, power, heat, uptime, and the `unverified` warning if the data ever carries one |
+| E10-4 | P1 | Summary bar | net power, total heat, raw inputs, net outputs, dupe labour — always visible |
+| E10-5 | P1 | Problems panel | solver issues as a real list: underdetermined (with the "pin one of these" nodes as buttons), inconsistent, shortages |
+| E10-6 | P1 | Edge inspector | pull ⇄ push toggle and the share slider, explained in words rather than jargon |
+| E10-7 | P2 | Per-cycle ⇄ per-second toggle |
+| E10-8 | P2 | Templates: start from SPOM, petroleum boiler, coal farm |
 
 ## E8 — Quality
 
@@ -190,4 +245,6 @@ _(empty)_
   and asserts water in, O₂ out, H₂ out, net power.
 - **M2 — Engine v1**: cycles, pins of every kind, whole-building rounding, derived totals, real data seed, golden scenarios.
 - **M3 — App v1**: canvas, node palette, pin UI, summary bar, save/load.
+  *Proof*: build the SPOM from an empty canvas by hand — place nodes, drag the connections,
+  pin the crew — without touching a line of Dart.
 - **M4 — Polish**: auto-layout, undo/redo, LP optimiser, sharing.

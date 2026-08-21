@@ -1,138 +1,73 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 
-void main() => runApp(const OniPipelineApp());
+import 'design/tokens.dart';
+import 'editor_screen.dart';
+import 'state/pipeline_controller.dart';
 
-class OniPipelineApp extends StatelessWidget {
-  const OniPipelineApp({super.key});
+void main() => runApp(OniPipelineApp(database: loadDefaultDatabase()));
 
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'ONI Pipeline Planner',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF3FB8AF),
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-        ),
-        home: const PipelineScreen(),
-      );
-}
+/// No `MaterialApp`: the app is hosted on a bare [WidgetsApp] with forui's
+/// theme layered on top, so nothing imposes a design language we did not pick.
+class OniPipelineApp extends StatefulWidget {
+  const OniPipelineApp({required this.database, this.initial, super.key});
 
-/// A deliberately plain harness for the engine: pick a node, say how many you
-/// have, read the plan. The canvas UI (KANBAN E7) replaces this screen; the
-/// engine calls it makes stay the same.
-class PipelineScreen extends StatefulWidget {
-  const PipelineScreen({super.key});
+  final GameDatabase database;
+  final Pipeline? initial;
 
   @override
-  State<PipelineScreen> createState() => _PipelineScreenState();
+  State<OniPipelineApp> createState() => _OniPipelineAppState();
 }
 
-class _PipelineScreenState extends State<PipelineScreen> {
-  late final GameDatabase _db = loadDefaultDatabase();
-  late final PipelineSolver _solver = PipelineSolver(_db);
-  late final Pipeline _pipeline = _buildSpom();
-
-  late String _pinnedNodeId = 'elec';
-  final TextEditingController _amount = TextEditingController(text: '4');
-
-  Pipeline _buildSpom() {
-    final b = PipelineBuilder(_db, name: 'SPOM')
-      ..addSource('water')
-      ..add('electrolyzer', nodeId: 'elec')
-      ..add('hydrogen_generator', nodeId: 'hgen')
-      ..addSink('oxygen')
-      ..connectItem('src_water', 'elec', 'water')
-      ..connectItem('elec', 'hgen', 'hydrogen')
-      ..connectItem('elec', 'sink_oxygen', 'oxygen');
-    return b.build();
-  }
-
-  /// Sources and sinks are pinned by rate (their count *is* g/s); real
-  /// buildings are pinned by how many you have.
-  Pin _pin() {
-    final spec = _db.processOrThrow(_pipeline.nodeOrThrow(_pinnedNodeId).specId);
-    final value = double.tryParse(_amount.text) ?? 0;
-    return switch (spec.kind) {
-      ProcessKind.source => PortRatePin(
-          nodeId: _pinnedNodeId, portId: sourcePortId, ratePerSecond: value),
-      ProcessKind.sink => PortRatePin(
-          nodeId: _pinnedNodeId, portId: sinkPortId, ratePerSecond: value),
-      _ => BuildingCountPin(nodeId: _pinnedNodeId, count: value),
-    };
-  }
-
-  String _labelFor(PipelineNode node) =>
-      node.label ?? _db.processOrThrow(node.specId).name;
+class _OniPipelineAppState extends State<OniPipelineApp> {
+  late final PipelineController _controller = PipelineController(
+    widget.database,
+    initial: widget.initial ?? starterPipeline(widget.database),
+  );
 
   @override
   void dispose() {
-    _amount.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final solution = _solver.solvePinned(_pipeline, _pin());
-    final spec = _db.processOrThrow(_pipeline.nodeOrThrow(_pinnedNodeId).specId);
-    final isRate =
-        spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink;
+  Widget build(BuildContext context) => WidgetsApp(
+        title: 'ONI Pipeline Planner',
+        color: OniColors.accent,
+        localizationsDelegates: FLocalizations.localizationsDelegates,
+        supportedLocales: FLocalizations.supportedLocales,
+        pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) =>
+            PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (context, _, _) => builder(context),
+        ),
+        builder: (context, child) => FTheme(
+          data: FTheme.neutral.dark.desktop,
+          child: DefaultTextStyle(
+            style: OniType.body,
+            child: child ?? const SizedBox.shrink(),
+          ),
+        ),
+        home: EditorScreen(controller: _controller),
+      );
+}
 
-    return Scaffold(
-      appBar: AppBar(title: Text(_pipeline.name)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  initialValue: _pinnedNodeId,
-                  decoration: const InputDecoration(
-                    labelText: 'I know how much of this I have',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: [
-                    for (final node in _pipeline.nodes)
-                      DropdownMenuItem(
-                        value: node.id,
-                        child: Text(_labelFor(node)),
-                      ),
-                  ],
-                  onChanged: (value) =>
-                      setState(() => _pinnedNodeId = value ?? _pinnedNodeId),
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 140,
-                child: TextField(
-                  controller: _amount,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: isRate ? 'g/s' : 'how many',
-                    border: const OutlineInputBorder(),
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: SelectableText(
-                formatSolution(solution, _db),
-                style: const TextStyle(fontFamily: 'monospace', height: 1.4),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+/// A small starting graph, so the first run shows the app working rather than
+/// an empty grid. Everything in it can be deleted.
+Pipeline starterPipeline(GameDatabase database) {
+  final builder = PipelineBuilder(database, name: 'Oxygen for the crew')
+    ..addSource('water', x: 0, y: 176)
+    ..add('electrolyzer', nodeId: 'elec', x: 296, y: 120)
+    ..add('duplicant', nodeId: 'dupes', x: 640, y: 40)
+    ..add('hydrogen_generator', nodeId: 'hgen', x: 640, y: 264)
+    ..addSink('power', nodeId: 'spare', x: 952, y: 296)
+    ..connectItem('src_water', 'elec', 'water')
+    ..connectItem('elec', 'dupes', 'oxygen')
+    ..connectItem('elec', 'hgen', 'hydrogen')
+    ..connectItem('hgen', 'elec', 'power')
+    ..connectItem('hgen', 'spare', 'power')
+    ..pinCount('dupes', 8);
+  return builder.build();
 }
