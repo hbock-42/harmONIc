@@ -251,6 +251,10 @@ class _NodeInspectorState extends State<_NodeInspector> {
           const SizedBox(height: OniSpacing.lg),
         ],
 
+        if (controller.isGeyser(node)) ...[
+          _GeyserActivity(controller: controller, node: node),
+          const SizedBox(height: OniSpacing.lg),
+        ],
         Text('PORTS', style: OniType.label),
         const SizedBox(height: OniSpacing.sm),
         for (final port in spec.ports)
@@ -264,6 +268,52 @@ class _NodeInspectorState extends State<_NodeInspector> {
             controller.select(NodeSelection(node.id));
             controller.deleteSelection();
           },
+        ),
+      ],
+    );
+  }
+}
+
+/// How active you assume this particular geyser is. The shipped rate is a
+/// lifetime average at a typical roll; yours is its own thing.
+class _GeyserActivity extends StatelessWidget {
+  const _GeyserActivity({required this.controller, required this.node});
+
+  final PipelineController controller;
+  final PipelineNode node;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = controller.activityOf(node);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('ASSUME ACTIVE', style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.sm,
+          children: [
+            for (final entry in GeyserActivity.presets.entries)
+              OniButton(
+                label: '${entry.key} '
+                    '${(entry.value * 100).toStringAsFixed(0)}%',
+                compact: true,
+                tone: (active - entry.value).abs() < 1e-6
+                    ? OniButtonTone.accent
+                    : OniButtonTone.neutral,
+                onPressed: () =>
+                    controller.setNodeActivity(node.id, entry.value),
+              ),
+          ],
+        ),
+        const SizedBox(height: OniSpacing.sm),
+        Text(
+          'A geyser is active 40–80 % of a dormancy cycle, rolled when the '
+          'world was made. The shipped rate assumes 60 %. Field Research on '
+          'this geyser tells you its real figure.',
+          style: OniType.body
+              .copyWith(fontSize: 11.5, color: OniColors.textFaint),
         ),
       ],
     );

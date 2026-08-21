@@ -369,6 +369,85 @@ void main() {
     });
   });
 
+  group('output scaling', () {
+    /// One water geyser feeding electrolyzers, at whatever activity you assume.
+    PipelineSolution solveGeyser(double activeFraction) {
+      final scale = GeyserActivity.scaleFor(activeFraction);
+      final b = PipelineBuilder(db, name: 'geyser fed')
+        ..add('water_geyser', nodeId: 'geyser')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..addSink('oxygen')
+        ..addSink('hydrogen')
+        ..connectItem('geyser', 'elec', 'water')
+        ..connectItem('elec', 'sink_oxygen', 'oxygen')
+        ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+        ..pinCount('geyser', 1);
+      final pipeline = b.build();
+      return solver.solve(pipeline.copyWith(
+        nodes: [
+          for (final n in pipeline.nodes)
+            if (n.id == 'geyser') n.copyWith(outputScale: scale) else n,
+        ],
+      ));
+    }
+
+    test('the shipped rate is the typical roll', () {
+      final typical = solveGeyser(GeyserActivity.typicalActiveFraction);
+      expect(typical.nodes['elec']!.count, closeTo(1.8, 1e-9));
+    });
+
+    test('a dull geyser supports proportionally less', () {
+      final worst = solveGeyser(GeyserActivity.minimumActiveFraction);
+      // 40 % active against a typical 60 % is two thirds of the supply.
+      expect(worst.nodes['elec']!.count, closeTo(1.8 * 2 / 3, 1e-9));
+      expect(worst.status, SolveStatus.solved);
+    });
+
+    test('a lucky geyser supports more', () {
+      final best = solveGeyser(GeyserActivity.maximumActiveFraction);
+      expect(best.nodes['elec']!.count, closeTo(1.8 * 4 / 3, 1e-9));
+    });
+
+    test('scaling output leaves what a node consumes alone', () {
+      final b = PipelineBuilder(db, name: 'scaled consumer')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..pinCount('elec', 1);
+      final pipeline = b.build();
+      final solution = solver.solve(pipeline.copyWith(
+        nodes: [
+          for (final n in pipeline.nodes) n.copyWith(outputScale: 0.5),
+        ],
+      ));
+
+      expect(solution.externalInputs['water'], closeTo(1000, 1e-9),
+          reason: 'it still drinks a full kilogram');
+      expect(solution.externalOutputs['oxygen'], closeTo(444, 1e-9),
+          reason: 'but makes half the oxygen');
+    });
+
+    test('a pinned rate accounts for the scale', () {
+      // "This geyser gives me 1200 g/s" on a two-thirds geyser means it is
+      // running at one whole geyser's worth.
+      final b = PipelineBuilder(db, name: 'pinned scaled')
+        ..add('water_geyser', nodeId: 'geyser')
+        ..pinRate('geyser', 'water', 1200);
+      final pipeline = b.build();
+      final solution = solver.solve(pipeline.copyWith(
+        nodes: [
+          for (final n in pipeline.nodes) n.copyWith(outputScale: 2 / 3),
+        ],
+      ));
+
+      expect(solution.nodes['geyser']!.count, closeTo(1, 1e-9));
+    });
+
+    test('scale survives a JSON round trip', () {
+      final node = const PipelineNode(id: 'g', specId: 'water_geyser')
+          .copyWith(outputScale: 0.75);
+      expect(PipelineNode.fromJson(node.toJson()).outputScale, 0.75);
+    });
+  });
+
   group('presentation helpers', () {
     test('uptime turns effective units into buildings to place', () {
       final b = PipelineBuilder(db, name: 'duty cycle')

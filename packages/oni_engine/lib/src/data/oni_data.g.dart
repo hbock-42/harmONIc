@@ -1498,7 +1498,7 @@ const String oniDataJson = r"""
       "id": "water_geyser",
       "name": "Water Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1518,7 +1518,7 @@ const String oniDataJson = r"""
       "id": "salt_water_geyser",
       "name": "Salt Water Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1538,7 +1538,7 @@ const String oniDataJson = r"""
       "id": "polluted_water_vent",
       "name": "Polluted Water Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1558,7 +1558,7 @@ const String oniDataJson = r"""
       "id": "cool_steam_vent",
       "name": "Cool Steam Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1578,7 +1578,7 @@ const String oniDataJson = r"""
       "id": "steam_vent",
       "name": "Steam Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1598,7 +1598,7 @@ const String oniDataJson = r"""
       "id": "cool_slush_geyser",
       "name": "Cool Slush Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1618,7 +1618,7 @@ const String oniDataJson = r"""
       "id": "cool_salt_slush_geyser",
       "name": "Cool Salt Slush Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1638,7 +1638,7 @@ const String oniDataJson = r"""
       "id": "liquid_sulfur_geyser",
       "name": "Liquid Sulfur Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1658,7 +1658,7 @@ const String oniDataJson = r"""
       "id": "natural_gas_geyser",
       "name": "Natural Gas Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1678,7 +1678,7 @@ const String oniDataJson = r"""
       "id": "hydrogen_vent",
       "name": "Hydrogen Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1698,7 +1698,7 @@ const String oniDataJson = r"""
       "id": "chlorine_gas_vent",
       "name": "Chlorine Gas Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1718,7 +1718,7 @@ const String oniDataJson = r"""
       "id": "carbon_dioxide_vent",
       "name": "Carbon Dioxide Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1738,7 +1738,7 @@ const String oniDataJson = r"""
       "id": "carbon_dioxide_geyser",
       "name": "Carbon Dioxide Geyser",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1758,7 +1758,7 @@ const String oniDataJson = r"""
       "id": "hot_polluted_oxygen_vent",
       "name": "Hot Polluted Oxygen Vent",
       "kind": "custom",
-      "description": "Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1778,7 +1778,7 @@ const String oniDataJson = r"""
       "id": "leaky_oil_fissure",
       "name": "Leaky Oil Fissure",
       "kind": "custom",
-      "description": "Erupts continuously, unlike the other geysers — no dormancy period to plan around. Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "Erupts continuously, unlike the other geysers — no dormancy period to plan around. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1798,7 +1798,7 @@ const String oniDataJson = r"""
       "id": "copper_volcano",
       "name": "Copper Volcano",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1818,7 +1818,7 @@ const String oniDataJson = r"""
       "id": "iron_volcano",
       "name": "Iron Volcano",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -1838,7 +1838,7 @@ const String oniDataJson = r"""
       "id": "gold_volcano",
       "name": "Gold Volcano",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Average output. Every geyser rolls its own emission rate, active period and dormancy when the world is generated, so treat this as a planning figure and check the one in your own base.",
+      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [

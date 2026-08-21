@@ -35,9 +35,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E5-3` Export/import a pipeline as a file or a link, to share a build
 - `E6-6` Tabs, so two pipelines can be compared side by side
 - `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
-- `E4-14` Geyser dormancy and per-instance variance: today a geyser is its *average*
-  output, but a real one has an eruption period, a dormancy period and a rate rolled at
-  world generation. A "worst case / average / peak" toggle would make the numbers honest
+- `E4-18` Per-geyser measured figures: Field Research gives an exact active percentage,
+  so let people type theirs in rather than picking a preset band
 - `E4-9` **Still blocked on wiki stubs, not on us.** Plants: 5 of 12 seeded; Sodicane
   (no quantified yield), Bulbloom (decor only), Mussel Sprout (non-renewable), Clampum,
   Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Aquatic critters: only
@@ -98,6 +97,12 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-14` **Geyser activity** — `PipelineNode.outputScale` scales what a node produces
+  without touching what it consumes, and the inspector offers worst/typical/best (40/60/80 %)
+  per geyser, with a top-bar control to swing them all at once in a single undo step.
+  Chasing this down found that the wiki's two figures differ by exactly the typical active
+  share: the per-geyser pages quote the *while-active* average, the summary table the
+  *lifetime* one. The shipped rates are lifetime averages, and now say so
 - `E5-1..2` **Save and load** — every pipeline is kept on disk and the app reopens the
   one you had on screen. Editing saves itself, debounced so a drag is one write rather
   than sixty, and selecting a node is not treated as an edit. New, duplicate, delete and

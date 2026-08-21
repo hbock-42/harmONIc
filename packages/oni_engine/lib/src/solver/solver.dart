@@ -41,6 +41,11 @@ class PipelineSolver {
     };
     final factors = resolveEdgeFactors(pipeline);
 
+    /// A port's rate for a given node. Output ports are scaled by the node's
+    /// [PipelineNode.outputScale]; what a node consumes is never scaled.
+    double rateOf(PipelineNode node, Port port) =>
+        port.isOutput ? port.ratePerSecond * node.outputScale : port.ratePerSecond;
+
     /// The flow along [edge] as a linear term in the node counts, added into
     /// [row]. Which node it lands on is the whole point of the two modes: a
     /// push edge is a fraction of what its source makes, a pull edge is a
@@ -49,11 +54,12 @@ class PipelineSolver {
       final factor = factors[edge.id];
       if (factor == null) return;
       if (factor.mode == EdgeMode.push) {
+        final source = pipeline.nodeOrThrow(edge.fromNodeId);
         final port = database
-            .processOrThrow(pipeline.nodeOrThrow(edge.fromNodeId).specId)
+            .processOrThrow(source.specId)
             .portByIdOrThrow(edge.fromPortId);
         row[index[edge.fromNodeId]!] +=
-            sign * factor.fraction * port.ratePerSecond;
+            sign * factor.fraction * rateOf(source, port);
       } else {
         final port = database
             .processOrThrow(pipeline.nodeOrThrow(edge.toNodeId).specId)
@@ -98,7 +104,7 @@ class PipelineSolver {
           for (final edge in attached) {
             addFlowTerm(row, edge, 1);
           }
-          row[index[node.id]!] -= port.ratePerSecond;
+          row[index[node.id]!] -= rateOf(node, port);
         }, 0);
       }
     }
@@ -111,10 +117,12 @@ class PipelineSolver {
         case BuildingCountPin(:final count):
           addRow((row) => row[column] = 1, count);
         case PortRatePin(:final portId, :final ratePerSecond):
-          final rate = spec.portByIdOrThrow(portId).ratePerSecond;
+          final node = pipeline.nodeOrThrow(pin.nodeId);
+          final rate = rateOf(node, spec.portByIdOrThrow(portId));
           addRow((row) => row[column] = rate, ratePerSecond);
         case StockPin(:final portId):
-          final rate = spec.portByIdOrThrow(portId).ratePerSecond;
+          final node = pipeline.nodeOrThrow(pin.nodeId);
+          final rate = rateOf(node, spec.portByIdOrThrow(portId));
           addRow((row) => row[column] = rate, pin.ratePerSecond);
       }
     }
@@ -187,11 +195,13 @@ class PipelineSolver {
       final driving = factor.mode == EdgeMode.push ? edge.fromNodeId : edge.toNodeId;
       final portId =
           factor.mode == EdgeMode.push ? edge.fromPortId : edge.toPortId;
+      final drivingNode = pipeline.nodeOrThrow(driving);
       final port = database
-          .processOrThrow(pipeline.nodeOrThrow(driving).specId)
+          .processOrThrow(drivingNode.specId)
           .portByIdOrThrow(portId);
-      edgeFlows[edge.id] =
-          factor.fraction * port.ratePerSecond * counts[index[driving]!];
+      edgeFlows[edge.id] = factor.fraction *
+          rateOf(drivingNode, port) *
+          counts[index[driving]!];
     }
 
     // Port balances.
@@ -212,7 +222,7 @@ class PipelineSolver {
           ref: ref,
           itemId: port.itemId,
           direction: port.direction,
-          rate: port.ratePerSecond * count,
+          rate: rateOf(node, port) * count,
           linkedRate: linked,
         ));
       }

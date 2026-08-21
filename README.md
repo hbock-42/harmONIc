@@ -54,6 +54,14 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Geysers are not constant
+
+A geyser's shipped rate is a *lifetime* average at a typical roll. The real one in your
+world picked its own numbers when the map was made: it is active between 40 % and 80 % of
+a dormancy cycle that runs 25–225 cycles. Select a geyser and choose worst, typical or
+best to see what your build survives on, or set them all at once from the top bar. A
+Duplicant with Field Research can tell you the real figure.
+
 ## Your work is kept
 
 Pipelines live on disk and the app reopens whatever was last on screen. There is no save

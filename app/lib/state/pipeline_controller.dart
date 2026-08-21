@@ -330,6 +330,42 @@ class PipelineController extends ChangeNotifier {
         ],
       ));
 
+  /// How active this geyser is assumed to be, as a fraction of its dormancy
+  /// cycle. The shipped rates assume the typical roll, so this scales away
+  /// from that.
+  void setNodeActivity(String nodeId, double activeFraction) =>
+      _apply(_pipeline.copyWith(
+        nodes: [
+          for (final n in _pipeline.nodes)
+            if (n.id == nodeId)
+              n.copyWith(outputScale: GeyserActivity.scaleFor(activeFraction))
+            else
+              n,
+        ],
+      ));
+
+  /// The same assumption applied to every geyser at once — "what if I was
+  /// unlucky with all of them" — as a single undo step.
+  void setAllGeyserActivity(double activeFraction) {
+    final scale = GeyserActivity.scaleFor(activeFraction);
+    _apply(_pipeline.copyWith(
+      nodes: [
+        for (final n in _pipeline.nodes)
+          if (database.processOrThrow(n.specId).tags.contains('geyser'))
+            n.copyWith(outputScale: scale)
+          else
+            n,
+      ],
+    ));
+  }
+
+  /// The activity a node's scale implies, for showing the current setting.
+  double activityOf(PipelineNode node) =>
+      node.outputScale * GeyserActivity.typicalActiveFraction;
+
+  bool isGeyser(PipelineNode node) =>
+      database.processOrThrow(node.specId).tags.contains('geyser');
+
   void setNodeUptime(String nodeId, double uptime) => _apply(_pipeline.copyWith(
         nodes: [
           for (final n in _pipeline.nodes)

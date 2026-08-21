@@ -316,6 +316,21 @@ class _TopBarState extends State<_TopBar> {
             const SizedBox(width: OniSpacing.md),
             Text('saved', style: OniType.numberSmall),
             const Spacer(),
+            if (controller.pipeline.nodes.any(controller.isGeyser)) ...[
+              Text('ALL GEYSERS', style: OniType.label),
+              const SizedBox(width: OniSpacing.sm),
+              for (final entry in GeyserActivity.presets.entries)
+                Padding(
+                  padding: const EdgeInsets.only(right: OniSpacing.xs),
+                  child: OniButton(
+                    label: '${(entry.value * 100).toStringAsFixed(0)}%',
+                    compact: true,
+                    onPressed: () =>
+                        controller.setAllGeyserActivity(entry.value),
+                  ),
+                ),
+              const SizedBox(width: OniSpacing.md),
+            ],
             OniButton(
               label: 'Undo',
               compact: true,

@@ -162,3 +162,38 @@ class ProcessSpec {
   @override
   String toString() => 'ProcessSpec($id)';
 }
+
+/// How much of its life a geyser spends erupting.
+///
+/// Every geyser rolls its own numbers when the world is generated: an emission
+/// rate, an eruption duty, and an active share of a dormancy cycle that runs
+/// 25–225 cycles. The active share is always between 40 % and 80 %, and lands
+/// in the middle fifth — 56–64 % — about half the time.
+///
+/// The rates shipped with this app are lifetime averages at a typical roll, so
+/// these factors say how far a particular geyser may sit either side of it.
+abstract final class GeyserActivity {
+  /// The dullest geyser you can be dealt.
+  static const double minimumActiveFraction = 0.40;
+
+  /// What the shipped figures assume.
+  static const double typicalActiveFraction = 0.60;
+
+  /// The luckiest roll.
+  static const double maximumActiveFraction = 0.80;
+
+  /// Scale for a given active share, relative to the shipped figure.
+  static double scaleFor(double activeFraction) =>
+      activeFraction / typicalActiveFraction;
+
+  /// While it is actually erupting, dormancy ignored — the number that matters
+  /// for sizing storage and pipes rather than long-run supply.
+  static double get whileActiveScale => 1 / typicalActiveFraction;
+
+  /// Presets offered in the app, worst to best.
+  static const Map<String, double> presets = <String, double>{
+    'Worst': minimumActiveFraction,
+    'Typical': typicalActiveFraction,
+    'Best': maximumActiveFraction,
+  };
+}

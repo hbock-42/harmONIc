@@ -15,6 +15,7 @@ class PipelineNode {
     this.x = 0,
     this.y = 0,
     this.uptime = 1,
+    this.outputScale = 1,
     this.notes,
   });
 
@@ -25,6 +26,7 @@ class PipelineNode {
         x: (json['x'] as num?)?.toDouble() ?? 0,
         y: (json['y'] as num?)?.toDouble() ?? 0,
         uptime: (json['uptime'] as num?)?.toDouble() ?? 1,
+        outputScale: (json['outputScale'] as num?)?.toDouble() ?? 1,
         notes: json['notes'] as String?,
       );
 
@@ -42,6 +44,12 @@ class PipelineNode {
   /// from automation). Solved counts are *effective* units; physical buildings
   /// needed = count / uptime.
   final double uptime;
+
+  /// Multiplies everything this node *produces*, leaving what it consumes
+  /// alone. Written for geysers: the shipped figure is a lifetime average at a
+  /// typical roll, but the geyser in your world has its own, and a Duplicant
+  /// with Field Research can tell you what it is.
+  final double outputScale;
   final String? notes;
 
   PipelineNode copyWith({
@@ -49,6 +57,7 @@ class PipelineNode {
     double? x,
     double? y,
     double? uptime,
+    double? outputScale,
     String? notes,
   }) =>
       PipelineNode(
@@ -58,6 +67,7 @@ class PipelineNode {
         x: x ?? this.x,
         y: y ?? this.y,
         uptime: uptime ?? this.uptime,
+        outputScale: outputScale ?? this.outputScale,
         notes: notes ?? this.notes,
       );
 
@@ -68,6 +78,7 @@ class PipelineNode {
         'x': x,
         'y': y,
         if (uptime != 1) 'uptime': uptime,
+        if (outputScale != 1) 'outputScale': outputScale,
         if (notes != null) 'notes': notes,
       };
 }
