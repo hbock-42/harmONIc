@@ -128,12 +128,18 @@ void main() {
       ..connectItem('src_water', 'elec', 'water'));
 
     final at = layoutOf(pipeline);
-    double centreOf(String id, String specId) =>
+    double portY(String id, String specId, String portId) =>
         at[id]!.dy +
-        NodeLayout.sizeOf(testDatabase.processOrThrow(specId)).height / 2;
+        NodeLayout.portOffset(testDatabase.processOrThrow(specId), portId).dy;
 
+    // Straight means the *wire* is flat, not that the two cards are centred on
+    // each other. Those were the same thing while every node sat at the middle
+    // of its column; now that a node slides to meet its wire, an Electrolyzer
+    // whose water arrives at its first port row sits a little lower than the
+    // supply feeding it, and the wire between them is level.
     expect(
-      (centreOf('src_water', 'source:water') - centreOf('elec', 'electrolyzer'))
+      (portY('src_water', 'source:water', 'out') -
+              portY('elec', 'electrolyzer', 'water'))
           .abs(),
       lessThanOrEqualTo(NodeLayout.gridSize),
     );

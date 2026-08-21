@@ -112,6 +112,10 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E7-18` **Nodes slide to meet their wires** — Sugiyama's fourth phase, which Tidy had been
+  skipping: each node now sits where its heaviest wire runs flat, and a pass is kept only if
+  it does not tangle anything. Both measures improved — 2 683 crossings to 2 431, and the
+  sag down 15 %
 - `E7-17` **Tidy knows where the wires attach** — the layout treated a node as a point, so
   two supplies feeding one node scored identically and fell back on the order they were
   created in. It now uses the port rows, and the cooling loop comes out crossing-free —
@@ -598,6 +602,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E7-15 | ✅ | The view glides |
 | E7-16 | ✅ | The view follows a drag off the edge |
 | E7-17 | ✅ | Port-aware ordering | the barycentre and the crossing count both use where a wire attaches, not the middle of the node |
+| E7-18 | ✅ | Coordinate assignment | the priority method: the heaviest wire decides where a node sits, scored so straightening never costs a crossing |
 
 ## E10 — Panels & the pin interaction
 

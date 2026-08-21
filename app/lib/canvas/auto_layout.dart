@@ -370,7 +370,194 @@ class AutoLayout {
       }
       x += widest + columnGap;
     }
-    return positions;
+    return _straighten(columns, positions);
+  }
+
+  /// Slides nodes up and down so wires run flat.
+  ///
+  /// Sugiyama's fourth phase, which this had been skipping: the columns were
+  /// stacked and centred, so a node never moved to meet the wire coming into
+  /// it. A long wire crossing two columns arrived wherever the middle of the
+  /// column happened to be, and everything downstream of it sagged.
+  ///
+  /// The rule is the priority method, in its plainest form. Each node wants to
+  /// sit where its wires would be flat — its port level with the port at the
+  /// other end. The ones with the most wires get their wish first, and the rest
+  /// take what room is left, never passing a neighbour and never closer than
+  /// [rowGap].
+  Map<String, Offset> _straighten(
+    List<List<String>> columns,
+    Map<String, Offset> positions,
+  ) {
+    // Where each wire attaches, as an offset from the top of its node.
+    double portY(String nodeId, String portId) {
+      if (_isDummy(nodeId)) return _sizeOf(nodeId).height / 2;
+      final node = pipeline.node(nodeId);
+      final spec = node == null ? null : database.process(node.specId);
+      if (spec == null || spec.portById(portId) == null) {
+        return _sizeOf(nodeId).height / 2;
+      }
+      return NodeLayout.portOffset(spec, portId).dy;
+    }
+
+    final wires =
+        <String, List<({String other, double delta, double weight})>>{};
+    for (final edge in pipeline.edges) {
+      if (!_inScope(edge) || edge.fromNodeId == edge.toNodeId) continue;
+      final from = positions[edge.fromNodeId];
+      final to = positions[edge.toNodeId];
+      if (from == null || to == null) continue;
+
+      final fromY = portY(edge.fromNodeId, edge.fromPortId);
+      final toY = portY(edge.toNodeId, edge.toPortId);
+      // A wire crossing three columns pulls three times as hard as one going
+      // next door. Its sag is spread over more of the picture and it passes
+      // more nodes on the way, so when two wires want a node in different
+      // places the long one should win — which is what a person does by hand.
+      final weight = math.max(
+          1.0, (to.dx - from.dx).abs() / (NodeLayout.width + columnGap));
+
+      wires.putIfAbsent(edge.toNodeId, () => []).add(
+          (other: edge.fromNodeId, delta: fromY - toY, weight: weight));
+      wires.putIfAbsent(edge.fromNodeId, () => []).add(
+          (other: edge.toNodeId, delta: toY - fromY, weight: weight));
+    }
+
+    final y = {for (final entry in positions.entries) entry.key: entry.value.dy};
+
+    // Straightening a wire can tangle two others: moving a node to meet one
+    // port drags everything attached to it. So each pass is scored the way the
+    // ordering phase is, and the best arrangement seen is the one kept —
+    // fewest crossings first, and only then the flattest.
+    var best = {...y};
+    var bestScore = _score(positions, y);
+
+    for (var pass = 0; pass < 4; pass++) {
+      for (final column in columns) {
+        final real = [for (final id in column) if (!_isDummy(id)) id];
+        // Most-connected first: a node with four wires has more say about
+        // where it sits than one with a single wire that can bend instead.
+        double pull(String id) => (wires[id] ?? const [])
+            .fold<double>(0, (sum, link) => sum + link.weight);
+        final order = [...real]..sort((a, b) => pull(b).compareTo(pull(a)));
+
+        final settled = <String>{};
+        for (final id in order) {
+          final links = wires[id];
+          if (links == null || links.isEmpty) {
+            settled.add(id);
+            continue;
+          }
+          // The heaviest wire decides, rather than every wire getting a vote.
+          // Averaging leaves a node between two places and satisfies neither:
+          // a Flue Coral pulled by a three-column salt water wire and a
+          // one-column lime wire sat 112 pixels off both. Letting the long one
+          // win puts it level with the salt water and lets the short wire
+          // bend, which is what a person does by hand.
+          var heaviest = 0.0;
+          for (final link in links) {
+            if (y[link.other] == null) continue;
+            heaviest = math.max(heaviest, link.weight);
+          }
+          var wanted = 0.0;
+          var counted = 0.0;
+          for (final link in links) {
+            final otherY = y[link.other];
+            if (otherY == null || link.weight < heaviest - 1e-9) continue;
+            wanted += otherY + link.delta;
+            counted += 1;
+          }
+          if (counted == 0) {
+            settled.add(id);
+            continue;
+          }
+          wanted /= counted;
+
+          // Room between the neighbours that have already had their say.
+          final index = real.indexOf(id);
+          var top = double.negativeInfinity;
+          var bottom = double.infinity;
+          for (var i = 0; i < real.length; i++) {
+            if (i == index || !settled.contains(real[i])) continue;
+            final otherY = y[real[i]]!;
+            if (i < index) {
+              top = math.max(top, otherY + _sizeOf(real[i]).height + rowGap);
+            } else {
+              bottom = math.min(bottom, otherY - _sizeOf(id).height - rowGap);
+            }
+          }
+          if (top > bottom) {
+            settled.add(id);
+            continue;
+          }
+          y[id] = wanted.clamp(top, bottom);
+          settled.add(id);
+        }
+      }
+
+      final score = _score(positions, y);
+      if (score.$1 < bestScore.$1 ||
+          (score.$1 == bestScore.$1 && score.$2 < bestScore.$2)) {
+        best = {...y};
+        bestScore = score;
+      }
+    }
+
+    return {
+      for (final entry in positions.entries)
+        entry.key: Offset(entry.value.dx, NodeLayout.snap(best[entry.key]!)),
+    };
+  }
+
+  /// How tangled and how sagging an arrangement is, in that order of concern.
+  ///
+  /// A wire that droops is untidy; a wire that crosses another is harder to
+  /// follow. So crossings are compared first and the drop only breaks ties.
+  (int, double) _score(Map<String, Offset> positions, Map<String, double> y) {
+    Offset? endOf(String nodeId, String portId) {
+      final node = pipeline.node(nodeId);
+      final spec = node == null ? null : database.process(node.specId);
+      final at = positions[nodeId];
+      final top = y[nodeId];
+      if (spec == null || at == null || top == null) return null;
+      final offset = NodeLayout.portOffsetOrNull(spec, portId);
+      return offset == null ? null : Offset(at.dx, top) + offset;
+    }
+
+    final segments = <(Offset, Offset, String, String)>[];
+    var sag = 0.0;
+    for (final edge in pipeline.edges) {
+      if (!_inScope(edge) || edge.fromNodeId == edge.toNodeId) continue;
+      final a = endOf(edge.fromNodeId, edge.fromPortId);
+      final b = endOf(edge.toNodeId, edge.toPortId);
+      if (a == null || b == null) continue;
+      sag += (a.dy - b.dy).abs();
+      segments.add((
+        a,
+        b,
+        '${edge.fromNodeId}.${edge.fromPortId}',
+        '${edge.toNodeId}.${edge.toPortId}',
+      ));
+    }
+
+    double side(Offset a, Offset b) => a.dx * b.dy - a.dy * b.dx;
+    var crossings = 0;
+    for (var i = 0; i < segments.length; i++) {
+      for (var j = i + 1; j < segments.length; j++) {
+        final (p1, p2, fromA, toA) = segments[i];
+        final (p3, p4, fromB, toB) = segments[j];
+        // Wires sharing a port meet there by definition.
+        if (fromA == fromB || fromA == toB || toA == fromB || toA == toB) {
+          continue;
+        }
+        final d1 = side(p2 - p1, p3 - p1);
+        final d2 = side(p2 - p1, p4 - p1);
+        final d3 = side(p4 - p3, p1 - p3);
+        final d4 = side(p4 - p3, p2 - p3);
+        if ((d1 > 0) != (d2 > 0) && (d3 > 0) != (d4 > 0)) crossings++;
+      }
+    }
+    return (crossings, sag);
   }
 
   /// How far down a node its port sits, as a fraction of the node's height.

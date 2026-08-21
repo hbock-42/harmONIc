@@ -60,6 +60,28 @@ int crossings(Pipeline pipeline, Map<String, Offset> at) {
   return total;
 }
 
+/// How far a build's wires stray from flat, in pixels of vertical drop summed
+/// over every wire.
+///
+/// A crossing count says whether the picture is tangled; this says whether it
+/// is tidy. Both matter, and a layout can trade one for the other, so both are
+/// measured.
+double sag(Pipeline pipeline, Map<String, Offset> at) {
+  Offset endOf(String nodeId, String portId) {
+    final node = pipeline.nodeOrThrow(nodeId);
+    final spec = testDatabase.processOrThrow(node.specId);
+    return at[nodeId]! + NodeLayout.portOffset(spec, portId);
+  }
+
+  var total = 0.0;
+  for (final edge in pipeline.edges) {
+    total += (endOf(edge.fromNodeId, edge.fromPortId).dy -
+            endOf(edge.toNodeId, edge.toPortId).dy)
+        .abs();
+  }
+  return total;
+}
+
 void main() {
   Map<String, Offset> layoutOf(Pipeline pipeline) =>
       AutoLayout(pipeline: pipeline, database: testDatabase).positions();
@@ -113,12 +135,14 @@ void main() {
     // scores worse, and this is where a change that makes pictures worse gets
     // caught.
     //
-    // The figure moved twice for reasons that were not the layout getting
-    // worse. It counted wires between the middles of nodes, which cannot see
+    // The figure moved for reasons that were not the layout getting worse. It counted wires between the middles of nodes, which cannot see
     // two wires arriving at different rows of the same node in the wrong
     // order — the commonest crossing there is — and it skipped every pair of
     // edges that shared a node, which is exactly that case. Counted honestly,
-    // port to port: 2 993 before the layout learned about ports, 2 683 after.
+    // port to port: 2 993 before the layout learned about ports, 2 683 after,
+    // and 2 431 once nodes were allowed to slide up and down to meet their
+    // wires — straightening turns out to untangle as well, because a wire that
+    // runs flat crosses less on the way.
     //
     // The cast is written out rather than taken from the database, because a
     // corpus drawn from "everything there is" moves every time the database
@@ -181,7 +205,7 @@ void main() {
 
     expect(graphs, 427, reason: 'the corpus itself changed, so the score below '
         'is no longer comparable — re-measure before moving it');
-    expect(total, lessThanOrEqualTo(2683));
+    expect(total, lessThanOrEqualTo(2431));
   });
 
   group('ports decide the order within a column', () {
@@ -218,6 +242,120 @@ void main() {
       final at = layoutOf(pipeline);
 
       expect(at['src_steam']!.dy, lessThan(at['tuner']!.dy));
+    });
+  });
+
+  group('wires that run flat', () {
+    /// The reef: coquina and salt water in, oxygen and a fed crew out, with a
+    /// long salt-water wire crossing two columns to reach the Flue Coral.
+    Pipeline reef() => (PipelineBuilder(testDatabase, name: 'Reef')
+          ..addSource('salt_water')
+          ..addSource('coquina')
+          ..add('aquatic_grooming_station', nodeId: 'station')
+          ..add('starnacle_grazed', nodeId: 'plants')
+          ..add('beakon_grazing', nodeId: 'fish')
+          ..add('flue_coral', nodeId: 'coral')
+          ..add('duplicant', nodeId: 'dupes')
+          ..connectItem('src_coquina', 'plants', 'coquina')
+          ..connectItem('plants', 'fish', 'starnacle_growth')
+          ..connectItem('station', 'fish', 'grooming')
+          ..connectItem('fish', 'coral', 'lime')
+          ..connectItem('src_salt_water', 'coral', 'salt_water')
+          ..connectItem('coral', 'dupes', 'oxygen')
+          ..pinCount('plants', 2))
+        .build();
+
+    test('a node moves to meet the wire coming into it', () {
+      final pipeline = reef();
+      final at = layoutOf(pipeline);
+
+      // The salt water supply and the Flue Coral it feeds sit three columns
+      // apart. Stacked and centred, that wire dropped across the whole
+      // picture; now the two ports are within a row of each other.
+      final supply = at['src_salt_water']! +
+          NodeLayout.portOffset(
+              testDatabase.processOrThrow('source:salt_water'), 'out');
+      final coral = at['coral']! +
+          NodeLayout.portOffset(
+              testDatabase.processOrThrow('flue_coral'), 'salt_water');
+      expect((supply.dy - coral.dy).abs(), lessThan(NodeLayout.portRowHeight));
+    });
+
+    test('and nothing ends up on top of anything else', () {
+      final pipeline = reef();
+      final at = layoutOf(pipeline);
+
+      for (final a in pipeline.nodes) {
+        for (final b in pipeline.nodes) {
+          if (a.id == b.id) continue;
+          final ra = at[a.id]! &
+              NodeLayout.sizeOf(testDatabase.processOrThrow(a.specId));
+          final rb = at[b.id]! &
+              NodeLayout.sizeOf(testDatabase.processOrThrow(b.specId));
+          expect(ra.overlaps(rb), isFalse, reason: '${a.id} sits on ${b.id}');
+        }
+      }
+    });
+
+    test('the corpus sags less than it did, and tangles no more', () {
+      final specs = [
+        for (final id in [
+          'electrolyzer', 'hydrogen_generator', 'coal_generator', 'water_sieve',
+          'deodorizer', 'algae_distiller', 'oxygen_diffuser', 'carbon_skimmer',
+          'metal_refinery', 'rock_crusher_sand', 'oil_refinery', 'polymer_press',
+          'petroleum_generator', 'ethanol_distiller', 'compost',
+          'fertilizer_synthesizer', 'duplicant', 'hatch', 'mealwood',
+          'sleet_wheat',
+        ])
+          testDatabase.processOrThrow(id),
+      ];
+      var seed = 12345;
+      int next(int bound) {
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        return seed % bound;
+      }
+
+      var total = 0.0;
+      var graphs = 0;
+      for (var trial = 0; trial < 600; trial++) {
+        final chosen = <ProcessSpec>[];
+        final size = 6 + next(9);
+        for (var i = 0; i < size; i++) {
+          chosen.add(specs[next(specs.length)]);
+        }
+        final b = PipelineBuilder(testDatabase, name: 'random');
+        final ids = <String>[];
+        for (var i = 0; i < chosen.length; i++) {
+          final id = 'n$i';
+          b.add(chosen[i].id, nodeId: id);
+          ids.add(id);
+        }
+        var edges = 0;
+        for (var i = 0; i < chosen.length; i++) {
+          for (var j = i + 1; j < chosen.length; j++) {
+            final shared = chosen[i].outputs
+                .map((p) => p.itemId)
+                .toSet()
+                .intersection(chosen[j].inputs.map((p) => p.itemId).toSet());
+            if (shared.isEmpty) continue;
+            try {
+              b.connectItem(ids[i], ids[j], shared.first);
+              edges++;
+            } catch (_) {
+              continue;
+            }
+          }
+        }
+        if (edges < 4) continue;
+        final pipeline = b.build();
+        total += sag(pipeline, layoutOf(pipeline));
+        graphs++;
+      }
+
+      // Stacked and centred — every column at the middle of the page, no node
+      // ever moving to meet a wire — the same corpus sagged 667 650 pixels.
+      expect(graphs, 427);
+      expect(total, lessThanOrEqualTo(567858));
     });
   });
 }
