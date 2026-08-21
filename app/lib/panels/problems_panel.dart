@@ -161,7 +161,7 @@ class _PinSuggestions extends StatelessWidget {
                   label: controller.specOf(node).name,
                   compact: true,
                   tone: OniButtonTone.accent,
-                  onPressed: () => controller.selectNode(id),
+                  onPressed: () => controller.selectNodeForAmount(id),
                 ),
           ],
         ),

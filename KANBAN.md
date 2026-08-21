@@ -32,8 +32,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
   plain drag for selection, which is what most editors do
-- `E10-6` Give an amount *from* the suggestion — clicking a free node selects it and takes
-  you there, but the number is still typed in the inspector
 - `E10-9` Make the canvas edge labels clickable, so per-second ⇄ per-cycle can be toggled
   from one; today a click there selects the edge
 - `E6-6` Tabs, so two pipelines can be compared side by side
@@ -126,6 +124,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E10-6` **The cursor lands where the fix is typed** — clicking a suggestion selects the
+  node, travels to it, and puts the cursor in its amount field, so the number can be typed
+  straight away. Selecting a node the ordinary way does not steal the cursor
 - `E12-7` **Two builds on one canvas** — an amount now belongs to the build it was given
   to, where a build is whatever is wired together, so two chains sharing a page no longer
   wipe each other's numbers. Wire them together afterwards and they become one build with

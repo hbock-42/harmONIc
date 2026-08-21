@@ -127,11 +127,16 @@ class OniField extends StatefulWidget {
     this.onSubmitted,
     this.hint,
     this.autofocus = false,
+    this.focusNode,
     this.textAlign = TextAlign.start,
     super.key,
   });
 
   final TextEditingController controller;
+
+  /// Supply one to put the cursor here from elsewhere. Without it the field
+  /// owns its own, which is all most callers need.
+  final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final String? hint;
@@ -143,15 +148,31 @@ class OniField extends StatefulWidget {
 }
 
 class _OniFieldState extends State<OniField> {
-  late final FocusNode _focus = FocusNode()..addListener(_onFocus);
+  FocusNode? _owned;
+  late FocusNode _focus = _resolveFocus();
+
+  FocusNode _resolveFocus() {
+    final node = widget.focusNode ?? (_owned = FocusNode());
+    return node..addListener(_onFocus);
+  }
 
   void _onFocus() => setState(() {});
 
   @override
+  void didUpdateWidget(OniField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusNode != widget.focusNode) {
+      _focus.removeListener(_onFocus);
+      _owned?.dispose();
+      _owned = null;
+      _focus = _resolveFocus();
+    }
+  }
+
+  @override
   void dispose() {
-    _focus
-      ..removeListener(_onFocus)
-      ..dispose();
+    _focus.removeListener(_onFocus);
+    _owned?.dispose();
     super.dispose();
   }
 

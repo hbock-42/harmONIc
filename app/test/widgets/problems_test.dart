@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/editor_screen.dart';
@@ -72,6 +73,48 @@ void main() {
       expect(
         find.textContaining('I HAVE THIS'),
         findsOneWidget,
+      );
+    });
+
+    testWidgets('the cursor lands in the field that fixes it', (tester) async {
+      final controller = await pumpEditor(tester)..clearAllPins();
+      await tester.pump();
+
+      final free = controller.solution.freeNodeIds.first;
+      final name =
+          controller.specOf(controller.pipeline.nodeOrThrow(free)).name;
+      await tester.tap(find.descendant(
+        of: find.byType(ProblemsBanner),
+        matching: find.text(name),
+      ));
+      await tester.pumpAndSettle();
+
+      // Typing straight away must reach the amount field, with no further
+      // clicking: being taken to the right node is only half of fixing it.
+      await tester.enterText(
+        find.byWidgetPredicate(
+          (w) => w is EditableText && w.focusNode.hasFocus,
+          description: 'the focused field',
+        ),
+        '5',
+      );
+      await tester.pump();
+
+      expect(controller.pinFor(free), isNotNull);
+      expect(controller.solution.status, SolveStatus.solved);
+    });
+
+    testWidgets('selecting a node the ordinary way does not steal the cursor',
+        (tester) async {
+      final controller = await pumpEditor(tester);
+      controller.selectNode('elec');
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byWidgetPredicate(
+            (w) => w is EditableText && w.focusNode.hasFocus),
+        findsNothing,
+        reason: 'clicking a node should not put you in a text field',
       );
     });
 

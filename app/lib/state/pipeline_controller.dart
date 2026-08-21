@@ -103,6 +103,27 @@ class PipelineController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The node whose amount field has been asked for but not yet claimed.
+  ///
+  /// Named rather than counted, because the panel that claims it is rebuilt
+  /// from scratch for each node and would otherwise be born having missed the
+  /// request that created it.
+  String? _amountRequestFor;
+
+  /// Selects a node *and* asks for its amount field, for the suggestion chips:
+  /// being taken to the right node is only half of being able to fix it.
+  void selectNodeForAmount(String nodeId) {
+    _amountRequestFor = nodeId;
+    selectNode(nodeId);
+  }
+
+  /// True once, for the node that was asked about.
+  bool claimAmountRequest(String nodeId) {
+    if (_amountRequestFor != nodeId) return false;
+    _amountRequestFor = null;
+    return true;
+  }
+
   /// Adds to the selection rather than replacing it, for shift-clicking.
   void selectNode(String nodeId, {bool additive = false}) {
     _selectedEdgeId = null;

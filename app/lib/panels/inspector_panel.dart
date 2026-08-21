@@ -174,6 +174,10 @@ class _NodeInspector extends StatefulWidget {
 class _NodeInspectorState extends State<_NodeInspector> {
   late final TextEditingController _amount = TextEditingController();
 
+  /// The amount field's focus, so a suggestion can put the cursor in it.
+  final FocusNode _amountFocus = FocusNode();
+
+
   PipelineController get controller => widget.controller;
   PipelineNode get node => widget.node;
   ProcessSpec get spec => controller.specOf(node);
@@ -189,11 +193,20 @@ class _NodeInspectorState extends State<_NodeInspector> {
   void initState() {
     super.initState();
     _amount.text = _currentPinText();
+    // Opened by someone asking for the amount, so the cursor belongs in the
+    // field rather than one click away. After the frame, because the field is
+    // not in the tree yet.
+    if (widget.controller.claimAmountRequest(widget.node.id)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _amountFocus.requestFocus();
+      });
+    }
   }
 
   @override
   void dispose() {
     _amount.dispose();
+    _amountFocus.dispose();
     super.dispose();
   }
 
@@ -288,6 +301,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
               child: OniField(
                 controller: _amount,
                 hint: _isBoundary ? 'rate' : 'count',
+                focusNode: _amountFocus,
                 onChanged: _applyPin,
                 onSubmitted: _applyPin,
               ),
