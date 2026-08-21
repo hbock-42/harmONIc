@@ -103,6 +103,10 @@ in a single undo step. The inspector totals a group's power, heat and Duplicant 
 
 ## Getting around the canvas
 
+A minimap in the corner charts the whole build with your window marked on it — click or
+drag it to travel. Selecting a node from anywhere else, such as a problem in the banner,
+brings it into view on its own.
+
 Scroll to pan, pinch or ⌘-scroll to zoom, ⌘= and ⌘− and ⌘0 if you would rather type, and
 buttons in the corner of the canvas that always work. The percentage between them is a
 button too: click it to go back to 100 %.

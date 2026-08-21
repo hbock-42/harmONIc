@@ -10,6 +10,7 @@ import '../design/widgets.dart';
 import '../state/pipeline_controller.dart';
 import 'edge_painter.dart';
 import 'geometry.dart';
+import 'minimap.dart';
 import 'node_widget.dart';
 import 'unbounded_layer.dart';
 import 'port_menu.dart';
@@ -115,6 +116,25 @@ class GraphCanvasState extends State<GraphCanvas> {
     // Selecting one thing — from the problems banner, say — should put it in
     // front of you. Selecting several is a marquee, which already had them.
     if (selection.length == 1) revealNode(selection.first);
+  }
+
+  /// The part of the build the window is currently showing.
+  Rect get visibleWorldRect {
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    final size = box?.size ?? const Size(800, 600);
+    return Rect.fromPoints(
+      worldFromLocal(Offset.zero),
+      worldFromLocal(Offset(size.width, size.height)),
+    );
+  }
+
+  /// Puts a point of the build in the middle of the window.
+  void centreOn(Offset world) {
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    final size = box?.size ?? const Size(800, 600);
+    setState(() {
+      _offset = Offset(size.width / 2, size.height / 2) - world * _scale;
+    });
   }
 
   /// Brings a node into view if it is not already there, leaving the zoom alone.
@@ -514,6 +534,16 @@ class GraphCanvasState extends State<GraphCanvas> {
               ),
             ),
             _zoomControls(),
+            if (controller.pipeline.nodes.isNotEmpty)
+              Positioned(
+                left: OniSpacing.md,
+                bottom: OniSpacing.md,
+                child: Minimap(
+                  controller: controller,
+                  visibleWorld: visibleWorldRect,
+                  onGoTo: centreOn,
+                ),
+              ),
             ?_portMenu(),
               ],
             ),

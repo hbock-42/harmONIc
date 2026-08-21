@@ -28,7 +28,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
-- `E7-11` minimap
 - `E7-12` Tidy only the selection, now that a selection can be more than one node
 - `E7-14` Zoom to fit a *selection*, now that there is one
 - `E7-15` Ease the jump when the view goes to find a node — it cuts there instantly, which
@@ -153,6 +152,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E7-11` **Minimap** — once a build outgrows the window there is no way to tell from the
+  middle of it what else exists or which way it lies. A chart in the corner shows the whole
+  build with the window marked on it; click or drag to travel, and the zoom is left alone
 - `E12-6` **Selecting a node goes to it** — being told which node is the problem is no
   help if finding it means hunting a canvas larger than the window. Selecting one thing
   brings it into view, leaves the zoom alone, and does nothing when it is already there
