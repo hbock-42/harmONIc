@@ -172,6 +172,15 @@ void main() {
 
     testWidgets('picking an entry places and wires it', (tester) async {
       final controller = await tapPort(tester, const PortRef('elec', 'water'));
+      // Plenty of things make water now, so narrow the list before picking.
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(PortMenu),
+          matching: find.byType(EditableText),
+        ),
+        'sieve',
+      );
+      await tester.pump();
       await tester.tap(find.descendant(
         of: find.byType(PortMenu),
         matching: textLabel('Water Sieve'),

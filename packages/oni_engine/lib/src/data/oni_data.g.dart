@@ -529,6 +529,174 @@ const String oniDataJson = r"""
       "id": "pokeshell_molt",
       "name": "Pokeshell Molt",
       "category": "solid"
+    },
+    {
+      "id": "cinnabar_ore",
+      "name": "Cinnabar Ore",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "solid_mercury",
+      "name": "Solid Mercury",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "mercury",
+      "name": "Mercury",
+      "category": "liquid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "mercury_gas",
+      "name": "Mercury Gas",
+      "category": "gas",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "nectar",
+      "name": "Nectar",
+      "category": "liquid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "lumen_quartz",
+      "name": "Lumen Quartz",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "sucrose",
+      "name": "Sucrose",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "tallow",
+      "name": "Tallow",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "ice",
+      "name": "Ice",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "pikeapple",
+      "name": "Pikeapple",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "plume_squash",
+      "name": "Plume Squash",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "peat",
+      "name": "Peat",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "nickel",
+      "name": "Nickel",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "nickel_ore",
+      "name": "Nickel Ore",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "iridium",
+      "name": "Iridium",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "shale",
+      "name": "Shale",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "ovagro_fig",
+      "name": "Ovagro Fig",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "bog_jelly",
+      "name": "Bog Jelly",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "dewdrip",
+      "name": "Dewdrip",
+      "category": "other",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "tough_meat",
+      "name": "Tough Meat",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "abyssalite",
+      "name": "Abyssalite",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
     }
   ],
   "processes": [
@@ -2738,6 +2906,338 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111
+        }
+      ]
+    },
+    {
+      "id": "peat_burner",
+      "name": "Peat Burner",
+      "kind": "building",
+      "description": "Burns peat for power, and the polluted water comes back to you.",
+      "powerWatts": -480,
+      "heatKdtuPerSecond": 4.5,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "tags": [
+        "power",
+        "prehistoric",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "peat",
+          "direction": "input",
+          "rate": 1000
+        },
+        {
+          "item": "polluted_water",
+          "direction": "output",
+          "rate": 200,
+          "temperatureC": 40
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 40,
+          "temperatureC": 110
+        }
+      ]
+    },
+    {
+      "id": "dartle",
+      "name": "Dartle",
+      "kind": "critter",
+      "description": "Eats one Dewdrip a cycle and gives back 10 kg each of bleach stone and chlorine, which is renewable bleach stone without a chlorine vent. Lays an egg every 3 cycles when groomed, across a 50-cycle life.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "prehistoric",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "dewdrip",
+          "direction": "input",
+          "rate": 0.001667
+        },
+        {
+          "item": "bleach_stone",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "chlorine",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000556
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "blum_lumb",
+      "name": "Blum Lumb",
+      "kind": "critter",
+      "description": "UNVERIFIED INPUT: 132 kg/cycle of algae, which is roughly 120 kg/cycle of oxygen through a diffuser, or two Duplicants' worth. It eats 1300 kcal/cycle of Ovagro Fig or Bristle Berry, counted in calories rather than kilograms, so nothing is modelled going in and the mass will not balance. Bog Jelly raises the algae to 198 kg/cycle instead. Lives 200 cycles, the longest of any critter.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "oxygen",
+        "prehistoric",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "algae",
+          "direction": "output",
+          "rate": 220.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000139
+        },
+        {
+          "item": "tough_meat",
+          "direction": "output",
+          "rate": 0.1
+        }
+      ]
+    },
+    {
+      "id": "ice_liquefier",
+      "name": "Ice Liquefier",
+      "kind": "building",
+      "description": "UNVERIFIED: melts 20 kg/s of ice into water at a flat 25 C. The wood it burns scales with how cold the ice is, at 51.25 g per 100 kg batch per degree below the output temperature, so the figure here assumes ice at 0 C and understates colder ice. Its power draw is not published either, and is modelled as none.",
+      "heatKdtuPerSecond": 3.75,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "tags": [
+        "liquid",
+        "frosty",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "ice",
+          "direction": "input",
+          "rate": 20000
+        },
+        {
+          "item": "lumber",
+          "direction": "input",
+          "rate": 256.25
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20000,
+          "temperatureC": 25
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 36.3875
+        }
+      ]
+    },
+    {
+      "id": "wood_heater",
+      "name": "Wood Heater",
+      "kind": "building",
+      "description": "Burns wood to keep a cold base liveable. The 20 kDTU/s is the point rather than a side effect. Needs a Duplicant to light it.",
+      "heatKdtuPerSecond": 20,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "tags": [
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "lumber",
+          "direction": "input",
+          "rate": 25
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 4
+        }
+      ]
+    },
+    {
+      "id": "alveo_vera",
+      "name": "Alveo Vera",
+      "kind": "plant",
+      "description": "Oxygen for a cold base, out of carbon dioxide and ice: 18 kg/cycle of oxylite when domesticated, which offgasses as it warms. Wants -80 C to 0 C, so it will not grow anywhere comfortable.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "oxygen",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "carbon_dioxide",
+          "direction": "input",
+          "rate": 2
+        },
+        {
+          "item": "ice",
+          "direction": "input",
+          "rate": 33.33
+        },
+        {
+          "item": "oxylite",
+          "direction": "output",
+          "rate": 30
+        }
+      ]
+    },
+    {
+      "id": "spigot_seal",
+      "name": "Spigot Seal",
+      "kind": "critter",
+      "description": "Ethanol without a distiller: 30.8 kg/cycle of sucrose becomes 40 kg/cycle of ethanol. Bonbon Tree nectar works too, at 40 kg/cycle. Drops 50 kg of tallow at the end of a 100-cycle life.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "sucrose",
+          "direction": "input",
+          "rate": 51.333333
+        },
+        {
+          "item": "ethanol",
+          "direction": "output",
+          "rate": 66.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "tallow",
+          "direction": "output",
+          "rate": 0.833333
+        }
+      ]
+    },
+    {
+      "id": "flox",
+      "name": "Flox",
+      "kind": "critter",
+      "description": "UNVERIFIED INPUT: wood from a critter. Shear its antlers for 360 kg every 6 cycles, which averages 60 kg/cycle, plus 5 kg/cycle of dirt. It eats 160 kcal/cycle of pikeapple or bristle berries, which the wiki does not put in kilograms, so the 2 kg/cycle here is a placeholder.",
+      "dupeLabourSecondsPerCycle": 14.0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "shearing",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "pikeapple",
+          "direction": "input",
+          "rate": 3.333333
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 8.333333
+        },
+        {
+          "item": "lumber",
+          "direction": "output",
+          "rate": 100.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "shatter_flox",
+      "name": "Shatter Flox",
+      "kind": "critter",
+      "description": "The morph that eats abyssalite: 20 kg/cycle in, 10 kg/cycle of dirt out, which makes insulation useful rather than merely immovable.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "abyssalite",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
         }
       ]
     }

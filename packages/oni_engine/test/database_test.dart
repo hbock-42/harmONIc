@@ -297,6 +297,63 @@ void main() {
     });
   });
 
+  group('The Frosty and Prehistoric Planet Packs', () {
+    test('their elements are loaded', () {
+      for (final id in ['mercury', 'nectar', 'sucrose', 'cinnabar_ore',
+          'peat', 'nickel_ore', 'iridium', 'abyssalite']) {
+        expect(db.item(id), isNotNull, reason: 'missing item "$id"');
+      }
+    });
+
+    test('a Peat Burner is a real generator', () {
+      final burner = db.processOrThrow('peat_burner');
+      expect(burner.netPowerWatts, -480);
+      expect(burner.inputs.firstWhere((p) => p.itemId == 'peat').ratePerSecond,
+          1000);
+    });
+
+    test('a Spigot Seal makes ethanol without a distiller', () {
+      final seal = db.processOrThrow('spigot_seal');
+      expect(
+        seal.outputs.firstWhere((p) => p.itemId == 'ethanol').ratePerSecond,
+        closeTo(40000 / secondsPerCycle, 1e-3),
+      );
+    });
+
+    test('a Flox is sheared as well as groomed', () {
+      final flox = db.processOrThrow('flox');
+      expect(flox.inputs.map((p) => p.itemId), contains('shearing'));
+      expect(flox.dupeLabourSecondsPerCycle, closeTo(12 + 12 / 6, 1e-6));
+      expect(
+        flox.outputs.firstWhere((p) => p.itemId == 'lumber').ratePerSecond,
+        closeTo(60000 / secondsPerCycle, 1e-3),
+      );
+    });
+
+    test('Alveo Vera turns carbon dioxide and ice into oxylite', () {
+      final plant = db.processOrThrow('alveo_vera');
+      expect(plant.inputs.map((p) => p.itemId),
+          containsAll(<String>['carbon_dioxide', 'ice']));
+      expect(plant.outputs.single.itemId, 'oxylite');
+    });
+
+    test('a Blum Lumb feeds an oxygen chain', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'lumb oxygen')
+            ..add('blum_lumb', nodeId: 'lumbs')
+            ..add('algae_terrarium', nodeId: 'terrarium')
+            ..connectItem('lumbs', 'terrarium', 'algae')
+            ..pinCount('lumbs', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // 132 kg/cycle of algae at 30 g/s a terrarium.
+      expect(solution.nodes['terrarium']!.count,
+          closeTo(132000 / secondsPerCycle / 30, 1e-3));
+    });
+  });
+
   group('The Aquatic Planet Pack', () {
     test('its new elements are loaded', () {
       for (final id in ['rubber', 'latex', 'zinc_ore', 'polluted_brine',

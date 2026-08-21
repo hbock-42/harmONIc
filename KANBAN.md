@@ -42,9 +42,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
   list *what* they eat and make but not *how much*. Ranching/food buildings likewise
 - `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
   5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
-- `E4-24` The Frosty and Prehistoric Planet Packs — neither DLC is seeded at all, so
-  their critters need their plants and elements first (Flox, Bammoth, Spigot Seal, Lumb,
-  Rhex, Dartle, Jawbo)
+- `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats
+  other critters, which the flow model has no way to express), Gnit and Mimika (produce
+  nothing), the regular Lumb (its peat rate is not stated anywhere), and both packs' food
+  plants — Pikeapple Bush, Plume Squash, Sherberry, Ovagro Node, Snactus, Sweatcorn,
+  Megafrond, Lura, Dew Dripper, Ring Rosebush, Mimika Bud
+- `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms,
   Plug Slug, and the Frosty/Prehistoric pack critters
@@ -55,9 +58,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-21` Wild versus groomed as separate specs — the seeded figures assume groomed
 - `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
   5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
-- `E4-24` The Frosty and Prehistoric Planet Packs — neither DLC is seeded at all, so
-  their critters need their plants and elements first (Flox, Bammoth, Spigot Seal, Lumb,
-  Rhex, Dartle, Jawbo)
+- `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats
+  other critters, which the flow model has no way to express), Gnit and Mimika (produce
+  nothing), the regular Lumb (its peat rate is not stated anywhere), and both packs' food
+  plants — Pikeapple Bush, Plume Squash, Sherberry, Ovagro Node, Snactus, Sweatcorn,
+  Megafrond, Lura, Dew Dripper, Ring Rosebush, Mimika Bud
+- `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
@@ -110,6 +116,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-24` **The Frosty and Prehistoric Planet Packs** — 21 new elements, the Peat Burner,
+  the Ice Liquefier, the Wood Heater, Alveo Vera, and five critters. Notable: the Spigot
+  Seal makes ethanol without a distiller, the Blum Lumb is two Duplicants' worth of oxygen
+  on legs, the Dartle is renewable bleach stone, and the Shatter Flox eats abyssalite
 - `E4-15` **Six more base-game critters** — Pip, Pokeshell (renewable sand without a Rock
   Crusher), Gassy Moo, Plug Slug, Shove Vole and Shine Bug, bringing the roster to 20.
   Where the wiki gives a diet but no conversion, the game-wide 50 % ratio is used and the

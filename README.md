@@ -96,7 +96,8 @@ hit `edit` to correct one. Hand-entered recipes are saved to disk, merged over t
 data, always tagged `unverified`, and can be reverted. New items can be invented on the
 spot, so a DLC the app has never heard of is no longer a dead end.
 
-Covers the base game, Spaced Out! and **The Aquatic Planet Pack**. Every process is
+Covers the base game, Spaced Out!, **The Aquatic**, **Frosty** and **Prehistoric Planet
+Packs** — 104 items and 83 processes. Every process is
 checked against [the wiki](https://oxygennotincluded.wiki.gg) and must carry either a
 `verified` or an `unverified` tag — a test enforces it, an `unverified` process has to
 explain what is doubtful, and the app warns you when you select one. Batch buildings
