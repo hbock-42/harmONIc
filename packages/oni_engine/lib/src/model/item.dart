@@ -29,6 +29,7 @@ class Item {
     required this.name,
     required this.category,
     this.members = const {},
+    this.refinesTo,
     this.tags = const {},
   });
 
@@ -39,6 +40,7 @@ class Item {
         members: {
           ...(json['members'] as List<dynamic>? ?? const []).cast<String>(),
         },
+        refinesTo: json['refinesTo'] as String?,
         tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
       );
 
@@ -57,6 +59,9 @@ class Item {
   final Set<String> members;
 
   bool get isClass => members.isNotEmpty;
+
+  /// What this becomes in a refinery: iron ore makes iron, and nothing else.
+  final String? refinesTo;
   final Set<String> tags;
 
   Unit get unit => switch (category) {
@@ -106,6 +111,7 @@ class Item {
         'name': name,
         'category': category.name,
         if (members.isNotEmpty) 'members': members.toList(),
+        if (refinesTo != null) 'refinesTo': refinesTo,
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 

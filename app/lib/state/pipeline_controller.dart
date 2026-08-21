@@ -280,7 +280,14 @@ class PipelineController extends ChangeNotifier {
     final toPort = specOf(toNode).portById(to.portId);
     if (fromPort == null || toPort == null) return false;
     if (!fromPort.isOutput || !toPort.isInput) return false;
-    if (fromPort.itemId != toPort.itemId) return false;
+    // Against what each end is set to: a refinery on copper cannot be wired
+    // into an iron port, but a generic one can be wired into either.
+    if (!_database.accepts(
+      itemFlowingIn(_database, toNode, specOf(toNode), toPort),
+      itemFlowingIn(_database, fromNode, specOf(fromNode), fromPort),
+    )) {
+      return false;
+    }
     return !_pipeline.edges.any((e) =>
         e.fromNodeId == from.nodeId &&
         e.fromPortId == from.portId &&
@@ -532,6 +539,29 @@ class PipelineController extends ChangeNotifier {
     ));
   }
 
+  /// Says which particular material runs through a port whose recipe asks for
+  /// a class — this refinery is smelting copper, not "some metal".
+  ///
+  /// Setting it can invalidate a wire that was fine while the node was generic,
+  /// which is the point: a refinery on copper should not be feeding an iron
+  /// port, and the build should say so rather than quietly agree.
+  void setMaterial(String nodeId, String portId, String? itemId) {
+    final node = _pipeline.node(nodeId);
+    if (node == null) return;
+    final materials = {...node.materials};
+    if (itemId == null) {
+      materials.remove(portId);
+    } else {
+      materials[portId] = itemId;
+    }
+    _apply(_pipeline.copyWith(
+      nodes: [
+        for (final n in _pipeline.nodes)
+          if (n.id == nodeId) n.copyWith(materials: materials) else n,
+      ],
+    ));
+  }
+
   /// True when something pulls from this port, which is when venting it starts
   /// to matter — an unclaimed port already vents by default.
   bool portIsPulled(String nodeId, String portId) => _pipeline.edges.any((e) =>
@@ -605,6 +635,7 @@ class PipelineController extends ChangeNotifier {
         uptime: node.uptime,
         outputScale: node.outputScale,
         ventedPorts: node.ventedPorts,
+        materials: node.materials,
         notes: node.notes,
       ));
     }

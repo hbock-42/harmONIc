@@ -145,7 +145,8 @@
     {
       "id": "iron_ore",
       "name": "Iron Ore",
-      "category": "solid"
+      "category": "solid",
+      "refinesTo": "iron"
     },
     {
       "id": "iron",
@@ -155,7 +156,8 @@
     {
       "id": "copper_ore",
       "name": "Copper Ore",
-      "category": "solid"
+      "category": "solid",
+      "refinesTo": "copper"
     },
     {
       "id": "copper",
@@ -165,7 +167,8 @@
     {
       "id": "gold_amalgam",
       "name": "Gold Amalgam",
-      "category": "solid"
+      "category": "solid",
+      "refinesTo": "gold"
     },
     {
       "id": "gold",
@@ -219,7 +222,8 @@
       "category": "solid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "refinesTo": "zinc"
     },
     {
       "id": "zinc",
@@ -515,7 +519,8 @@
       "category": "solid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "refinesTo": "solid_mercury"
     },
     {
       "id": "solid_mercury",
@@ -611,7 +616,8 @@
       "category": "solid",
       "tags": [
         "prehistoric"
-      ]
+      ],
+      "refinesTo": "nickel"
     },
     {
       "id": "iridium",
@@ -1596,7 +1602,8 @@
           "item": "refined_metal",
           "direction": "output",
           "rate": 2500,
-          "temperatureC": 40
+          "temperatureC": 40,
+          "follows": "metal_ore"
         },
         {
           "id": "coolant_out",
@@ -6393,7 +6400,8 @@
           "item": "refined_metal",
           "direction": "output",
           "rate": 2500,
-          "temperatureC": 40
+          "temperatureC": 40,
+          "follows": "metal_ore"
         },
         {
           "id": "coolant_out",

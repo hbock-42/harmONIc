@@ -18,6 +18,7 @@ class PipelineNode {
     this.uptime = 1,
     this.outputScale = 1,
     this.ventedPorts = const {},
+    this.materials = const {},
     this.notes,
   });
 
@@ -29,6 +30,11 @@ class PipelineNode {
         y: (json['y'] as num?)?.toDouble() ?? 0,
         uptime: (json['uptime'] as num?)?.toDouble() ?? 1,
         outputScale: (json['outputScale'] as num?)?.toDouble() ?? 1,
+        materials: {
+          for (final entry
+              in (json['materials'] as Map<String, dynamic>? ?? const {}).entries)
+            entry.key: entry.value as String,
+        },
         ventedPorts: {
           ...(json['ventedPorts'] as List<dynamic>? ?? const []).cast<String>(),
         },
@@ -64,6 +70,16 @@ class PipelineNode {
   /// question about the leftover. Venting a port drops that equation and reports
   /// the excess as surplus.
   final Set<String> ventedPorts;
+
+  /// Port id → the particular material running through it, where the recipe
+  /// asks for a class.
+  ///
+  /// A Metal Refinery takes "metal ore"; this is where you say yours is
+  /// smelting copper. Left unset the node stays generic, which is right until
+  /// something downstream cares — and the moment it does, an unset node will
+  /// happily feed a port that wants copper, because a pile of unspecified ore
+  /// is where the copper was going to come from.
+  final Map<String, String> materials;
   final String? notes;
 
   bool ventsPort(String portId) => ventedPorts.contains(portId);
@@ -75,6 +91,7 @@ class PipelineNode {
     double? uptime,
     double? outputScale,
     Set<String>? ventedPorts,
+    Map<String, String>? materials,
     String? notes,
   }) =>
       PipelineNode(
@@ -86,6 +103,7 @@ class PipelineNode {
         uptime: uptime ?? this.uptime,
         outputScale: outputScale ?? this.outputScale,
         ventedPorts: ventedPorts ?? this.ventedPorts,
+        materials: materials ?? this.materials,
         notes: notes ?? this.notes,
       );
 
@@ -98,6 +116,7 @@ class PipelineNode {
         if (uptime != 1) 'uptime': uptime,
         if (outputScale != 1) 'outputScale': outputScale,
         if (ventedPorts.isNotEmpty) 'ventedPorts': ventedPorts.toList(),
+        if (materials.isNotEmpty) 'materials': materials,
         if (notes != null) 'notes': notes,
       };
 }

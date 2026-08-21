@@ -149,7 +149,8 @@ const String oniDataJson = r"""
     {
       "id": "iron_ore",
       "name": "Iron Ore",
-      "category": "solid"
+      "category": "solid",
+      "refinesTo": "iron"
     },
     {
       "id": "iron",
@@ -159,7 +160,8 @@ const String oniDataJson = r"""
     {
       "id": "copper_ore",
       "name": "Copper Ore",
-      "category": "solid"
+      "category": "solid",
+      "refinesTo": "copper"
     },
     {
       "id": "copper",
@@ -169,7 +171,8 @@ const String oniDataJson = r"""
     {
       "id": "gold_amalgam",
       "name": "Gold Amalgam",
-      "category": "solid"
+      "category": "solid",
+      "refinesTo": "gold"
     },
     {
       "id": "gold",
@@ -223,7 +226,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "refinesTo": "zinc"
     },
     {
       "id": "zinc",
@@ -519,7 +523,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "refinesTo": "solid_mercury"
     },
     {
       "id": "solid_mercury",
@@ -615,7 +620,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "prehistoric"
-      ]
+      ],
+      "refinesTo": "nickel"
     },
     {
       "id": "iridium",
@@ -1600,7 +1606,8 @@ const String oniDataJson = r"""
           "item": "refined_metal",
           "direction": "output",
           "rate": 2500,
-          "temperatureC": 40
+          "temperatureC": 40,
+          "follows": "metal_ore"
         },
         {
           "id": "coolant_out",
@@ -6397,7 +6404,8 @@ const String oniDataJson = r"""
           "item": "refined_metal",
           "direction": "output",
           "rate": 2500,
-          "temperatureC": 40
+          "temperatureC": 40,
+          "follows": "metal_ore"
         },
         {
           "id": "coolant_out",

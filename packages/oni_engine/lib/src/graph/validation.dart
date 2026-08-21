@@ -1,5 +1,6 @@
 import '../model/game_database.dart';
 import '../model/port.dart';
+import 'materials.dart';
 import 'pin.dart';
 import 'pipeline.dart';
 
@@ -89,11 +90,15 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
           'Edge "${edge.id}" ends at output port "${toPort.id}"',
           edgeId: edge.id));
     }
-    if (!db.accepts(toPort.itemId, fromPort.itemId)) {
+    // Against what each end is actually set to, not what the recipe says in
+    // general: a refinery set to copper no longer feeds an iron port.
+    final carried = itemFlowingIn(db, from, fromSpec, fromPort);
+    final wanted = itemFlowingIn(db, to, toSpec, toPort);
+    if (!db.accepts(wanted, carried)) {
       issues.add(PipelineIssue(
           IssueSeverity.error,
-          'Edge "${edge.id}" carries ${fromPort.itemId} into a '
-          '${toPort.itemId} port',
+          'Edge "${edge.id}" carries $carried into a '
+          '$wanted port',
           edgeId: edge.id));
     }
     if (edge.share != null && (edge.share! < 0 || edge.share! > 1)) {

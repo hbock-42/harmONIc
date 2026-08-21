@@ -29,6 +29,7 @@ class Port {
     required this.direction,
     required this.ratePerSecond,
     this.temperatureC,
+    this.followsPortId,
   });
 
   factory Port.fromJson(Map<String, dynamic> json) {
@@ -39,6 +40,7 @@ class Port {
       direction: PortDirection.parse(json['direction'] as String),
       ratePerSecond: (json['rate'] as num).toDouble(),
       temperatureC: (json['temperatureC'] as num?)?.toDouble(),
+      followsPortId: json['follows'] as String?,
     );
   }
 
@@ -54,6 +56,13 @@ class Port {
   /// Output temperature in °C, when the game fixes it (Electrolyzer O2 = 70 °C).
   final double? temperatureC;
 
+  /// The input port whose material decides this one's.
+  ///
+  /// A Metal Refinery fed copper ore gives back copper, not "some metal". The
+  /// choice is made once, on the input, and the output follows it — nobody
+  /// should have to say it twice, and saying it twice would let them disagree.
+  final String? followsPortId;
+
   /// Hot enough to be worth noticing before you plumb it into something.
   bool get runsHot =>
       temperatureC != null && temperatureC! > commonOverheatCelsius;
@@ -67,6 +76,7 @@ class Port {
         'direction': direction.name,
         'rate': ratePerSecond,
         if (temperatureC != null) 'temperatureC': temperatureC,
+        if (followsPortId != null) 'follows': followsPortId,
       };
 
   @override

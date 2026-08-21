@@ -1,3 +1,4 @@
+import '../graph/materials.dart';
 import '../graph/pin.dart';
 import '../graph/pipeline.dart';
 import '../graph/validation.dart';
@@ -235,7 +236,7 @@ class PipelineSolver {
                 .fold<double>(0, (sum, e) => sum + (edgeFlows[e.id] ?? 0));
         portBalances.add(PortBalance(
           ref: ref,
-          itemId: port.itemId,
+          itemId: itemFlowingIn(database, node, spec, port),
           direction: port.direction,
           rate: rateOf(node, port) * count,
           linkedRate: linked,

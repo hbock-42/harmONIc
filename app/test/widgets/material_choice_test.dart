@@ -1,0 +1,78 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:oni_engine/oni_engine.dart';
+import 'package:oni_pipeline/editor_screen.dart';
+import 'package:oni_pipeline/state/pipeline_controller.dart';
+
+import '../support/harness.dart';
+
+void main() {
+  Future<PipelineController> pumpEditor(WidgetTester tester) async {
+    await useDesktopSurface(tester);
+    final pipeline = (PipelineBuilder(testDatabase, name: 'Smelting')
+          ..addSource('iron_ore', x: 0, y: 0)
+          ..add('metal_refinery', nodeId: 'refinery', x: 340, y: 0)
+          ..connectItem('src_iron_ore', 'refinery', 'iron_ore')
+          ..pinCount('refinery', 1))
+        .build();
+    final controller = testController(pipeline: pipeline);
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+    controller.select(const NodeSelection('refinery'));
+    await tester.pump();
+    return controller;
+  }
+
+  testWidgets('a refinery offers the ores it could be smelting',
+      (tester) async {
+    await pumpEditor(tester);
+
+    expect(find.text('METAL ORE USED'), findsOneWidget);
+    expect(find.text('Any'), findsOneWidget);
+    expect(find.text('Copper Ore'), findsWidgets);
+    expect(textContaining('Pick an ore if something downstream needs'),
+        findsOneWidget);
+  });
+
+  testWidgets('picking one says what comes out of it', (tester) async {
+    final controller = await pumpEditor(tester);
+
+    await tester.tap(find.text('Copper Ore').first);
+    await tester.pump();
+
+    expect(controller.pipeline.nodeOrThrow('refinery').materials,
+        {'metal_ore': 'copper_ore'});
+    expect(textContaining('Makes Copper'), findsOneWidget);
+  });
+
+  testWidgets('the node itself is renamed by the choice', (tester) async {
+    final controller = await pumpEditor(tester);
+    // Generic to begin with, so the ports read as the class.
+    expect(find.text('Refined Metal'), findsWidgets);
+
+    controller.setMaterial('refinery', 'metal_ore', 'gold_amalgam');
+    await tester.pump();
+
+    expect(find.text('Gold'), findsWidgets);
+    expect(find.text('Refined Metal'), findsNothing);
+  });
+
+  testWidgets('a choice that contradicts the wiring is reported', (tester) async {
+    final controller = await pumpEditor(tester);
+    // Fed iron ore, told to smelt copper: the wire is now wrong, and saying so
+    // is the whole reason the choice exists.
+    controller.setMaterial('refinery', 'metal_ore', 'copper_ore');
+    await tester.pump();
+
+    expect(controller.solution.status, SolveStatus.invalid);
+    expect(
+        controller.solution.issues
+            .map((i) => i.message)
+            .join()
+            .toLowerCase(),
+        contains('carries iron_ore'));
+  });
+}

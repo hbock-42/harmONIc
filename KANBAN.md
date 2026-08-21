@@ -49,6 +49,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
+- `E12-4` Lead, and the metals behind galena: the ore is in the class but has nothing to
+  refine into, so a refinery set to galena cannot say what it made
 - `E12-2` The rest of the roster now that classes make it cheap: Aquatuner and Thermo
   Regulator (they move heat rather than make it, so the heat item needs a sign convention
   first), Supermaterial Refinery, Molecular Forge, Spice Grinder, Dehydrator, Smoker
@@ -126,6 +128,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-1b` **Naming the metal** — a node can say which member of a class it is using, and
+  an output that follows an input takes it: copper ore in, copper out. Unset stays generic
+  and feeds anything; chosen feeds only what it really is, and the wiring is checked
+  against the choice rather than the recipe
 - `E12-1` **Material classes** — a port can ask for "Metal Ore" and take any of them. It is
   a compatibility rule rather than a new kind of flow, so the solver never learned about
   it: everything was already grams. One Metal Refinery in the palette instead of one per

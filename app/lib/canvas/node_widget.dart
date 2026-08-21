@@ -172,7 +172,10 @@ class NodeWidget extends StatelessWidget {
   }
 
   Widget _portCell(Port port, {required bool isInput}) {
-    final item = controller.database.item(port.itemId);
+    // Named for what is really running through it: a refinery set to copper
+    // says Copper Ore and Copper, not Metal Ore and Refined Metal.
+    final item = controller.database.item(itemFlowingIn(
+        controller.database, node, controller.specOf(node), port));
     final colour = OniItemColors.ofItem(item);
     final ref = PortRef(node.id, port.id);
     final balance = _balanceFor(ref);

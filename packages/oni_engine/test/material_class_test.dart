@@ -74,4 +74,97 @@ void main() {
       );
     });
   });
+
+  group('choosing a material', () {
+    Pipeline smelting({String? ore}) {
+      final refinery = PipelineNode(
+        id: 'refinery',
+        specId: 'metal_refinery',
+        materials: ore == null ? const {} : {'metal_ore': ore},
+      );
+      return Pipeline(id: 'p', name: 'smelting', nodes: [refinery]);
+    }
+
+    test('unset, a refinery is honestly generic', () {
+      final node = smelting().nodeOrThrow('refinery');
+      final spec = db.processOrThrow('metal_refinery');
+      final out = spec.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+
+      expect(itemFlowingIn(db, node, spec, out), 'refined_metal');
+    });
+
+    test('set to copper ore, it makes copper', () {
+      final node = smelting(ore: 'copper_ore').nodeOrThrow('refinery');
+      final spec = db.processOrThrow('metal_refinery');
+      final ore = spec.inputs.firstWhere((p) => p.itemId == 'metal_ore');
+      final out = spec.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+
+      expect(itemFlowingIn(db, node, spec, ore), 'copper_ore');
+      expect(itemFlowingIn(db, node, spec, out), 'copper');
+    });
+
+    test('a refinery set to iron will not feed a copper port', () {
+      // The whole point of the choice: generic output satisfies anything, and
+      // a chosen one satisfies only what it really is.
+      final spec = db.processOrThrow('metal_refinery');
+      final out = spec.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+      final iron = smelting(ore: 'iron_ore').nodeOrThrow('refinery');
+
+      expect(db.accepts('copper', itemFlowingIn(db, iron, spec, out)), isFalse);
+      expect(db.accepts('iron', itemFlowingIn(db, iron, spec, out)), isTrue);
+      // And unset, it still feeds either, because nobody has said otherwise.
+      final generic = smelting().nodeOrThrow('refinery');
+      expect(
+          db.accepts('copper', itemFlowingIn(db, generic, spec, out)), isTrue);
+    });
+
+    test('the wiring is checked against the choice, not the recipe', () {
+      final spec = db.processOrThrow('metal_refinery');
+      final orePort = spec.inputs.firstWhere((p) => p.itemId == 'metal_ore');
+
+      Pipeline fed(String ore, String chosen) => Pipeline(
+            id: 'p',
+            name: 'smelting',
+            nodes: [
+              PipelineNode(id: 'src', specId: sourceSpecId(ore)),
+              PipelineNode(
+                id: 'refinery',
+                specId: 'metal_refinery',
+                materials: {'metal_ore': chosen},
+              ),
+            ],
+            edges: [
+              PipelineEdge(
+                id: 'e',
+                fromNodeId: 'src',
+                fromPortId: sourcePortId,
+                toNodeId: 'refinery',
+                toPortId: orePort.id,
+              ),
+            ],
+          );
+
+      expect(
+          solver
+              .solve(fed('iron_ore', 'iron_ore'))
+              .issues
+              .where((i) => i.severity == IssueSeverity.error),
+          isEmpty);
+      final wrong = solver.solve(fed('copper_ore', 'iron_ore'));
+      expect(wrong.status, SolveStatus.invalid);
+      expect(wrong.issues.map((i) => i.message).join(),
+          contains('carries copper_ore into a iron_ore port'));
+    });
+
+    test('every ore in the class says what it refines into', () {
+      final ore = db.itemOrThrow('metal_ore');
+      final silent = [
+        for (final member in ore.members)
+          if (db.itemOrThrow(member).refinesTo == null) member,
+      ];
+      // Galena makes lead, which this app has no item for; anything else going
+      // quiet here means a refinery that cannot say what it made.
+      expect(silent, ['galena']);
+    });
+  });
 }

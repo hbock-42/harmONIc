@@ -406,6 +406,16 @@ class _NodeInspectorState extends State<_NodeInspector> {
           const SizedBox(height: OniSpacing.lg),
         ],
 
+        for (final port in choosablePorts(controller.database, spec)) ...[
+          _MaterialChoice(
+            controller: controller,
+            node: node,
+            spec: spec,
+            port: port,
+          ),
+          const SizedBox(height: OniSpacing.lg),
+        ],
+
         if (controller.isGeyser(node)) ...[
           _GeyserActivity(
             controller: controller,
@@ -683,6 +693,89 @@ class _GeyserActivityState extends State<_GeyserActivity> {
           style: OniType.body
               .copyWith(fontSize: 11.5, color: OniColors.textFaint),
         ),
+      ],
+    );
+  }
+}
+
+/// Which particular material runs through a port whose recipe asks for a class.
+///
+/// A Metal Refinery takes any ore, and until you say which, that is genuinely
+/// what it is: generic, and able to feed anything that wants a metal. Say
+/// copper and it becomes a copper refinery — it will no longer feed an iron
+/// port, and the build will say so rather than quietly agree.
+class _MaterialChoice extends StatelessWidget {
+  const _MaterialChoice({
+    required this.controller,
+    required this.node,
+    required this.spec,
+    required this.port,
+  });
+
+  final PipelineController controller;
+  final PipelineNode node;
+  final ProcessSpec spec;
+  final Port port;
+
+  @override
+  Widget build(BuildContext context) {
+    final db = controller.database;
+    final klass = db.itemOrThrow(port.itemId);
+    final chosen = node.materials[port.id];
+    final members = klass.members.toList()
+      ..sort((a, b) => (db.item(a)?.name ?? a).compareTo(db.item(b)?.name ?? b));
+
+    // What the choice does downstream, said only where it does something.
+    final follower = spec.ports
+        .where((p) => p.followsPortId == port.id)
+        .firstOrNull;
+    final produced = follower == null
+        ? ''
+        : itemFlowingIn(db, node, spec, follower);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('${klass.name.toUpperCase()} USED', style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.sm,
+          children: [
+            OniButton(
+              label: 'Any',
+              compact: true,
+              tone: chosen == null
+                  ? OniButtonTone.accent
+                  : OniButtonTone.neutral,
+              onPressed: () => controller.setMaterial(node.id, port.id, null),
+            ),
+            for (final member in members)
+              OniButton(
+                label: db.item(member)?.name ?? member,
+                compact: true,
+                tone: chosen == member
+                    ? OniButtonTone.accent
+                    : OniButtonTone.neutral,
+                onPressed: () =>
+                    controller.setMaterial(node.id, port.id, member),
+              ),
+          ],
+        ),
+        if (follower != null) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Text(
+            chosen == null
+                ? 'Any ore will do, and what comes out is just '
+                    '"${db.item(produced)?.name ?? produced}" — enough to feed '
+                    'anything that wants one. Pick an ore if something '
+                    'downstream needs a particular metal.'
+                : 'Makes ${db.item(produced)?.name ?? produced}. It will no '
+                    'longer feed a port that wants a different metal.',
+            style: OniType.body
+                .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+          ),
+        ],
       ],
     );
   }
