@@ -256,7 +256,7 @@ void main() {
         (tester) async {
       await pumpEditor(tester);
       await openMenu(tester);
-      await tester.tap(find.textContaining('START FROM A BUILD'));
+      await tester.tap(find.text('Start from a build'));
       await tester.pump();
 
       expect(find.text('Petroleum power'), findsOneWidget);
@@ -267,7 +267,7 @@ void main() {
     testWidgets('picking one opens it, solved and arranged', (tester) async {
       await pumpEditor(tester);
       await openMenu(tester);
-      await tester.tap(find.textContaining('START FROM A BUILD'));
+      await tester.tap(find.text('Start from a build'));
       await tester.pump();
       await tester.ensureVisible(find.text('Hatch ranch'));
       await tester.pumpAndSettle();
@@ -345,7 +345,7 @@ void main() {
       await pumpEditor(tester);
       await openMenu(tester);
       // The section says what it will do before you do it.
-      await tester.tap(find.textContaining('USE THIS BUILD IN ANOTHER'));
+      await tester.tap(find.text('Use this build in another'));
       await tester.pump();
       expect(textContaining('as a single node, under My builds'),
           findsOneWidget);
@@ -387,7 +387,7 @@ void main() {
       await tester.pump();
 
       await openMenu(tester);
-      await tester.tap(find.textContaining('USE THIS BUILD IN ANOTHER'));
+      await tester.tap(find.text('Use this build in another'));
       await tester.pump();
 
       // Not offered at all until the build has a size, with the reason shown
@@ -398,6 +398,38 @@ void main() {
       expect(button.onPressed, isNull);
       expect(library.customProcesses.where((s) => s.name == 'Unscaled'),
           isEmpty);
+    });
+  });
+
+  group('the menu is legible', () {
+    testWidgets('each section is named and ruled off from the next',
+        (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+
+      // Five kinds of thing live in this menu; each says what it is.
+      expect(find.text('PIPELINES'), findsOneWidget);
+      expect(find.text('Start from a build'), findsOneWidget);
+      expect(find.text('Use this build in another'), findsOneWidget);
+      expect(find.text('SAVED HERE'), findsOneWidget);
+
+      // And they are separated by something, not just by spacing.
+      expect(find.byKey(menuRuleKey), findsWidgets);
+    });
+
+    testWidgets('a section header is a control, and reads as one',
+        (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+
+      // The chevron turns when it opens, which is the difference between a
+      // heading and a thing you can press.
+      expect(find.text('›'), findsNWidgets(2));
+      await tester.tap(find.text('Start from a build'));
+      await tester.pump();
+      // Opened, its own chevron has turned. The other section's may have been
+      // scrolled out of the list by the four templates that just appeared.
+      expect(find.text('⌄'), findsOneWidget);
     });
   });
 }

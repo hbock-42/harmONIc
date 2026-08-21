@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E10-14` **The pipelines menu reads as five things, not one list** — foldable sections are
+  rows you can press rather than captions with a triangle, the saved builds have a heading
+  of their own, and every section is ruled off from the next
 - `E10-13` **Saving a build as a node, explained where you do it** — a button called "Save
   as recipe" among the sharing buttons said neither what it did nor where the result went.
   It is its own section now, saying what will happen, and the result lands under "My builds"
@@ -608,6 +611,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-11 | ✅ | Toolbar grouping | history, arrangement and units separated by a rule, rather than one evenly spaced row |
 | E10-12 | ✅ | The summary bar fits any window | single-line labels and a bar that scrolls sideways; tested at five widths, with the panels and the menu at three |
 | E10-13 | ✅ | Saving a build as a node, explained | its own section in the menu, saying what it will do and where the result goes |
+| E10-14 | ✅ | The pipelines menu reads as sections | pressable headers with a turning chevron, a heading over the saved builds, and a rule between each |
 
 ## E11 — What a build actually costs to run
 

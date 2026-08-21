@@ -123,17 +123,11 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
   Widget _templates() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
+          _SectionHeader(
+            label: 'Start from a build',
+            detail: '${pipelineTemplates.length}',
+            open: _templatesOpen,
             onTap: () => setState(() => _templatesOpen = !_templatesOpen),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                  OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
-              child: Text(
-                _templatesOpen ? '▾ START FROM A BUILD' : '▸ START FROM A BUILD',
-                style: OniType.label,
-              ),
-            ),
           ),
           if (_templatesOpen)
             for (final template in pipelineTemplates)
@@ -177,19 +171,10 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        _SectionHeader(
+          label: 'Use this build in another',
+          open: _reuseOpen,
           onTap: () => setState(() => _reuseOpen = !_reuseOpen),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
-            child: Text(
-              _reuseOpen
-                  ? '▾ USE THIS BUILD IN ANOTHER'
-                  : '▸ USE THIS BUILD IN ANOTHER',
-              style: OniType.label,
-            ),
-          ),
         ),
         if (_reuseOpen)
           Padding(
@@ -259,9 +244,10 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
               ],
             ),
           ),
+          const _MenuRule(key: menuRuleKey),
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+                OniSpacing.md, OniSpacing.sm, OniSpacing.md, OniSpacing.sm),
             child: Wrap(
               spacing: OniSpacing.sm,
               runSpacing: OniSpacing.sm,
@@ -302,8 +288,24 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
               children: [
                 // Inside the scroller rather than above it: with the section
                 // expanded, the menu is taller than the window it opens in.
+                const _MenuRule(key: menuRuleKey),
                 _templates(),
                 _reuse(),
+                const _MenuRule(key: menuRuleKey),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(OniSpacing.md,
+                      OniSpacing.sm, OniSpacing.md, OniSpacing.xs),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text('SAVED HERE', style: OniType.label),
+                      ),
+                      Text('${saved.length}',
+                          style: OniType.numberSmall
+                              .copyWith(color: OniColors.textFaint)),
+                    ],
+                  ),
+                ),
                 for (final summary in saved)
                   _Row(
                     summary: summary,
@@ -404,5 +406,89 @@ class _RowState extends State<_Row> {
             ),
           ),
         ),
+      );
+}
+
+/// A row that opens and closes a section of the menu.
+///
+/// It was a line of small grey capitals with a triangle in front of it, which
+/// looked exactly like the labels above things that are not clickable. A
+/// section you can open should look like a row you can press: full width, a
+/// hover, a chevron with room around it, and text bright enough to read as
+/// something rather than as a caption for something else.
+class _SectionHeader extends StatefulWidget {
+  const _SectionHeader({
+    required this.label,
+    required this.open,
+    required this.onTap,
+    this.detail,
+  });
+
+  final String label;
+  final String? detail;
+  final bool open;
+  final VoidCallback onTap;
+
+  @override
+  State<_SectionHeader> createState() => _SectionHeaderState();
+}
+
+class _SectionHeaderState extends State<_SectionHeader> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onTap,
+          child: Container(
+            color: _hover ? OniColors.surfaceHover : null,
+            padding: const EdgeInsets.symmetric(
+                horizontal: OniSpacing.md, vertical: OniSpacing.sm),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 14,
+                  child: Text(
+                    widget.open ? '⌄' : '›',
+                    style: OniType.body.copyWith(
+                      color: OniColors.textMuted,
+                      height: 1,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    widget.label,
+                    style: OniType.body.copyWith(color: OniColors.text),
+                  ),
+                ),
+                if (widget.detail != null)
+                  Text(widget.detail!,
+                      style: OniType.numberSmall
+                          .copyWith(color: OniColors.textFaint)),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
+/// Named so a test can check the sections really are ruled apart.
+const Key menuRuleKey = ValueKey('menu-rule');
+
+/// A rule between two sections of the menu, because five kinds of thing in one
+/// column with even spacing reads as one kind of thing.
+class _MenuRule extends StatelessWidget {
+  const _MenuRule({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        height: 1,
+        margin: const EdgeInsets.symmetric(horizontal: OniSpacing.md),
+        color: OniColors.border,
       );
 }
