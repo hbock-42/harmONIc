@@ -188,6 +188,45 @@ void main() {
     expect(ids.toSet(), hasLength(ids.length));
   });
 
+  group('pack tags', () {
+    const packs = {'aquatic', 'frosty', 'prehistoric'};
+    Set<String> packsOf(Iterable<String> tags) => packs.intersection(tags.toSet());
+
+    test('nothing base-game is built out of pack-only materials', () {
+      // The check that matters, because it catches the tag being wrong in
+      // either direction. It found three: Phosphorite marked Aquatic because a
+      // Starnacle happens to make it, though it grows in the Jungle of every
+      // base game; Liquid Sulfur marked Aquatic when it is Spaced Out; and the
+      // Fish Taco left unmarked while calling for Frosty tallow.
+      final itemPack = {
+        for (final item in db.items) item.id: packsOf(item.tags),
+      };
+
+      final wrong = <String>[];
+      for (final spec in db.processes) {
+        if (packsOf(spec.tags).isNotEmpty) continue;
+        for (final port in spec.ports) {
+          final pack = itemPack[port.itemId];
+          if (pack != null && pack.isNotEmpty) {
+            wrong.add('"${spec.id}" is base-game but wants "${port.itemId}", '
+                'which is tagged ${pack.join('/')}');
+          }
+        }
+      }
+      expect(wrong, isEmpty);
+    });
+
+    test('a pack-tagged item is one the packs really added', () {
+      // Not exhaustive — it only pins the three that were wrong — but a
+      // regression here means somebody has re-tagged a base-game material.
+      for (final id in ['phosphorite', 'liquid_sulfur', 'dirt', 'sand']) {
+        expect(packsOf(db.itemOrThrow(id).tags), isEmpty, reason: id);
+      }
+      expect(db.itemOrThrow('coquina').tags, contains('aquatic'));
+      expect(db.itemOrThrow('tallow').tags, contains('frosty'));
+    });
+  });
+
   test('a spec round-trips through JSON', () {
     final spec = db.processOrThrow('water_sieve');
     final copy = ProcessSpec.fromJson(spec.toJson());

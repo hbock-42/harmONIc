@@ -381,9 +381,7 @@
       "id": "liquid_sulfur",
       "name": "Liquid Sulfur",
       "category": "liquid",
-      "tags": [
-        "aquatic"
-      ]
+      "tags": []
     },
     {
       "id": "diamond",
@@ -429,9 +427,7 @@
       "id": "phosphorite",
       "name": "Phosphorite",
       "category": "solid",
-      "tags": [
-        "aquatic"
-      ]
+      "tags": []
     },
     {
       "id": "naphtha",
@@ -4527,6 +4523,7 @@
       "footprintHeight": 2,
       "tags": [
         "food",
+        "frosty",
         "unverified"
       ],
       "ports": [

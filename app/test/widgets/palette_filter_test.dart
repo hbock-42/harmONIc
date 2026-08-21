@@ -5,6 +5,7 @@ import 'package:oni_pipeline/storage/json_store.dart';
 
 import 'package:oni_pipeline/design/widgets.dart';
 import 'package:oni_pipeline/panels/palette_panel.dart';
+import 'package:oni_pipeline/panels/process_editor.dart';
 
 import '../support/harness.dart';
 
@@ -103,5 +104,54 @@ void main() {
     expect(second.packEnabled('frosty'), isFalse);
     expect(second.packEnabled('aquatic'), isTrue);
     expect(second.showWild, isFalse);
+  });
+
+  testWidgets('a pack switched off is kept out of the recipe editor too',
+      (tester) async {
+    final display = await pumpEditor(tester);
+    await display.setPack('aquatic', enabled: false);
+    await tester.pump();
+
+    await tester.tap(find.text('+ Recipe'));
+    await tester.pump();
+    await tester.enterText(
+        find.descendant(
+                of: find.byType(ProcessEditor), matching: find.byType(OniField))
+            .first,
+        'Test recipe');
+    await tester.pump();
+    await tester.tap(find.text('+ Consumes'));
+    await tester.pump();
+    await tester.tap(find.text('Choose an item…'));
+    await tester.pump();
+
+    // Base-game materials are offered as before...
+    await tester.enterText(find.byKey(itemPickerSearchKey), 'Phosphorite');
+    await tester.pump();
+    expect(textLabel('Phosphorite'), findsWidgets);
+
+    // ...and Aquatic ones are not, with the pack switched off. find.text would
+    // also match the search box's own contents, hence the rendered-label
+    // predicate.
+    await tester.enterText(find.byKey(itemPickerSearchKey), 'Coquina');
+    await tester.pump();
+    expect(textLabel('Coquina'), findsNothing);
+  });
+
+  testWidgets('a supply node is as optional as the thing it supplies',
+      (tester) async {
+    final display = await pumpEditor(tester);
+    await openFilters(tester);
+    await tester.tap(find.text('Aquatic'));
+    await tester.pump();
+    expect(display.packEnabled('aquatic'), isFalse);
+
+    await tester.enterText(paletteSearch(), 'Coquina');
+    await tester.pump();
+    expect(textLabel('Coquina supply'), findsNothing);
+
+    await tester.enterText(paletteSearch(), 'Water supply');
+    await tester.pump();
+    expect(textLabel('Water supply'), findsWidgets);
   });
 }

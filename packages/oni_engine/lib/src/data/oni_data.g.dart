@@ -385,9 +385,7 @@ const String oniDataJson = r"""
       "id": "liquid_sulfur",
       "name": "Liquid Sulfur",
       "category": "liquid",
-      "tags": [
-        "aquatic"
-      ]
+      "tags": []
     },
     {
       "id": "diamond",
@@ -433,9 +431,7 @@ const String oniDataJson = r"""
       "id": "phosphorite",
       "name": "Phosphorite",
       "category": "solid",
-      "tags": [
-        "aquatic"
-      ]
+      "tags": []
     },
     {
       "id": "naphtha",
@@ -4531,6 +4527,7 @@ const String oniDataJson = r"""
       "footprintHeight": 2,
       "tags": [
         "food",
+        "frosty",
         "unverified"
       ],
       "ports": [

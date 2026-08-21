@@ -49,9 +49,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
-- `E4-12b` The custom-recipe editor's item picker offers every item, pack or not. Items
-  carry pack tags less consistently than processes do, so filtering them wants a check
-  first rather than a guess
+- `E12-8` Spaced Out as a fourth pack. Liquid Sulfur belongs to it, and so does a great
+  deal else that is not tagged — a filter that hides some of a pack and not the rest would
+  be worse than none, so this wants a full audit before it is offered
 
 - `E12-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
   and most Duplicant food. That is a class this app does not have, and inventing one
@@ -138,6 +138,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-12b` **The recipe editor's item picker obeys them too** — and checking whether item
+  pack tags were trustworthy enough to filter by found three that were wrong, plus supply
+  and output nodes that inherited no pack at all
 - `E4-12a` **The port menu obeys the filters too** — and, while there, learned about
   material classes: clicking a port that asks for Metal Ore now offers the ore supplies,
   which it had been silently refusing to

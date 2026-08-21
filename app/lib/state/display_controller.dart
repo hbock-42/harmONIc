@@ -13,12 +13,24 @@ const Map<String, String> kContentPacks = <String, String>{
   'prehistoric': 'Prehistoric',
 };
 
+/// The engine holds the same set, because a synthesised supply node has to
+/// inherit its item's pack long before any widget exists to filter it.
+void _assertPacksAgree() {
+  assert(
+    kContentPacks.keys.toSet().difference(contentPackTags).isEmpty &&
+        contentPackTags.difference(kContentPacks.keys.toSet()).isEmpty,
+    'the app and the engine disagree about which packs exist',
+  );
+}
+
 /// How the reader wants rates written, remembered between runs.
 ///
 /// A view setting rather than part of any pipeline: the same build read per
 /// second and per cycle is the same build.
 class DisplayController extends ChangeNotifier {
-  DisplayController(this._store);
+  DisplayController(this._store) {
+    _assertPacksAgree();
+  }
 
   final JsonStore _store;
   RateDisplay _display = RateDisplay.perSecond;
@@ -45,6 +57,16 @@ class DisplayController extends ChangeNotifier {
     if (!_showWild && spec.tags.contains('wild')) return false;
     for (final pack in kContentPacks.keys) {
       if (spec.tags.contains(pack) && !_packs.contains(pack)) return false;
+    }
+    return true;
+  }
+
+  /// The same question for an item. Materials carry pack tags as processes do,
+  /// so a Frosty ingredient can be kept out of a custom recipe as easily as a
+  /// Frosty building can be kept out of the palette.
+  bool includesItem(Item item) {
+    for (final pack in kContentPacks.keys) {
+      if (item.tags.contains(pack) && !_packs.contains(pack)) return false;
     }
     return true;
   }

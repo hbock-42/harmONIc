@@ -14,10 +14,17 @@ class ProcessEditor extends StatefulWidget {
     required this.library,
     required this.spec,
     required this.onClose,
+    this.offersItem = _anyItem,
     super.key,
   });
 
   final LibraryController library;
+
+  /// Whether an item belongs in the picker. A pack switched off should not come
+  /// back here either — this is the third door into the catalogue.
+  final bool Function(Item) offersItem;
+
+  static bool _anyItem(Item item) => true;
   final ProcessSpec spec;
   final VoidCallback onClose;
 
@@ -358,6 +365,7 @@ class _ProcessEditorState extends State<ProcessEditor> {
           Expanded(
             child: _ItemPicker(
               database: _db,
+              offersItem: widget.offersItem,
               extraItems: _newItems,
               selected: item,
               onSelected: (id) => setState(() => draft.itemId = id),
@@ -398,6 +406,7 @@ const Key itemPickerSearchKey = ValueKey('item-picker-search');
 class _ItemPicker extends StatefulWidget {
   const _ItemPicker({
     required this.database,
+    required this.offersItem,
     required this.extraItems,
     required this.selected,
     required this.onSelected,
@@ -405,6 +414,7 @@ class _ItemPicker extends StatefulWidget {
   });
 
   final GameDatabase database;
+  final bool Function(Item) offersItem;
   final List<Item> extraItems;
   final Item? selected;
   final ValueChanged<String> onSelected;
@@ -426,7 +436,11 @@ class _ItemPickerState extends State<_ItemPicker> {
 
   List<Item> get _matches {
     final query = _search.text.trim().toLowerCase();
-    final all = [...widget.database.items, ...widget.extraItems];
+    // Items you invented are always offered: you made them, so you have them.
+    final all = [
+      ...widget.database.items.where(widget.offersItem),
+      ...widget.extraItems,
+    ];
     if (query.isEmpty) return all.take(40).toList();
     return all
         .where((i) => i.name.toLowerCase().contains(query))

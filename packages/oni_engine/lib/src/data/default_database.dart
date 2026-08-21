@@ -15,13 +15,20 @@ GameDatabase loadDefaultDatabase() {
   final base = GameDatabase.fromJsonString(oniDataJson);
   final extra = <ProcessSpec>[];
   for (final item in base.items) {
+    // A supply node is only as base-game as the thing it supplies. Without
+    // this, "Coquina supply" turned up in a palette with the Aquatic pack
+    // switched off, which is the same mistake as offering the Tidal Turbine.
+    final packs = {
+      for (final tag in item.tags)
+        if (contentPackTags.contains(tag)) tag,
+    };
     extra.add(ProcessSpec(
       id: sourceSpecId(item.id),
       name: '${item.name} supply',
       kind: ProcessKind.source,
       description: 'Whatever brings ${item.name} into this build: a geyser, '
           'a stockpile, another design. One unit = 1 ${item.unit.symbol}.',
-      tags: const {'source'},
+      tags: {'source', ...packs},
       ports: [
         Port(
           id: 'out',
@@ -37,7 +44,7 @@ GameDatabase loadDefaultDatabase() {
       kind: ProcessKind.sink,
       description: 'Where ${item.name} leaves this build: storage, a vent, '
           'the rest of the base. One unit = 1 ${item.unit.symbol}.',
-      tags: const {'sink'},
+      tags: {'sink', ...packs},
       ports: [
         Port(
           id: 'in',
@@ -83,7 +90,12 @@ ProcessSpec? _pumpFor(Item item) {
         ? 'Moves 500 g/s for 240 W. A gas pipe holds twice that, so filling one '
             'takes two pumps and 480 W.'
         : 'Moves 10 kg/s for 240 W, which is exactly one liquid pipe full.',
-    tags: const {'pumping', 'verified'},
+    tags: {
+      'pumping',
+      'verified',
+      for (final tag in item.tags)
+        if (contentPackTags.contains(tag)) tag,
+    },
     footprintWidth: 2,
     footprintHeight: 2,
     // A Liquid Pump is 400 kg of ore, a Gas Pump 50 kg — one of the larger
@@ -121,6 +133,13 @@ ProcessSpec? _pumpFor(Item item) {
     ],
   );
 }
+
+/// The packs whose content is optional, named by the tag the data uses.
+///
+/// Kept here rather than in the app because it is a fact about the data: a
+/// synthesised supply node has to inherit its item's pack, and that decision
+/// cannot wait for a widget to be built.
+const Set<String> contentPackTags = {'aquatic', 'frosty', 'prehistoric'};
 
 String sourceSpecId(String itemId) => 'source:$itemId';
 String sinkSpecId(String itemId) => 'sink:$itemId';

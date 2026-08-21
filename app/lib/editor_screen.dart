@@ -239,6 +239,7 @@ class _EditorScreenState extends State<EditorScreen> {
             child: GestureDetector(
               onTap: () {},
               child: ProcessEditor(
+                offersItem: widget.displaySettings.includesItem,
                 library: widget.library,
                 spec: spec,
                 onClose: () => setState(() => _editing = null),
