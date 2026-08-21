@@ -37,8 +37,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E10-5` a real problems *panel* (the banner shows the first four)
 - `E11-2` Warn when a conduit's *temperature* would break it — a pipe carrying 500 °C steam
   needs to be built of something that survives it, which the model does not check
-- `E11-3` Conduit heat and pump power: moving 10 kg/s of water costs 240 W of pumping that
-  no build currently accounts for
+- `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
+  model has no notion of a mixture, so there is nothing honest to model yet
+- `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
 - `E5-4` Export to a *file*, for archiving a build rather than pasting it — wants a file
   picker dependency, which nothing else has needed yet
 - `E5-5` Warn on import when a build was made against a different `dataVersion`, since a
@@ -144,6 +145,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E11-3` **Pumps** — one generated per fluid, the way sources and sinks are, since a pump
+  is the same building whatever it moves. Their power is the largest hidden cost in a
+  plumbed build: two gas pumps to fill a single gas pipe is 480 W before anything has been
+  done with the gas
 - `E11-1` **Conduit capacity** — a ratio that balances on paper is unbuildable if the flow
   between two nodes needs three pipes. Every wire now says what carries it: liquid pipes at
   10 kg/s, gas pipes at 1 kg/s, conveyor rails at 20 kg/s, and the cheapest wire that

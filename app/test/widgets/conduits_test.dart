@@ -85,6 +85,27 @@ void main() {
         reason: 'a grooming slot does not travel down a pipe');
   });
 
+  testWidgets('a pump is offered for the fluid on an unfed port',
+      (tester) async {
+    final controller = await pumpEditor(tester, pipeline: testPipeline());
+    final candidates =
+        controller.candidatesFor(const PortRef('elec', 'water')).map((s) => s.name);
+
+    expect(candidates, contains('Water pump'));
+  });
+
+  testWidgets('placing a pump adds its power to the build', (tester) async {
+    final controller = await pumpEditor(tester, pipeline: testPipeline());
+    final before = controller.solution.powerConsumedWatts;
+
+    final id = controller.addNode(pumpSpecId('water'), const Offset(0, 400));
+    controller.connect(PortRef(id, 'out'), const PortRef('elec', 'water'));
+    await tester.pump();
+
+    expect(controller.solution.powerConsumedWatts, greaterThan(before),
+        reason: 'pumping is never free');
+  });
+
   testWidgets('the canvas marks a wire that needs more than one run',
       (tester) async {
     await pumpEditor(tester);

@@ -1,4 +1,5 @@
 import '../model/game_database.dart';
+import '../model/item.dart';
 import '../model/port.dart';
 import '../model/process_spec.dart';
 import 'oni_data.g.dart';
@@ -45,6 +46,13 @@ GameDatabase loadDefaultDatabase() {
         ),
       ],
     ));
+
+    // A pump is the same building whatever it moves, so rather than a spec per
+    // fluid written by hand there is one generated per fluid. Their power is
+    // easily the largest hidden cost in a plumbed build: two gas pumps to fill
+    // one gas pipe is 480 W before anything has been done with the gas.
+    final pump = _pumpFor(item);
+    if (pump != null) extra.add(pump);
   }
   return GameDatabase(
     dataVersion: base.dataVersion,
@@ -54,8 +62,62 @@ GameDatabase loadDefaultDatabase() {
   )..assertConsistent();
 }
 
+/// Moves a fluid along, at the cost of power and a little heat.
+///
+/// Returns null for anything a pump cannot move: solids ride a conveyor, and
+/// power, heat, growth and grooming are not fluids at all.
+ProcessSpec? _pumpFor(Item item) {
+  final (double rate, double heat) = switch (item.category) {
+    ItemCategory.liquid => (10000, 2),
+    ItemCategory.gas => (500, 0),
+    _ => (0, 0),
+  };
+  if (rate == 0) return null;
+
+  return ProcessSpec(
+    id: pumpSpecId(item.id),
+    name: '${item.name} pump',
+    kind: ProcessKind.building,
+    description: item.category == ItemCategory.gas
+        ? 'Moves 500 g/s for 240 W. A gas pipe holds twice that, so filling one '
+            'takes two pumps and 480 W.'
+        : 'Moves 10 kg/s for 240 W, which is exactly one liquid pipe full.',
+    tags: const {'pumping', 'verified'},
+    footprintWidth: 2,
+    footprintHeight: 2,
+    ports: [
+      Port(
+        id: 'in',
+        itemId: item.id,
+        direction: PortDirection.input,
+        ratePerSecond: rate,
+      ),
+      Port(
+        id: 'out',
+        itemId: item.id,
+        direction: PortDirection.output,
+        ratePerSecond: rate,
+      ),
+      const Port(
+        id: 'power_in',
+        itemId: WellKnownItems.power,
+        direction: PortDirection.input,
+        ratePerSecond: 240,
+      ),
+      if (heat > 0)
+        Port(
+          id: 'heat_out',
+          itemId: WellKnownItems.heat,
+          direction: PortDirection.output,
+          ratePerSecond: heat,
+        ),
+    ],
+  );
+}
+
 String sourceSpecId(String itemId) => 'source:$itemId';
 String sinkSpecId(String itemId) => 'sink:$itemId';
+String pumpSpecId(String itemId) => 'pump:$itemId';
 
 /// The single port id every generated source/sink uses.
 const String sourcePortId = 'out';

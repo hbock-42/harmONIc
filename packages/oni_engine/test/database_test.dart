@@ -19,6 +19,66 @@ void main() {
     }
   });
 
+  group('pumps', () {
+    test('every fluid gets one, and nothing else does', () {
+      expect(db.process(pumpSpecId('water')), isNotNull);
+      expect(db.process(pumpSpecId('oxygen')), isNotNull);
+      expect(db.process(pumpSpecId('coal')), isNull, reason: 'solids ride rails');
+      expect(db.process(pumpSpecId('power')), isNull);
+      expect(db.process(pumpSpecId('grooming')), isNull);
+    });
+
+    test('a liquid pump fills exactly one pipe', () {
+      final pump = db.processOrThrow(pumpSpecId('water'));
+      expect(pump.portByIdOrThrow('in').ratePerSecond, 10000);
+      expect(pump.netPowerWatts, 240);
+      expect(
+        Conduits.runsNeeded(
+            pump.portByIdOrThrow('out').ratePerSecond, ItemCategory.liquid),
+        1,
+      );
+    });
+
+    test('a gas pump fills half of one, which is the famous annoyance', () {
+      final pump = db.processOrThrow(pumpSpecId('oxygen'));
+      expect(pump.portByIdOrThrow('out').ratePerSecond, 500);
+      expect(pump.netPowerWatts, 240);
+      // Two pumps and 480 W to fill a single gas pipe.
+      expect(Conduits.gasPipe.capacity / 500, 2);
+    });
+
+    test('a pump puts back exactly what it takes', () {
+      for (final id in ['water', 'oxygen', 'petroleum', 'chlorine']) {
+        final pump = db.processOrThrow(pumpSpecId(id));
+        expect(pump.portByIdOrThrow('in').ratePerSecond,
+            pump.portByIdOrThrow('out').ratePerSecond);
+      }
+    });
+
+    test('pumping shows up in the power budget', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'plumbed')
+            ..addSource('water')
+            ..add(pumpSpecId('water'), nodeId: 'pump')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..addSink('oxygen')
+            ..addSink('hydrogen')
+            ..connectItem('src_water', 'pump', 'water')
+            ..connectItem('pump', 'elec', 'water')
+            ..connectItem('elec', 'sink_oxygen', 'oxygen')
+            ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+            ..pinCount('elec', 5))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // Five Electrolyzers drink 5 kg/s, which is half a pump.
+      expect(solution.nodes['pump']!.count, closeTo(0.5, 1e-9));
+      // 600 W of Electrolyzers, plus 120 W of pumping nobody counted before.
+      expect(solution.powerConsumedWatts, closeTo(5 * 120 + 120, 1e-6));
+    });
+  });
+
   test('power and heat shorthand expand into ports', () {
     final electrolyzer = db.processOrThrow('electrolyzer');
     expect(electrolyzer.netPowerWatts, 120);

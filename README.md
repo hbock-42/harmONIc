@@ -70,6 +70,10 @@ Electrolyzers' worth of oxygen needs three of them. Select a wire and the inspec
 what carries it — pipes, rails, or the cheapest wire that stands the load — and any flow
 needing more than one run is marked on the canvas as `×3`.
 
+Pumps are in the palette too, one per fluid. Their 240 W each is the largest cost most
+builds forget: filling a single gas pipe takes two pumps and 480 W before the gas has been
+used for anything.
+
 ## Sharing a build
 
 `Pipelines` → `Copy code` puts the open build on the clipboard as a single base64 line

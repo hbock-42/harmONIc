@@ -44,6 +44,7 @@ class _PalettePanelState extends State<PalettePanel> {
         ProcessKind.source => 'Supply',
         ProcessKind.sink => 'Output',
         ProcessKind.duplicant => 'Colony',
+        _ when spec.tags.contains('pumping') => 'Pumping',
         _ => _capitalise(
             spec.tags.firstWhere((t) => t != 'verified', orElse: () => 'other')),
       };
@@ -64,8 +65,9 @@ class _PalettePanelState extends State<PalettePanel> {
     final names = groups.keys.toList()
       ..sort((a, b) {
         int rank(String g) => switch (g) {
-              'Supply' => 2,
-              'Output' => 3,
+              'Pumping' => 2,
+              'Supply' => 3,
+              'Output' => 4,
               _ => 1,
             };
         final byRank = rank(a).compareTo(rank(b));
