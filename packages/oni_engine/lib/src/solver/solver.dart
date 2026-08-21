@@ -184,6 +184,7 @@ class PipelineSolver {
         powerWatts: spec.netPowerWatts,
         heatKdtu: spec.netHeatKdtu,
         dupeLabourSecondsPerCycle: spec.dupeLabourSecondsPerCycle,
+        footprintTiles: spec.footprintTiles,
       );
     }
 

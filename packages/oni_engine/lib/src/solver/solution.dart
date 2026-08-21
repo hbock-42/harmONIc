@@ -28,6 +28,7 @@ class NodeResult {
     required this.powerWatts,
     required this.heatKdtu,
     required this.dupeLabourSecondsPerCycle,
+    this.footprintTiles = 0,
   });
 
   final String nodeId;
@@ -51,6 +52,13 @@ class NodeResult {
   /// Net kDTU/s this node dumps into the base.
   final double heatKdtu;
   final double dupeLabourSecondsPerCycle;
+
+  /// Tiles one of these occupies.
+  final int footprintTiles;
+
+  /// The room this node's buildings actually take. Whole buildings, because
+  /// half an Electrolyzer takes as much floor as a whole one.
+  int get totalFootprintTiles => footprintTiles * wholeCount;
 
   /// How many you must actually build, accounting for the node's duty cycle.
   double get physicalCount => uptime <= 0 ? count : count / uptime;
@@ -173,6 +181,16 @@ class PipelineSolution {
     for (final n in nodes.values) {
       if (n.isBoundary) continue;
       total += n.heatKdtu * n.count;
+    }
+    return total;
+  }
+
+  /// Floor space the whole build needs, in tiles.
+  int get totalFootprintTiles {
+    var total = 0;
+    for (final n in nodes.values) {
+      if (n.isBoundary) continue;
+      total += n.totalFootprintTiles;
     }
     return total;
   }

@@ -37,6 +37,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E10-5` a real problems *panel* (the banner shows the first four)
 - `E11-2` Pipe *materials*: 500 °C steam needs a pipe built of something that survives it,
   which depends on the material's own limits rather than the flow's temperature alone
+- `E11-7` Construction materials: an Electrolyzer costs 400 kg of refined metal to build,
+  which is data the app does not hold at all — the one remaining cost it cannot report
 - `E11-6` Temperature *mixing*: two flows meeting average out by mass and specific heat,
   which the model does not track — it reports the temperature a port declares, no more
 - `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
@@ -147,6 +149,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E3-5b` **Floor space** — every building's footprint was recorded and never shown. A
+  build now reports the tiles it needs, per node and in total, counting whole buildings
+  because half an Electrolyzer takes as much floor as a whole one. That empties the list
+  of things the database knew and the app did not say
 - `E1-7` **Temperatures shown** — every port that declares one now says it, and a flow past
   the 75 °C nearly everything overheats at is called out. The wording is careful: it is an
   invitation to look, not a prediction, since whether something cooks depends on what the

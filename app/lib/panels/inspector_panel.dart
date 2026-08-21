@@ -61,6 +61,7 @@ class _MultiSelection extends StatelessWidget {
     var power = 0.0;
     var heat = 0.0;
     var labour = 0.0;
+    var tiles = 0;
     for (final id in ids) {
       final node = controller.pipeline.node(id);
       final result = controller.solution.nodes[id];
@@ -72,6 +73,7 @@ class _MultiSelection extends StatelessWidget {
       power += spec.netPowerWatts * result.count;
       heat += spec.netHeatKdtu * result.count;
       labour += spec.dupeLabourSecondsPerCycle * result.count;
+      tiles += result.totalFootprintTiles;
     }
 
     return ListView(
@@ -105,6 +107,11 @@ class _MultiSelection extends StatelessWidget {
                   label: 'dupe time',
                   value: '${labour.toStringAsFixed(0)} s/cycle',
                 ),
+              ),
+            if (tiles > 0)
+              SizedBox(
+                width: 118,
+                child: OniStat(label: 'floor', value: '$tiles tiles'),
               ),
           ],
         ),
@@ -367,6 +374,15 @@ class _NodeInspectorState extends State<_NodeInspector> {
                     child: OniStat(
                       label: 'dupe time',
                       value: '${(spec.dupeLabourSecondsPerCycle * result.count).toStringAsFixed(0)} s/cycle',
+                    ),
+                  ),
+                if (spec.hasFootprint)
+                  SizedBox(
+                    width: 118,
+                    child: OniStat(
+                      label: 'floor',
+                      value: '${result.totalFootprintTiles} tiles'
+                          '  (${spec.footprintWidth}×${spec.footprintHeight})',
                     ),
                   ),
               ],

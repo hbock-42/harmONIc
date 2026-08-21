@@ -48,6 +48,13 @@ class SummaryBar extends StatelessWidget {
                 ? OniColors.text
                 : OniColors.ok,
           ),
+          if (solution.totalFootprintTiles > 0) ...[
+            const _Divider(),
+            OniStat(
+              label: 'floor',
+              value: '${solution.totalFootprintTiles} tiles',
+            ),
+          ],
           if (solution.dupeLabourSecondsPerCycle > 0) ...[
             const _Divider(),
             OniStat(

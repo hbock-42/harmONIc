@@ -130,6 +130,14 @@ class ProcessSpec {
       portById(portId) ??
       (throw ArgumentError('Spec "$id" has no port "$portId"'));
 
+  /// Tiles one of these takes up, or zero when the size is not recorded.
+  ///
+  /// Critters and boundary nodes have none: a Hatch occupies a stable, which is
+  /// counted where the stable is, and a supply node is not a thing you build.
+  int get footprintTiles => footprintWidth * footprintHeight;
+
+  bool get hasFootprint => footprintTiles > 0;
+
   /// Net watts consumed per running unit (negative = generation).
   double get netPowerWatts => _net(WellKnownItems.power);
 

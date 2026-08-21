@@ -532,6 +532,45 @@ void main() {
     });
   });
 
+  group('floor space', () {
+    test('a build reports the tiles it needs', () {
+      final b = basic()..pinCount('elec', 3);
+      final solution = solver.solve(b.build());
+
+      // An Electrolyzer is 2×2, and you build three whole ones.
+      expect(solution.nodes['elec']!.totalFootprintTiles, 12);
+      expect(solution.totalFootprintTiles, 12,
+          reason: 'the supply and output nodes are not things you build');
+    });
+
+    test('a fraction of a building still takes a whole one is worth of floor',
+        () {
+      final solution = solver.solve((basic()..pinCount('elec', 2.1)).build());
+      expect(solution.nodes['elec']!.wholeCount, 3);
+      expect(solution.nodes['elec']!.totalFootprintTiles, 12);
+    });
+
+    test('several buildings add up', () {
+      final b = PipelineBuilder(db, name: 'roomy')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('oil_refinery', nodeId: 'refinery')
+        ..pinCount('elec', 1)
+        ..pinCount('refinery', 1);
+      final solution = solver.solve(b.build());
+
+      // 2×2 plus 3×4.
+      expect(solution.totalFootprintTiles, 4 + 12);
+    });
+
+    test('a critter takes no floor of its own', () {
+      final b = PipelineBuilder(db, name: 'ranch')
+        ..add('hatch', nodeId: 'hatches')
+        ..pinCount('hatches', 8);
+      expect(solver.solve(b.build()).totalFootprintTiles, 0,
+          reason: 'a Hatch occupies a stable, counted where the stable is');
+    });
+  });
+
   group('presentation helpers', () {
     test('uptime turns effective units into buildings to place', () {
       final b = PipelineBuilder(db, name: 'duty cycle')
