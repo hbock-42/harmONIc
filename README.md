@@ -95,6 +95,12 @@ that survives being pasted into a forum post or a chat message. `Paste build` re
 back — or raw JSON, so a `pipelines.json` someone sends you works too. Imports always land
 under a fresh id and never overwrite what you already have.
 
+## More than one build on a page
+
+An amount belongs to the build you gave it to, where a build is whatever is wired
+together — so two chains sharing a canvas each keep their own scale. `⌘C` and `⌘V` copy a
+selection, into the same canvas or a different build entirely.
+
 ## Working with more than one node
 
 ⇧-click adds to the selection, ⇧-drag rubber-bands a region, and dragging any member of a

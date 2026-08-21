@@ -14,18 +14,24 @@ class AutoLayout {
   const AutoLayout({
     required this.pipeline,
     required this.database,
+    this.only = const {},
     this.columnGap = 112,
     this.rowGap = 36,
   });
 
   final Pipeline pipeline;
   final GameDatabase database;
+
+  /// When given, only these nodes are arranged, and only wires between them are
+  /// followed. Someone who has placed part of a build by hand should be able to
+  /// tidy the rest without it being undone.
+  final Set<String> only;
   final double columnGap;
   final double rowGap;
 
-  /// New positions for every node, ready to be applied as one edit.
+  /// New positions for the nodes in scope, ready to be applied as one edit.
   Map<String, Offset> positions() {
-    if (pipeline.nodes.isEmpty) return const {};
+    if (_nodes.isEmpty) return const {};
 
     final forward = _forwardEdges();
     final layers = _assignLayers(forward);
@@ -38,10 +44,19 @@ class AutoLayout {
   /// A recycling loop has no left-to-right reading — something has to point
   /// backwards — so the layout ignores the edge that closes it and lets the
   /// wire double back instead of stretching the whole graph to accommodate it.
+  /// The nodes being arranged: everything, or just the chosen few.
+  List<PipelineNode> get _nodes => only.isEmpty
+      ? pipeline.nodes
+      : [for (final n in pipeline.nodes) if (only.contains(n.id)) n];
+
+  bool _inScope(PipelineEdge edge) =>
+      only.isEmpty ||
+      (only.contains(edge.fromNodeId) && only.contains(edge.toNodeId));
+
   List<PipelineEdge> _forwardEdges() {
     final outgoing = <String, List<PipelineEdge>>{};
     for (final edge in pipeline.edges) {
-      if (edge.fromNodeId == edge.toNodeId) continue;
+      if (edge.fromNodeId == edge.toNodeId || !_inScope(edge)) continue;
       outgoing.putIfAbsent(edge.fromNodeId, () => []).add(edge);
     }
 
@@ -62,13 +77,15 @@ class AutoLayout {
       onStack.remove(nodeId);
     }
 
-    for (final node in pipeline.nodes) {
+    for (final node in _nodes) {
       if (!visited.contains(node.id)) visit(node.id);
     }
 
     return [
       for (final edge in pipeline.edges)
-        if (edge.fromNodeId != edge.toNodeId && !backEdges.contains(edge.id))
+        if (edge.fromNodeId != edge.toNodeId &&
+            !backEdges.contains(edge.id) &&
+            _inScope(edge))
           edge,
     ];
   }
@@ -76,8 +93,8 @@ class AutoLayout {
   /// Longest path from the sources: a node sits one column right of its
   /// furthest-left feeder, so nothing is ever drawn upstream of its own input.
   Map<String, int> _assignLayers(List<PipelineEdge> forward) {
-    final layer = {for (final n in pipeline.nodes) n.id: 0};
-    for (var pass = 0; pass < pipeline.nodes.length; pass++) {
+    final layer = {for (final n in _nodes) n.id: 0};
+    for (var pass = 0; pass < _nodes.length; pass++) {
       var changed = false;
       for (final edge in forward) {
         final from = layer[edge.fromNodeId];
@@ -102,7 +119,7 @@ class AutoLayout {
   ) {
     final depth = layer.values.fold<int>(0, math.max);
     final columns = <List<String>>[for (var i = 0; i <= depth; i++) []];
-    for (final node in pipeline.nodes) {
+    for (final node in _nodes) {
       columns[layer[node.id]!].add(node.id);
     }
 

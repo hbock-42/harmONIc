@@ -500,20 +500,30 @@ class _TopBarState extends State<_TopBar> {
               onPressed: controller.pipeline.nodes.isEmpty
                   ? null
                   : () {
+                      // With a selection, tidy just that: part of a build
+                      // arranged by hand should survive tidying the rest.
+                      final selection = controller.selectedNodeIds;
                       controller.applyLayout(
                         AutoLayout(
                           pipeline: controller.pipeline,
                           database: controller.database,
+                          only: selection.length > 1 ? selection : const {},
                         ).positions(),
                       );
-                      canvasKey.currentState?.fitToContent();
+                      canvasKey.currentState?.fitToContent(
+                        only: selection.length > 1 ? selection : const {},
+                      );
                     },
             ),
             const SizedBox(width: OniSpacing.sm),
             OniButton(
               label: 'Fit',
               compact: true,
-              onPressed: () => canvasKey.currentState?.fitToContent(),
+              onPressed: () => canvasKey.currentState?.fitToContent(
+                    only: controller.selectedNodeIds.length > 1
+                        ? controller.selectedNodeIds
+                        : const {},
+                  ),
             ),
                 ]),
               ),

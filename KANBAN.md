@@ -28,89 +28,63 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
-- `E7-12` Tidy only the selection, now that a selection can be more than one node
-- `E7-14` Zoom to fit a *selection*, now that there is one
-- `E7-15` Ease the jump when the view goes to find a node — it cuts there instantly, which
-  loses the sense of which direction it travelled
-- `E7-13` Marquee currently needs ⇧ because a plain drag pans. A space-drag-to-pan
-  convention would free the plain drag for selection, which is what most editors do
-- `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
-  reload loses your build. Next most valuable thing after the canvas
-- `E10-6` Pin *from* the suggestion — clicking a free node selects it, but you still type
-  the number in the inspector; a value straight on the chip would close the loop
-- `E11-2` Pipe *materials*: 500 °C steam needs a pipe built of something that survives it,
-  which depends on the material's own limits rather than the flow's temperature alone
-- `E11-7` Construction materials: an Electrolyzer costs 400 kg of refined metal to build,
-  which is data the app does not hold at all — the one remaining cost it cannot report
-- `E11-6` Temperature *mixing*: two flows meeting average out by mass and specific heat,
-  which the model does not track — it reports the temperature a port declares, no more
-- `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
-  model has no notion of a mixture, so there is nothing honest to model yet
-- `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
-- `E5-4` Export to a *file*, for archiving a build rather than pasting it — wants a file
-  picker dependency, which nothing else has needed yet
-- `E5-6` Repair should say when a *rate* changed under a build, not only when a port or a
-  process did — a corrected recipe silently changes what a saved build reports
+**Canvas and interaction**
+
+- `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
+  plain drag for selection, which is what most editors do
+- `E10-6` Give an amount *from* the suggestion — clicking a free node selects it and takes
+  you there, but the number is still typed in the inspector
+- `E10-9` Make the canvas edge labels clickable, so per-second ⇄ per-cycle can be toggled
+  from one; today a click there selects the edge
 - `E6-6` Tabs, so two pipelines can be compared side by side
-- `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
-- `E4-9` Aquatic plants: 5 of 12 seeded. Sodicane (no quantified yield), Bulbloom (decor
-  only), Mussel Sprout (non-renewable), Clampum, Pinpoket, Petta Pouf and Husha Cups have
-  no usable numbers on their pages. Worth re-checking each individually rather than
-  trusting the summary tables — that mistake cost us the whole critter roster once
-- `E4-28` Seaquine's ovolene rate and the food buildings (Sushi Bar, Deep Fryer, Smoker)
-- `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
-  5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
-- `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats
-  other critters, which the flow model has no way to express), Gnit and Mimika (produce
-  nothing), the regular Lumb (its peat rate is not stated anywhere), and both packs' food
-  plants — Pikeapple Bush, Plume Squash, Sherberry, Ovagro Node, Snactus, Sweatcorn,
-  Megafrond, Lura, Dew Dripper, Ring Rosebush, Mimika Bud
-- `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
-- `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
-  feed in kilograms
-- `E10-9` Make the canvas edge labels clickable too — they follow the setting but you
-  cannot toggle from one, because a click there selects the edge
-- `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
-  Tublia as domesticated ones, purely because wild plants ripen slower
-- `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop — both need
-  the plant seeded first
-- `E4-34` The rest of the cooking buildings: Microbe Musher, Gas Range, Deep Fryer,
-  Smoker, Sushi Bar — and food *quality*, which the model has no notion of
-- `E4-35` The remaining crops: Pincha Pepper, Nosh Bean, Thimble Reed, Sporechid, and the
-  Prehistoric and Aquatic food plants,
-  Plug Slug, and the Frosty/Prehistoric pack critters
-- `E4-22` The Grooming Station's power draw, if it is ever published — modelled as zero
-  today, which under-reports the grid
-- `E4-20` Egg mass and shells: eggs are counted, not weighed, so shell-to-lime and
-  omelette chains cannot be modelled yet
+
+**Things the model cannot yet say**
+
+- `E11-7` Construction materials: an Electrolyzer costs 400 kg of refined metal to build,
+  which is data the app does not hold at all
+- `E11-2` Pipe materials: 500 °C steam needs a pipe built of something that survives it,
+  which depends on the material's limits rather than the flow's temperature alone
+- `E11-6` Temperature mixing: two flows meeting average out by mass and specific heat; the
+  app reports the temperature a port declares, no more
+- `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
+- `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
+  model has no notion of a mixture
+- `E3-4` Whole-building rounding as a solver mode, rather than a per-node getter
+- `E4-20` Egg mass and shells, so shell-to-lime and omelette chains can be modelled
 - `E4-21` Wild versus groomed as separate specs — the seeded figures assume groomed
-- `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
-  5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
-- `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats
-  other critters, which the flow model has no way to express), Gnit and Mimika (produce
-  nothing), the regular Lumb (its peat rate is not stated anywhere), and both packs' food
-  plants — Pikeapple Bush, Plume Squash, Sherberry, Ovagro Node, Snactus, Sweatcorn,
-  Megafrond, Lura, Dew Dripper, Ring Rosebush, Mimika Bud
-- `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
-- `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
-  feed in kilograms
-- `E10-9` Make the canvas edge labels clickable too — they follow the setting but you
-  cannot toggle from one, because a click there selects the edge
-- `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
-  Tublia as domesticated ones, purely because wild plants ripen slower
-- `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop — both need
-  the plant seeded first
-- `E4-34` The rest of the cooking buildings: Microbe Musher, Gas Range, Deep Fryer,
-  Smoker, Sushi Bar — and food *quality*, which the model has no notion of
+- `E4-31` Wild variants of grazed plants: a wild Tublia ripens four times slower, so the
+  same critter needs four times as many
+
+**Data still to gather**
+
+- `E4-34` The rest of the cooking buildings: Microbe Musher, Gas Range, Deep Fryer, Smoker,
+  Sushi Bar — and food *quality*, which the model has no notion of
 - `E4-35` The remaining crops: Pincha Pepper, Nosh Bean, Thimble Reed, Sporechid, and the
   Prehistoric and Aquatic food plants
-- `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
-  Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
+- `E4-27` Mercury and cinnabar processing
+- `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
+  critters, which a flow model cannot express), Gnit and Mimika (produce nothing), and the
+  regular Lumb (its peat rate is stated nowhere)
+- `E4-9` Aquatic plants: 5 of 12 seeded. Sodicane, Bulbloom, Mussel Sprout, Clampum,
+  Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Check each page individually
+  rather than the summary table — that mistake cost us the whole critter roster once
+- `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
+  be misrepresented by a per-cycle average
+- `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop
+- `E4-28` Seaquine's ovolene rate
+- `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
+  feed in kilograms
+- `E4-11` Nail down the unverified DLC rates: the Vulcanizer's recipe, the Plant
+  Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2
+- `E4-22` The Grooming Station's power draw, if it is ever published
 - `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
-- `E3-4` Whole-building rounding as a first-class solver mode (currently only a
-  per-node `wholeCount` / `utilisation` getter)
-- `E6-2` `spike`: state management (recommendation: riverpod over the pure-Dart engine)
-- `E7-1..4` The canvas: pan/zoom, node widgets, bezier edges, drag-to-connect
+
+**Saving and sharing**
+
+- `E5-4` Export to a file, for archiving rather than pasting — wants a file-picker
+  dependency nothing else has needed
+- `E5-6` Repair should say when a *rate* changed under a build, not only a port or a
+  process: a corrected recipe silently changes what a saved build reports
 
 ### 🚧 In Progress
 
@@ -152,6 +126,17 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-7` **Two builds on one canvas** — an amount now belongs to the build it was given
+  to, where a build is whatever is wired together, so two chains sharing a page no longer
+  wipe each other's numbers. Wire them together afterwards and they become one build with
+  two amounts, which the solver rightly calls a contradiction
+- `E12-8` **⌘C / ⌘V for nodes** — copy a selection into the same canvas or another build.
+  Wires inside the selection come along, wires leaving it do not, and ids are rewritten on
+  arrival so a build pasted into one it grew from cannot join up things nobody joined
+- `E7-12` **Tidy a selection** and `E7-14` **Fit a selection** — part of a build arranged
+  by hand survives tidying the rest
+- `E7-15` **The view glides** when it travels to find a node, so which way it went is
+  visible. Touching the canvas stops it: the hand always wins
 - `E7-11` **Minimap** — once a build outgrows the window there is no way to tell from the
   middle of it what else exists or which way it lies. A chart in the corner shows the whole
   build with the window marked on it; click or drag to travel, and the zoom is left alone

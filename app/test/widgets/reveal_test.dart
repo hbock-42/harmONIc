@@ -47,9 +47,39 @@ void main() {
     expect(isVisible(controller, 'far'), isFalse, reason: 'it starts far away');
 
     controller.selectNode('far');
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(isVisible(controller, 'far'), isTrue);
+  });
+
+  testWidgets('the view glides rather than cutting, so you see it travel',
+      (tester) async {
+    final controller = await pumpCanvas(tester);
+    controller.selectNode('far');
+    await tester.pump();
+
+    // Part-way through, the view has moved but not arrived.
+    await tester.pump(const Duration(milliseconds: 80));
+    final midway = canvasKey.currentState!.offset;
+    expect(isVisible(controller, 'far'), isFalse, reason: 'still on its way');
+
+    await tester.pumpAndSettle();
+    expect(canvasKey.currentState!.offset, isNot(midway));
+    expect(isVisible(controller, 'far'), isTrue);
+  });
+
+  testWidgets('touching the canvas stops the glide, so the hand always wins',
+      (tester) async {
+    final controller = await pumpCanvas(tester);
+    controller.selectNode('far');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+
+    await tester.dragFrom(const Offset(700, 450), const Offset(-30, 20));
+    await tester.pumpAndSettle();
+
+    // It stopped where the hand took over rather than completing the journey.
+    expect(isVisible(controller, 'far'), isFalse);
   });
 
   testWidgets('a node already in view is left where it is', (tester) async {
@@ -69,7 +99,7 @@ void main() {
     await tester.pump();
 
     controller.selectNode('far');
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(canvasKey.currentState!.scale, closeTo(1.5, 1e-9));
     expect(isVisible(controller, 'far'), isTrue);
@@ -105,7 +135,7 @@ void main() {
       of: find.byType(ProblemsBanner),
       matching: find.text('Coal Generator'),
     ));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(controller.selectedNode?.id, 'far');
     expect(state.offset, isNot(before), reason: 'the view went to find it');

@@ -34,7 +34,8 @@ class GraphCanvas extends StatefulWidget {
   State<GraphCanvas> createState() => GraphCanvasState();
 }
 
-class GraphCanvasState extends State<GraphCanvas> {
+class GraphCanvasState extends State<GraphCanvas>
+    with SingleTickerProviderStateMixin {
   static const double minScale = 0.25;
   static const double maxScale = 2.5;
 
@@ -79,6 +80,18 @@ class GraphCanvasState extends State<GraphCanvas> {
 
   PipelineController get controller => widget.controller;
 
+  /// Drives the glide when the view travels somewhere on its own.
+  ///
+  /// Cutting straight there is disorienting: the build looks the same either
+  /// side of an instant jump, so there is nothing to say which way it went or
+  /// how far. A short glide answers both without being a delay anyone waits on.
+  late final AnimationController _travel = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+  );
+  Offset _travelFrom = Offset.zero;
+  Offset _travelTo = Offset.zero;
+
   /// The selection as it was last time we looked, so that *changing* it can
   /// bring the new node into view without the view chasing every repaint.
   Set<String> _lastSelection = const {};
@@ -88,6 +101,15 @@ class GraphCanvasState extends State<GraphCanvas> {
     super.initState();
     _lastSelection = {...controller.selectedNodeIds};
     controller.addListener(_onControllerChanged);
+    _travel.addListener(() {
+      setState(() {
+        _offset = Offset.lerp(
+          _travelFrom,
+          _travelTo,
+          Curves.easeOutCubic.transform(_travel.value),
+        )!;
+      });
+    });
   }
 
   @override
@@ -102,8 +124,26 @@ class GraphCanvasState extends State<GraphCanvas> {
   @override
   void dispose() {
     controller.removeListener(_onControllerChanged);
+    _travel.dispose();
     _focus.dispose();
     super.dispose();
+  }
+
+  /// Slides the view to [target], or jumps if it is already close enough that
+  /// a glide would only be noticed as a lag.
+  void _travelTowards(Offset target) {
+    if ((target - _offset).distance < 8) {
+      setState(() => _offset = target);
+      return;
+    }
+    _travelFrom = _offset;
+    _travelTo = target;
+    _travel.forward(from: 0);
+  }
+
+  /// Stops any glide in progress, so a hand on the canvas always wins.
+  void _stopTravelling() {
+    if (_travel.isAnimating) _travel.stop();
   }
 
   void _onControllerChanged() {
@@ -129,9 +169,13 @@ class GraphCanvasState extends State<GraphCanvas> {
   }
 
   /// Puts a point of the build in the middle of the window.
+  ///
+  /// Immediate rather than gliding: this is the minimap, where the hand is
+  /// steering and a glide would lag behind the finger.
   void centreOn(Offset world) {
     final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
     final size = box?.size ?? const Size(800, 600);
+    _stopTravelling();
     setState(() {
       _offset = Offset(size.width / 2, size.height / 2) - world * _scale;
     });
@@ -156,10 +200,9 @@ class GraphCanvasState extends State<GraphCanvas> {
       return;
     }
 
-    setState(() {
-      _offset = Offset(box.size.width / 2, box.size.height / 2) -
-          rect.center * _scale;
-    });
+    _travelTowards(
+      Offset(box.size.width / 2, box.size.height / 2) - rect.center * _scale,
+    );
   }
 
   double get scale => _scale;
@@ -205,10 +248,16 @@ class GraphCanvasState extends State<GraphCanvas> {
       });
 
   /// Frames every node, so "where did my graph go" is one click away.
-  void fitToContent() {
+  ///
+  /// Given [only], frames just those — a selection is a question about part of
+  /// a build, and the answer should fill the window rather than being a speck
+  /// inside the whole.
+  void fitToContent({Set<String> only = const {}}) {
     final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
     final size = box?.size;
-    final nodes = controller.pipeline.nodes;
+    final nodes = only.isEmpty
+        ? controller.pipeline.nodes
+        : [for (final n in controller.pipeline.nodes) if (only.contains(n.id)) n];
     if (size == null || nodes.isEmpty) return;
 
     var bounds = NodeLayout.worldRect(nodes.first, controller.specOf(nodes.first));
@@ -399,6 +448,7 @@ class GraphCanvasState extends State<GraphCanvas> {
       child: Listener(
       key: _viewportKey,
       onPointerDown: (event) {
+        _stopTravelling();
         _focus.requestFocus();
         final box =
             _viewportKey.currentContext?.findRenderObject() as RenderBox?;
