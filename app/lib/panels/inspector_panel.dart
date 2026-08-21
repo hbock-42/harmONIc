@@ -693,6 +693,11 @@ class _EdgeInspector extends StatelessWidget {
           value: item?.formatRate(flow, rateDisplay) ?? flow.toStringAsFixed(2),
           onToggle: onToggleRates,
         ),
+        if (item != null)
+          if (Conduits.describe(flow, item.category) case final String carried) ...[
+            const SizedBox(height: OniSpacing.md),
+            OniStat(label: 'carried by', value: carried),
+          ],
         const SizedBox(height: OniSpacing.lg),
         Text('WHO DECIDES THE AMOUNT', style: OniType.label),
         const SizedBox(height: OniSpacing.sm),

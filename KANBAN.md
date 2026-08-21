@@ -34,7 +34,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
   convention would free the plain drag for selection, which is what most editors do
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
-- `E10-5` a real problems *panel* (the banner shows the first three)
+- `E10-5` a real problems *panel* (the banner shows the first four)
+- `E11-2` Warn when a conduit's *temperature* would break it — a pipe carrying 500 °C steam
+  needs to be built of something that survives it, which the model does not check
+- `E11-3` Conduit heat and pump power: moving 10 kg/s of water costs 240 W of pumping that
+  no build currently accounts for
 - `E5-4` Export to a *file*, for archiving a build rather than pasting it — wants a file
   picker dependency, which nothing else has needed yet
 - `E5-5` Warn on import when a build was made against a different `dataVersion`, since a
@@ -140,6 +144,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E11-1` **Conduit capacity** — a ratio that balances on paper is unbuildable if the flow
+  between two nodes needs three pipes. Every wire now says what carries it: liquid pipes at
+  10 kg/s, gas pipes at 1 kg/s, conveyor rails at 20 kg/s, and the cheapest wire that
+  stands the load. A flow needing more than one run is marked on the canvas, not just in
+  the inspector
 - `E5-3` **Share a build** — Copy code puts the open pipeline on the clipboard as one
   base64 line that survives a forum post; Paste build reads a code *or* raw JSON, since
   anyone handed a `pipelines.json` will paste that and be right to expect it to work. An

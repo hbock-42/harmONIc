@@ -147,10 +147,16 @@ class EdgePainter extends CustomPainter {
     final precision = rateDisplay == RateDisplay.perSecond && flow.abs() >= 100
         ? 0
         : 1;
+    // A flow needing more than one pipe is worth seeing without clicking, since
+    // it is the difference between a build that fits and one that does not.
+    final runs =
+        item == null ? 0 : Conduits.runsNeeded(flow, item.category);
+    final suffix = runs > 1 ? '  ×$runs' : '';
     final text = TextPainter(
       text: TextSpan(
-        text: item?.formatRate(flow, rateDisplay, precision: precision) ??
-            Unit.gramsPerSecond.format(flow, precision: precision),
+        text: (item?.formatRate(flow, rateDisplay, precision: precision) ??
+                Unit.gramsPerSecond.format(flow, precision: precision)) +
+            suffix,
         style: OniType.numberSmall.copyWith(color: OniColors.text),
       ),
       textDirection: TextDirection.ltr,

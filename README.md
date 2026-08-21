@@ -63,6 +63,13 @@ the cook's time counted against your Duplicant budget like any other labour.
 A plant comes in two forms, harvested and grazed, because its growth is either eaten by a
 critter or taken as a crop and never both.
 
+## Can it actually be built?
+
+Balanced ratios are not the whole answer: a gas pipe carries only 1 kg/s, so three
+Electrolyzers' worth of oxygen needs three of them. Select a wire and the inspector says
+what carries it — pipes, rails, or the cheapest wire that stands the load — and any flow
+needing more than one run is marked on the canvas as `×3`.
+
 ## Sharing a build
 
 `Pipelines` → `Copy code` puts the open build on the clipboard as a single base64 line
