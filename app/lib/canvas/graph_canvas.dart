@@ -31,6 +31,11 @@ class GraphCanvasState extends State<GraphCanvas> {
   static const double maxScale = 2.5;
 
   final GlobalKey _viewportKey = GlobalKey();
+
+  /// Clicking the canvas has to take focus away from whatever text field had
+  /// it, or the guard that keeps ⌫ out of a search box also stops ⌫ ever
+  /// reaching the canvas again.
+  final FocusNode _focus = FocusNode(debugLabel: 'canvas');
   Offset _offset = const Offset(120, 100);
   double _scale = 1;
 
@@ -43,6 +48,12 @@ class GraphCanvasState extends State<GraphCanvas> {
   Offset? _menuLocal;
 
   PipelineController get controller => widget.controller;
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   double get scale => _scale;
   Offset get offset => _offset;
@@ -227,8 +238,11 @@ class GraphCanvasState extends State<GraphCanvas> {
       _ => null,
     };
 
-    return Listener(
+    return Focus(
+      focusNode: _focus,
+      child: Listener(
       key: _viewportKey,
+      onPointerDown: (_) => _focus.requestFocus(),
       onPointerSignal: _onPointerSignal,
       child: MouseRegion(
         onHover: (event) {
@@ -310,6 +324,7 @@ class GraphCanvasState extends State<GraphCanvas> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

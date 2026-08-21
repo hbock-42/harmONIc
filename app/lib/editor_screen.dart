@@ -43,15 +43,16 @@ class _EditorScreenState extends State<EditorScreen> {
                 _RedoIntent(),
             SingleActivator(LogicalKeyboardKey.delete): _DeleteIntent(),
             SingleActivator(LogicalKeyboardKey.backspace): _DeleteIntent(),
+            SingleActivator(LogicalKeyboardKey.escape): _DeselectIntent(),
           },
           child: Actions(
             actions: <Type, Action<Intent>>{
-              _UndoIntent: CallbackAction<_UndoIntent>(
-                  onInvoke: (_) => controller.undo()),
-              _RedoIntent: CallbackAction<_RedoIntent>(
-                  onInvoke: (_) => controller.redo()),
-              _DeleteIntent: CallbackAction<_DeleteIntent>(
-                  onInvoke: (_) => controller.deleteSelection()),
+              _UndoIntent: _CanvasAction<_UndoIntent>(controller.undo),
+              _RedoIntent: _CanvasAction<_RedoIntent>(controller.redo),
+              _DeleteIntent:
+                  _CanvasAction<_DeleteIntent>(controller.deleteSelection),
+              _DeselectIntent:
+                  _CanvasAction<_DeselectIntent>(() => controller.select(null)),
             },
             child: Focus(
               autofocus: true,
@@ -93,6 +94,40 @@ class _EditorScreenState extends State<EditorScreen> {
       );
 }
 
+/// True when the keyboard belongs to a text field rather than the canvas.
+bool _isEditingText() {
+  final context = FocusManager.instance.primaryFocus?.context;
+  if (context == null) return false;
+  if (context.widget is EditableText) return true;
+  return context.findAncestorWidgetOfExactType<EditableText>() != null;
+}
+
+/// A canvas shortcut that stands down while you are typing.
+///
+/// Without this, the editor's ⌫ ("delete the selected node") swallows every
+/// backspace before the search box or the pin field ever sees it — reporting
+/// the key as handled stops the platform delivering it to the text input at
+/// all. Disabling the action makes the shortcut resolve to "ignored", so the
+/// event carries on up to Flutter's own text-editing shortcuts. The same goes
+/// for ⌘Z, which a text field should undo for itself.
+class _CanvasAction<T extends Intent> extends Action<T> {
+  _CanvasAction(this.onInvoke);
+
+  final VoidCallback onInvoke;
+
+  @override
+  bool get isActionEnabled => !_isEditingText();
+
+  @override
+  bool consumesKey(T intent) => !_isEditingText();
+
+  @override
+  Object? invoke(T intent) {
+    onInvoke();
+    return null;
+  }
+}
+
 class _UndoIntent extends Intent {
   const _UndoIntent();
 }
@@ -103,6 +138,10 @@ class _RedoIntent extends Intent {
 
 class _DeleteIntent extends Intent {
   const _DeleteIntent();
+}
+
+class _DeselectIntent extends Intent {
+  const _DeselectIntent();
 }
 
 class _TopBar extends StatelessWidget {

@@ -32,7 +32,25 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
 - `E10-5` a real problems *panel* (the banner shows the first three)
-- `E4-3..7` Widen the seed data (more generators, farming, food, critters, ranching)
+- `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
+- `E4-14` Geyser dormancy and per-instance variance: today a geyser is its *average*
+  output, but a real one has an eruption period, a dormancy period and a rate rolled at
+  world generation. A "worst case / average / peak" toggle would make the numbers honest
+- `E4-9` **Still blocked on wiki stubs, not on us.** Plants: 5 of 12 seeded; Sodicane
+  (no quantified yield), Bulbloom (decor only), Mussel Sprout (non-renewable), Clampum,
+  Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Aquatic critters: only
+  Blowter is seeded — Beakon, Slogo, Gildgo, Seaquine, Orehull, Kelpole and Glo Squid
+  list *what* they eat and make but not *how much*. Ranching/food buildings likewise
+- `E4-15` More base-game critters: Pip, Shine Bug, Pokeshell, Gassy Moo, Shove Vole,
+  Plug Slug, and the Frosty/Prehistoric pack critters
+- `E4-16` Model eggs, meat and grooming labour — a ranch is also a dupe-time cost and an
+  egg supply, neither of which is represented
+- `E4-13` **User-defined processes** — the real fix for the above: let a player add or
+  override a recipe from inside the app, since the wiki will keep lagging each DLC.
+  Would also let someone correct a number we got wrong without waiting for a release
+- `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
+  Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
+- `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
 - `E3-7b` `allowSurplus` per output port, so a vented by-product does not need a
   sink node just to keep the system consistent
 - `E3-4` Whole-building rounding as a first-class solver mode (currently only a
@@ -81,6 +99,20 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-8` **Critters**: 14 ranching staples with wiki rates — Hatch/Sage/Smooth, Slickster
+  and Molten Slickster, the four Pufts, Drecko and Glossy Drecko, Pacu, Gulp Fish and
+  Blowter. Feed in, product out, so a ranch sizes itself from your CO2 or your algae
+- `E4-14a` **Geysers, vents and volcanoes** — 19 natural sources with their wiki average
+  rates and output temperatures, modelled as discrete features so pinning one means
+  "I have one geyser". The Tidal Spring is modelled as the recirculator it is
+- `E6-5` **Keyboard**: ⌫/⌦ delete, ⌘Z/⇧⌘Z undo, Esc deselect — and clicking the canvas
+  now takes focus off any text field, without which the typing guard permanently
+  disabled the delete shortcut
+- `E4-8/10` **The Aquatic Planet Pack** (June 2026): 28 new elements, the rubber chain
+  (Gum Palm → Plant Pulverizer → Vulcanizer), Tidal Turbine, Marine Drill, and the
+  Desalinator's polluted-brine recipe. Numbers that the wiki does not publish are tagged
+  `unverified`, must say why in their description (enforced by a test), and the inspector
+  warns on them
 - `E4-*` **Every process checked against the wiki** (oxygennotincluded.wiki.gg, 2026-08-21).
   12 of 19 were wrong; the Desalinator split into one spec per recipe; batch buildings
   restated as continuous rates. A test now fails if any process loses its `verified` tag
@@ -153,6 +185,9 @@ _(empty)_
 | E4-7 | P1 | Seed set — duplicants | O₂ consumption, CO₂ / dirt / polluted-water output, calories, so "20 dupes" is a pinnable node |
 | E4-8 | P2 | Ranching | critters: food in, meat/eggs/coal out, per-critter |
 | E4-9 | P2 | DLC toggle | Spaced Out! variants (rockets, radiation), base-game filter |
+| E4-11 | P1 | Confirm the unverified DLC rates once the wiki fills them in |
+| E4-12 | P2 | Palette filter by DLC |
+| E4-13 | P1 | User-defined / overridable processes, edited in the app |
 | E4-10 | P1 | Data version stamp | `dataVersion` + game build in the JSON so saved pipelines can warn on mismatch |
 
 ## E5 — Persistence & interop
