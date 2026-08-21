@@ -225,6 +225,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   builder: (context, _) => PipelinesMenu(
                     workspace: widget.workspace,
                     controller: widget.controller,
+                    library: widget.library,
                     rateDisplay: widget.displaySettings.display,
                     onClose: () => setState(() => _pipelinesOpen = false),
                   ),

@@ -4,6 +4,7 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import '../design/widgets.dart';
+import '../state/library_controller.dart';
 import '../state/pipeline_controller.dart';
 import '../state/workspace_controller.dart';
 
@@ -12,6 +13,7 @@ class PipelinesMenu extends StatefulWidget {
   const PipelinesMenu({
     required this.workspace,
     required this.controller,
+    required this.library,
     required this.rateDisplay,
     required this.onClose,
     super.key,
@@ -22,6 +24,9 @@ class PipelinesMenu extends StatefulWidget {
   /// The open build, for the summary — which is about what is on screen now
   /// rather than about what was last saved.
   final PipelineController controller;
+
+  /// Where a build saved as a recipe goes, and where the palette reads from.
+  final LibraryController library;
   final RateDisplay rateDisplay;
   final VoidCallback onClose;
 
@@ -66,6 +71,28 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       text: '${controller.pipeline.name}\n\n$report',
     ));
     if (mounted) setState(() => _message = 'Summary copied.');
+  }
+
+  /// Saves the open build as a recipe, so it can be one node in a bigger plan.
+  Future<void> _saveAsRecipe() async {
+    final controller = widget.controller;
+    final name = controller.pipeline.name;
+    try {
+      final spec = specFromBuild(
+        pipeline: controller.pipeline,
+        database: controller.database,
+        solution: controller.solution,
+        only: controller.focusedBuild,
+        id: 'build_${name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_')}',
+        name: name,
+      );
+      await widget.library.save(spec);
+      if (mounted) {
+        setState(() => _message = '"$name" is in the palette now.');
+      }
+    } on StateError catch (e) {
+      if (mounted) setState(() => _message = e.message);
+    }
   }
 
   Future<void> _paste() async {
@@ -179,6 +206,12 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
                   label: 'Copy code',
                   compact: true,
                   onPressed: workspace.currentId == null ? null : _copy,
+                ),
+                OniButton(
+                  label: 'Save as recipe',
+                  compact: true,
+                  onPressed:
+                      workspace.currentId == null ? null : _saveAsRecipe,
                 ),
                 OniButton(
                   label: 'Copy summary',

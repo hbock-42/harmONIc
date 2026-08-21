@@ -110,6 +110,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E2-8` **A build as one node** — save a solved build as a recipe and place it in a bigger
+  plan. What crosses its boundary becomes its ports; what it does to itself stays inside,
+  which is the whole point of a box. A snapshot, not a link
 - `E5-8` **Copy the build as text** — the engine has been able to write a plain-text summary
   since before there was a canvas, and nothing ever showed it. Now it is a button, scoped to
   the build you are in, and it gained the materials and floor space it was missing
@@ -445,7 +448,7 @@ _(empty)_
 | E2-5 | ✅ | Validation | edge item must match both ports; no duplicate edges; unknown spec ids; dangling pins |
 | E2-6 | ✅ | Free ports | an input port with no incoming edge = **external supply** (raw resource you must provide); an output port with no outgoing edge = **surplus/vent**. Both reported, never an error |
 | E2-7 | ✅ | Cycles | recycling loops (petroleum boiler, SPOM hydrogen return) must solve — the linear system handles them natively, add regression tests |
-| E2-8 | P2 | Sub-pipelines | a saved pipeline usable as a single node in a bigger one |
+| E2-8 | ✅ | Sub-pipelines | a solved build saved as a recipe: its boundary becomes its ports, its totals become its figures, and it is a snapshot rather than a link |
 
 ## E3 — Solver (the heart)
 

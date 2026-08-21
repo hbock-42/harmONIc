@@ -6,7 +6,9 @@ import 'package:oni_pipeline/canvas/node_widget.dart';
 import 'package:oni_pipeline/design/widgets.dart';
 import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/main.dart';
+import 'package:oni_pipeline/panels/palette_panel.dart';
 import 'package:oni_pipeline/panels/pipelines_menu.dart';
+import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 import 'package:oni_pipeline/state/workspace_controller.dart';
 import 'package:oni_pipeline/storage/json_store.dart';
@@ -16,16 +18,18 @@ import '../support/harness.dart';
 void main() {
   late PipelineController controller;
   late WorkspaceController workspace;
+  late LibraryController library;
   late MemoryJsonStore store;
 
   Future<void> pumpEditor(WidgetTester tester) async {
     await useDesktopSurface(tester);
     store = MemoryJsonStore();
     controller = testController();
+    library = testLibrary();
     workspace = await testWorkspace(controller, store);
     await tester.pumpWidget(harness(EditorScreen(
       controller: controller,
-      library: testLibrary(),
+      library: library,
       workspace: workspace,
       displaySettings: testDisplay(),
     )));
@@ -265,6 +269,8 @@ void main() {
       await openMenu(tester);
       await tester.tap(find.textContaining('START FROM A BUILD'));
       await tester.pump();
+      await tester.ensureVisible(find.text('Hatch ranch'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Hatch ranch'));
       await tester.pumpAndSettle();
 
@@ -331,6 +337,53 @@ void main() {
       final report = formatSolution(controller.solution, testDatabase);
       expect(report, contains('Egg'));
       expect(report, isNot(contains('Egg: 0.00\n')));
+    });
+  });
+
+  group('saving a build as a recipe', () {
+    testWidgets('it lands in the palette and can be placed', (tester) async {
+      await pumpEditor(tester);
+      await openMenu(tester);
+      await tester.tap(find.text('Save as recipe'));
+      await tester.pumpAndSettle();
+
+      expect(textContaining('is in the palette now'), findsOneWidget);
+      final saved = library.customProcesses
+          .firstWhere((s) => s.name == 'Test build');
+      // Water in, and the gases the build does not consume itself out.
+      expect(saved.inputs.map((p) => p.itemId), contains('water'));
+      expect(saved.kind, ProcessKind.custom);
+
+      // And the palette offers it like anything else. The menu is over the
+      // top of it, so search from underneath by asking the palette directly.
+      await tester.enterText(
+          find
+              .descendant(
+                  of: find.byType(PalettePanel),
+                  matching: find.byType(OniField))
+              .first,
+          'Test build');
+      await tester.pump();
+      expect(textLabel('Test build'), findsWidgets);
+    });
+
+    testWidgets('a build with no amount given is refused, with a reason',
+        (tester) async {
+      await pumpEditor(tester);
+      controller.load((PipelineBuilder(testDatabase, name: 'Unscaled')
+            ..addSource('water')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..connectItem('src_water', 'elec', 'water'))
+          .build());
+      await tester.pump();
+
+      await openMenu(tester);
+      await tester.tap(find.text('Save as recipe'));
+      await tester.pumpAndSettle();
+
+      expect(textContaining('Give this build an amount'), findsOneWidget);
+      expect(library.customProcesses.where((s) => s.name == 'Unscaled'),
+          isEmpty);
     });
   });
 }
