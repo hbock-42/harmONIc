@@ -839,6 +839,27 @@ const String oniDataJson = r"""
       "id": "liceloaf",
       "name": "Liceloaf",
       "category": "solid"
+    },
+    {
+      "id": "nosh_bean",
+      "name": "Nosh Bean",
+      "category": "solid"
+    },
+    {
+      "id": "pincha_pepperplant_growth",
+      "name": "Pincha Pepperplant growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "thimble_reed_growth",
+      "name": "Thimble Reed growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
     }
   ],
   "processes": [
@@ -4350,6 +4371,144 @@ const String oniDataJson = r"""
           "item": "calories",
           "direction": "output",
           "rate": 72.0
+        }
+      ]
+    },
+    {
+      "id": "pincha_pepperplant",
+      "name": "Pincha Pepperplant",
+      "kind": "plant",
+      "description": "Peppernuts for the Gas Range: 35 kg/cycle of polluted water and a kilogram of phosphorite for four nuts a cycle once grown. Takes 8 cycles to get there.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 58.333333
+        },
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 1.666667
+        },
+        {
+          "item": "pincha_peppernut",
+          "direction": "output",
+          "rate": 6.666667
+        }
+      ]
+    },
+    {
+      "id": "pincha_pepperplant_grazed",
+      "name": "Pincha Pepperplant (grazed)",
+      "kind": "plant",
+      "description": "Left for a Drecko to graze rather than harvested, so there are no nuts. Growth is published as percentage points of maturity per cycle: this one matures over 8 cycles, so it offers 12.5 % a cycle.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 58.333333
+        },
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 1.666667
+        },
+        {
+          "item": "pincha_pepperplant_growth",
+          "direction": "output",
+          "rate": 0.0208333333
+        }
+      ]
+    },
+    {
+      "id": "thimble_reed",
+      "name": "Thimble Reed",
+      "kind": "plant",
+      "description": "Reed fibre without a Drecko, at the price of 160 kg/cycle of polluted water — the thirstiest plant in the game, and no fertiliser at all.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 266.666667
+        },
+        {
+          "item": "reed_fiber",
+          "direction": "output",
+          "rate": 1.666667
+        }
+      ]
+    },
+    {
+      "id": "thimble_reed_grazed",
+      "name": "Thimble Reed (grazed)",
+      "kind": "plant",
+      "description": "Left for a Pip to graze rather than harvested. Growth is published as percentage points of maturity per cycle: this one matures over 2 cycles, so it offers 50 % a cycle.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 266.666667
+        },
+        {
+          "item": "thimble_reed_growth",
+          "direction": "output",
+          "rate": 0.0833333333
+        }
+      ]
+    },
+    {
+      "id": "nosh_sprout",
+      "name": "Nosh Sprout",
+      "kind": "plant",
+      "description": "Beans out of ethanol: 20 kg/cycle of it, plus 5 kg of dirt, for twelve beans a cycle. Slow to establish, at 21 cycles to maturity.",
+      "footprintWidth": 1,
+      "footprintHeight": 3,
+      "tags": [
+        "farming",
+        "food",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "ethanol",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 8.333333
+        },
+        {
+          "item": "nosh_bean",
+          "direction": "output",
+          "rate": 20.0
         }
       ]
     }

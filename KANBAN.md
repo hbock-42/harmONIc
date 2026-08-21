@@ -56,8 +56,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-34b` The Microbe Musher and Smoker: their pages list what each recipe yields but not
   what goes into it, so there is nothing to model yet. Food *quality* likewise — the model
   has no notion of it, and morale is half the reason anyone cooks
-- `E4-35` The remaining crops: Pincha Pepper, Nosh Bean, Thimble Reed, Sporechid, and the
-  Prehistoric and Aquatic food plants
+- `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
 - `E4-27` Mercury and cinnabar processing
 - `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
   critters, which a flow model cannot express), Gnit and Mimika (produce nothing), and the
@@ -123,6 +122,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-35` **Three more crops** — Pincha Pepperplant, Thimble Reed and Nosh Sprout, each
+  with a grazed twin where a critter eats it. That closes the pepper bread chain: two
+  crops, a Gas Range and a crew, with the field coming out far larger than the pepper patch
 - `E4-34` **Cooking** — the Gas Range, Deep Fryer and Sushi Bar join the Electric Grill,
   so a kitchen can be planned from the crop to the crew, gas burned and Duplicant time
   included. The mass-balance audit caught the Gas Range on the way in, exactly as intended

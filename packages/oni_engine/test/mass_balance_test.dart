@@ -40,6 +40,10 @@ const Map<String, String> expectedImbalance = <String, String>{
   'arbor_tree': 'a tree grows wood out of water, dirt and nothing else',
   'gas_grass': 'likewise, into plant husk',
   'sleet_wheat': 'grain is a fraction of the water poured into it',
+  'pincha_pepperplant': 'four nuts out of 35 kg of polluted water',
+  'thimble_reed': 'one fibre out of 160 kg of water, which is the whole complaint '
+      'about the plant',
+  'nosh_sprout': 'twelve beans out of ethanol and dirt',
 };
 
 void main() {

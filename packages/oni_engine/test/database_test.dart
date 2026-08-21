@@ -475,6 +475,29 @@ void main() {
           closeTo(100 * 20000 / 48000, 1e-3));
     });
 
+    test('the pepper bread chain runs from two crops to a fed crew', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'bakery')
+            ..add('sleet_wheat', nodeId: 'wheat')
+            ..add('pincha_pepperplant', nodeId: 'peppers')
+            ..add('gas_range_pepper_bread', nodeId: 'range')
+            ..add('duplicant', nodeId: 'dupes')
+            ..addSource('natural_gas')
+            ..connectItem('wheat', 'range', 'sleet_wheat_grain')
+            ..connectItem('peppers', 'range', 'pincha_peppernut')
+            ..connectItem('src_natural_gas', 'range', 'natural_gas')
+            ..connectItem('range', 'dupes', 'calories')
+            ..pinCount('dupes', 20))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // Ten grain per nut, and a pepperplant makes four nuts to a wheat's one
+      // grain, so the field is far larger than the pepper patch.
+      expect(solution.nodes['wheat']!.count,
+          greaterThan(solution.nodes['peppers']!.count * 10));
+    });
+
     test('a cooker without a published batch time says so', () {
       for (final id in ['deep_fryer_squash_fries', 'deep_fryer_fish_taco',
           'sushi_bar_sushi_roll']) {
