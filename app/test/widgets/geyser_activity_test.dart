@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/editor_screen.dart';
+import 'package:oni_pipeline/panels/inspector_panel.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 
 import '../support/harness.dart';
@@ -105,6 +106,99 @@ void main() {
     )));
 
     expect(find.text('ALL GEYSERS'), findsNothing);
+  });
+
+  group('a measured percentage', () {
+    Future<PipelineController> selectGeyser(WidgetTester tester) async {
+      final controller = await pumpEditor(tester);
+      controller.select(const NodeSelection('geyser'));
+      await tester.pump();
+      return controller;
+    }
+
+    testWidgets('the field starts on the current assumption', (tester) async {
+      await selectGeyser(tester);
+      expect(
+        tester.widget<EditableText>(find.descendant(
+          of: find.byKey(geyserActivityFieldKey),
+          matching: find.byType(EditableText),
+        )).controller.text,
+        '60',
+      );
+    });
+
+    testWidgets('typing 63 sizes the build on 63 %', (tester) async {
+      final controller = await selectGeyser(tester);
+      await tester.enterText(find.byKey(geyserActivityFieldKey), '63');
+      await tester.pump();
+
+      expect(controller.activityOf(controller.pipeline.nodeOrThrow('geyser')),
+          closeTo(0.63, 1e-9));
+      // 1800 g/s at the typical 60 % becomes 1890 at 63 %.
+      expect(controller.solution.nodes['elec']!.count,
+          closeTo(1890 / 1000, 1e-9));
+    });
+
+    testWidgets('an out-of-range figure is refused, not clamped silently',
+        (tester) async {
+      final controller = await selectGeyser(tester);
+      await tester.enterText(find.byKey(geyserActivityFieldKey), '150');
+      await tester.pump();
+
+      expect(find.text('Between 1 and 100.'), findsOneWidget);
+      expect(controller.activityOf(controller.pipeline.nodeOrThrow('geyser')),
+          closeTo(0.6, 1e-9),
+          reason: 'the previous assumption stands');
+    });
+
+    testWidgets('the effective output is shown alongside', (tester) async {
+      await selectGeyser(tester);
+      expect(textContaining('1.8 kg/s'), findsWidgets);
+
+      await tester.enterText(find.byKey(geyserActivityFieldKey), '40');
+      await tester.pump();
+      expect(textContaining('1.2 kg/s'), findsWidgets,
+          reason: '40 % of a 60 % assumption is two thirds of 1.8 kg/s');
+    });
+
+    testWidgets('a preset updates the field', (tester) async {
+      await selectGeyser(tester);
+      await tester.tap(find.textContaining('Worst'));
+      await tester.pump();
+
+      expect(
+        tester.widget<EditableText>(find.descendant(
+          of: find.byKey(geyserActivityFieldKey),
+          matching: find.byType(EditableText),
+        )).controller.text,
+        '40',
+      );
+    });
+
+    testWidgets('the top-bar control updates the field too', (tester) async {
+      final controller = await selectGeyser(tester);
+      controller.setAllGeyserActivity(0.8);
+      await tester.pump();
+
+      expect(
+        tester.widget<EditableText>(find.descendant(
+          of: find.byKey(geyserActivityFieldKey),
+          matching: find.byType(EditableText),
+        )).controller.text,
+        '80',
+        reason: 'an edit made elsewhere must not leave a stale number here',
+      );
+    });
+
+    testWidgets('a measured figure survives a save and reload', (tester) async {
+      final controller = await selectGeyser(tester);
+      await tester.enterText(find.byKey(geyserActivityFieldKey), '47.5');
+      await tester.pumpAndSettle();
+
+      final restored = Pipeline.fromJson(controller.pipeline.toJson());
+      expect(restored.nodeOrThrow('geyser').outputScale,
+          closeTo(GeyserActivity.scaleFor(0.475), 1e-9));
+    });
   });
 
   testWidgets('the assumption is saved with the pipeline', (tester) async {

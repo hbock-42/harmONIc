@@ -274,17 +274,65 @@ class _NodeInspectorState extends State<_NodeInspector> {
   }
 }
 
-/// How active you assume this particular geyser is. The shipped rate is a
-/// lifetime average at a typical roll; yours is its own thing.
-class _GeyserActivity extends StatelessWidget {
+/// How active you assume this particular geyser is.
+///
+/// The shipped rate is a lifetime average at a typical roll. The presets cover
+/// the band a geyser can land in, and the field takes the exact figure Field
+/// Research reports for yours.
+class _GeyserActivity extends StatefulWidget {
   const _GeyserActivity({required this.controller, required this.node});
 
   final PipelineController controller;
   final PipelineNode node;
 
   @override
+  State<_GeyserActivity> createState() => _GeyserActivityState();
+}
+
+class _GeyserActivityState extends State<_GeyserActivity> {
+  final TextEditingController _percent = TextEditingController();
+
+  /// The last value this widget put into the field, so an edit made elsewhere
+  /// (the top bar's all-geysers control) refreshes it, while typing does not
+  /// fight itself.
+  double? _shown;
+  bool _invalid = false;
+
+  PipelineController get controller => widget.controller;
+
+  @override
+  void dispose() {
+    _percent.dispose();
+    super.dispose();
+  }
+
+  static String _format(double fraction) {
+    final percent = fraction * 100;
+    return percent == percent.roundToDouble()
+        ? percent.toStringAsFixed(0)
+        : percent.toStringAsFixed(1);
+  }
+
+  void _apply(String raw) {
+    final value = double.tryParse(raw.trim());
+    if (value == null || value <= 0 || value > 100) {
+      setState(() => _invalid = raw.trim().isNotEmpty);
+      return;
+    }
+    _shown = value / 100;
+    setState(() => _invalid = false);
+    controller.setNodeActivity(widget.node.id, value / 100);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final active = controller.activityOf(node);
+    final active = controller.activityOf(widget.node);
+    if (_shown == null || (active - _shown!).abs() > 1e-6) {
+      _shown = active;
+      _percent.text = _format(active);
+    }
+    final spec = controller.specOf(widget.node);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -303,10 +351,61 @@ class _GeyserActivity extends StatelessWidget {
                     ? OniButtonTone.accent
                     : OniButtonTone.neutral,
                 onPressed: () =>
-                    controller.setNodeActivity(node.id, entry.value),
+                    controller.setNodeActivity(widget.node.id, entry.value),
               ),
           ],
         ),
+        const SizedBox(height: OniSpacing.sm),
+        Row(
+          children: [
+            SizedBox(
+              width: 84,
+              child: OniField(
+                key: geyserActivityFieldKey,
+                controller: _percent,
+                hint: '60',
+                textAlign: TextAlign.right,
+                onChanged: _apply,
+              ),
+            ),
+            const SizedBox(width: OniSpacing.sm),
+            Expanded(
+              child: Text(
+                _invalid
+                    ? 'Between 1 and 100.'
+                    : '% active, from Field Research',
+                style: OniType.body.copyWith(
+                  fontSize: 11.5,
+                  color: _invalid ? OniColors.danger : OniColors.textMuted,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: OniSpacing.sm),
+        // What that assumption actually buys, so the number is not abstract.
+        for (final port in spec.outputs)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 2),
+            child: Row(
+              children: [
+                Text('→ ', style: OniType.numberSmall),
+                Expanded(
+                  child: Text(
+                    controller.database.item(port.itemId)?.name ?? port.itemId,
+                    style: OniType.numberSmall,
+                  ),
+                ),
+                Text(
+                  (controller.database.item(port.itemId)?.unit ??
+                          Unit.gramsPerSecond)
+                      .format(port.ratePerSecond * widget.node.outputScale,
+                          precision: 1),
+                  style: OniType.numberSmall.copyWith(color: OniColors.text),
+                ),
+              ],
+            ),
+          ),
         const SizedBox(height: OniSpacing.sm),
         Text(
           'A geyser is active 40–80 % of a dormancy cycle, rolled when the '
@@ -319,6 +418,9 @@ class _GeyserActivity extends StatelessWidget {
     );
   }
 }
+
+/// The measured-percentage field, named so tests can drive it directly.
+const Key geyserActivityFieldKey = ValueKey('geyser-activity-percent');
 
 class _PortRow extends StatelessWidget {
   const _PortRow({

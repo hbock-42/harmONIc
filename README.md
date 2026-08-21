@@ -59,8 +59,9 @@ Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 A geyser's shipped rate is a *lifetime* average at a typical roll. The real one in your
 world picked its own numbers when the map was made: it is active between 40 % and 80 % of
 a dormancy cycle that runs 25–225 cycles. Select a geyser and choose worst, typical or
-best to see what your build survives on, or set them all at once from the top bar. A
-Duplicant with Field Research can tell you the real figure.
+best to see what your build survives on, or set them all at once from the top bar. Better
+still, send a Duplicant with Field Research and type the exact percentage in — the panel
+shows what it yields as you type.
 
 ## Your work is kept
 
