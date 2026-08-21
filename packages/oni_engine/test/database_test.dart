@@ -275,6 +275,54 @@ void main() {
       expect(solution.dupeLabourSecondsPerCycle, closeTo(96, 1e-6));
     });
 
+    group('grazing ratios that ONI players already know', () {
+      double plantsPer(String critter, String plant, String growthItem) {
+        final solver = PipelineSolver(db);
+        final pipeline = (PipelineBuilder(db, name: 'pasture')
+              ..add(critter, nodeId: 'herd')
+              ..add(plant, nodeId: 'crop')
+              ..connectItem('crop', 'herd', growthItem)
+              ..pinCount('herd', 1))
+            .build();
+        return solver.solve(pipeline).nodes['crop']!.count;
+      }
+
+      test('four Dreckos live off three Mealwood', () {
+        expect(plantsPer('drecko', 'mealwood', 'mealwood_growth'),
+            closeTo(0.75, 1e-6));
+      });
+
+      test('a Glossy Drecko eats exactly one Mealwood', () {
+        expect(plantsPer('glossy_drecko', 'mealwood', 'mealwood_growth'),
+            closeTo(1, 1e-6));
+      });
+
+      test('a Pip eats four fifths of an Arbor Tree', () {
+        expect(plantsPer('pip', 'arbor_tree', 'arbor_tree_growth'),
+            closeTo(0.8, 1e-6));
+      });
+
+      test('a Flox eats three fifths of a Pikeapple Bush', () {
+        expect(plantsPer('flox', 'pikeapple_bush', 'pikeapple_growth'),
+            closeTo(0.6, 1e-6));
+      });
+
+      test('five Mealwood feed one Duplicant', () {
+        // The oldest number in the game, and it falls out of the model now
+        // that plants publish calories.
+        final solver = PipelineSolver(db);
+        final pipeline = (PipelineBuilder(db, name: 'mess hall')
+              ..add('mealwood', nodeId: 'crop')
+              ..add('duplicant', nodeId: 'dupes')
+              ..connectItem('crop', 'dupes', 'calories')
+              ..pinCount('dupes', 1))
+            .build();
+        final solution = solver.solve(pipeline);
+
+        expect(solution.nodes['crop']!.count, closeTo(5, 1e-2));
+      });
+    });
+
     test('the base-game roster is covered', () {
       for (final id in ['pip', 'pokeshell', 'gassy_moo', 'plug_slug',
           'shove_vole', 'shine_bug']) {

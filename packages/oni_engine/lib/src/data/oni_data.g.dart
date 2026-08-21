@@ -460,14 +460,6 @@ const String oniDataJson = r"""
       "category": "solid"
     },
     {
-      "id": "mealwood",
-      "name": "Mealwood",
-      "category": "solid",
-      "tags": [
-        "plant-matter"
-      ]
-    },
-    {
       "id": "bristle_blossom",
       "name": "Bristle Blossom",
       "category": "solid",
@@ -597,14 +589,6 @@ const String oniDataJson = r"""
     {
       "id": "ice",
       "name": "Ice",
-      "category": "solid",
-      "tags": [
-        "frosty"
-      ]
-    },
-    {
-      "id": "pikeapple",
-      "name": "Pikeapple",
       "category": "solid",
       "tags": [
         "frosty"
@@ -791,6 +775,31 @@ const String oniDataJson = r"""
       "name": "Liquid Chlorine",
       "category": "liquid",
       "tags": []
+    },
+    {
+      "id": "mealwood_growth",
+      "name": "Mealwood growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "arbor_tree_growth",
+      "name": "Arbor Tree growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "pikeapple_growth",
+      "name": "Pikeapple growth",
+      "category": "other",
+      "tags": [
+        "growth",
+        "frosty"
+      ]
     }
   ],
   "processes": [
@@ -2545,7 +2554,7 @@ const String oniDataJson = r"""
       "id": "drecko",
       "name": "Drecko",
       "kind": "critter",
-      "description": "Sheared for 2 kg of reed fibre about every 8 cycles, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner. Shearing adds 1.5 s a cycle on top: 12 s every 8 cycles.",
+      "description": "Grazes 25 % of a plant’s maturity a cycle, which is three quarters of a domesticated Mealwood — so four Dreckos live off three plants. Sheared for 2 kg of reed fibre about every 8 cycles, averaged here.",
       "tags": [
         "ranching",
         "verified"
@@ -2557,14 +2566,14 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
+          "item": "mealwood_growth",
+          "direction": "input",
+          "rate": 0.0416666667
+        },
+        {
           "item": "shearing",
           "direction": "input",
           "rate": 1
-        },
-        {
-          "item": "mealwood",
-          "direction": "input",
-          "rate": 16.6667
         },
         {
           "item": "reed_fiber",
@@ -2588,7 +2597,7 @@ const String oniDataJson = r"""
       "id": "glossy_drecko",
       "name": "Glossy Drecko",
       "kind": "critter",
-      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Groomed: one egg every 9 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 150-cycle life, spread across that life — cull sooner and you get it sooner. Shearing adds 4 s a cycle on top: 12 s every 3 cycles.",
+      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Grazes 33.3 % of a plant’s maturity a cycle, which is exactly one domesticated Mealwood each.",
       "tags": [
         "ranching",
         "verified"
@@ -2600,14 +2609,14 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
+          "item": "mealwood_growth",
+          "direction": "input",
+          "rate": 0.0555555556
+        },
+        {
           "item": "shearing",
           "direction": "input",
           "rate": 1
-        },
-        {
-          "item": "mealwood",
-          "direction": "input",
-          "rate": 15.0
         },
         {
           "item": "plastic",
@@ -2800,11 +2809,11 @@ const String oniDataJson = r"""
       "id": "pip",
       "name": "Pip",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: a Pip eats about 20 kg/cycle of Arbor Tree or Thimble Reed — modelled here as lumber — and excretes dirt. The 50 % conversion is not stated for this critter; it is the ratio the game uses for the ones that do publish it, so treat the output as an estimate and correct it with + Recipe if you measure otherwise. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
+      "description": "Grazes 8.89 % of a plant’s maturity a cycle, which is four fifths of a domesticated Arbor Tree. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
@@ -2813,9 +2822,9 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
-          "item": "lumber",
+          "item": "arbor_tree_growth",
           "direction": "input",
-          "rate": 33.333333
+          "rate": 0.0148148148
         },
         {
           "item": "dirt",
@@ -3266,12 +3275,12 @@ const String oniDataJson = r"""
       "id": "flox",
       "name": "Flox",
       "kind": "critter",
-      "description": "UNVERIFIED INPUT: wood from a critter. Shear its antlers for 360 kg every 6 cycles, which averages 60 kg/cycle, plus 5 kg/cycle of dirt. It eats 160 kcal/cycle of pikeapple or bristle berries, which the wiki does not put in kilograms, so the 2 kg/cycle here is a placeholder.",
+      "description": "Wood from a critter: shear its antlers for 360 kg every 6 cycles, which averages 60 kg/cycle, plus 5 kg/cycle of dirt. Grazes 20 % of a plant’s maturity a cycle — three fifths of a domesticated Pikeapple Bush.",
       "dupeLabourSecondsPerCycle": 14.0,
       "tags": [
         "ranching",
         "frosty",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
@@ -3280,14 +3289,14 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
+          "item": "pikeapple_growth",
+          "direction": "input",
+          "rate": 0.0333333333
+        },
+        {
           "item": "shearing",
           "direction": "input",
           "rate": 1
-        },
-        {
-          "item": "pikeapple",
-          "direction": "input",
-          "rate": 3.333333
         },
         {
           "item": "dirt",
@@ -3746,6 +3755,99 @@ const String oniDataJson = r"""
           "item": "gas_grass_growth",
           "direction": "output",
           "rate": 0.0416666667
+        }
+      ]
+    },
+    {
+      "id": "mealwood",
+      "name": "Mealwood",
+      "kind": "plant",
+      "description": "The starter crop: no irrigation, 10 kg/cycle of dirt, and 200 kcal a cycle once it is being harvested on schedule — five of them keep one Duplicant fed. Growth is published as percentage points of maturity per cycle: this one matures over 3 cycles, so it offers 33.3333 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 16.666667
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.3333333333333333
+        },
+        {
+          "item": "mealwood_growth",
+          "direction": "output",
+          "rate": 0.0555555556
+        }
+      ]
+    },
+    {
+      "id": "arbor_tree",
+      "name": "Arbor Tree",
+      "kind": "plant",
+      "description": "Wood, and the polluted water to grow it: 70 kg/cycle of irrigation and 10 kg/cycle of dirt for 333 kg/cycle of lumber once mature. Growth is published as percentage points of maturity per cycle: this one matures over 9 cycles, so it offers 11.1111 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 3,
+      "footprintHeight": 4,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 116.666667
+        },
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 16.666667
+        },
+        {
+          "item": "lumber",
+          "direction": "output",
+          "rate": 555.55
+        },
+        {
+          "item": "arbor_tree_growth",
+          "direction": "output",
+          "rate": 0.0185185185
+        }
+      ]
+    },
+    {
+      "id": "pikeapple_bush",
+      "name": "Pikeapple Bush",
+      "kind": "plant",
+      "description": "Frosty Planet Pack food: 5 kg/cycle of phosphorite for 266 kcal a cycle. No irrigation. Growth is published as percentage points of maturity per cycle: this one matures over 3 cycles, so it offers 33.3333 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 8.333333
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.4444333333333334
+        },
+        {
+          "item": "pikeapple_growth",
+          "direction": "output",
+          "rate": 0.0555555556
         }
       ]
     }

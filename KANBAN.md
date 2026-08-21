@@ -54,10 +54,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
   cannot toggle from one, because a click there selects the edge
 - `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
   Tublia as domesticated ones, purely because wild plants ripen slower
-- `E4-29` **Extend growth links to the remaining grazers** — Pip on Arbor Tree, Flox on
-  Pikeapple, Drecko on Mealwood, Bammoth on Plume Squash. Each needs its plant seeded and
-  its growth percentage found; until then those diets are modelled in kilograms of a
-  stand-in item, which is the weakest data in the database,
+- `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop — both need
+  the plant seeded first
+- `E4-33` More food plants and the food chain proper: Bristle Blossom, Sleet Wheat, the
+  cooking buildings. Mealwood and Pikeapple publish calories, so the chain to a Duplicant
+  already works and wants extending,
   Plug Slug, and the Frosty/Prehistoric pack critters
 - `E4-22` The Grooming Station's power draw, if it is ever published — modelled as zero
   today, which under-reports the grid
@@ -78,10 +79,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
   cannot toggle from one, because a click there selects the edge
 - `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
   Tublia as domesticated ones, purely because wild plants ripen slower
-- `E4-29` **Extend growth links to the remaining grazers** — Pip on Arbor Tree, Flox on
-  Pikeapple, Drecko on Mealwood, Bammoth on Plume Squash. Each needs its plant seeded and
-  its growth percentage found; until then those diets are modelled in kilograms of a
-  stand-in item, which is the weakest data in the database
+- `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop — both need
+  the plant seeded first
+- `E4-33` More food plants and the food chain proper: Bristle Blossom, Sleet Wheat, the
+  cooking buildings. Mealwood and Pikeapple publish calories, so the chain to a Duplicant
+  already works and wants extending
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
 - `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
@@ -132,6 +134,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-29` **The remaining grazers, properly** — Mealwood, Arbor Tree and Pikeapple Bush
+  seeded, and Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real
+  growth links. The ratios ONI players already know now fall out of the model rather than
+  being asserted: four Dreckos to three Mealwood, one Glossy Drecko to one, and five
+  Mealwood to feed a Duplicant
 - `E10-7` **Per-second ⇄ per-cycle** — click any rate, or the top-bar button, and every
   rate in the app switches together: mass to kg/cycle, power to the kJ a cycle delivers,
   and a trickle like one egg every six cycles to a number a person can picture. Capacities
