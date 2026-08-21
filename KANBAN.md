@@ -151,6 +151,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-3` **Nodes away from the origin can be clicked** — the node layer was laid out at
+  the size of the window, so anything at negative coordinates or beyond the window's width
+  in world units was painted but never hit-tested. Flutter paints outside a box when told
+  to and never hit-tests outside one, and `OverflowBox` fixes only the first half of that
 - `E12-2` **Zoom that can be found** — a trackpad pinch did nothing at all, and the only
   way to zoom was ⌘-scroll, which nothing announced. Pinching works, ⌘= / ⌘− / ⌘0 work, and
   there are buttons on the canvas showing the current percentage

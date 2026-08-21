@@ -11,6 +11,7 @@ import '../state/pipeline_controller.dart';
 import 'edge_painter.dart';
 import 'geometry.dart';
 import 'node_widget.dart';
+import 'unbounded_layer.dart';
 import 'port_menu.dart';
 
 /// The pan/zoom graph editor.
@@ -35,6 +36,15 @@ class GraphCanvas extends StatefulWidget {
 class GraphCanvasState extends State<GraphCanvas> {
   static const double minScale = 0.25;
   static const double maxScale = 2.5;
+
+  /// How much world the node layer covers, centred on the origin.
+  ///
+  /// It has to be a real box rather than an unbounded one: Flutter paints
+  /// outside a box when told to, but never *hit-tests* outside it, so a node
+  /// sitting beyond these bounds would be visible and unclickable. Half a world
+  /// either way is far more than any build needs and costs nothing to lay out.
+  static const double canvasExtent = 40000;
+  static const double canvasHalf = canvasExtent / 2;
 
   final GlobalKey _viewportKey = GlobalKey();
 
@@ -376,14 +386,24 @@ class GraphCanvasState extends State<GraphCanvas> {
                   transform: Matrix4.identity()
                     ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
                     ..scaleByDouble(_scale, _scale, 1, 1),
+                  // The node layer is a large, real box shifted so that world
+                  // (0, 0) sits at its middle. Everything inside is placed at
+                  // world + canvasHalf, which cancels the shift, so screen and
+                  // world coordinates still line up exactly as before.
+                  child: UnboundedLayer(
+                  child: Transform.translate(
+                  offset: const Offset(-canvasHalf, -canvasHalf),
+                  child: SizedBox(
+                  width: canvasExtent,
+                  height: canvasExtent,
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
                       // Sized zero, but a painter may draw anywhere; this keeps
                       // the wires in the same world space as the nodes.
                       Positioned(
-                        left: 0,
-                        top: 0,
+                        left: canvasHalf,
+                        top: canvasHalf,
                         child: CustomPaint(
                           size: Size.zero,
                           painter: EdgePainter(
@@ -407,8 +427,8 @@ class GraphCanvasState extends State<GraphCanvas> {
                         // cannot be drawn. The problems banner says so.
                         if (controller.specFor(node) != null)
                         Positioned(
-                          left: node.x,
-                          top: node.y,
+                          left: node.x + canvasHalf,
+                          top: node.y + canvasHalf,
                           child: _DraggableNode(
                             node: node,
                             controller: controller,
@@ -427,6 +447,9 @@ class GraphCanvasState extends State<GraphCanvas> {
                         ),
                       ?_marquee(),
                     ],
+                  ),
+                  ),
+                  ),
                   ),
                 ),
               ),
@@ -499,8 +522,8 @@ class GraphCanvasState extends State<GraphCanvas> {
     if (from == null || to == null) return null;
     final rect = Rect.fromPoints(from, to);
     return Positioned(
-      left: rect.left,
-      top: rect.top,
+      left: rect.left + canvasHalf,
+      top: rect.top + canvasHalf,
       width: rect.width,
       height: rect.height,
       child: DecoratedBox(
