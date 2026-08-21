@@ -36,7 +36,46 @@ void main() {
     final repair = repairPipeline(fine, db);
     expect(repair.changed, isFalse);
     expect(repair.notes, isEmpty);
-    expect(identical(repair.pipeline, fine), isTrue);
+    expect(repair.pipeline.nodes, fine.nodes);
+    expect(repair.pipeline.edges, fine.edges);
+    expect(repair.pipeline.pins, fine.pins);
+
+    // The one thing it does add is the recipe snapshot, so that next time the
+    // build is opened there is something to compare the rates against.
+    expect(repair.pipeline.recipeSnapshot.keys, contains('electrolyzer'));
+
+    // And once it has one, nothing is touched at all.
+    expect(identical(repairPipeline(repair.pipeline, db).pipeline,
+        repair.pipeline), isTrue);
+  });
+
+  test('a corrected recipe is reported, not applied in silence', () {
+    final saved = (PipelineBuilder(db, name: 'bathroom')
+          ..add('deodorizer', nodeId: 'deo')
+          ..pinCount('deo', 4))
+        .build();
+
+    // The Deodorizer's sand was wrong for a long time: 5 g/s where the game
+    // uses 133 g/s. A build saved against the old figure needs 27 times the
+    // sand once it is opened again, and must say so.
+    final stale = saved.copyWith(recipeSnapshot: {
+      'deodorizer': {
+        for (final port in db.processOrThrow('deodorizer').ports)
+          port.id: port.itemId == 'sand' ? 5.0 : port.ratePerSecond,
+      },
+    });
+
+    final repair = repairPipeline(stale, db);
+    expect(repair.changed, isTrue);
+    expect(repair.notes.single, contains('Sand'));
+    expect(repair.notes.single, contains('not 5'));
+    expect(repair.notes.single, contains('takes'));
+
+    // Nothing about the build itself moved.
+    expect(repair.pipeline.nodes, stale.nodes);
+    expect(repair.pipeline.pins, stale.pins);
+    // And it is only said once: the snapshot is brought up to date.
+    expect(repairPipeline(repair.pipeline, db).notes, isEmpty);
   });
 
   group('a port that moved to another process', () {

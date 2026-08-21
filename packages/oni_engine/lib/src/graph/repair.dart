@@ -1,4 +1,5 @@
 import '../model/game_database.dart';
+import '../model/units.dart';
 import '../model/process_spec.dart';
 import 'pin.dart';
 import 'pipeline.dart';
@@ -113,11 +114,65 @@ PipelineRepair repairPipeline(Pipeline pipeline, GameDatabase database) {
     pins.add(pin);
   }
 
-  if (notes.isEmpty) return PipelineRepair(pipeline, const []);
+  // 5. Recipes that were corrected while this build sat in a file. Nothing
+  //    about the graph is wrong, but every number in it has moved, and a build
+  //    that reports different figures than it did last week without saying why
+  //    is worse than one that refuses to open.
+  final used = {for (final node in nodes) node.specId};
+  for (final specId in used.toList()..sort()) {
+    final was = pipeline.recipeSnapshot[specId];
+    final spec = database.process(specId);
+    if (was == null || spec == null) continue;
+    for (final port in spec.ports) {
+      final before = was[port.id];
+      if (before == null) continue;
+      if ((before - port.ratePerSecond).abs() <= 1e-9) continue;
+      final item = database.item(port.itemId);
+      final unit = item?.unit ?? Unit.gramsPerSecond;
+      notes.add('${spec.name} now ${port.isInput ? 'takes' : 'makes'} '
+          '${unit.format(port.ratePerSecond)} of '
+          '${item?.name ?? port.itemId}, not ${unit.format(before)}. '
+          'The recipe was corrected since you saved this, so the amounts in '
+          'this build have moved with it.');
+    }
+  }
+
+  final refreshed = recipeSnapshot(nodes, database);
+  if (notes.isEmpty) {
+    // Still worth writing the snapshot back: a build saved before the app kept
+    // one has nothing to compare against, and never would.
+    return PipelineRepair(
+      pipeline.recipeSnapshot.isEmpty
+          ? pipeline.copyWith(recipeSnapshot: refreshed)
+          : pipeline,
+      const [],
+    );
+  }
   return PipelineRepair(
-    pipeline.copyWith(nodes: nodes, edges: edges, pins: pins),
+    pipeline.copyWith(
+      nodes: nodes,
+      edges: edges,
+      pins: pins,
+      recipeSnapshot: refreshed,
+    ),
     notes,
   );
+}
+
+/// The rates these nodes' recipes have right now, ready to be saved with them.
+Map<String, Map<String, double>> recipeSnapshot(
+  Iterable<PipelineNode> nodes,
+  GameDatabase database,
+) {
+  final snapshot = <String, Map<String, double>>{};
+  for (final node in nodes) {
+    final spec = database.process(node.specId);
+    if (spec == null || snapshot.containsKey(spec.id)) continue;
+    snapshot[spec.id] = {
+      for (final port in spec.ports) port.id: port.ratePerSecond,
+    };
+  }
+  return snapshot;
 }
 
 /// A process closely related to [spec] that still has every port in [used].

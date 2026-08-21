@@ -77,8 +77,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E5-4` Export to a file, for archiving rather than pasting — wants a file-picker
   dependency nothing else has needed
-- `E5-6` Repair should say when a *rate* changed under a build, not only a port or a
-  process: a corrected recipe silently changes what a saved build reports
 
 ### 🚧 In Progress
 
@@ -120,6 +118,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E5-6` **Corrected recipes are named** — a saved build now carries the rates its recipes
+  had when it was written, so opening it after a correction says which figure moved instead
+  of quietly reporting different numbers. Share codes carry it too
 - `E7-x` **Sugiyama's missing phase** — edges that skip a column are now broken into dummy
   vertices before the barycentre sweeps, and each sweep is scored by counting the crossings
   it leaves rather than assumed to help. On a fixed 364-graph corpus: 209 crossings before,

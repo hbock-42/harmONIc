@@ -114,6 +114,61 @@ void main() {
     expect(textContaining('recipes changed since this was drawn'), findsNothing);
   });
 
+  testWidgets('a corrected rate is named, and the build reports the new one',
+      (tester) async {
+    await useDesktopSurface(tester);
+    // Saved when the Deodorizer was believed to take 5 g/s of sand rather than
+    // the 133 g/s it really takes — the longest-lived wrong number this app
+    // has shipped, and exactly the kind that changes every figure in a build.
+    final saved = <String, dynamic>{
+      'schemaVersion': 1,
+      'lastOpenedId': 'loo',
+      'pipelines': [
+        {
+          'schemaVersion': 1,
+          'id': 'loo',
+          'name': 'Loo',
+          'nodes': [
+            {'id': 'deo', 'specId': 'deodorizer', 'x': 0.0, 'y': 0.0},
+          ],
+          'edges': <dynamic>[],
+          'pins': [
+            {'type': 'buildingCount', 'nodeId': 'deo', 'count': 4.0},
+          ],
+          'recipes': {
+            'deodorizer': {
+              for (final port in testDatabase.processOrThrow('deodorizer').ports)
+                port.id: port.itemId == 'sand' ? 5.0 : port.ratePerSecond,
+            },
+          },
+        },
+      ],
+    };
+
+    final controller = PipelineController(testDatabase);
+    final workspace = WorkspaceController(
+      store: MemoryJsonStore(saved),
+      controller: controller,
+      debounce: Duration.zero,
+    );
+    addTearDown(workspace.dispose);
+    await workspace.load();
+
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: workspace,
+      displaySettings: testDisplay(),
+    )));
+    await tester.pump();
+
+    expect(textContaining('recipes changed since this was drawn'),
+        findsOneWidget);
+    expect(textContaining('not 5'), findsOneWidget);
+    // The build itself is untouched: four Deodorizers, as drawn.
+    expect(controller.solution.nodes['deo']!.count, 4);
+  });
+
   testWidgets('the repair is written back, so it is not repeated every start',
       (tester) async {
     await useDesktopSurface(tester);

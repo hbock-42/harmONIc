@@ -211,6 +211,7 @@ class Pipeline {
     List<Pin> pins = const [],
     this.schemaVersion = 1,
     this.dataVersion,
+    this.recipeSnapshot = const {},
   })  : nodes = List.unmodifiable(nodes),
         edges = List.unmodifiable(edges),
         pins = List.unmodifiable(pins);
@@ -232,6 +233,14 @@ class Pipeline {
           for (final raw in (json['pins'] as List<dynamic>? ?? const []))
             Pin.fromJson(raw as Map<String, dynamic>),
         ],
+        recipeSnapshot: {
+          for (final entry
+              in (json['recipes'] as Map<String, dynamic>? ?? const {}).entries)
+            entry.key: {
+              for (final port in (entry.value as Map<String, dynamic>).entries)
+                port.key: (port.value as num).toDouble(),
+            },
+        },
       );
 
   factory Pipeline.fromJsonString(String source) =>
@@ -243,6 +252,15 @@ class Pipeline {
   final List<PipelineEdge> edges;
   final List<Pin> pins;
   final int schemaVersion;
+
+  /// The rates the recipes had when this was saved: process id → port id →
+  /// grams (or units) per second.
+  ///
+  /// A build outlives its data. When a recipe is corrected — and they are, more
+  /// often than anyone would like — every number in a saved build changes with
+  /// it, silently, and the file looks exactly as it did. This is what lets the
+  /// app say which figure moved rather than leaving you to notice.
+  final Map<String, Map<String, double>> recipeSnapshot;
 
   /// Which game-data version this pipeline was built against.
   final String? dataVersion;
@@ -288,6 +306,7 @@ class Pipeline {
     List<PipelineEdge>? edges,
     List<Pin>? pins,
     String? dataVersion,
+    Map<String, Map<String, double>>? recipeSnapshot,
   }) =>
       Pipeline(
         id: id,
@@ -297,6 +316,7 @@ class Pipeline {
         pins: pins ?? this.pins,
         schemaVersion: schemaVersion,
         dataVersion: dataVersion ?? this.dataVersion,
+        recipeSnapshot: recipeSnapshot ?? this.recipeSnapshot,
       );
 
   /// Replaces every pin with a single one.
@@ -333,5 +353,6 @@ class Pipeline {
         'nodes': [for (final n in nodes) n.toJson()],
         'edges': [for (final e in edges) e.toJson()],
         'pins': [for (final p in pins) p.toJson()],
+        if (recipeSnapshot.isNotEmpty) 'recipes': recipeSnapshot,
       };
 }

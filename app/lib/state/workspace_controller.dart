@@ -229,7 +229,13 @@ class WorkspaceController extends ChangeNotifier {
     _timer?.cancel();
     _timer = null;
     if (!_loaded) return;
-    final current = _controller.pipeline;
+    // Written with the rates its recipes have right now, so that if one of
+    // them is corrected before this build is opened again, the app can say
+    // which figure moved instead of quietly reporting different numbers.
+    final current = _controller.pipeline.copyWith(
+      recipeSnapshot:
+          recipeSnapshot(_controller.pipeline.nodes, _controller.database),
+    );
     _pipelines[current.id] = current;
     _currentId = current.id;
     await _persist();
