@@ -697,6 +697,71 @@ const String oniDataJson = r"""
       "tags": [
         "prehistoric"
       ]
+    },
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "nori",
+      "name": "Nori",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "slogo_molt",
+      "name": "Slogo Molt",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "gildgo_molt",
+      "name": "Gildgo Molt",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "calamari",
+      "name": "Calamari",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "pearl",
+      "name": "Pearl",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "tublia_frond",
+      "name": "Tublia Frond",
+      "category": "solid",
+      "tags": [
+        "aquatic",
+        "plant-matter"
+      ]
+    },
+    {
+      "id": "milking",
+      "name": "Milking",
+      "category": "other",
+      "tags": [
+        "service"
+      ]
     }
   ],
   "processes": [
@@ -3238,6 +3303,332 @@ const String oniDataJson = r"""
           "item": "meat",
           "direction": "output",
           "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "beakon",
+      "name": "Beakon",
+      "kind": "critter",
+      "description": "UNVERIFIED OUTPUT: eats 10 kg/cycle, half phosphorite and half Starnacle, and excretes lime — which it will fertilise a Flue Coral with if you let it. The wiki does not give the lime rate, so the 50 % here follows the ratio the documented critters use. Lays every 1.5 cycles when groomed, across a short 25-cycle life.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 16.666667
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 8.333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.041667
+        }
+      ]
+    },
+    {
+      "id": "slogo",
+      "name": "Slogo",
+      "kind": "critter",
+      "description": "UNVERIFIED: 100 kg/cycle of salt becomes 50 kg/cycle of dirt. The 10 kg of molt only appears if it is happy and fed, and the 30 kg of mucin only while it is below full moisture, so both are best cases rather than steady rates.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "salt",
+          "direction": "input",
+          "rate": 166.666667
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 83.333333
+        },
+        {
+          "item": "slogo_molt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "mucin",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ]
+    },
+    {
+      "id": "gildgo",
+      "name": "Gildgo",
+      "kind": "critter",
+      "description": "UNVERIFIED: the sulfur-eating Slogo, turning 100 kg/cycle into 50 kg/cycle of obsidian. Molt and mucin carry the same caveats as its salt-eating sibling: happy-and-fed, and thirsty, respectively.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 166.666667
+        },
+        {
+          "item": "obsidian",
+          "direction": "output",
+          "rate": 83.333333
+        },
+        {
+          "item": "gildgo_molt",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "mucin",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.001111
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ]
+    },
+    {
+      "id": "orehull",
+      "name": "Orehull",
+      "kind": "critter",
+      "description": "UNVERIFIED: iron ore from a critter. Eats 20 kg/cycle of nori — or two kelpoles — and excretes 50 kg/cycle of polluted mud; shearing a full-grown one yields 250 kg/cycle of iron ore, which is the reason to keep them.",
+      "dupeLabourSecondsPerCycle": 24.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "shearing",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "nori",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "polluted_mud",
+          "direction": "output",
+          "rate": 83.333333
+        },
+        {
+          "item": "iron_ore",
+          "direction": "output",
+          "rate": 416.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "raw_shellfish",
+          "direction": "output",
+          "rate": 0.0625
+        }
+      ]
+    },
+    {
+      "id": "glo_squid",
+      "name": "Glo Squid",
+      "kind": "critter",
+      "description": "UNVERIFIED: eats 20 kg/cycle of Tublia and excretes abyssalite, at the 50 % ratio the documented critters use rather than a published figure. Milking gives 200 kg/cycle of squid ink. Each one needs two domestic Tublia, which is 60 kg/cycle of polluted brine and 40 kg of sulfur to keep fed.",
+      "dupeLabourSecondsPerCycle": 24.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "milking",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "tublia_frond",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "abyssalite",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "squid_ink",
+          "direction": "output",
+          "rate": 333.333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "calamari",
+          "direction": "output",
+          "rate": 0.1
+        }
+      ]
+    },
+    {
+      "id": "seaquine",
+      "name": "Seaquine",
+      "kind": "critter",
+      "description": "UNVERIFIED OUTPUT: the only source of ovolene, through an Aquatic Milking Station — but the wiki gives no rate for it, so that output is missing here and only the 12 kg/cycle of carbon dioxide is modelled. Milking also halves its breeding, which this model has no way to show.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "milking",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "pearl",
+          "direction": "input",
+          "rate": 5.166667
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.010417
+        }
+      ]
+    },
+    {
+      "id": "kelpole",
+      "name": "Kelpole",
+      "kind": "critter",
+      "description": "UNVERIFIED: eats nothing at all and yields 10 kg of nori when harvested, spread here across a five-cycle life. Tower Kelp grows them, and Orehulls eat them, so it is the link between the two rather than something you ranch for itself.",
+      "dupeLabourSecondsPerCycle": 0.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "nori",
+          "direction": "output",
+          "rate": 3.333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000333
+        }
+      ]
+    },
+    {
+      "id": "aquatic_milking_station",
+      "name": "Aquatic Milking Station",
+      "kind": "building",
+      "description": "UNVERIFIED: the wiki publishes neither a power draw nor a capacity for this, so it draws nothing here and serves eight, matching the other ranching stations. The Duplicant time is booked on the critters.",
+      "tags": [
+        "ranching",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "milking",
+          "direction": "output",
+          "rate": 8
         }
       ]
     }

@@ -12,10 +12,12 @@ void main() {
         store: store ?? MemoryJsonStore(),
       );
 
-  /// The motivating case: a critter the wiki has not documented.
+  /// The motivating case: something the app has never heard of. Deliberately
+  /// fictional — every real critter we used as an example here eventually got
+  /// added to the bundled data and broke this test.
   ProcessSpec beakon() => ProcessSpec(
-        id: 'beakon',
-        name: 'Beakon',
+        id: 'nightshade_grub',
+        name: 'Nightshade Grub',
         kind: ProcessKind.critter,
         tags: const {'custom', 'unverified'},
         description: 'UNVERIFIED: measured in game.',
@@ -45,9 +47,9 @@ void main() {
     final lib = library();
     await lib.save(beakon());
 
-    expect(lib.database.process('beakon'), isNotNull);
-    expect(lib.isCustom('beakon'), isTrue);
-    expect(lib.isOverride('beakon'), isFalse);
+    expect(lib.database.process('nightshade_grub'), isNotNull);
+    expect(lib.isCustom('nightshade_grub'), isTrue);
+    expect(lib.isOverride('nightshade_grub'), isFalse);
   });
 
   test('saving notifies, so the canvas re-solves', () async {
@@ -154,8 +156,8 @@ void main() {
       final reopened = library(store);
       await reopened.load();
 
-      expect(reopened.database.process('beakon'), isNotNull);
-      expect(reopened.isCustom('beakon'), isTrue);
+      expect(reopened.database.process('nightshade_grub'), isNotNull);
+      expect(reopened.isCustom('nightshade_grub'), isTrue);
     });
 
     test('a corrupt file does not stop the app starting', () async {

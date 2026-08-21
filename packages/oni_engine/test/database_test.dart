@@ -376,6 +376,56 @@ void main() {
       expect(turbine.inputs.where((p) => p.itemId != 'power'), isEmpty);
     });
 
+    test('every critter in the pack is present', () {
+      for (final id in ['blowter', 'beakon', 'slogo', 'gildgo', 'orehull',
+          'glo_squid', 'seaquine', 'kelpole']) {
+        expect(db.process(id), isNotNull, reason: 'missing critter "$id"');
+        expect(db.processOrThrow(id).kind, ProcessKind.critter);
+      }
+    });
+
+    test('a Beakon fertilises the coral that feeds on lime', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'reef')
+            ..add('beakon', nodeId: 'beakons')
+            ..add('flue_coral', nodeId: 'coral')
+            ..connectItem('beakons', 'coral', 'lime')
+            ..pinCount('beakons', 4))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // Four Beakons make 20 kg/cycle of lime; a coral wants 5 kg/cycle.
+      expect(solution.nodes['coral']!.count, closeTo(4 * 5 / 5, 1e-3));
+    });
+
+    test('an Orehull is sheared as well as groomed', () {
+      final orehull = db.processOrThrow('orehull');
+      expect(orehull.inputs.map((p) => p.itemId), contains('shearing'));
+      expect(orehull.dupeLabourSecondsPerCycle, 24);
+      expect(
+        orehull.outputs.firstWhere((p) => p.itemId == 'iron_ore').ratePerSecond,
+        closeTo(250000 / secondsPerCycle, 1e-3),
+      );
+    });
+
+    test('a milked critter sizes its own milking station', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'squid')
+            ..add('glo_squid', nodeId: 'squids')
+            ..add('aquatic_milking_station', nodeId: 'station')
+            ..connectItem('station', 'squids', 'milking')
+            ..pinCount('squids', 12))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.nodes['station']!.count, closeTo(12 / 8, 1e-9));
+    });
+
+    test('a Kelpole costs no grooming time, having none to give', () {
+      expect(db.processOrThrow('kelpole').dupeLabourSecondsPerCycle, 0);
+    });
+
     test('Flue Coral is present and makes oxygen', () {
       final coral = db.processOrThrow('flue_coral');
       expect(coral.kind, ProcessKind.plant);

@@ -35,11 +35,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E5-3` Export/import a pipeline as a file or a link, to share a build
 - `E6-6` Tabs, so two pipelines can be compared side by side
 - `E4-3..7` Widen the seed data (food and cooking, ranching, the remaining generators)
-- `E4-9` **Still blocked on wiki stubs, not on us.** Plants: 5 of 12 seeded; Sodicane
-  (no quantified yield), Bulbloom (decor only), Mussel Sprout (non-renewable), Clampum,
-  Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Aquatic critters: only
-  Blowter is seeded — Beakon, Slogo, Gildgo, Seaquine, Orehull, Kelpole and Glo Squid
-  list *what* they eat and make but not *how much*. Ranching/food buildings likewise
+- `E4-9` Aquatic plants: 5 of 12 seeded. Sodicane (no quantified yield), Bulbloom (decor
+  only), Mussel Sprout (non-renewable), Clampum, Pinpoket, Petta Pouf and Husha Cups have
+  no usable numbers on their pages. Worth re-checking each individually rather than
+  trusting the summary tables — that mistake cost us the whole critter roster once
+- `E4-28` Seaquine's ovolene rate and the food buildings (Sushi Bar, Deep Fryer, Smoker)
 - `E4-23` Critters the wiki cannot yet support: Beeta (uranium rates unpublished, and a
   5-cycle lifespan the model would misrepresent), Sweetle and Grubgrub
 - `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats
@@ -116,6 +116,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-9b` **The Aquatic critter roster, complete** — Beakon, Slogo, Gildgo, Orehull,
+  Glo Squid, Seaquine and Kelpole join Blowter. Their individual pages carry rates even
+  though the summary table does not, which is how they came to be wrongly written off.
+  Brings in a `milking` service link alongside grooming and shearing
 - `E4-24` **The Frosty and Prehistoric Planet Packs** — 21 new elements, the Peat Burner,
   the Ice Liquefier, the Wood Heater, Alveo Vera, and five critters. Notable: the Spigot
   Seal makes ethanol without a distiller, the Blum Lumb is two Duplicants' worth of oxygen
