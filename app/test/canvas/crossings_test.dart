@@ -96,20 +96,29 @@ void main() {
   });
 
   test('crossings over a corpus of graphs stay where they were put', () {
-    // A fixed pseudo-random corpus of buildings wired by whatever they happen
-    // to share. The absolute number means nothing on its own; it is a ratchet.
-    // Without dummy vertices for edges that skip a column — Sugiyama's third
-    // phase, which this had been missing — the same corpus scores 237. If a
-    // change to the layout pushes it back up, that is the change making
-    // pictures worse, and this is where it gets caught.
+    // A pseudo-random corpus of graphs, scored for crossings. The absolute
+    // number means nothing on its own; it is a ratchet, and what it watches is
+    // the layout. Without dummy vertices for edges that skip a column —
+    // Sugiyama's third phase, which this had been missing — the same corpus
+    // scores worse, and this is where a change that makes pictures worse gets
+    // caught: 2 649 crossings without them against 2 248 with.
     //
-    // The corpus is generated, so it moves when the database does: 364 graphs
-    // before material classes, 512 with them, and 460 once ports that named one
-    // material were widened to the class they belong to. Both numbers are
-    // re-measured against both layouts each time rather than scaled.
-    final specs = testDatabase.processes
-        .where((s) => s.kind != ProcessKind.source && s.kind != ProcessKind.sink)
-        .toList();
+    // The cast is written out rather than taken from the database, because a
+    // corpus drawn from "everything there is" moves every time the database
+    // grows: it went 364 graphs, then 512, then 460, then 594 across four
+    // unrelated data commits, and each time both figures had to be measured
+    // again to mean anything. These twenty recipes are enough to tangle, and
+    // they hold still. A name disappearing from the database fails this test,
+    // which is the right way round.
+    const cast = <String>[
+      'electrolyzer', 'hydrogen_generator', 'coal_generator', 'water_sieve',
+      'deodorizer', 'algae_distiller', 'oxygen_diffuser', 'carbon_skimmer',
+      'metal_refinery', 'rock_crusher_sand', 'oil_refinery', 'polymer_press',
+      'petroleum_generator', 'ethanol_distiller', 'compost',
+      'fertilizer_synthesizer', 'duplicant', 'hatch', 'mealwood',
+      'sleet_wheat',
+    ];
+    final specs = [for (final id in cast) testDatabase.processOrThrow(id)];
     var seed = 12345;
     int next(int bound) {
       seed = (seed * 1103515245 + 12345) & 0x7fffffff;
@@ -118,7 +127,7 @@ void main() {
 
     var total = 0;
     var graphs = 0;
-    for (var trial = 0; trial < 4000; trial++) {
+    for (var trial = 0; trial < 600; trial++) {
       final chosen = <ProcessSpec>[];
       final size = 6 + next(9);
       for (var i = 0; i < size; i++) {
@@ -153,8 +162,8 @@ void main() {
       graphs++;
     }
 
-    expect(graphs, 460, reason: 'the corpus itself changed, so the score below '
+    expect(graphs, 427, reason: 'the corpus itself changed, so the score below '
         'is no longer comparable — re-measure before moving it');
-    expect(total, lessThanOrEqualTo(206));
+    expect(total, lessThanOrEqualTo(2248));
   });
 }

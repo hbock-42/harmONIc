@@ -62,9 +62,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E12-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
 - `E12-4` Lead, and the metals behind galena: the ore is in the class but has nothing to
   refine into, so a refinery set to galena cannot say what it made
-- `E12-2` The rest of the roster now that classes make it cheap: Aquatuner and Thermo
-  Regulator (they move heat rather than make it, so the heat item needs a sign convention
-  first), Supermaterial Refinery, Molecular Forge, Spice Grinder, Dehydrator, Smoker
+- `E12-2b` The rest of the roster: Supermaterial Refinery, Molecular Forge, Spice Grinder,
+  Dehydrator, Smoker
+- `E12-9` Aquatuner and Thermo Regulator for the other coolants. The heat each moves is
+  the coolant's specific heat times 14 °C, so a class would be wrong here — every member
+  behaves differently, which is the one thing a class must not do
 - `E12-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
   plastic makes, which is the one figure a build actually needs
 
@@ -138,6 +140,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-2` **The cooling loop** — a Steam Turbine deletes heat, an Aquatuner only moves it,
+  and both are now sayable: heat was always an item and a negative rate always made an
+  input port, but nothing had ever used it. A build can be asked how many Aquatuners its
+  own heat needs, and the answer is a number
 - `E4-12b` **The recipe editor's item picker obeys them too** — and checking whether item
   pack tags were trustworthy enough to filter by found three that were wrong, plus supply
   and output nodes that inherited no pack at all

@@ -6385,10 +6385,9 @@
       "kind": "building",
       "buildingId": "steam_turbine",
       "powerWatts": -850,
-      "heatKdtuPerSecond": 4,
       "footprintWidth": 5,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: the figures here are the turbine flat out — 2 kg/s of steam at 200 °C or hotter, for 850 W. Below that it makes less, down to 242 W at its 125 °C minimum, and the app has no way to say how hot your steam is. It gives the water back at 95 °C and deletes the rest of the heat, which is the whole reason it exists.",
+      "description": "UNVERIFIED: the turbine flat out — 2 kg/s of steam at 200 C or hotter, for 850 W. Below that it makes less, down to 242 W at its 125 C minimum, and the app has no way to say how hot your steam is. The heat it takes in is the arithmetic rather than a published number: 2 kg/s falling from 200 C to 95 C carries 877.59 kDTU/s. It keeps 4 of that for itself and deletes the rest, which is the only thing in the game that does.",
       "tags": [
         "power",
         "unverified"
@@ -6404,6 +6403,18 @@
           "direction": "output",
           "rate": 2000,
           "temperatureC": 95
+        },
+        {
+          "item": "heat",
+          "direction": "input",
+          "rate": 877.59,
+          "id": "heat_in"
+        },
+        {
+          "item": "heat",
+          "direction": "output",
+          "rate": 4,
+          "id": "heat_out"
         }
       ],
       "build": {
@@ -6767,6 +6778,92 @@
       "description": "Any metal ore, half of it back as the matching metal and half as sand. Worse than a Metal Refinery, and it needs no power grid or coolant loop to run.",
       "build": {
         "metal_ore": 800
+      }
+    },
+    {
+      "id": "aquatuner_water",
+      "name": "Aquatuner (Water)",
+      "kind": "building",
+      "buildingId": "aquatuner",
+      "powerWatts": 1200,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "Takes 14 C out of every packet of liquid and puts it into the machine, which is why one usually stands in a steam room with a turbine over it. It moves heat rather than destroying it: the figures here are for water at a full pipe, 10 kg/s * 4.179 * 14 C = 585.06 kDTU/s. Another coolant moves a different amount, which is why this is water in particular rather than \"any liquid\".",
+      "tags": [
+        "cooling",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 10000,
+          "id": "coolant_in"
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 10000,
+          "id": "coolant_out"
+        },
+        {
+          "item": "heat",
+          "direction": "input",
+          "rate": 585.06,
+          "id": "heat_in"
+        },
+        {
+          "item": "heat",
+          "direction": "output",
+          "rate": 585.06,
+          "id": "heat_out"
+        }
+      ],
+      "build": {
+        "metal_ore": 1200
+      }
+    },
+    {
+      "id": "thermo_regulator_hydrogen",
+      "name": "Thermo Regulator (Hydrogen)",
+      "kind": "building",
+      "buildingId": "thermo_regulator",
+      "powerWatts": 240,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "The gas version, and the same trade: 14 C off each packet, moved into the machine rather than destroyed. Hydrogen at 1 kg/s carries 33.6 kDTU/s of it. A colder-running gas would move less.",
+      "tags": [
+        "cooling",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "hydrogen",
+          "direction": "input",
+          "rate": 1000,
+          "id": "coolant_in"
+        },
+        {
+          "item": "hydrogen",
+          "direction": "output",
+          "rate": 1000,
+          "id": "coolant_out"
+        },
+        {
+          "item": "heat",
+          "direction": "input",
+          "rate": 33.6,
+          "id": "heat_in"
+        },
+        {
+          "item": "heat",
+          "direction": "output",
+          "rate": 33.6,
+          "id": "heat_out"
+        }
+      ],
+      "build": {
+        "metal_ore": 200
       }
     }
   ],
