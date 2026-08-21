@@ -120,6 +120,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E7-x` **Sugiyama's missing phase** — edges that skip a column are now broken into dummy
+  vertices before the barycentre sweeps, and each sweep is scored by counting the crossings
+  it leaves rather than assumed to help. On a fixed 364-graph corpus: 209 crossings before,
+  176 after, locked in by `test/canvas/crossings_test.dart` as a ratchet
 - `E3-4` **Whole buildings** — `asBuilt` re-reports a solved build with whole critters,
   plants and Duplicants. A machine you half need idles and the "busy" figure already says
   so; a Hatch does not, so the spare one's rock and coal are now stated where the rounding

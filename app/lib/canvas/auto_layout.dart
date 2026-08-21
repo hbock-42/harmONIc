@@ -7,9 +7,23 @@ import 'geometry.dart';
 
 /// Arranges a pipeline left to right, so a build reads the way it flows.
 ///
-/// A layered layout: every node sits one column to the right of whatever feeds
-/// it, and the nodes within a column are ordered to keep the wires between them
-/// from crossing more than they must.
+/// This is Sugiyama's hierarchical layout, in its usual phases: break the
+/// cycles, assign each node to a column, replace every edge that skips a column
+/// with a chain of dummy vertices, and then reorder each column by barycentre
+/// until the wires stop crossing. Nothing here is invented; the algorithm is
+/// forty years old and the version that gets these graphs wrong is always the
+/// one missing a phase.
+///
+/// The last step is ours: coordinates are assigned by simply stacking each
+/// column and centring it, rather than by the priority or Brandes–Köpf methods.
+/// Wires are drawn as curves between ports, so straightening a long edge into
+/// its dummy lane would not change what is on screen.
+/// Marks a vertex that stands for a wire passing through a column rather than
+/// anything the user placed. The prefix is a character no node id can contain.
+const String _dummyPrefix = '\u0000edge:';
+
+bool _isDummy(String id) => id.startsWith(_dummyPrefix);
+
 class AutoLayout {
   const AutoLayout({
     required this.pipeline,
@@ -166,27 +180,57 @@ class AutoLayout {
     return layer;
   }
 
-  /// Barycentre ordering: put each node opposite the average position of what
-  /// it connects to, sweeping until it settles. Cheap, and good enough that the
-  /// remaining crossings are ones a human would also draw.
+  /// Crossing reduction, Sugiyama's third and fourth phases.
+  ///
+  /// An edge that spans more than one column is first broken into a chain of
+  /// dummy vertices, one per column it passes through. Without them a long wire
+  /// is invisible to the ordering — it connects two columns that never look at
+  /// each other — and it crosses whatever it likes on the way. With them the
+  /// wire has a place in every column it traverses and gets ordered like
+  /// anything else.
+  ///
+  /// Then barycentre sweeps: put each vertex opposite the average position of
+  /// what it connects to, alternating down and up. The barycentre heuristic can
+  /// make a pass worse as easily as better, so every pass is scored by counting
+  /// the crossings it actually leaves and the best ordering seen is the one
+  /// returned.
   List<List<String>> _orderWithinColumns(
     Map<String, int> layer,
     List<PipelineEdge> forward,
   ) {
     final depth = layer.values.fold<int>(0, math.max);
-    final columns = <List<String>>[for (var i = 0; i <= depth; i++) []];
+    var columns = <List<String>>[for (var i = 0; i <= depth; i++) []];
     for (final node in _nodes) {
       columns[layer[node.id]!].add(node.id);
     }
 
+    // Phase 3: dummy vertices for every edge that skips a column.
     final incoming = <String, List<String>>{};
     final outgoing = <String, List<String>>{};
-    for (final edge in forward) {
-      incoming.putIfAbsent(edge.toNodeId, () => []).add(edge.fromNodeId);
-      outgoing.putIfAbsent(edge.fromNodeId, () => []).add(edge.toNodeId);
+    void link(String from, String to) {
+      incoming.putIfAbsent(to, () => []).add(from);
+      outgoing.putIfAbsent(from, () => []).add(to);
     }
 
-    double? barycentre(String nodeId, List<String> neighbours, List<String> row) {
+    for (final edge in forward) {
+      final from = layer[edge.fromNodeId];
+      final to = layer[edge.toNodeId];
+      if (from == null || to == null) continue;
+      if (to - from <= 1) {
+        link(edge.fromNodeId, edge.toNodeId);
+        continue;
+      }
+      var previous = edge.fromNodeId;
+      for (var column = from + 1; column < to; column++) {
+        final dummy = '$_dummyPrefix${edge.id}:$column';
+        columns[column].add(dummy);
+        link(previous, dummy);
+        previous = dummy;
+      }
+      link(previous, edge.toNodeId);
+    }
+
+    double? barycentre(String vertex, List<String> neighbours, List<String> row) {
       final positions = [
         for (final other in neighbours)
           if (row.contains(other)) row.indexOf(other).toDouble(),
@@ -200,7 +244,7 @@ class AutoLayout {
       column.sort((a, b) {
         final ka = keys[a];
         final kb = keys[b];
-        // A node with nothing to line up against keeps where it was.
+        // A vertex with nothing to line up against keeps where it was.
         if (ka == null && kb == null) {
           return original.indexOf(a).compareTo(original.indexOf(b));
         }
@@ -210,21 +254,67 @@ class AutoLayout {
       });
     }
 
-    for (var sweep = 0; sweep < 4; sweep++) {
-      for (var i = 1; i < columns.length; i++) {
-        sortBy(columns[i], {
-          for (final id in columns[i])
-            id: barycentre(id, incoming[id] ?? const [], columns[i - 1]),
-        });
+    var best = [for (final column in columns) [...column]];
+    var fewest = _crossings(columns, outgoing);
+
+    for (var sweep = 0; sweep < 8; sweep++) {
+      final downwards = sweep.isEven;
+      if (downwards) {
+        for (var i = 1; i < columns.length; i++) {
+          sortBy(columns[i], {
+            for (final id in columns[i])
+              id: barycentre(id, incoming[id] ?? const [], columns[i - 1]),
+          });
+        }
+      } else {
+        for (var i = columns.length - 2; i >= 0; i--) {
+          sortBy(columns[i], {
+            for (final id in columns[i])
+              id: barycentre(id, outgoing[id] ?? const [], columns[i + 1]),
+          });
+        }
       }
-      for (var i = columns.length - 2; i >= 0; i--) {
-        sortBy(columns[i], {
-          for (final id in columns[i])
-            id: barycentre(id, outgoing[id] ?? const [], columns[i + 1]),
-        });
+
+      final crossings = _crossings(columns, outgoing);
+      // On a tie the later ordering wins: a sweep that does not make things
+      // worse has still lined the columns up against their neighbours, which
+      // is what stops a tidy graph looking arbitrary.
+      if (crossings <= fewest) {
+        fewest = crossings;
+        best = [for (final column in columns) [...column]];
+      }
+      if (fewest == 0) break;
+    }
+
+    return best;
+  }
+
+  /// How many pairs of wires cross, counted over the expanded graph.
+  ///
+  /// Two edges between the same pair of columns cross when their endpoints are
+  /// in the opposite order at each end. That is the whole definition, and
+  /// counting it is what makes "did that sweep help?" a question with an answer
+  /// rather than a hope.
+  int _crossings(List<List<String>> columns, Map<String, List<String>> outgoing) {
+    var total = 0;
+    for (var i = 0; i + 1 < columns.length; i++) {
+      final left = columns[i];
+      final right = columns[i + 1];
+      final pairs = <List<int>>[];
+      for (var from = 0; from < left.length; from++) {
+        for (final target in outgoing[left[from]] ?? const <String>[]) {
+          final to = right.indexOf(target);
+          if (to >= 0) pairs.add([from, to]);
+        }
+      }
+      for (var a = 0; a < pairs.length; a++) {
+        for (var b = a + 1; b < pairs.length; b++) {
+          final crosses = (pairs[a][0] - pairs[b][0]) * (pairs[a][1] - pairs[b][1]);
+          if (crosses < 0) total++;
+        }
       }
     }
-    return columns;
+    return total;
   }
 
   Map<String, Offset> _placeColumns(List<List<String>> columns) {
@@ -242,7 +332,11 @@ class AutoLayout {
       var widest = 0.0;
       for (final id in column) {
         final size = _sizeOf(id);
-        positions[id] = Offset(NodeLayout.snap(x), NodeLayout.snap(y));
+        // Dummies take up their lane and are then forgotten: nothing is placed
+        // for them, because there is nothing there but wire.
+        if (!_isDummy(id)) {
+          positions[id] = Offset(NodeLayout.snap(x), NodeLayout.snap(y));
+        }
         y += size.height + rowGap;
         widest = math.max(widest, size.width);
       }
@@ -252,6 +346,9 @@ class AutoLayout {
   }
 
   Size _sizeOf(String nodeId) {
+    // A dummy is a wire passing through, and it is given a lane of its own so
+    // the wire has somewhere to go other than across a node.
+    if (_isDummy(nodeId)) return const Size(0, 28);
     final node = pipeline.nodeOrThrow(nodeId);
     final spec = database.process(node.specId);
     // A node naming a recipe that has gone still needs somewhere to sit.
