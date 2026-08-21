@@ -199,10 +199,42 @@ class PipelineController extends ChangeNotifier {
     );
   }
 
+  /// Where each selected node was when the current drag began.
+  ///
+  /// Kept so the drag can be applied to the *original* positions rather than
+  /// accumulated frame by frame: snapping a relative step to the grid throws
+  /// away whatever did not reach a grid line, and forty small steps in a row
+  /// throw away forty remainders — which at low zoom is the entire movement.
+  Map<String, Offset> _dragOrigins = const {};
+
   /// Called once when a node drag starts, so the whole drag is one undo step.
   void beginNodeDrag() {
     _undoStack.add(_pipeline);
     _redoStack.clear();
+    _dragOrigins = {
+      for (final n in _pipeline.nodes)
+        if (_selectedNodeIds.contains(n.id)) n.id: Offset(n.x, n.y),
+    };
+  }
+
+  /// Moves the selection to where it started plus [totalDelta], in world units.
+  void dragSelectionBy(Offset totalDelta) {
+    if (_dragOrigins.isEmpty) return;
+    _apply(
+      _pipeline.copyWith(
+        nodes: [
+          for (final n in _pipeline.nodes)
+            if (_dragOrigins[n.id] case final Offset origin)
+              n.copyWith(
+                x: NodeLayout.snap(origin.dx + totalDelta.dx),
+                y: NodeLayout.snap(origin.dy + totalDelta.dy),
+              )
+            else
+              n,
+        ],
+      ),
+      record: false,
+    );
   }
 
   bool canConnect(PortRef from, PortRef to) {

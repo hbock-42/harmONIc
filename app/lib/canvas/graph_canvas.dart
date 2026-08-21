@@ -438,6 +438,7 @@ class GraphCanvasState extends State<GraphCanvas> {
                             // Read when the click happens, not when the node
                             // was built — the key is not held at build time.
                             additive: () => _additive,
+                            toWorld: worldFromGlobal,
                             onPortTap: _openPortMenu,
                             onPortDragStart: _onPortDragStart,
                             onPortDragUpdate: _onPortDragUpdate,
@@ -576,7 +577,7 @@ class GraphCanvasState extends State<GraphCanvas> {
   }
 }
 
-class _DraggableNode extends StatelessWidget {
+class _DraggableNode extends StatefulWidget {
   const _DraggableNode({
     required this.node,
     required this.controller,
@@ -584,6 +585,7 @@ class _DraggableNode extends StatelessWidget {
     required this.scale,
     required this.rateDisplay,
     required this.additive,
+    required this.toWorld,
     required this.onPortTap,
     required this.onPortDragStart,
     required this.onPortDragUpdate,
@@ -597,6 +599,9 @@ class _DraggableNode extends StatelessWidget {
   final double scale;
   final RateDisplay rateDisplay;
   final bool Function() additive;
+
+  /// Where a screen point lands in the graph's own coordinates.
+  final Offset? Function(Offset globalPosition) toWorld;
   final void Function(PortRef, Offset) onPortTap;
   final void Function(PortRef, Offset) onPortDragStart;
   final void Function(Offset) onPortDragUpdate;
@@ -604,32 +609,58 @@ class _DraggableNode extends StatelessWidget {
   final bool Function(PortRef) highlightPort;
 
   @override
+  State<_DraggableNode> createState() => _DraggableNodeState();
+}
+
+class _DraggableNodeState extends State<_DraggableNode> {
+  /// Where in the graph the pointer was when this drag began.
+  ///
+  /// The drag follows the pointer's *position*, not the sum of its movements.
+  /// A gesture is only recognised as a drag after the pointer has travelled a
+  /// little way, and that first stretch is never reported as a delta — so a
+  /// card built from deltas always trails the cursor by the width of the slop,
+  /// and never catches up.
+  Offset? _grabbedAt;
+
+  @override
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => controller.selectNode(node.id, additive: additive()),
-        onPanStart: (_) {
+        // Report the drag from where the pointer went *down*, not from where
+        // the gesture was finally recognised as a drag. Otherwise the first
+        // stretch of every drag — the distance the recogniser waits out before
+        // it commits — is lost, and the card trails the cursor by that much
+        // for the rest of the gesture.
+        dragStartBehavior: DragStartBehavior.down,
+        onTap: () => widget.controller
+            .selectNode(widget.node.id, additive: widget.additive()),
+        onPanStart: (d) {
           // Dragging a node that is already part of a group takes the group
           // with it; dragging any other node selects just that one first.
-          if (!controller.isSelected(node.id)) {
-            controller.selectNode(node.id);
+          if (!widget.controller.isSelected(widget.node.id)) {
+            widget.controller.selectNode(widget.node.id);
           }
-          controller.beginNodeDrag();
+          _grabbedAt = widget.toWorld(d.globalPosition);
+          widget.controller.beginNodeDrag();
         },
-        // The drag happens in screen pixels; the nodes live in world units.
-        onPanUpdate: (d) => controller.moveSelectionBy(d.delta / scale),
+        onPanUpdate: (d) {
+          final from = _grabbedAt;
+          final to = widget.toWorld(d.globalPosition);
+          if (from == null || to == null) return;
+          widget.controller.dragSelectionBy(to - from);
+        },
         child: MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: NodeWidget(
-            node: node,
-            spec: controller.specOf(node),
-            controller: controller,
-            selected: selected,
-            rateDisplay: rateDisplay,
-            onPortTap: onPortTap,
-            onPortDragStart: onPortDragStart,
-            onPortDragUpdate: onPortDragUpdate,
-            onPortDragEnd: onPortDragEnd,
-            highlightPort: highlightPort,
+            node: widget.node,
+            spec: widget.controller.specOf(widget.node),
+            controller: widget.controller,
+            selected: widget.selected,
+            rateDisplay: widget.rateDisplay,
+            onPortTap: widget.onPortTap,
+            onPortDragStart: widget.onPortDragStart,
+            onPortDragUpdate: widget.onPortDragUpdate,
+            onPortDragEnd: widget.onPortDragEnd,
+            highlightPort: widget.highlightPort,
           ),
         ),
       );

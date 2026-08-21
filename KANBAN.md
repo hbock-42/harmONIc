@@ -151,6 +151,11 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-4` **A dragged card follows the pointer** — three faults compounded: the zoom
+  correction was applied twice, the grid snapped every frame and threw away whatever had
+  not yet reached a line, and the drag was measured from where the gesture was recognised
+  rather than from where the pointer went down. Only the last is visible at 100 % zoom,
+  which is why it survived so long
 - `E12-3` **Nodes away from the origin can be clicked** — the node layer was laid out at
   the size of the window, so anything at negative coordinates or beyond the window's width
   in world units was painted but never hit-tested. Flutter paints outside a box when told
