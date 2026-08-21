@@ -45,7 +45,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
 - `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
   model has no notion of a mixture
-- `E3-4` Whole-building rounding as a solver mode, rather than a per-node getter
 - `E4-20` Egg mass and shells, so shell-to-lime and omelette chains can be modelled
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
   their outputs the milking station takes and which they give off anyway
@@ -121,6 +120,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E3-4` **Whole buildings** — `asBuilt` re-reports a solved build with whole critters,
+  plants and Duplicants. A machine you half need idles and the "busy" figure already says
+  so; a Hatch does not, so the spare one's rock and coal are now stated where the rounding
+  happens
 - `E4-31` **Wild plants** — every crop has a wild twin: no water, no fertiliser, a quarter
   of the speed. Grazing follows from it, since growth is already an item — one Glo Squid
   takes two farmed Tublia or eight wild ones, which is the wiki's own figure
@@ -353,7 +356,7 @@ _(empty)_
 | E3-1 | P0 | Linear system build | Variables = node counts `x_n`. One equation per **fed** input port: `Σ_e share_e · x_src · outRate(src,item) = x_n · inRate(n,item)`. Plus one equation per pin |
 | E3-2 | P0 | Gauss-Jordan w/ partial pivoting | dense is fine (graphs are ≤ a few hundred nodes); detect rank, report `underdetermined` (needs another pin) / `inconsistent` (contradictory pins) |
 | E3-3 | P0 | Result object | per-node `count`, per-edge `flow` (g/s), per-item global balance, list of `Shortage` and `Surplus` |
-| E3-4 | P1 | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
+| E3-4 | ✅ | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
 | E3-5 | P1 | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | P1 | Bottleneck detection | which node caps the pipeline when a raw input is capped |
 | E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |

@@ -351,6 +351,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
                 ),
             ],
           ),
+          _asBuiltNote(controller, result),
           const SizedBox(height: OniSpacing.lg),
           if (!_isBoundary)
             Wrap(
@@ -433,6 +434,61 @@ class _NodeInspectorState extends State<_NodeInspector> {
           },
         ),
       ],
+    );
+  }
+
+  /// A machine you only half need idles, and the "busy" figure above already
+  /// says so. A critter, a plant or a Duplicant cannot idle: the one you had to
+  /// round up eats and produces like all the others, every cycle, whether the
+  /// ratio wanted it or not. That is worth saying where the rounding happens.
+  Widget _asBuiltNote(PipelineController controller, NodeResult? result) {
+    if (result == null || _isBoundary) return const SizedBox.shrink();
+    final report = controller.asBuiltReport;
+    final extra = report.roundedUp[result.nodeId];
+    if (extra == null) return const SizedBox.shrink();
+
+    final spec = controller.database.process(result.specId);
+    if (spec == null) return const SizedBox.shrink();
+
+    final lines = <String>[];
+    for (final port in spec.ports) {
+      final item = controller.database.item(port.itemId);
+      if (item == null || item.isCapacity) continue;
+      final amount = port.ratePerSecond * extra;
+      if (amount.abs() < 1e-9) continue;
+      lines.add('${port.isOutput ? 'makes' : 'eats'} '
+          '${item.formatRate(amount, widget.rateDisplay)} more '
+          '${item.name.toLowerCase()}');
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: OniSpacing.md),
+      child: GestureDetector(
+        onTap: widget.onToggleRates,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: OniSpacing.sm, vertical: 6),
+          decoration: BoxDecoration(
+            color: OniColors.accent.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: OniColors.accent.withValues(alpha: 0.35)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'You cannot have ${result.count.toStringAsFixed(2)} of these, '
+                'and the spare one does not idle the way a machine would. '
+                'Against the ratio, what you actually place:',
+                style: OniType.body.copyWith(color: OniColors.accent),
+              ),
+              const SizedBox(height: 4),
+              for (final line in lines)
+                Text(line, style: OniType.body),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

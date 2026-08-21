@@ -31,6 +31,7 @@ class PipelineController extends ChangeNotifier {
             Pipeline(id: 'untitled', name: 'Untitled pipeline',
                 dataVersion: database.dataVersion) {
     _solution = _solver.solve(_pipeline);
+    _asBuilt = null;
   }
 
   GameDatabase _database;
@@ -44,6 +45,7 @@ class PipelineController extends ChangeNotifier {
     _database = database;
     _solver = PipelineSolver(database);
     _solution = _solver.solve(_pipeline);
+    _asBuilt = null;
     notifyListeners();
   }
 
@@ -57,6 +59,14 @@ class PipelineController extends ChangeNotifier {
 
   Pipeline get pipeline => _pipeline;
   PipelineSolution get solution => _solution;
+
+  AsBuiltReport? _asBuilt;
+
+  /// The build as you would actually place it — whole critters, whole plants,
+  /// whole Duplicants. Computed on demand, because only the inspector asks and
+  /// only when a rounded node is selected.
+  AsBuiltReport get asBuiltReport =>
+      _asBuilt ??= asBuilt(_pipeline, database, _solution);
 
   /// Every node currently selected. More than one is normal: a marquee or a
   /// shift-click gathers a whole subsystem so it can be moved or deleted at once.
@@ -154,6 +164,7 @@ class PipelineController extends ChangeNotifier {
     }
     _pipeline = next;
     _solution = _solver.solve(next);
+    _asBuilt = null;
     notifyListeners();
   }
 
@@ -162,6 +173,7 @@ class PipelineController extends ChangeNotifier {
     _redoStack.add(_pipeline);
     _pipeline = _undoStack.removeLast();
     _solution = _solver.solve(_pipeline);
+    _asBuilt = null;
     notifyListeners();
   }
 
@@ -170,6 +182,7 @@ class PipelineController extends ChangeNotifier {
     _undoStack.add(_pipeline);
     _pipeline = _redoStack.removeLast();
     _solution = _solver.solve(_pipeline);
+    _asBuilt = null;
     notifyListeners();
   }
 
