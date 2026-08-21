@@ -464,15 +464,6 @@
       ]
     },
     {
-      "id": "lettuce",
-      "name": "Lettuce",
-      "category": "solid",
-      "tags": [
-        "plant-matter",
-        "aquatic"
-      ]
-    },
-    {
       "id": "egg",
       "name": "Egg",
       "category": "entity"
@@ -796,6 +787,44 @@
         "growth",
         "frosty"
       ]
+    },
+    {
+      "id": "waterweed_growth",
+      "name": "Waterweed growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "bristle_blossom_growth",
+      "name": "Bristle Blossom growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "dusk_cap_growth",
+      "name": "Dusk Cap growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "sleet_wheat_growth",
+      "name": "Sleet Wheat growth",
+      "category": "other",
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "sleet_wheat_grain",
+      "name": "Sleet Wheat Grain",
+      "category": "solid",
+      "tags": []
     }
   ],
   "processes": [
@@ -1758,7 +1787,7 @@
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled. Growth is published as percentage points of maturity per cycle: this one matures over 8 cycles, so it offers 12.5 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled.",
       "tags": [
         "farming",
         "aquatic",
@@ -1779,11 +1808,6 @@
           "item": "plastic",
           "direction": "output",
           "rate": 41.666666666666664
-        },
-        {
-          "item": "tublia_growth",
-          "direction": "output",
-          "rate": 0.0208333333
         }
       ]
     },
@@ -1793,7 +1817,7 @@
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 1,
-      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs.",
       "tags": [
         "farming",
         "aquatic",
@@ -1809,11 +1833,6 @@
           "item": "phosphorite",
           "direction": "output",
           "rate": 33.333333333333336
-        },
-        {
-          "item": "starnacle_growth",
-          "direction": "output",
-          "rate": 0.0416666667
         }
       ]
     },
@@ -2712,7 +2731,7 @@
       "id": "blowter",
       "name": "Blowter",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: eats 15 kg/cycle of waterweed or lettuce for 400 kcal/cycle, which the wiki does state. The 15 kg/cycle of oxygen — a tidy 100 % conversion, 25 g/s — comes from a Steam discussion citing the wiki rather than from the wiki itself, so confirm it before you build around it. Its liquid oxygen output is not modelled. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "UNVERIFIED OUTPUT: grazes 8.33 % of a plant’s maturity a cycle, which is exactly one domesticated Waterweed. The 15 kg/cycle of oxygen — a tidy 100 % conversion of what it eats, 25 g/s — comes from a Steam discussion citing the wiki rather than from the wiki itself, so confirm it before you build around it. Its liquid oxygen output is not modelled.",
       "tags": [
         "oxygen",
         "ranching",
@@ -2726,9 +2745,9 @@
           "rate": 1
         },
         {
-          "item": "lettuce",
+          "item": "waterweed_growth",
           "direction": "input",
-          "rate": 25.0
+          "rate": 0.0138888889
         },
         {
           "item": "oxygen",
@@ -3724,7 +3743,7 @@
       "id": "gas_grass",
       "name": "Gas Grass",
       "kind": "plant",
-      "description": "Domesticated: 500 g/cycle of chlorine and 25 kg/cycle of dirt, yielding 400 kg of plant husk every 4 cycles. Needs 10,000 lux, which this model does not represent. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "Domesticated: 500 g/cycle of chlorine and 25 kg/cycle of dirt, yielding 400 kg of plant husk every 4 cycles. Needs 10,000 lux, which this model does not represent.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -3746,11 +3765,6 @@
           "item": "plant_husk",
           "direction": "output",
           "rate": 166.666667
-        },
-        {
-          "item": "gas_grass_growth",
-          "direction": "output",
-          "rate": 0.0416666667
         }
       ]
     },
@@ -3758,7 +3772,7 @@
       "id": "mealwood",
       "name": "Mealwood",
       "kind": "plant",
-      "description": "The starter crop: no irrigation, 10 kg/cycle of dirt, and 200 kcal a cycle once it is being harvested on schedule — five of them keep one Duplicant fed. Growth is published as percentage points of maturity per cycle: this one matures over 3 cycles, so it offers 33.3333 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "The starter crop: no irrigation, 10 kg/cycle of dirt, and 200 kcal a cycle once it is being harvested on schedule — five of them keep one Duplicant fed.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -3775,11 +3789,6 @@
           "item": "calories",
           "direction": "output",
           "rate": 0.3333333333333333
-        },
-        {
-          "item": "mealwood_growth",
-          "direction": "output",
-          "rate": 0.0555555556
         }
       ]
     },
@@ -3787,7 +3796,7 @@
       "id": "arbor_tree",
       "name": "Arbor Tree",
       "kind": "plant",
-      "description": "Wood, and the polluted water to grow it: 70 kg/cycle of irrigation and 10 kg/cycle of dirt for 333 kg/cycle of lumber once mature. Growth is published as percentage points of maturity per cycle: this one matures over 9 cycles, so it offers 11.1111 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "Wood, and the polluted water to grow it: 70 kg/cycle of irrigation and 10 kg/cycle of dirt for 333 kg/cycle of lumber once mature.",
       "footprintWidth": 3,
       "footprintHeight": 4,
       "tags": [
@@ -3809,11 +3818,6 @@
           "item": "lumber",
           "direction": "output",
           "rate": 555.55
-        },
-        {
-          "item": "arbor_tree_growth",
-          "direction": "output",
-          "rate": 0.0185185185
         }
       ]
     },
@@ -3821,7 +3825,7 @@
       "id": "pikeapple_bush",
       "name": "Pikeapple Bush",
       "kind": "plant",
-      "description": "Frosty Planet Pack food: 5 kg/cycle of phosphorite for 266 kcal a cycle. No irrigation. Growth is published as percentage points of maturity per cycle: this one matures over 3 cycles, so it offers 33.3333 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "Frosty Planet Pack food: 5 kg/cycle of phosphorite for 266 kcal a cycle. No irrigation.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -3839,11 +3843,350 @@
           "item": "calories",
           "direction": "output",
           "rate": 0.4444333333333334
+        }
+      ]
+    },
+    {
+      "id": "mealwood_grazed",
+      "name": "Mealwood (grazed)",
+      "kind": "plant",
+      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 3 cycles, so it offers 33.3333 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 16.666667
+        },
+        {
+          "item": "mealwood_growth",
+          "direction": "output",
+          "rate": 0.0555555556
+        }
+      ]
+    },
+    {
+      "id": "arbor_tree_grazed",
+      "name": "Arbor Tree (grazed)",
+      "kind": "plant",
+      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 9 cycles, so it offers 11.1111 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 3,
+      "footprintHeight": 4,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 116.666667
+        },
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 16.666667
+        },
+        {
+          "item": "arbor_tree_growth",
+          "direction": "output",
+          "rate": 0.0185185185
+        }
+      ]
+    },
+    {
+      "id": "pikeapple_bush_grazed",
+      "name": "Pikeapple Bush (grazed)",
+      "kind": "plant",
+      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 3 cycles, so it offers 33.3333 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "phosphorite",
+          "direction": "input",
+          "rate": 8.333333
         },
         {
           "item": "pikeapple_growth",
           "direction": "output",
           "rate": 0.0555555556
+        }
+      ]
+    },
+    {
+      "id": "starnacle_grazed",
+      "name": "Starnacle (grazed)",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "description": "UNVERIFIED: inherited from the harvested version of this plant, whose numbers are not all published. The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "coquina",
+          "direction": "input",
+          "rate": 33.333333333333336
+        },
+        {
+          "item": "starnacle_growth",
+          "direction": "output",
+          "rate": 0.0416666667
+        }
+      ]
+    },
+    {
+      "id": "tublia_grazed",
+      "name": "Tublia (grazed)",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: inherited from the harvested version of this plant, whose numbers are not all published. The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 8 cycles, so it offers 12.5 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_brine",
+          "direction": "input",
+          "rate": 50.0
+        },
+        {
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 33.333333333333336
+        },
+        {
+          "item": "tublia_growth",
+          "direction": "output",
+          "rate": 0.0208333333
+        }
+      ]
+    },
+    {
+      "id": "gas_grass_grazed",
+      "name": "Gas Grass (grazed)",
+      "kind": "plant",
+      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "liquid_chlorine",
+          "direction": "input",
+          "rate": 0.833333
+        },
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 41.666667
+        },
+        {
+          "item": "gas_grass_growth",
+          "direction": "output",
+          "rate": 0.0416666667
+        }
+      ]
+    },
+    {
+      "id": "bristle_blossom",
+      "name": "Bristle Blossom",
+      "kind": "plant",
+      "description": "The reliable early crop: 20 kg/cycle of water for 1600 kcal every 6 cycles. Wants light over 200 lux, which this model does not represent.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.4444444444444445
+        }
+      ]
+    },
+    {
+      "id": "bristle_blossom_grazed",
+      "name": "Bristle Blossom (grazed)",
+      "kind": "plant",
+      "description": "Left for a Glossy Drecko or a Flox to graze rather than harvested — its growth goes to the herd, so there is no crop. Growth is published as percentage points of maturity per cycle: this one matures over 6 cycles, so it offers 16.6667 % a cycle.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "bristle_blossom_growth",
+          "direction": "output",
+          "rate": 0.0277777778
+        }
+      ]
+    },
+    {
+      "id": "dusk_cap",
+      "name": "Dusk Cap",
+      "kind": "plant",
+      "description": "Turns slime into food in the dark, on carbon dioxide: 4 kg/cycle of slime for 2400 kcal every 7.5 cycles. No irrigation.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "slime",
+          "direction": "input",
+          "rate": 6.666667
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.5333333333333333
+        }
+      ]
+    },
+    {
+      "id": "waterweed",
+      "name": "Waterweed",
+      "kind": "plant",
+      "description": "Lettuce from salt water: 20 kg/cycle for 12 kg of lettuce every 12 cycles, which is 400 kcal a cycle.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "salt_water",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.6666666666666666
+        }
+      ]
+    },
+    {
+      "id": "waterweed_grazed",
+      "name": "Waterweed (grazed)",
+      "kind": "plant",
+      "description": "Left for Blowters to graze rather than harvested. One Blowter eats exactly one plant. Growth is published as percentage points of maturity per cycle: this one matures over 12 cycles, so it offers 8.33333 % a cycle.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "salt_water",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "waterweed_growth",
+          "direction": "output",
+          "rate": 0.0138888889
+        }
+      ]
+    },
+    {
+      "id": "sleet_wheat",
+      "name": "Sleet Wheat",
+      "kind": "plant",
+      "description": "Cold-weather grain, and slow: 18 cycles to mature, wanting -55 C to 5 C. The grain is not edible until it has been through a grill.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "farming",
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 33.333333
+        },
+        {
+          "item": "dirt",
+          "direction": "input",
+          "rate": 8.333333
+        },
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "output",
+          "rate": 1.666667
+        }
+      ]
+    },
+    {
+      "id": "electric_grill_frost_bun",
+      "name": "Electric Grill (Frost Bun)",
+      "kind": "building",
+      "description": "Three Sleet Wheat Grain become one Frost Bun worth 1200 kcal, in 50 s. The rates here assume a Duplicant standing at it all cycle, which is what the 600 s of labour means: twelve buns a cycle, and 36 kg of grain to make them.",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 60.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 24.0
         }
       ]
     }

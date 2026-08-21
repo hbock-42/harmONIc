@@ -54,6 +54,15 @@ items, so the power budget falls out of the same balance sheet as the mass.
 
 Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
+## Oxygen, power and food
+
+All three of a colony's problems are plannable. Food runs the whole way: Sleet Wheat makes
+grain, an Electric Grill makes Frost Buns out of it, and Duplicants eat the calories — with
+the cook's time counted against your Duplicant budget like any other labour.
+
+A plant comes in two forms, harvested and grazed, because its growth is either eaten by a
+critter or taken as a crop and never both.
+
 ## Tidy
 
 `Tidy` in the top bar arranges the graph left to right — every node one column right of

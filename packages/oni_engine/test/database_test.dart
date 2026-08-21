@@ -60,7 +60,7 @@ void main() {
 
     test('plant growth per cycle matches the figure the wiki quotes', () {
       final growth = db.itemOrThrow('starnacle_growth');
-      final starnacle = db.processOrThrow('starnacle');
+      final starnacle = db.processOrThrow('starnacle_grazed');
       final rate = starnacle.outputs
           .firstWhere((p) => p.itemId == 'starnacle_growth')
           .ratePerSecond;
@@ -196,6 +196,18 @@ void main() {
       );
     });
 
+    test('a Blowter grazes exactly one Waterweed', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'reef')
+            ..add('blowter', nodeId: 'blowters')
+            ..add('waterweed_grazed', nodeId: 'weed')
+            ..connectItem('weed', 'blowters', 'waterweed_growth')
+            ..pinCount('blowters', 7))
+          .build();
+
+      expect(solver.solve(pipeline).nodes['weed']!.count, closeTo(7, 1e-4));
+    });
+
     test('a Blowter breathes out as much as it eats', () {
       final blowter = db.processOrThrow('blowter');
       final oxygen = blowter.outputs.firstWhere((p) => p.itemId == 'oxygen');
@@ -288,22 +300,22 @@ void main() {
       }
 
       test('four Dreckos live off three Mealwood', () {
-        expect(plantsPer('drecko', 'mealwood', 'mealwood_growth'),
+        expect(plantsPer('drecko', 'mealwood_grazed', 'mealwood_growth'),
             closeTo(0.75, 1e-6));
       });
 
       test('a Glossy Drecko eats exactly one Mealwood', () {
-        expect(plantsPer('glossy_drecko', 'mealwood', 'mealwood_growth'),
+        expect(plantsPer('glossy_drecko', 'mealwood_grazed', 'mealwood_growth'),
             closeTo(1, 1e-6));
       });
 
       test('a Pip eats four fifths of an Arbor Tree', () {
-        expect(plantsPer('pip', 'arbor_tree', 'arbor_tree_growth'),
+        expect(plantsPer('pip', 'arbor_tree_grazed', 'arbor_tree_growth'),
             closeTo(0.8, 1e-6));
       });
 
       test('a Flox eats three fifths of a Pikeapple Bush', () {
-        expect(plantsPer('flox', 'pikeapple_bush', 'pikeapple_growth'),
+        expect(plantsPer('flox', 'pikeapple_bush_grazed', 'pikeapple_growth'),
             closeTo(0.6, 1e-6));
       });
 
@@ -321,6 +333,29 @@ void main() {
 
         expect(solution.nodes['crop']!.count, closeTo(5, 1e-2));
       });
+    });
+
+    test('a crew can be fed from the model end to end', () {
+      final solver = PipelineSolver(db);
+      final pipeline = (PipelineBuilder(db, name: 'canteen')
+            ..add('sleet_wheat', nodeId: 'wheat')
+            ..add('electric_grill_frost_bun', nodeId: 'grill')
+            ..add('duplicant', nodeId: 'dupes')
+            ..connectItem('wheat', 'grill', 'sleet_wheat_grain')
+            ..connectItem('grill', 'dupes', 'calories')
+            ..pinCount('dupes', 12))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // Twelve dupes want 12,000 kcal a cycle; a grill run flat out makes
+      // 14,400, so it is not quite fully occupied.
+      expect(solution.nodes['grill']!.count, closeTo(12000 / 14400, 1e-3));
+      // And that grill wants 36 kg/cycle of grain when it is, from plants
+      // yielding 1 kg/cycle each.
+      expect(solution.nodes['wheat']!.count, closeTo(30, 1e-2));
+      // The cook is most of a Duplicant's day.
+      expect(solution.dupeLabourSecondsPerCycle, closeTo(500, 1));
     });
 
     test('the base-game roster is covered', () {
@@ -493,7 +528,7 @@ void main() {
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'reef grazing')
               ..add('beakon_grazing', nodeId: 'beakons')
-              ..add('starnacle', nodeId: 'starnacles')
+              ..add('starnacle_grazed', nodeId: 'starnacles')
               ..connectItem('starnacles', 'beakons', 'starnacle_growth')
               ..pinCount('beakons', 24))
             .build();
@@ -509,7 +544,7 @@ void main() {
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'one plant')
               ..add('beakon_grazing', nodeId: 'beakons')
-              ..add('starnacle', nodeId: 'starnacles')
+              ..add('starnacle_grazed', nodeId: 'starnacles')
               ..connectItem('starnacles', 'beakons', 'starnacle_growth')
               ..pinCount('starnacles', 1))
             .build();
@@ -530,7 +565,7 @@ void main() {
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'moo pasture')
               ..add('gassy_moo', nodeId: 'moos')
-              ..add('gas_grass', nodeId: 'grass')
+              ..add('gas_grass_grazed', nodeId: 'grass')
               ..connectItem('grass', 'moos', 'gas_grass_growth')
               ..pinCount('moos', 5))
             .build();
@@ -542,11 +577,37 @@ void main() {
             closeTo(10 * 25000 / secondsPerCycle, 1e-3));
       });
 
+      test('a plant is either harvested or grazed, never both', () {
+        // Growth eaten by a critter is growth that never becomes a crop, so
+        // offering both on one process would let a farm be counted twice.
+        // Plant id → the growth item it publishes when grazed.
+        const plants = <String, String>{
+          'mealwood': 'mealwood_growth',
+          'starnacle': 'starnacle_growth',
+          'tublia': 'tublia_growth',
+          'gas_grass': 'gas_grass_growth',
+          'arbor_tree': 'arbor_tree_growth',
+          'pikeapple_bush': 'pikeapple_growth',
+          'waterweed': 'waterweed_growth',
+          'bristle_blossom': 'bristle_blossom_growth',
+        };
+        plants.forEach((plant, growthItem) {
+          final harvested = db.processOrThrow(plant);
+          final grazed = db.processOrThrow('${plant}_grazed');
+          expect(harvested.outputs.map((p) => p.itemId),
+              isNot(contains(growthItem)),
+              reason: '"$plant" should not also publish growth');
+          expect(grazed.outputs.map((p) => p.itemId), contains(growthItem));
+          expect(grazed.outputs, hasLength(1),
+              reason: 'a grazed plant yields no crop');
+        });
+      });
+
       test('a Glo Squid grazes two Tublia', () {
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'squid farm')
               ..add('glo_squid', nodeId: 'squids')
-              ..add('tublia', nodeId: 'tublia')
+              ..add('tublia_grazed', nodeId: 'tublia')
               ..connectItem('tublia', 'squids', 'tublia_growth')
               ..pinCount('squids', 6))
             .build();
@@ -560,7 +621,7 @@ void main() {
         // The whole point of the correction: a plant's growth *time* decides
         // how many mouths it keeps, not the diet percentage alone.
         double growthOf(String plant) => db
-            .processOrThrow(plant)
+            .processOrThrow('${plant}_grazed')
             .outputs
             .firstWhere((p) => p.itemId == '${plant}_growth')
             .ratePerSecond;

@@ -58,9 +58,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
   Tublia as domesticated ones, purely because wild plants ripen slower
 - `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop — both need
   the plant seeded first
-- `E4-33` More food plants and the food chain proper: Bristle Blossom, Sleet Wheat, the
-  cooking buildings. Mealwood and Pikeapple publish calories, so the chain to a Duplicant
-  already works and wants extending,
+- `E4-34` The rest of the cooking buildings: Microbe Musher, Gas Range, Deep Fryer,
+  Smoker, Sushi Bar — and food *quality*, which the model has no notion of
+- `E4-35` The remaining crops: Pincha Pepper, Nosh Bean, Thimble Reed, Sporechid, and the
+  Prehistoric and Aquatic food plants,
   Plug Slug, and the Frosty/Prehistoric pack critters
 - `E4-22` The Grooming Station's power draw, if it is ever published — modelled as zero
   today, which under-reports the grid
@@ -83,9 +84,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
   Tublia as domesticated ones, purely because wild plants ripen slower
 - `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop — both need
   the plant seeded first
-- `E4-33` More food plants and the food chain proper: Bristle Blossom, Sleet Wheat, the
-  cooking buildings. Mealwood and Pikeapple publish calories, so the chain to a Duplicant
-  already works and wants extending
+- `E4-34` The rest of the cooking buildings: Microbe Musher, Gas Range, Deep Fryer,
+  Smoker, Sushi Bar — and food *quality*, which the model has no notion of
+- `E4-35` The remaining crops: Pincha Pepper, Nosh Bean, Thimble Reed, Sporechid, and the
+  Prehistoric and Aquatic food plants
 - `E4-11` Nail down the `unverified` DLC rates: the Vulcanizer's full recipe, the Plant
   Pulverizer's cycle time, the Marine Drill's natural gas output, Gum Palm's CO2
 - `E4-12` DLC filter in the palette, so a base-game player is not offered Aquatic content
@@ -134,6 +136,13 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E4-33` **The food chain** — Bristle Blossom, Dusk Cap, Waterweed and Sleet Wheat, plus
+  the Electric Grill, so a crew can be fed end to end: wheat to grain to grill to
+  Duplicants, with the cook's time counted. Oxygen, power and food are all plannable now
+- `E4-36` **Harvested and grazed are separate processes** — a plant's growth is either
+  eaten by a critter or harvested as a crop, never both, and offering both on one process
+  let a farm be counted twice. Six plants split; a test now enforces that no plant
+  publishes a crop and its growth at once
 - `E3-7b` **Vented output ports** — "I have a geyser *and* twelve dupes, what is spare?"
   used to read as a contradiction, because a port something pulls from has to balance
   exactly. Marking it vented drops that equation and reports the leftover instead. The
