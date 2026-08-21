@@ -400,7 +400,7 @@ void main() {
     });
 
     group('grazing on a plant instead of a stockpile', () {
-      test('a Beakon takes an eighth of a Starnacle', () {
+      test('a Beakon takes half a Starnacle, not an eighth', () {
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'reef grazing')
               ..add('beakon_grazing', nodeId: 'beakons')
@@ -411,11 +411,12 @@ void main() {
         final solution = solver.solve(pipeline);
 
         expect(solution.status, SolveStatus.solved);
-        // 12.5 % of a plant each, so 24 Beakons need exactly 3 Starnacles.
-        expect(solution.nodes['starnacles']!.count, closeTo(3, 1e-9));
+        // A Beakon eats 12.5 % of maturity a cycle; a domestic Starnacle
+        // ripens 25 % a cycle. So each plant keeps two, and 24 need 12.
+        expect(solution.nodes['starnacles']!.count, closeTo(12, 1e-5));
       });
 
-      test('it works the other way round: one plant feeds eight', () {
+      test('it works the other way round: one plant feeds two', () {
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'one plant')
               ..add('beakon_grazing', nodeId: 'beakons')
@@ -425,7 +426,7 @@ void main() {
             .build();
         final solution = solver.solve(pipeline);
 
-        expect(solution.nodes['beakons']!.count, closeTo(8, 1e-9));
+        expect(solution.nodes['beakons']!.count, closeTo(2, 1e-5));
       });
 
       test('the grazing Beakon eats no phosphorite at all', () {
@@ -446,19 +447,38 @@ void main() {
             .build();
         final solution = solver.solve(pipeline);
 
-        expect(solution.nodes['grass']!.count, closeTo(10, 1e-9));
+        expect(solution.nodes['grass']!.count, closeTo(10, 1e-5));
         // And the pasture's own needs follow: 25 kg/cycle of dirt per plant.
         expect(solution.externalInputs['dirt'],
             closeTo(10 * 25000 / secondsPerCycle, 1e-3));
       });
 
       test('a Glo Squid grazes two Tublia', () {
-        final squid = db.processOrThrow('glo_squid');
-        expect(
-          squid.inputs.firstWhere((p) => p.itemId == 'tublia_growth')
-              .ratePerSecond,
-          2,
-        );
+        final solver = PipelineSolver(db);
+        final pipeline = (PipelineBuilder(db, name: 'squid farm')
+              ..add('glo_squid', nodeId: 'squids')
+              ..add('tublia', nodeId: 'tublia')
+              ..connectItem('tublia', 'squids', 'tublia_growth')
+              ..pinCount('squids', 6))
+            .build();
+        final solution = solver.solve(pipeline);
+
+        // 25 % a cycle each, against a Tublia's 12.5 %.
+        expect(solution.nodes['tublia']!.count, closeTo(12, 1e-5));
+      });
+
+      test('growth is maturity per cycle, so a slower plant feeds fewer', () {
+        // The whole point of the correction: a plant's growth *time* decides
+        // how many mouths it keeps, not the diet percentage alone.
+        double growthOf(String plant) => db
+            .processOrThrow(plant)
+            .outputs
+            .firstWhere((p) => p.itemId == '${plant}_growth')
+            .ratePerSecond;
+
+        // Starnacle matures in 4 cycles, Tublia in 8, so Tublia offers half.
+        expect(growthOf('starnacle'), closeTo(growthOf('tublia') * 2, 1e-9));
+        expect(growthOf('starnacle'), closeTo(100 / (4 * secondsPerCycle), 1e-8));
       });
     });
 

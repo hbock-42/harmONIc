@@ -58,9 +58,13 @@ Full write-up: [`docs/SOLVER.md`](docs/SOLVER.md).
 
 Not everything that flows is a material. A critter occupies one grooming slot and a
 station supplies eight; a grazing critter eats a *fraction of a living plant* rather than
-kilograms off a pile. Wire a Beakon to a Starnacle and, because it takes 12.5 % of the
-plant's growth, one Starnacle feeds exactly eight Beakons — the farm sizes itself from the
-herd, with no arithmetic and no extra pin.
+kilograms off a pile.
+
+Growth is measured in **percentage points of maturity per cycle**, which is what makes the
+sums work: a domesticated Starnacle ripens over 4 cycles, so it offers 25 % a cycle, and a
+Beakon eating 12.5 % takes half of it — one plant keeps two Beakons. Plant a slower crop
+and the same critter needs more of them. Wire the two together and the farm sizes itself
+from the herd, with no arithmetic and no extra pin.
 
 ## A ranch is not free
 

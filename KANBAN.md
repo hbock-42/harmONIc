@@ -50,6 +50,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms
+- `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
+  Tublia as domesticated ones, purely because wild plants ripen slower
 - `E4-29` **Extend growth links to the remaining grazers** — Pip on Arbor Tree, Flox on
   Pikeapple, Drecko on Mealwood, Bammoth on Plume Squash. Each needs its plant seeded and
   its growth percentage found; until then those diets are modelled in kilograms of a
@@ -70,6 +72,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-27` Mercury and cinnabar processing, and the Smoker / Deep Fryer food buildings
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms
+- `E4-31` Wild variants of grazed plants: the same critter needs four times as many wild
+  Tublia as domesticated ones, purely because wild plants ripen slower
 - `E4-29` **Extend growth links to the remaining grazers** — Pip on Arbor Tree, Flox on
   Pikeapple, Drecko on Mealwood, Bammoth on Plume Squash. Each needs its plant seeded and
   its growth percentage found; until then those diets are modelled in kilograms of a
@@ -125,11 +129,11 @@ _(empty)_
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
 - `E4-30` **Plant growth as a capacity link** — a grazing critter eats a *fraction of a
-  living plant*, not kilograms off a pile. A plant now publishes one unit of growth and a
-  grazer takes its share, so a Beakon claiming 12.5 % means one Starnacle feeds exactly
-  eight, and wiring the two sizes the farm from the herd. Same mechanism as grooming,
-  shearing and milking. Applied to Beakon/Starnacle, Glo Squid/Tublia and Gassy Moo/Gas
-  Grass — which finally closes the Moo's missing input
+  living plant*, not kilograms off a pile. Growth is measured in percentage points of
+  maturity per cycle, so a plant's growth *time* decides how many mouths it keeps: a
+  4-cycle Starnacle offers 25 % a cycle and a Beakon eating 12.5 % takes half of it. Same
+  mechanism as grooming, shearing and milking. Applied to Beakon/Starnacle,
+  Glo Squid/Tublia and Gassy Moo/Gas Grass, which closes the Moo's missing input
 - `E4-9b` **The Aquatic critter roster, complete** — Beakon, Slogo, Gildgo, Orehull,
   Glo Squid, Seaquine and Kelpole join Blowter. Their individual pages carry rates even
   though the summary table does not, which is how they came to be wrongly written off.

@@ -1753,7 +1753,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled. One plant supplies one unit of growth, and a grazing critter takes a fraction of it, so wiring the two together sizes the farm from the herd.",
+      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled. Growth is published as percentage points of maturity per cycle: this one matures over 8 cycles, so it offers 12.5 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
       "tags": [
         "farming",
         "aquatic",
@@ -1778,7 +1778,7 @@ const String oniDataJson = r"""
         {
           "item": "tublia_growth",
           "direction": "output",
-          "rate": 1
+          "rate": 0.0208333333
         }
       ]
     },
@@ -1788,7 +1788,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 1,
-      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs. One plant supplies one unit of growth, and a grazing critter takes a fraction of it, so wiring the two together sizes the farm from the herd.",
+      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
       "tags": [
         "farming",
         "aquatic",
@@ -1808,7 +1808,7 @@ const String oniDataJson = r"""
         {
           "item": "starnacle_growth",
           "direction": "output",
-          "rate": 1
+          "rate": 0.0416666667
         }
       ]
     },
@@ -2881,7 +2881,7 @@ const String oniDataJson = r"""
       "id": "gassy_moo",
       "name": "Gassy Moo",
       "kind": "critter",
-      "description": "A Moo grazes two Gas Grass plants and makes 10 kg/cycle of natural gas. Moos lay no eggs — they summon another by meteor roughly every 16 cycles — so there is no egg output either.",
+      "description": "A Moo eats 50 % of a plant’s maturity a cycle, which is two Gas Grass at 25 % each, and makes 10 kg/cycle of natural gas. Moos lay no eggs — they summon another by meteor roughly every 16 cycles — so there is no egg output either.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -2892,7 +2892,7 @@ const String oniDataJson = r"""
         {
           "item": "gas_grass_growth",
           "direction": "input",
-          "rate": 2
+          "rate": 0.0833333333
         },
         {
           "item": "grooming",
@@ -3540,7 +3540,7 @@ const String oniDataJson = r"""
       "id": "glo_squid",
       "name": "Glo Squid",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: grazes two domestic Tublia and excretes abyssalite, at the 50 % ratio the documented critters use rather than a published figure. Milking gives 200 kg/cycle of squid ink. Wiring it to Tublia sizes the farm for you, and those plants want 60 kg/cycle of polluted brine and 40 kg of sulfur each.",
+      "description": "UNVERIFIED OUTPUT: grazes 25 % of a plant’s maturity a cycle, which is two domesticated Tublia at 12.5 % each — or eight wild ones, which ripen four times slower. It excretes abyssalite at the 50 % ratio the documented critters use rather than a published figure, and milks for 200 kg/cycle of squid ink.",
       "dupeLabourSecondsPerCycle": 24.0,
       "tags": [
         "ranching",
@@ -3561,7 +3561,7 @@ const String oniDataJson = r"""
         {
           "item": "tublia_growth",
           "direction": "input",
-          "rate": 2
+          "rate": 0.0416666667
         },
         {
           "item": "abyssalite",
@@ -3680,7 +3680,7 @@ const String oniDataJson = r"""
       "id": "beakon_grazing",
       "name": "Beakon (grazing Starnacles)",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: the same Beakon, fed on living Starnacles instead of mined phosphorite. It takes 12.5 % of one plant’s growth a cycle, so one Starnacle keeps exactly eight of them. The lime rate is still the 50 % ratio rather than a published figure.",
+      "description": "UNVERIFIED OUTPUT: the same Beakon, fed on living Starnacles instead of mined phosphorite. It eats 12.5 % of a plant’s maturity a cycle and a domesticated Starnacle ripens 25 % a cycle, so one plant keeps two Beakons. The lime rate is still the 50 % ratio rather than a published figure.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3696,7 +3696,7 @@ const String oniDataJson = r"""
         {
           "item": "starnacle_growth",
           "direction": "input",
-          "rate": 0.125
+          "rate": 0.0208333333
         },
         {
           "item": "lime",
@@ -3719,7 +3719,7 @@ const String oniDataJson = r"""
       "id": "gas_grass",
       "name": "Gas Grass",
       "kind": "plant",
-      "description": "Domesticated: 500 g/cycle of chlorine and 25 kg/cycle of dirt, yielding 400 kg of plant husk every 4 cycles. Needs 10,000 lux, which this model does not represent. One plant supplies one unit of growth, and a grazing critter takes a fraction of it, so wiring the two together sizes the farm from the herd.",
+      "description": "Domesticated: 500 g/cycle of chlorine and 25 kg/cycle of dirt, yielding 400 kg of plant husk every 4 cycles. Needs 10,000 lux, which this model does not represent. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -3745,7 +3745,7 @@ const String oniDataJson = r"""
         {
           "item": "gas_grass_growth",
           "direction": "output",
-          "rate": 1
+          "rate": 0.0416666667
         }
       ]
     }
