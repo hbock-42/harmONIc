@@ -136,6 +136,59 @@ void main() {
       });
     });
 
+    group('two builds sharing a canvas', () {
+      /// The reported problem: an oxygen chain and a coal ranch on one page,
+      /// where giving one an amount wiped the other's.
+      PipelineController twoBuilds() {
+        final pipeline = (PipelineBuilder(testDatabase, name: 'Two builds')
+              ..addSource('water')
+              ..add('electrolyzer', nodeId: 'elec')
+              ..addSink('oxygen')
+              ..addSink('hydrogen')
+              ..connectItem('src_water', 'elec', 'water')
+              ..connectItem('elec', 'sink_oxygen', 'oxygen')
+              ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+              ..add('hatch', nodeId: 'hatches')
+              ..add('coal_generator', nodeId: 'gen')
+              ..connectItem('hatches', 'gen', 'coal'))
+            .build();
+        return PipelineController(testDatabase, initial: pipeline);
+      }
+
+      test('each keeps its own amount', () {
+        final c = twoBuilds()
+          ..pin(const BuildingCountPin(nodeId: 'elec', count: 3))
+          ..pin(const BuildingCountPin(nodeId: 'hatches', count: 12));
+
+        expect(c.solution.status, SolveStatus.solved);
+        expect(c.solution.nodes['elec']!.count, closeTo(3, 1e-9));
+        expect(c.solution.nodes['hatches']!.count, closeTo(12, 1e-9));
+      });
+
+      test('changing one does not disturb the other', () {
+        final c = twoBuilds()
+          ..pin(const BuildingCountPin(nodeId: 'hatches', count: 12))
+          ..pin(const BuildingCountPin(nodeId: 'elec', count: 3))
+          ..pin(const BuildingCountPin(nodeId: 'elec', count: 7));
+
+        expect(c.pipeline.pins, hasLength(2));
+        expect(c.solution.nodes['hatches']!.count, closeTo(12, 1e-9));
+        expect(c.solution.nodes['elec']!.count, closeTo(7, 1e-9));
+      });
+
+      test('clearing one leaves the other set', () {
+        final c = twoBuilds()
+          ..pin(const BuildingCountPin(nodeId: 'elec', count: 3))
+          ..pin(const BuildingCountPin(nodeId: 'hatches', count: 12))
+          ..clearPin('elec');
+
+        expect(c.pipeline.pins.single.nodeId, 'hatches');
+        expect(c.solution.status, SolveStatus.underdetermined,
+            reason: 'the oxygen build now has no scale, and says so');
+        expect(c.solution.nodes['hatches']!.count, closeTo(12, 1e-9));
+      });
+    });
+
     test('pinning replaces the previous pin rather than stacking', () {
       final c = testController()
         ..pin(const BuildingCountPin(nodeId: 'elec', count: 3));
@@ -145,7 +198,7 @@ void main() {
     });
 
     test('clearing the pin leaves the graph underdetermined, not broken', () {
-      final c = testController()..clearPin();
+      final c = testController()..clearAllPins();
       expect(c.solution.status, SolveStatus.underdetermined);
       expect(c.solution.isUsable, isTrue);
     });

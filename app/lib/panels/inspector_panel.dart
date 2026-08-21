@@ -298,7 +298,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
               compact: true,
               onPressed: pinned
                   ? () {
-                      controller.clearPin();
+                      controller.clearPin(node.id);
                       setState(() => _amount.text = '');
                     }
                   : null,

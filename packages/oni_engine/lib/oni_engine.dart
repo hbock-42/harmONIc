@@ -7,6 +7,7 @@ library;
 
 export 'src/data/default_database.dart';
 export 'src/graph/builder.dart';
+export 'src/graph/components.dart';
 export 'src/graph/pin.dart';
 export 'src/graph/pipeline.dart';
 export 'src/graph/repair.dart';

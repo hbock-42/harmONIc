@@ -403,10 +403,18 @@ class PipelineController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The headline interaction: one pin at a time, replacing whatever was there.
-  void pin(Pin pin) => _apply(_pipeline.withOnlyPin(pin));
+  /// The headline interaction: say how much you have of one thing.
+  ///
+  /// One amount per *build*, not per canvas. Two chains that share no wire are
+  /// two builds, and a scale given to one says nothing about the other — so
+  /// this replaces only the amount belonging to the same connected group.
+  void pin(Pin pin) => _apply(_pipeline.withPinInComponent(pin));
 
-  void clearPin() => _apply(_pipeline.copyWith(pins: const []));
+  /// Forgets the amount given to [nodeId]'s build, leaving other builds alone.
+  void clearPin(String nodeId) =>
+      _apply(_pipeline.withoutPinInComponent(nodeId));
+
+  void clearAllPins() => _apply(_pipeline.copyWith(pins: const []));
 
   Pin? pinFor(String nodeId) {
     for (final p in _pipeline.pins) {
@@ -516,6 +524,97 @@ class PipelineController extends ChangeNotifier {
           ],
         ),
       );
+
+  /// The selected nodes and the wires between them, as a standalone pipeline.
+  ///
+  /// Wires leaving the selection are dropped: half a connection is not
+  /// something the other build could make sense of.
+  Pipeline? copySelection() {
+    if (_selectedNodeIds.isEmpty) return null;
+    final chosen = {..._selectedNodeIds};
+    return Pipeline(
+      id: 'clipboard',
+      name: 'Copied nodes',
+      dataVersion: _database.dataVersion,
+      nodes: [
+        for (final n in _pipeline.nodes) if (chosen.contains(n.id)) n,
+      ],
+      edges: [
+        for (final e in _pipeline.edges)
+          if (chosen.contains(e.fromNodeId) && chosen.contains(e.toNodeId)) e,
+      ],
+      pins: [
+        for (final p in _pipeline.pins) if (chosen.contains(p.nodeId)) p,
+      ],
+    );
+  }
+
+  /// Adds another build's nodes to this one, under fresh ids.
+  ///
+  /// Ids are rewritten rather than reused: the same build pasted twice, or a
+  /// build pasted into one that grew from it, would otherwise collide and the
+  /// wires would join up things nobody joined.
+  void pasteNodes(Pipeline incoming, {Offset offset = const Offset(32, 32)}) {
+    if (incoming.nodes.isEmpty) return;
+    final rename = <String, String>{};
+    final nodes = <PipelineNode>[..._pipeline.nodes];
+    for (final node in incoming.nodes) {
+      if (_database.process(node.specId) == null) continue;
+      final id = _freshId(node.specId);
+      rename[node.id] = id;
+      nodes.add(PipelineNode(
+        id: id,
+        specId: node.specId,
+        label: node.label,
+        x: NodeLayout.snap(node.x + offset.dx),
+        y: NodeLayout.snap(node.y + offset.dy),
+        uptime: node.uptime,
+        outputScale: node.outputScale,
+        ventedPorts: node.ventedPorts,
+        notes: node.notes,
+      ));
+    }
+    if (rename.isEmpty) return;
+
+    final edges = <PipelineEdge>[
+      ..._pipeline.edges,
+      for (final e in incoming.edges)
+        if (rename[e.fromNodeId] case final String from)
+          if (rename[e.toNodeId] case final String to)
+            PipelineEdge(
+              id: _freshId('edge'),
+              fromNodeId: from,
+              fromPortId: e.fromPortId,
+              toNodeId: to,
+              toPortId: e.toPortId,
+              mode: e.mode,
+              share: e.share,
+            ),
+    ];
+
+    // Amounts come across too, so a pasted build arrives already scaled.
+    final pins = <Pin>[
+      ..._pipeline.pins,
+      for (final pin in incoming.pins)
+        if (rename[pin.nodeId] case final String id)
+          switch (pin) {
+            BuildingCountPin(:final count) =>
+              BuildingCountPin(nodeId: id, count: count),
+            PortRatePin(:final portId, :final ratePerSecond) =>
+              PortRatePin(nodeId: id, portId: portId, ratePerSecond: ratePerSecond),
+            StockPin(:final portId, :final amount, :final durationSeconds) =>
+              StockPin(
+                nodeId: id,
+                portId: portId,
+                amount: amount,
+                durationSeconds: durationSeconds,
+              ),
+          },
+    ];
+
+    _apply(_pipeline.copyWith(nodes: nodes, edges: edges, pins: pins));
+    selectNodes(rename.values);
+  }
 
   void rename(String name) => _apply(_pipeline.copyWith(name: name));
 

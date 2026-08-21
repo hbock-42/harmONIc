@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:oni_engine/oni_engine.dart';
 import 'package:flutter/widgets.dart';
 
 import 'canvas/auto_layout.dart';
@@ -6,7 +7,6 @@ import 'canvas/graph_canvas.dart';
 import 'design/tokens.dart';
 import 'design/widgets.dart';
 import 'panels/inspector_panel.dart';
-import 'package:oni_engine/oni_engine.dart';
 
 import 'panels/palette_panel.dart';
 import 'panels/pipelines_menu.dart';
@@ -62,6 +62,29 @@ class _EditorScreenState extends State<EditorScreen> {
   void _onLibraryChanged() =>
       controller.useDatabase(widget.library.database);
 
+  /// Copies the selected nodes to the clipboard, so they can be pasted into
+  /// another build — the clipboard being the one place both builds can reach.
+  Future<void> _copySelection() async {
+    final selection = controller.copySelection();
+    if (selection == null) return;
+    await Clipboard.setData(
+      ClipboardData(text: PipelineShareCode.encode(selection)),
+    );
+  }
+
+  Future<void> _pasteNodes() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = data?.text;
+    if (text == null || text.trim().isEmpty) return;
+    try {
+      controller.pasteNodes(PipelineShareCode.decode(text));
+    } on Object {
+      // A clipboard holding something else is not an error worth interrupting
+      // for; ⌘V over a canvas is a reasonable thing to try by accident.
+      return;
+    }
+  }
+
   void _add(String specId) {
     final centre = _canvasKey.currentState?.viewportCentreWorld ??
         const Offset(200, 200);
@@ -87,6 +110,8 @@ class _EditorScreenState extends State<EditorScreen> {
                 _ZoomOutIntent(),
             SingleActivator(LogicalKeyboardKey.digit0, meta: true):
                 _ZoomResetIntent(),
+            SingleActivator(LogicalKeyboardKey.keyC, meta: true): _CopyIntent(),
+            SingleActivator(LogicalKeyboardKey.keyV, meta: true): _PasteIntent(),
           },
           child: Actions(
             actions: <Type, Action<Intent>>{
@@ -102,6 +127,8 @@ class _EditorScreenState extends State<EditorScreen> {
                   () => _canvasKey.currentState?.zoomAtCentre(1 / 1.25)),
               _ZoomResetIntent: _CanvasAction<_ZoomResetIntent>(
                   () => _canvasKey.currentState?.resetView()),
+              _CopyIntent: _CanvasAction<_CopyIntent>(_copySelection),
+              _PasteIntent: _CanvasAction<_PasteIntent>(_pasteNodes),
             },
             child: Focus(
               autofocus: true,
@@ -339,6 +366,14 @@ class _ZoomOutIntent extends Intent {
 
 class _ZoomResetIntent extends Intent {
   const _ZoomResetIntent();
+}
+
+class _CopyIntent extends Intent {
+  const _CopyIntent();
+}
+
+class _PasteIntent extends Intent {
+  const _PasteIntent();
 }
 
 class _TopBar extends StatefulWidget {

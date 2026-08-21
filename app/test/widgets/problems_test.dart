@@ -32,7 +32,7 @@ void main() {
   group('not enough pins', () {
     testWidgets('the nodes worth pinning are offered as buttons',
         (tester) async {
-      final controller = await pumpEditor(tester)..clearPin();
+      final controller = await pumpEditor(tester)..clearAllPins();
       await tester.pump();
 
       expect(controller.solution.status, SolveStatus.underdetermined);
@@ -55,7 +55,7 @@ void main() {
     });
 
     testWidgets('clicking one selects it, ready to be pinned', (tester) async {
-      final controller = await pumpEditor(tester)..clearPin();
+      final controller = await pumpEditor(tester)..clearAllPins();
       await tester.pump();
 
       final free = controller.solution.freeNodeIds.first;
@@ -76,7 +76,7 @@ void main() {
     });
 
     testWidgets('pinning from there clears the problem', (tester) async {
-      final controller = await pumpEditor(tester)..clearPin();
+      final controller = await pumpEditor(tester)..clearAllPins();
       await tester.pump();
       expect(find.text('GIVE AN AMOUNT FOR'), findsOneWidget);
 

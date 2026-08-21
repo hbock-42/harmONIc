@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../model/game_database.dart';
 import '../model/port.dart';
 import '../model/process_spec.dart';
+import 'components.dart';
 import 'pin.dart';
 
 /// One process placed in a pipeline. [PipelineNode.id] is what edges and pins
@@ -298,9 +299,31 @@ class Pipeline {
         dataVersion: dataVersion ?? this.dataVersion,
       );
 
-  /// Replaces every pin with a single one — the app's headline interaction:
-  /// click a node, say how many you have, everything else follows.
+  /// Replaces every pin with a single one.
   Pipeline withOnlyPin(Pin pin) => copyWith(pins: [pin]);
+
+  /// Sets the amount for one build without disturbing any other.
+  ///
+  /// Two builds sharing a canvas each need their own scale, and neither says
+  /// anything about the other — so a new amount replaces only the one in its
+  /// own connected group.
+  Pipeline withPinInComponent(Pin pin) {
+    final component = componentOf(this, pin.nodeId);
+    return copyWith(pins: [
+      for (final existing in pins)
+        if (!component.contains(existing.nodeId)) existing,
+      pin,
+    ]);
+  }
+
+  /// Removes whatever amount was set on [nodeId]'s build, leaving others alone.
+  Pipeline withoutPinInComponent(String nodeId) {
+    final component = componentOf(this, nodeId);
+    return copyWith(pins: [
+      for (final existing in pins)
+        if (!component.contains(existing.nodeId)) existing,
+    ]);
+  }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
