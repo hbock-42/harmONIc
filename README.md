@@ -101,6 +101,12 @@ under a fresh id and never overwrite what you already have.
 group takes the rest with it. Delete removes the lot — nodes, their wires and their pins —
 in a single undo step. The inspector totals a group's power, heat and Duplicant time.
 
+## Getting around the canvas
+
+Scroll to pan, pinch or ⌘-scroll to zoom, ⌘= and ⌘− and ⌘0 if you would rather type, and
+buttons in the corner of the canvas that always work. The percentage between them is a
+button too: click it to go back to 100 %.
+
 ## Tidy
 
 `Tidy` in the top bar arranges the graph left to right — every node one column right of

@@ -30,6 +30,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E7-11` minimap
 - `E7-12` Tidy only the selection, now that a selection can be more than one node
+- `E7-14` Zoom to fit a *selection*, now that there is one
 - `E7-13` Marquee currently needs ⇧ because a plain drag pans. A space-drag-to-pan
   convention would free the plain drag for selection, which is what most editors do
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
@@ -150,6 +151,9 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E12-2` **Zoom that can be found** — a trackpad pinch did nothing at all, and the only
+  way to zoom was ⌘-scroll, which nothing announced. Pinching works, ⌘= / ⌘− / ⌘0 work, and
+  there are buttons on the canvas showing the current percentage
 - `E12-1` **Saved builds survive the data changing** — splitting the plants removed ports
   that saved pipelines were wired to, and the canvas threw on every frame trying to draw
   them. Drawing now tolerates anything it cannot resolve, and a repair pass moves a node to

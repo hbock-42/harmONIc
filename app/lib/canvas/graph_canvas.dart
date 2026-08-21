@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
+import '../design/widgets.dart';
 import '../state/pipeline_controller.dart';
 import 'edge_painter.dart';
 import 'geometry.dart';
@@ -100,6 +101,14 @@ class GraphCanvasState extends State<GraphCanvas> {
       _offset = focalLocal - (focalLocal - _offset) * (next / _scale);
       _scale = next;
     });
+  }
+
+  /// Zooms about the middle of the view, which is what a button should do —
+  /// zooming about the cursor is for the cursor.
+  void zoomAtCentre(double factor) {
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    final size = box?.size ?? const Size(800, 600);
+    zoomBy(factor, Offset(size.width / 2, size.height / 2));
   }
 
   void resetView() => setState(() {
@@ -242,17 +251,49 @@ class GraphCanvasState extends State<GraphCanvas> {
     controller.select(edgeId == null ? null : EdgeSelection(edgeId));
   }
 
-  void _onPointerSignal(PointerSignalEvent event) {
-    if (event is! PointerScrollEvent) return;
+  Offset? _localOf(Offset globalPosition) {
     final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null) return;
-    final local = box.globalToLocal(event.position);
-    final zooming = HardwareKeyboard.instance.isMetaPressed ||
-        HardwareKeyboard.instance.isControlPressed;
-    if (zooming) {
-      zoomBy(event.scrollDelta.dy > 0 ? 0.9 : 1.1, local);
-    } else {
-      setState(() => _offset -= event.scrollDelta);
+    return box?.globalToLocal(globalPosition);
+  }
+
+  void _onPointerSignal(PointerSignalEvent event) {
+    final local = _localOf(event.position);
+    if (local == null) return;
+
+    // A mouse with a scroll wheel, or a trackpad's two-finger scroll.
+    if (event is PointerScrollEvent) {
+      final zooming = HardwareKeyboard.instance.isMetaPressed ||
+          HardwareKeyboard.instance.isControlPressed;
+      if (zooming) {
+        zoomBy(event.scrollDelta.dy > 0 ? 0.9 : 1.1, local);
+      } else {
+        setState(() => _offset -= event.scrollDelta);
+      }
+      return;
+    }
+    // Some platforms report a pinch as a scale signal instead.
+    if (event is PointerScaleEvent) {
+      zoomBy(event.scale, local);
+    }
+  }
+
+  /// How far a trackpad pinch had zoomed the last time we looked. The event
+  /// reports the total since the gesture began, not a step.
+  double _panZoomScale = 1;
+
+  void _onPanZoomStart(PointerPanZoomStartEvent event) => _panZoomScale = 1;
+
+  /// Only the pinch is handled here.
+  ///
+  /// The pan half of a trackpad gesture also reaches the pan recogniser on the
+  /// background, which already moves the view — handling it here as well moved
+  /// the canvas twice as far as the fingers did.
+  void _onPanZoomUpdate(PointerPanZoomUpdateEvent event) {
+    final local = _localOf(event.position);
+    if (local == null || event.scale <= 0) return;
+    if (event.scale != _panZoomScale) {
+      zoomBy(event.scale / _panZoomScale, local);
+      _panZoomScale = event.scale;
     }
   }
 
@@ -278,6 +319,8 @@ class GraphCanvasState extends State<GraphCanvas> {
         }
       },
       onPointerSignal: _onPointerSignal,
+      onPointerPanZoomStart: _onPanZoomStart,
+      onPointerPanZoomUpdate: _onPanZoomUpdate,
       child: MouseRegion(
         onHover: (event) {
           final box =
@@ -388,6 +431,7 @@ class GraphCanvasState extends State<GraphCanvas> {
                 ),
               ),
             ),
+            _zoomControls(),
             ?_portMenu(),
               ],
             ),
@@ -397,6 +441,56 @@ class GraphCanvasState extends State<GraphCanvas> {
       ),
     );
   }
+
+  /// Always-visible zoom controls. Pinching and ⌘-scrolling both work, but
+  /// neither announces itself, and a canvas you cannot get out of when it is
+  /// zoomed wrong is a trap.
+  Widget _zoomControls() => Positioned(
+        right: OniSpacing.md,
+        bottom: OniSpacing.md,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: OniColors.surface.withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: OniColors.border),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                OniButton(
+                  label: '−',
+                  compact: true,
+                  onPressed: () => zoomAtCentre(1 / 1.25),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: resetView,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: SizedBox(
+                      width: 52,
+                      child: Text(
+                        '${(_scale * 100).toStringAsFixed(0)} %',
+                        textAlign: TextAlign.center,
+                        style: OniType.numberSmall
+                            .copyWith(color: OniColors.text),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                OniButton(
+                  label: '+',
+                  compact: true,
+                  onPressed: () => zoomAtCentre(1.25),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   /// The rubber band itself, drawn in world space alongside the nodes.
   Widget? _marquee() {

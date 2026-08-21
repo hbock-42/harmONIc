@@ -80,6 +80,13 @@ class _EditorScreenState extends State<EditorScreen> {
             SingleActivator(LogicalKeyboardKey.delete): _DeleteIntent(),
             SingleActivator(LogicalKeyboardKey.backspace): _DeleteIntent(),
             SingleActivator(LogicalKeyboardKey.escape): _DeselectIntent(),
+            SingleActivator(LogicalKeyboardKey.equal, meta: true):
+                _ZoomInIntent(),
+            SingleActivator(LogicalKeyboardKey.add, meta: true): _ZoomInIntent(),
+            SingleActivator(LogicalKeyboardKey.minus, meta: true):
+                _ZoomOutIntent(),
+            SingleActivator(LogicalKeyboardKey.digit0, meta: true):
+                _ZoomResetIntent(),
           },
           child: Actions(
             actions: <Type, Action<Intent>>{
@@ -89,6 +96,12 @@ class _EditorScreenState extends State<EditorScreen> {
                   _CanvasAction<_DeleteIntent>(controller.deleteSelection),
               _DeselectIntent:
                   _CanvasAction<_DeselectIntent>(() => controller.select(null)),
+              _ZoomInIntent: _CanvasAction<_ZoomInIntent>(
+                  () => _canvasKey.currentState?.zoomAtCentre(1.25)),
+              _ZoomOutIntent: _CanvasAction<_ZoomOutIntent>(
+                  () => _canvasKey.currentState?.zoomAtCentre(1 / 1.25)),
+              _ZoomResetIntent: _CanvasAction<_ZoomResetIntent>(
+                  () => _canvasKey.currentState?.resetView()),
             },
             child: Focus(
               autofocus: true,
@@ -314,6 +327,18 @@ class _DeleteIntent extends Intent {
 
 class _DeselectIntent extends Intent {
   const _DeselectIntent();
+}
+
+class _ZoomInIntent extends Intent {
+  const _ZoomInIntent();
+}
+
+class _ZoomOutIntent extends Intent {
+  const _ZoomOutIntent();
+}
+
+class _ZoomResetIntent extends Intent {
+  const _ZoomResetIntent();
 }
 
 class _TopBar extends StatefulWidget {
