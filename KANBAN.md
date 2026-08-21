@@ -110,6 +110,10 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-10` **The totals say which build they are about** — two builds on one canvas were
+  being added together, so a SPOM paying for itself could hide a refinery 1.2 kW in the
+  red. Selecting anything scopes the summary to that build, and the bar says which
+
 - `E9-5` **Glyphs instead of dots** — every item was a coloured dot, so the only difference
   between water and oxygen was hue. Each category now has a drawn shape as well, checked
   pixel for pixel against every other in a single colour
@@ -580,6 +584,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-7 | ✅ | Per-cycle ⇄ per-second toggle |
 | E10-8 | ✅ | Templates | SPOM, petroleum boiler, Hatch ranch and cooling loop, laid out on the way in; the first-run build is one of them |
 | E10-9 | ✅ | The numbers on the wires are clickable |
+| E10-10 | ✅ | Totals scoped to one build | two builds on a canvas were summed together, which described neither; the selection decides which one the bar is about |
 
 ## E11 — What a build actually costs to run
 

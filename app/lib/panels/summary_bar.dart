@@ -9,6 +9,7 @@ import '../design/widgets.dart';
 class SummaryBar extends StatelessWidget {
   const SummaryBar({
     required this.solution,
+    required this.scope,
     required this.database,
     required this.rateDisplay,
     required this.onToggleRates,
@@ -16,6 +17,10 @@ class SummaryBar extends StatelessWidget {
   });
 
   final PipelineSolution solution;
+
+  /// What the figures describe: the whole page, or the one build being worked
+  /// in. Said out loud, because a total is meaningless without it.
+  final String scope;
   final GameDatabase database;
   final RateDisplay rateDisplay;
   final VoidCallback onToggleRates;
@@ -35,6 +40,10 @@ class SummaryBar extends StatelessWidget {
       ),
       child: Row(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(right: OniSpacing.lg),
+            child: Text(scope.toUpperCase(), style: OniType.label),
+          ),
           OniStat(
             label: 'net power',
             value: database.itemOrThrow(WellKnownItems.power)

@@ -168,6 +168,61 @@ class PipelineSolution {
   /// Nodes the solver could not pin down; pinning any of them helps.
   final List<String> freeNodeIds;
 
+  /// The same solution, seen as if only these nodes were on the page.
+  ///
+  /// Two builds sharing a canvas share nothing else: adding their power
+  /// together gives a figure that describes neither, and a build that runs at
+  /// a loss can be hidden by one beside it that does not. Every total here is
+  /// only meaningful about one build at a time.
+  PipelineSolution scopedTo(Set<String> nodeIds) {
+    final nodes = <String, NodeResult>{
+      for (final entry in this.nodes.entries)
+        if (nodeIds.contains(entry.key)) entry.key: entry.value,
+    };
+    final balances = [
+      for (final balance in portBalances)
+        if (nodeIds.contains(balance.ref.nodeId)) balance,
+    ];
+
+    final produced = <String, double>{};
+    final consumed = <String, double>{};
+    final externalIn = <String, double>{};
+    final externalOut = <String, double>{};
+    for (final balance in balances) {
+      final map =
+          balance.direction == PortDirection.output ? produced : consumed;
+      map[balance.itemId] = (map[balance.itemId] ?? 0) + balance.rate;
+      final leftover = balance.unlinkedRate;
+      if (leftover > 1e-9) {
+        final target =
+            balance.direction == PortDirection.output ? externalOut : externalIn;
+        target[balance.itemId] = (target[balance.itemId] ?? 0) + leftover;
+      }
+    }
+
+    return PipelineSolution(
+      status: status,
+      issues: issues,
+      nodes: nodes,
+      edgeFlows: edgeFlows,
+      portBalances: balances,
+      itemBalances: <String, ItemBalance>{
+        for (final itemId in {...produced.keys, ...consumed.keys})
+          itemId: ItemBalance(
+            itemId: itemId,
+            produced: produced[itemId] ?? 0,
+            consumed: consumed[itemId] ?? 0,
+            externalInput: externalIn[itemId] ?? 0,
+            externalOutput: externalOut[itemId] ?? 0,
+          ),
+      },
+      freeNodeIds: [
+        for (final id in freeNodeIds)
+          if (nodeIds.contains(id)) id,
+      ],
+    );
+  }
+
   bool get isUsable =>
       status == SolveStatus.solved || status == SolveStatus.underdetermined;
 

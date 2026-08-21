@@ -70,6 +70,40 @@ class PipelineController extends ChangeNotifier {
   AsBuiltReport get asBuiltReport =>
       _asBuilt ??= asBuilt(_pipeline, database, _solution);
 
+  /// The builds on this canvas: nodes that reach each other by wires.
+  List<Set<String>> get builds => connectedComponents(_pipeline);
+
+  /// The build being worked in, when there is more than one to choose from.
+  ///
+  /// Whatever is selected decides it. With nothing selected there is no answer
+  /// and the totals go back to describing the whole page, which is honest —
+  /// "everything here" is a real thing to be told, it is just rarely the thing
+  /// you wanted.
+  Set<String>? get focusedBuild {
+    final all = builds;
+    if (all.length < 2) return null;
+    final anchor = _selectedNodeIds.isNotEmpty
+        ? _selectedNodeIds.first
+        : (selection is EdgeSelection
+            ? _pipeline
+                .edges
+                .where((e) => e.id == (selection as EdgeSelection).edgeId)
+                .map((e) => e.fromNodeId)
+                .firstOrNull
+            : null);
+    if (anchor == null) return null;
+    for (final build in all) {
+      if (build.contains(anchor)) return build;
+    }
+    return null;
+  }
+
+  /// The solution as it applies to the build being worked in.
+  PipelineSolution get focusedSolution {
+    final build = focusedBuild;
+    return build == null ? _solution : _solution.scopedTo(build);
+  }
+
   Temperatures? _temperatures;
 
   /// What temperature each port runs at, where the build determines it.

@@ -110,4 +110,48 @@ void main() {
       expect(solver.solve(wired).status, SolveStatus.inconsistent);
     });
   });
+
+  group('totals for one build', () {
+    /// Two builds sharing a page: a SPOM that pays for itself, and a Metal
+    /// Refinery that very much does not.
+    Pipeline both() => (PipelineBuilder(db, name: 'two builds')
+          ..addSource('water')
+          ..add('electrolyzer', nodeId: 'elec')
+          ..add('hydrogen_generator', nodeId: 'hgen')
+          ..connectItem('src_water', 'elec', 'water')
+          ..connectItem('elec', 'hgen', 'hydrogen')
+          ..pinCount('elec', 4)
+          ..addSource('iron_ore')
+          ..add('metal_refinery', nodeId: 'refinery')
+          ..connectItem('src_iron_ore', 'refinery', 'iron_ore')
+          ..pinCount('refinery', 1))
+        .build();
+
+    test('the whole canvas adds up to something nobody can build', () {
+      final solution = PipelineSolver(db).solve(both());
+      expect(solution.status, SolveStatus.solved);
+
+      // Four Electrolyzers draw 480 W and their generators make 3 584; the
+      // refinery draws 1 200. The canvas nets out positive, which tells you
+      // nothing about either build.
+      expect(solution.netPowerWatts, closeTo(3584 - 480 - 1200, 1e-6));
+    });
+
+    test('and each build on its own adds up to something you can act on', () {
+      final pipeline = both();
+      final solution = PipelineSolver(db).solve(pipeline);
+
+      final spom = solution.scopedTo(componentOf(pipeline, 'elec'));
+      final smelting = solution.scopedTo(componentOf(pipeline, 'refinery'));
+
+      expect(spom.netPowerWatts, closeTo(3584 - 480, 1e-6));
+      expect(smelting.netPowerWatts, closeTo(-1200, 1e-6));
+      // Neither knows anything about the other's materials.
+      expect(spom.itemBalances.containsKey('iron_ore'), isFalse);
+      expect(smelting.itemBalances.containsKey('hydrogen'), isFalse);
+      // And the two halves still make the whole.
+      expect(spom.netPowerWatts + smelting.netPowerWatts,
+          closeTo(solution.netPowerWatts, 1e-6));
+    });
+  });
 }

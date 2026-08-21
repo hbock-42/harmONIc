@@ -182,7 +182,15 @@ class _EditorScreenState extends State<EditorScreen> {
                       ),
                     ),
                     SummaryBar(
-                      solution: controller.solution,
+                      // The build being worked in, when there is more than one
+                      // on the page: adding two builds' power together gives a
+                      // figure that describes neither.
+                      solution: controller.focusedSolution,
+                      scope: controller.focusedBuild == null
+                          ? (controller.builds.length > 1
+                              ? 'whole canvas'
+                              : 'this build')
+                          : 'this build',
                       database: controller.database,
                       rateDisplay: widget.displaySettings.display,
                       onToggleRates: widget.displaySettings.toggle,
