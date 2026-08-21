@@ -35,8 +35,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E5-1..2` Save/load pipelines to disk — the app has no persistence yet, so a
   reload loses your build. Next most valuable thing after the canvas
 - `E10-5` a real problems *panel* (the banner shows the first four)
-- `E11-2` Warn when a conduit's *temperature* would break it — a pipe carrying 500 °C steam
-  needs to be built of something that survives it, which the model does not check
+- `E11-2` Pipe *materials*: 500 °C steam needs a pipe built of something that survives it,
+  which depends on the material's own limits rather than the flow's temperature alone
+- `E11-6` Temperature *mixing*: two flows meeting average out by mass and specific heat,
+  which the model does not track — it reports the temperature a port declares, no more
 - `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
   model has no notion of a mixture, so there is nothing honest to model yet
 - `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
@@ -145,6 +147,10 @@ _(empty)_
   is now the fastest way to build a chain
 - `E8-4` 42 app tests: controller, node widget geometry, canvas coordinates and gestures,
   editor flows
+- `E1-7` **Temperatures shown** — every port that declares one now says it, and a flow past
+  the 75 °C nearly everything overheats at is called out. The wording is careful: it is an
+  invitation to look, not a prediction, since whether something cooks depends on what the
+  pipe runs past and this model cannot see that
 - `E11-3` **Pumps** — one generated per fluid, the way sources and sinks are, since a pump
   is the same building whatever it moves. Their power is the largest hidden cost in a
   plumbed build: two gas pumps to fill a single gas pipe is 480 W before anything has been
@@ -278,7 +284,7 @@ _(empty)_
 | E1-4 | P0 | `ProcessSpec` | id, name, kind (`building` \| `critter` \| `plant` \| `duplicant` \| `source` \| `sink`), ports, `powerDraw`, `heatOutput`, `dupeLabourPerCycle`, `footprint`, tags |
 | E1-5 | P1 | Operating modes | one building = several specs (e.g. Oil Refinery is one, but Metal Refinery has one spec *per* metal; Generators have "on demand" vs "100% uptime") |
 | E1-6 | P1 | `uptime` factor on a node | a building fed at 60 % runs at 60 %; solver works in "effective building-seconds", UI shows both `count` and `physicalCount = ceil(count/uptime)` |
-| E1-7 | P1 | Temperature & phase | items carry a temperature; heat exchange is a *derived* report, not a solver constraint (v1) |
+| E1-7 | ✅ | Temperature reported | ports carry a temperature and the app shows it; heat exchange is still not modelled |
 | E1-8 | P2 | Germs / disease | out of scope v1, keep a field so it can be added |
 
 ## E2 — Pipeline graph

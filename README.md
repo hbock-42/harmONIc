@@ -63,6 +63,13 @@ the cook's time counted against your Duplicant budget like any other labour.
 A plant comes in two forms, harvested and grazed, because its growth is either eaten by a
 critter or taken as a crop and never both.
 
+## How hot is it?
+
+Where the game fixes a temperature — an Electrolyzer's 70 °C gases, a Water Geyser's 95 °C
+water, a Steam Vent's 500 °C — the port says so, and anything past the 75 °C most buildings
+overheat at is called out. That is an invitation to look rather than a prediction: whether
+something actually cooks depends on what the pipe runs past, and this model cannot see that.
+
 ## Can it actually be built?
 
 Balanced ratios are not the whole answer: a gas pipe carries only 1 kg/s, so three

@@ -595,56 +595,79 @@ class _PortRow extends StatelessWidget {
         port.isOutput && controller.portIsPulled(node.id, port.id);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: OniItemColors.ofItem(item),
-            ),
-          ),
-          const SizedBox(width: OniSpacing.sm),
-          Expanded(
-            child: Text(
-              '${port.isInput ? '←' : '→'} ${item?.name ?? port.itemId}',
-              style: OniType.body.copyWith(fontSize: 12),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          OniRate(
-            text: item?.formatRate(balance?.rate ?? 0, rateDisplay,
-                    precision: 1) ??
-                (balance?.rate ?? 0).toStringAsFixed(1),
-            onToggle: onToggleRates,
-            style: OniType.numberSmall.copyWith(color: OniColors.text),
-          ),
-          if (unmet || spare)
-            Padding(
-              padding: const EdgeInsets.only(left: 6),
-              child: Text(
-                unmet ? 'supply' : 'spare',
-                style: OniType.numberSmall.copyWith(
-                  color: unmet ? OniColors.warning : OniColors.textFaint,
-                  fontSize: 9.5,
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: OniItemColors.ofItem(item),
                 ),
               ),
-            ),
-          if (canVent)
-            Padding(
-              padding: const EdgeInsets.only(left: 6),
-              child: OniButton(
-                label: venting ? 'venting' : 'vent',
-                compact: true,
-                tone: venting ? OniButtonTone.accent : OniButtonTone.neutral,
-                onPressed: () => controller.setPortVenting(
-                  node.id,
-                  port.id,
-                  venting: !venting,
+              const SizedBox(width: OniSpacing.sm),
+              Expanded(
+                child: Text(
+                  '${port.isInput ? '←' : '→'} ${item?.name ?? port.itemId}',
+                  style: OniType.body.copyWith(fontSize: 12),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+              ),
+              OniRate(
+                text: item?.formatRate(balance?.rate ?? 0, rateDisplay,
+                        precision: 1) ??
+                    (balance?.rate ?? 0).toStringAsFixed(1),
+                onToggle: onToggleRates,
+                style: OniType.numberSmall.copyWith(color: OniColors.text),
+              ),
+            ],
+          ),
+          // Everything qualifying the flow goes on its own line: cramming the
+          // temperature, the shortfall and the vent switch onto the first one
+          // left no room for the name.
+          if (port.temperatureC != null || unmet || spare || canVent)
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: 3),
+              child: Wrap(
+                spacing: OniSpacing.sm,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (port.temperatureC case final double celsius)
+                    Text(
+                      '${celsius.toStringAsFixed(0)} °C',
+                      style: OniType.numberSmall.copyWith(
+                        color:
+                            port.runsHot ? OniColors.warning : OniColors.textFaint,
+                      ),
+                    ),
+                  if (unmet || spare)
+                    Text(
+                      unmet ? 'needs supply' : 'spare',
+                      style: OniType.numberSmall.copyWith(
+                        color:
+                            unmet ? OniColors.warning : OniColors.textFaint,
+                      ),
+                    ),
+                  if (canVent)
+                    OniButton(
+                      label: venting ? 'venting' : 'vent',
+                      compact: true,
+                      tone: venting
+                          ? OniButtonTone.accent
+                          : OniButtonTone.neutral,
+                      onPressed: () => controller.setPortVenting(
+                        node.id,
+                        port.id,
+                        venting: !venting,
+                      ),
+                    ),
+                ],
               ),
             ),
         ],
@@ -698,6 +721,24 @@ class _EdgeInspector extends StatelessWidget {
             const SizedBox(height: OniSpacing.md),
             OniStat(label: 'carried by', value: carried),
           ],
+        if (port?.temperatureC case final double celsius) ...[
+          const SizedBox(height: OniSpacing.md),
+          OniStat(
+            label: 'arrives at',
+            value: '${celsius.toStringAsFixed(0)} °C',
+            valueColour: port!.runsHot ? OniColors.warning : null,
+          ),
+          if (port.runsHot) ...[
+            const SizedBox(height: OniSpacing.sm),
+            Text(
+              'Hotter than the 75 °C most buildings overheat at. Whether it '
+              'actually cooks anything depends on what it runs past, which this '
+              'model cannot see — but it is worth looking at.',
+              style: OniType.body
+                  .copyWith(fontSize: 11.5, color: OniColors.warning),
+            ),
+          ],
+        ],
         const SizedBox(height: OniSpacing.lg),
         Text('WHO DECIDES THE AMOUNT', style: OniType.label),
         const SizedBox(height: OniSpacing.sm),

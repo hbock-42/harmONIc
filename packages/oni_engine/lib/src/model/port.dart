@@ -1,3 +1,12 @@
+/// The temperature most buildings stop working at.
+///
+/// Nearly everything in the game shares this figure — Electrolyzers, pumps,
+/// sieves, refineries — so a flow hotter than this is worth a second look
+/// wherever it lands. It is not a promise that something *will* overheat: that
+/// depends on the building's own temperature, its material and what else is
+/// touching it, none of which a flow model can see.
+const double commonOverheatCelsius = 75;
+
 /// Which way an item moves through a port.
 enum PortDirection {
   input,
@@ -44,6 +53,10 @@ class Port {
 
   /// Output temperature in °C, when the game fixes it (Electrolyzer O2 = 70 °C).
   final double? temperatureC;
+
+  /// Hot enough to be worth noticing before you plumb it into something.
+  bool get runsHot =>
+      temperatureC != null && temperatureC! > commonOverheatCelsius;
 
   bool get isInput => direction == PortDirection.input;
   bool get isOutput => direction == PortDirection.output;

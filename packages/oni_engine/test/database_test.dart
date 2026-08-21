@@ -19,6 +19,38 @@ void main() {
     }
   });
 
+  group('temperatures', () {
+    test('the ones the game fixes are recorded', () {
+      final electrolyzer = db.processOrThrow('electrolyzer');
+      expect(
+        electrolyzer.outputs.firstWhere((p) => p.itemId == 'oxygen').temperatureC,
+        70,
+      );
+      expect(db.processOrThrow('water_geyser').outputs.single.temperatureC, 95);
+    });
+
+    test('a flow hotter than most buildings tolerate is flagged', () {
+      // A Water Geyser at 95 C is above the 75 C nearly everything overheats at.
+      expect(db.processOrThrow('water_geyser').outputs.single.runsHot, isTrue);
+      // An Electrolyzer's 70 C oxygen is not.
+      expect(
+        db.processOrThrow('electrolyzer').outputs
+            .firstWhere((p) => p.itemId == 'oxygen').runsHot,
+        isFalse,
+      );
+      // Steam vents are far past it.
+      expect(db.processOrThrow('steam_vent').outputs.single.runsHot, isTrue);
+    });
+
+    test('a port with no stated temperature claims nothing', () {
+      final hatch = db.processOrThrow('hatch');
+      for (final port in hatch.ports) {
+        expect(port.runsHot, isFalse,
+            reason: 'silence is not a claim that it is cool');
+      }
+    });
+  });
+
   group('pumps', () {
     test('every fluid gets one, and nothing else does', () {
       expect(db.process(pumpSpecId('water')), isNotNull);
