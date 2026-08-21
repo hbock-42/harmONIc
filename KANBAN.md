@@ -110,6 +110,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-5` **Glyphs instead of dots** — every item was a coloured dot, so the only difference
+  between water and oxygen was hue. Each category now has a drawn shape as well, checked
+  pixel for pixel against every other in a single colour
 - `E10-8` **Start from a build** — four templates behind the pipelines menu, each one a
   shape people actually make and each checked by the golden tests. They carry no positions:
   the canvas lays them out on the way in, so what opens is what Tidy would have made
@@ -538,7 +541,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-2 | ✅ | Item-category palette | solid / liquid / gas / power / heat each get a hue, used identically on ports, edges and legends — the single most important visual rule in the app |
 | E9-3 | ✅ | Wrappers | `OniPanel`, `OniButton`, `OniField`, `OniSelect`, `OniTooltip` over forui equivalents |
 | E9-4 | ✅ | Numeric formatting widget | reuses the engine's `Unit.format`; per-second ⇄ per-cycle toggle in one place |
-| E9-5 | P1 | Icon set | no game sprites (copyright) — generated glyphs per item category |
+| E9-5 | ✅ | Icon set | a drawn glyph per item category — drop, ring, square, bolt, diamond, pill, cross — so shape carries what colour alone was carrying |
 | E9-6 | P2 | Light theme |
 
 ## E7 — The canvas

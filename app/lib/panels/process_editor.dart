@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import '../design/item_glyph.dart';
 import '../design/tokens.dart';
 import '../design/widgets.dart';
 import '../state/library_controller.dart';
@@ -480,14 +481,9 @@ class _ItemPickerState extends State<_ItemPicker> {
             child: Row(
               children: [
                 if (widget.selected != null)
-                  Container(
-                    width: 8,
-                    height: 8,
-                    margin: const EdgeInsets.only(right: 8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: OniItemColors.of(widget.selected!.category),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: OniItemGlyph(category: widget.selected!.category),
                   ),
                 Expanded(
                   child: Text(
@@ -547,14 +543,9 @@ class _ItemPickerState extends State<_ItemPicker> {
                         horizontal: OniSpacing.sm, vertical: 5),
                     child: Row(
                       children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: OniItemColors.of(item.category),
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: OniItemGlyph(category: item.category),
                         ),
                         Expanded(
                           child: Text(item.name,

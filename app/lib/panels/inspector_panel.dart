@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import '../design/item_glyph.dart';
 import '../design/tokens.dart';
 import '../design/widgets.dart';
 import '../state/pipeline_controller.dart';
@@ -903,14 +904,7 @@ class _PortRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: OniItemColors.ofItem(item),
-                ),
-              ),
+              OniItemGlyph.ofItem(item),
               const SizedBox(width: OniSpacing.sm),
               Expanded(
                 child: Text(

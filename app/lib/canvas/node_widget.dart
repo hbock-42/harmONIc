@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import '../design/item_glyph.dart';
 import '../design/tokens.dart';
 import '../state/pipeline_controller.dart';
 import 'geometry.dart';
@@ -193,6 +194,7 @@ class NodeWidget extends StatelessWidget {
 
     final dot = _PortDot(
       colour: colour,
+      category: item?.category ?? ItemCategory.other,
       highlighted: highlighted,
       unmet: balance != null && (balance.isExternalInput || balance.isSurplus),
       onTap: (global) => onPortTap(ref, global),
@@ -269,6 +271,7 @@ class NodeWidget extends StatelessWidget {
 class _PortDot extends StatefulWidget {
   const _PortDot({
     required this.colour,
+    required this.category,
     required this.highlighted,
     required this.unmet,
     required this.onTap,
@@ -278,6 +281,7 @@ class _PortDot extends StatefulWidget {
   });
 
   final Color colour;
+  final ItemCategory category;
   final bool highlighted;
   final bool unmet;
   final void Function(Offset globalPosition) onTap;
@@ -312,16 +316,28 @@ class _PortDotState extends State<_PortDot> {
           width: 18,
           height: NodeLayout.portRowHeight,
           child: Center(
-            child: Container(
-              width: radius * 2,
-              height: radius * 2,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: widget.unmet ? OniColors.surface : widget.colour,
-                border: Border.all(
-                  color: widget.colour,
-                  width: widget.unmet ? 1.6 : 1,
-                ),
+            // Shape says what kind of thing it is, and the ring says nobody is
+            // supplying it. Both were carried by colour and fill alone before,
+            // which left the two signals fighting over one dot.
+            child: SizedBox(
+              width: radius * 2.6,
+              height: radius * 2.6,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (widget.unmet)
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: widget.colour, width: 1.2),
+                      ),
+                    ),
+                  OniItemGlyph(
+                    category: widget.category,
+                    size: radius * 1.7,
+                    colour: widget.colour,
+                  ),
+                ],
               ),
             ),
           ),

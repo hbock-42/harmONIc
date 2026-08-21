@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import '../design/item_glyph.dart';
 import '../design/tokens.dart';
 import '../design/widgets.dart';
 
@@ -157,14 +158,9 @@ class _Flows extends StatelessWidget {
                 final item = database.item(entries[i].key);
                 return Row(
                   children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      margin: const EdgeInsets.only(right: 5),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: OniItemColors.ofItem(item),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: OniItemGlyph.ofItem(item, size: 7),
                     ),
                     OniRate(
                       text: '${item?.name ?? entries[i].key}  '
