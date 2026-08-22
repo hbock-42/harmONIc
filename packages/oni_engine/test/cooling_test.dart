@@ -69,4 +69,64 @@ void main() {
       expect(solution.netPowerWatts, 850);
     });
   });
+
+  group('a cooler for every coolant', () {
+    test('the two the wiki prints come back exactly', () {
+      // The whole justification for generating these rather than writing them
+      // out. If the arithmetic did not reproduce the two published figures,
+      // the other twenty would be fiction.
+      final water = db.processOrThrow('aquatuner_water');
+      final hydrogen = db.processOrThrow('thermo_regulator_hydrogen');
+
+      expect(
+          water.ports
+              .firstWhere((p) => p.id == 'heat_in')
+              .ratePerSecond,
+          closeTo(585.06, 1e-6));
+      expect(
+          hydrogen.ports
+              .firstWhere((p) => p.id == 'heat_in')
+              .ratePerSecond,
+          closeTo(33.6, 1e-6));
+      expect(water.netPowerWatts, 1200);
+      expect(hydrogen.netPowerWatts, 240);
+    });
+
+    test('and every other coolant now has one', () {
+      final coolers =
+          db.processes.where((s) => s.tags.contains('cooling')).toList();
+      expect(coolers.length, greaterThan(15));
+
+      // Petroleum is the standard cold-loop coolant and had nothing at all.
+      final petroleum = db.processOrThrow('aquatuner_petroleum');
+      expect(petroleum.ports.firstWhere((p) => p.id == 'heat_in').ratePerSecond,
+          closeTo(10000 * 1.76 * 14 / 1000, 1e-6));
+    });
+
+    test('a coolant that holds less heat moves less of it', () {
+      // The reason the choice matters, and the reason this could not be one
+      // spec with a material class: every member behaves differently.
+      double moved(String id) => db
+          .processOrThrow(id)
+          .ports
+          .firstWhere((p) => p.id == 'heat_in')
+          .ratePerSecond;
+
+      expect(moved('aquatuner_water'), greaterThan(moved('aquatuner_brine')));
+      expect(moved('aquatuner_brine'),
+          greaterThan(moved('aquatuner_petroleum')));
+    });
+
+    test('none of them makes heat, they only move it', () {
+      for (final spec in db.processes.where((s) => s.tags.contains('cooling'))) {
+        expect(spec.netHeatKdtu, 0, reason: spec.id);
+      }
+    });
+
+    test('a fluid with no measured specific heat gets no cooler', () {
+      // Rather than one built on a guessed figure.
+      expect(db.itemOrThrow('liquid_sulfur').specificHeat, isNull);
+      expect(db.process('aquatuner_liquid_sulfur'), isNull);
+    });
+  });
 }

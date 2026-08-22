@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E13-9` **A cooler for every coolant** — the two written by hand are now generated from
+  each fluid's specific heat, which reproduces both published figures exactly and gives the
+  other twenty. A petroleum loop is as ordinary a thing to plan as a water one
 - `E4-20` **Eggs are worth something** — the Egg Cracker turns them into food and shell, and
   a Rock Crusher turns shell into lime one for one. Twenty-four Hatches feed six Duplicants
   on eggs alone, which is the sort of thing a ranch is for and the app could not say
@@ -693,7 +696,7 @@ flow, so the solver never had to learn about it.
 | E13-6 | P2 | Alternative diets | a Plug Slug eats ore *or* refined metal, and the model has no "either" — one spec per diet is the answer |
 | E13-7 | P3 | Rot Pile | a Pokeshell's second food and the Compost's second input |
 | E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
-| E13-9 | P2 | Aquatuner and Thermo Regulator for other coolants | the heat moved is the coolant's specific heat times 14 °C, so a class would be wrong |
+| E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
 
 ## E8 — Quality
 

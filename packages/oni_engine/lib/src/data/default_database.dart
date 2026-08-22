@@ -1,3 +1,4 @@
+import '../model/conduits.dart';
 import '../model/build_material.dart';
 import '../model/game_database.dart';
 import '../model/item.dart';
@@ -67,6 +68,12 @@ GameDatabase loadDefaultDatabase() {
     // where every port already carries one thing.
     final filter = _filterFor(item);
     if (filter != null) extra.add(filter);
+
+    // And the machine that cools it. What it moves is arithmetic on the
+    // coolant, so there is one per fluid rather than the two somebody happened
+    // to write out by hand.
+    final cooler = _coolerFor(item);
+    if (cooler != null) extra.add(cooler);
   }
   return GameDatabase(
     dataVersion: base.dataVersion,
@@ -212,6 +219,89 @@ ProcessSpec? _filterFor(Item item) {
           direction: PortDirection.output,
           ratePerSecond: heat,
         ),
+    ],
+  );
+}
+
+/// An Aquatuner, or a Thermo Regulator for a gas.
+///
+/// Both take 14 °C out of every packet that passes and put it into the machine,
+/// so what they move is the coolant's specific heat times fourteen degrees
+/// times a full pipe. That is not a rule invented here: it is how the wiki's
+/// own figures are reached, and both of the ones it prints come back exactly —
+/// 10 kg/s of water at 4.179 is the 585.06 kDTU/s on the Aquatuner page, and
+/// 1 kg/s of hydrogen at 2.4 is the 33.6 on the Thermo Regulator's.
+///
+/// Which is why there is one per fluid. Two were written out by hand, water and
+/// hydrogen, and the other twenty were simply missing — a petroleum loop is as
+/// ordinary a thing to plan as a water one.
+ProcessSpec? _coolerFor(Item item) {
+  final specificHeat = item.specificHeat;
+  if (specificHeat == null) return null;
+  final liquid = item.category == ItemCategory.liquid;
+  if (!liquid && item.category != ItemCategory.gas) return null;
+
+  // A full pipe, as with the filters: the machine takes what reaches it.
+  final rate = liquid
+      ? Conduits.liquidPipe.capacity
+      : Conduits.gasPipe.capacity;
+  const degrees = 14.0;
+  final moved = rate * specificHeat * degrees / 1000;
+
+  return ProcessSpec(
+    id: liquid ? 'aquatuner_${item.id}' : 'thermo_regulator_${item.id}',
+    name: liquid
+        ? 'Aquatuner (${item.name})'
+        : 'Thermo Regulator (${item.name})',
+    kind: ProcessKind.building,
+    buildingId: liquid ? 'aquatuner' : 'thermo_regulator',
+    description: 'Takes 14 °C out of every packet and puts it into the '
+        'machine, which is why one usually stands in a steam room with a '
+        'turbine over it. It moves heat rather than destroying it. '
+        '${item.name} holds $specificHeat DTU per gram per degree, so a full '
+        'pipe of it carries ${moved.toStringAsFixed(2)} kDTU/s — a colder-'
+        'running coolant moves less, which is the whole reason the choice '
+        'matters.',
+    tags: {
+      'cooling',
+      'verified',
+      for (final tag in item.tags)
+        if (contentPackTags.contains(tag)) tag,
+    },
+    footprintWidth: 2,
+    footprintHeight: 2,
+    buildCost: {BuildMaterials.metalOre: liquid ? 1200 : 200},
+    ports: [
+      Port(
+        id: 'coolant_in',
+        itemId: item.id,
+        direction: PortDirection.input,
+        ratePerSecond: rate,
+      ),
+      Port(
+        id: 'coolant_out',
+        itemId: item.id,
+        direction: PortDirection.output,
+        ratePerSecond: rate,
+      ),
+      Port(
+        id: 'heat_in',
+        itemId: WellKnownItems.heat,
+        direction: PortDirection.input,
+        ratePerSecond: moved,
+      ),
+      Port(
+        id: 'heat_out',
+        itemId: WellKnownItems.heat,
+        direction: PortDirection.output,
+        ratePerSecond: moved,
+      ),
+      Port(
+        id: 'power_in',
+        itemId: WellKnownItems.power,
+        direction: PortDirection.input,
+        ratePerSecond: liquid ? 1200 : 240,
+      ),
     ],
   );
 }
