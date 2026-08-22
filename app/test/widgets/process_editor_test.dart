@@ -271,4 +271,45 @@ void main() {
     expect(library.database.processOrThrow('metal_refinery').buildCost,
         {'raw_mineral': 400.0});
   });
+
+  testWidgets('an invented material can say what kind of thing it is',
+      (tester) async {
+    // Everything invented used to be a solid, silently. The choice decides
+    // what carries it, whether it gets a pump, and whether a temperature can
+    // be worked out for it — so a liquid handed a conveyor belt is a wrong
+    // answer rather than a wrong icon.
+    await pumpEditor(tester);
+    await openNewRecipe(tester);
+    await tester.enterText(editorField(0), 'Brine Syrup');
+    await tester.pump();
+
+    await tester.tap(find.text('+ Consumes'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Choose an item…').last);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(itemPickerSearchKey), 'Brine Syrup');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(newItemKindKey(ItemCategory.liquid)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Create "Brine Syrup"'));
+    await tester.pumpAndSettle();
+
+    // The rate field is the one in the port row, beside the picker.
+    await tester.enterText(
+        find.descendant(
+          of: find.byType(ProcessEditor),
+          matching: find.byType(OniField),
+        ).at(1),
+        '1000');
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    final invented = library.database.itemOrThrow('brine_syrup');
+    expect(invented.category, ItemCategory.liquid);
+    // And it gets what a liquid gets: a pipe, and a pump to fill it.
+    expect(Conduits.forCategory(invented.category), Conduits.liquidPipe);
+    expect(library.database.process(pumpSpecId('brine_syrup')), isNotNull);
+  });
 }

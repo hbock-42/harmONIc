@@ -71,6 +71,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-6c` **An invented material says what kind it is** — the picker created everything as a
+  solid without asking, which was invisible until the last fix gave custom materials the
+  generated nodes every other material gets: a liquid you invented then got a conveyor rail,
+  no pump, and no temperature, all of it confidently. Three buttons where the "Create…" line
+  is — solid, liquid, gas — and it keeps solid as the default, because most materials are
 - `E5-6b` **A material you invent is a material you have** — went looking to put a "write the
   recipe" button on the port menu's dead end, and asking *why* that list is ever empty found
   the real thing: an item added by hand got none of the generated nodes every other item
@@ -897,6 +902,7 @@ _(empty)_
 | E5-6 | ✅ | Corrected recipes are named |
 | E5-6a | ✅ | Correcting a recipe stopped erasing what it is built from | `editable` dropped the build cost and the overheat rating, and the form had no field for either. Both carried through now, and the cost has a line per material |
 | E5-6b | ✅ | A material you invent is a material you have | a custom item got no supply or output node, so nothing could feed the recipe that asked for it |
+| E5-6c | ✅ | An invented material says what kind it is | everything invented was silently a solid, which decides its pipe, its pump and whether it has a temperature at all |
 | E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
 | E5-9 | ✅ | Somewhere for a browser to keep things | `localStorage`, behind the same `JsonStore` the file store is behind. Checked in a real Chrome rather than assumed: `flutter test --platform chrome` |

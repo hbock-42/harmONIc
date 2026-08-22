@@ -184,6 +184,11 @@ usually too pale to read on near-white.
   snapshot: editing the original later does not change the copy in your plan.
 - **Copy code** puts the build on the clipboard for somebody else's app;
   **copy summary** puts it there as text for a forum post or a note.
+- **+ Recipe** writes down something the app does not know. A material it has
+  never heard of can be invented on the spot — say whether it is a solid, a
+  liquid or a gas, because that decides what carries it and whether it can be
+  pumped — and it then behaves like any other material, with a supply and an
+  output of its own.
 - **Recipes you wrote** hands your own recipes to somebody else, all of them
   as one code. A figure the wiki never published — a Smoker's cycle time, say —
   is worth measuring once between everybody. Pasting somebody's pack merges it

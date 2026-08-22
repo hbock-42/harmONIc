@@ -6,6 +6,9 @@ import '../design/tokens.dart';
 import '../design/widgets.dart';
 import '../state/library_controller.dart';
 
+/// Named so a test can pick what kind of thing it is inventing.
+Key newItemKindKey(ItemCategory kind) => ValueKey('new-item-${kind.name}');
+
 /// Named so a test can type into the right one of several weights.
 Key costKilogramsFieldKey(int index) => ValueKey('cost-kg-$index');
 
@@ -540,15 +543,25 @@ class _ItemPickerState extends State<_ItemPicker> {
         .toList();
   }
 
+  /// What kind of thing the one being invented is.
+  ///
+  /// Solid unless somebody says otherwise, because most materials are. The
+  /// choice decides more than the icon: what carries it (a rail or a pipe),
+  /// whether it gets a pump, whether it can be filtered, and whether a
+  /// temperature can be worked out for it at all. Inventing a liquid and
+  /// being given a conveyor belt is a wrong answer, not a cosmetic one.
+  ItemCategory _newKind = ItemCategory.solid;
+
   void _create() {
     final name = _search.text.trim();
     if (name.isEmpty) return;
     final id = name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
     widget.onCreate(
-      Item(id: id, name: name, category: ItemCategory.solid, tags: const {'custom'}),
+      Item(id: id, name: name, category: _newKind, tags: const {'custom'}),
     );
     setState(() {
       _open = false;
+      _newKind = ItemCategory.solid;
       _search.clear();
     });
   }
@@ -648,16 +661,45 @@ class _ItemPickerState extends State<_ItemPicker> {
                   ),
                 ),
               if (_search.text.trim().isNotEmpty && matches.isEmpty)
-                GestureDetector(
-                  onTap: _create,
-                  child: Container(
-                    color: OniColors.surfaceRaised,
-                    padding: const EdgeInsets.all(OniSpacing.sm),
-                    child: Text(
-                      'Create "${_search.text.trim()}"',
-                      style: OniType.body
-                          .copyWith(fontSize: 12, color: OniColors.accent),
-                    ),
+                Container(
+                  color: OniColors.surfaceRaised,
+                  padding: const EdgeInsets.all(OniSpacing.sm),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // The three that behave differently. Power, heat and the
+                      // rest are the app's own vocabulary rather than
+                      // materials anybody needs to invent.
+                      Wrap(
+                        spacing: OniSpacing.xs,
+                        children: [
+                          for (final kind in const [
+                            ItemCategory.solid,
+                            ItemCategory.liquid,
+                            ItemCategory.gas,
+                          ])
+                            OniButton(
+                              key: newItemKindKey(kind),
+                              label: kind.name,
+                              compact: true,
+                              tone: _newKind == kind
+                                  ? OniButtonTone.accent
+                                  : OniButtonTone.neutral,
+                              onPressed: () =>
+                                  setState(() => _newKind = kind),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: OniSpacing.xs),
+                      GestureDetector(
+                        onTap: _create,
+                        child: Text(
+                          'Create "${_search.text.trim()}"',
+                          style: OniType.body
+                              .copyWith(fontSize: 12, color: OniColors.accent),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
             ],
