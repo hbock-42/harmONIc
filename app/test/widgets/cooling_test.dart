@@ -52,4 +52,40 @@ void main() {
     // every last one of them somewhere else, so the base is no cooler.
     expect(controller.solution.totalHeatKdtu, closeTo(5, 1e-6));
   });
+
+  testWidgets('a hot wire says what it costs to cool', (tester) async {
+    // A geyser's 95 °C water into an Electrolyzer: the wire between them is
+    // carrying a cooling bill, and the size of it decides whether the build
+    // wants a steam room or nothing at all.
+    final pipeline = (PipelineBuilder(testDatabase, name: 'Hot')
+          ..add('water_geyser', nodeId: 'geyser', x: 0, y: 0)
+          ..add('electrolyzer', nodeId: 'elec', x: 340, y: 0)
+          ..connectItem('geyser', 'elec', 'water')
+          ..pinCount('elec', 1))
+        .build();
+    final controller = await pumpEditor(tester, pipeline);
+    controller.select(EdgeSelection(controller.pipeline.edges.single.id));
+    await tester.pumpAndSettle();
+
+    expect(textContaining('kDTU/s more heat'), findsOneWidget);
+    expect(textContaining('25 °C'), findsWidgets);
+  });
+
+  testWidgets('and a wire at room temperature says nothing at all',
+      (tester) async {
+    final pipeline = (PipelineBuilder(testDatabase, name: 'Cool')
+          ..addSource('water', x: 0, y: 0)
+          ..add('electrolyzer', nodeId: 'elec', x: 340, y: 0)
+          ..connectItem('src_water', 'elec', 'water')
+          ..pinCount('elec', 1))
+        .build();
+    final controller = await pumpEditor(tester, pipeline);
+    controller.setNodeTemperature('src_water', 25);
+    controller.select(EdgeSelection(controller.pipeline.edges.single.id));
+    await tester.pumpAndSettle();
+
+    // Nought kDTU/s is not a fact worth a line on every wire in a cool build.
+    expect(textContaining('kDTU/s more heat'), findsNothing);
+    expect(textContaining('colder than'), findsNothing);
+  });
 }

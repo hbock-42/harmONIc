@@ -97,6 +97,12 @@ how many pipes or wires, since a ratio that balances on paper is unbuildable at
 40 kg/s down one pipe — and what temperature it arrives at, and what a pipe
 would have to be made of to survive it.
 
+A hot or cold wire also says what it is worth in cooling: 10 kg/s of 95 °C
+water carries 2 925 kDTU/s more heat than the same flow at 25 °C, which is five
+Aquatuners' worth. That is the *size* of the thing, not a claim about where the
+heat lands — a bare pipe gives it to the room it runs through and an insulated
+one carries it onward, and nothing here knows which yours is.
+
 ## Arranging
 
 **Tidy** lays the build out left to right. It arranges each build on the canvas
@@ -144,8 +150,11 @@ The app is most misleading where it is most confident, so:
   only that it costs plastic. Food quality is half the reason anyone cooks and
   is not modelled at all.
 - **Heat, mostly.** Temperature is carried along wires and mixed by mass and
-  specific heat, and a published figure always wins. But nothing models a pipe
-  warming the room it runs through, or a building's own temperature.
+  specific heat, and a published figure always wins. A wire says how much heat
+  it carries against a 25 °C base, which is what cooling it would cost. What
+  nothing here models is where that heat actually goes: a pipe warming the room
+  it runs through needs to know what the pipe is made of and what it runs past,
+  and this model has no notion of space.
 - **Valves and rounding of your own.** A valve caps a flow; caps are
   inequalities and this solver holds equations. Pinning the rate says the same
   thing.

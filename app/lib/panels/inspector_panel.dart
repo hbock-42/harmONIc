@@ -1232,6 +1232,18 @@ class _EdgeInspector extends StatelessWidget {
                   .copyWith(fontSize: 11.5, color: OniColors.warning),
             ),
           ],
+          // What it costs to bring back to room temperature, which is a
+          // different question from what it will melt.
+          if (item == null
+              ? null
+              : _coolingNote(item, flow, celsius) case final String note) ...[
+            const SizedBox(height: OniSpacing.sm),
+            Text(
+              note,
+              style: OniType.body
+                  .copyWith(fontSize: 11.5, color: OniColors.textMuted),
+            ),
+          ],
         ],
         const SizedBox(height: OniSpacing.lg),
         Text('WHO DECIDES THE AMOUNT', style: OniType.label),
@@ -1495,6 +1507,33 @@ class _EdgeShare extends StatelessWidget {
 
 /// What to build a pipe out of, for something this hot.
 ///
+/// The cooling this line brings with it, in the words of what it costs.
+///
+/// Deliberately not a warning colour. It is not a problem — a hot line is
+/// often the whole point of the build — it is a size, and the size is what
+/// decides whether it wants a steam room or nothing at all.
+///
+/// Null below a few degrees either side of room temperature, where the figure
+/// is noise, and null for anything without a specific heat, where there is no
+/// figure at all.
+String? _coolingNote(Item item, double gramsPerSecond, double celsius) {
+  final load = coolingLoadKdtu(item, gramsPerSecond, celsius);
+  if (load == null || load.abs() < 1) return null;
+
+  final size = load.abs() >= 100
+      ? load.abs().toStringAsFixed(0)
+      : load.abs().toStringAsFixed(1);
+  final base = '${comfortableBaseCelsius.toStringAsFixed(0)} °C';
+
+  return load > 0
+      ? '$size kDTU/s more heat than the same flow at $base. That is what it '
+          'costs to cool, if it ends up at room temperature. Where it '
+          'actually goes is a question about the pipe and what it runs '
+          'past, and this is the size of it rather than the answer.'
+      : '$size kDTU/s colder than the same flow at $base: cooling somebody '
+          'already paid for, and worth spending on the way past.';
+}
+
 /// "  ·  200 kg Plastic", for a material counted rather than weighed.
 ///
 /// Empty for everything already measured in kilograms, and for a counted thing

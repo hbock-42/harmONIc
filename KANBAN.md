@@ -42,7 +42,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Things the model cannot yet say**
 
-- `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
   their outputs the milking station takes and which they give off anyway
 
@@ -74,6 +73,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E11-5` **What a hot line costs to cool** — 10 kg/s of 95 °C water carries 2 925 kDTU/s
+  more heat than the same flow at 25 °C, which is five Aquatuners. The question as written
+  — does this pipe heat the room it runs through — needs to know what the pipe is made of
+  and what it runs past, and this model has no space in it. The size of the thing does not
+  need any of that, and the size is what decides whether a line wants a steam room or
+  nothing at all. A cold line is said the same way: cooling somebody already paid for
 - `E5-7` **Export to a file** — the clipboard is how you send a build to somebody, and a
   share code lives until the next thing you copy. This is the one you can still open next
   year. No file picker and no dependency for one: it lands in the downloads folder, the way
@@ -740,7 +745,7 @@ does not see.
 | E11-4 | ✅ | Filters | generated per fluid; what a separation *costs*, since the separation itself needs mixtures the model does not have |
 | E11-8 | P2 | Mixtures | a port carries one thing, so a pipe of mixed gas cannot be drawn. Wanted by filters, by pressure, and by anything that sorts |
 | E11-9 | P3 | Valves | a valve caps a flow, and a cap is an inequality the solver has no way to hold. Pinning the rate says the same thing today |
-| E11-5 | P2 | Conduit heat | a pipe full of 95 °C water heats whatever it runs past |
+| E11-5 | ✅ | Conduit heat | how much heat a line carries against a 25 °C base, which is the cooling it would cost. Where that heat lands needs the pipe's material and what it runs past — geometry this model does not have — so the size is said and the destination is not |
 | E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
 | E11-6b | ✅ | The specific heats not yet measured | all thirty fluids have one now, so no mixture drops a term and every coolant has an Aquatuner |
 | E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
