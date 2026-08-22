@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E4-20` **Eggs are worth something** — the Egg Cracker turns them into food and shell, and
+  a Rock Crusher turns shell into lime one for one. Twenty-four Hatches feed six Duplicants
+  on eggs alone, which is the sort of thing a ranch is for and the app could not say
 - `E11-2` **What a flow's heat rules out** — a wire carrying 95 °C water now names the
   coolest material that holds it and the range above, instead of only saying "hot". And
   molten glass at 1 942 °C is told plainly that nothing here will do
@@ -522,7 +525,8 @@ _(empty)_
 | E4-16 | ✅ | Ranching costs and yields | eggs per groomed interval, meat over a lifespan, 12 s of Duplicant time a cycle each |
 | E4-18 | ✅ | Measured geyser figures | type the exact active percentage Field Research reports, not just a preset band |
 | E4-19 | ✅ | Ranching buildings | Grooming, Aquatic Grooming and Shearing Stations, sized by a capacity link rather than a pin |
-| E4-20 | P2 | Egg mass and shells | so shell-to-lime and omelette chains can be modelled |
+| E4-20 | ✅ | Egg mass and shells | the Egg Cracker and the shell-to-lime crusher, so a ranch's eggs are food and lime rather than a number nothing consumes |
+| E4-20b | P3 | Eggs per critter | a Bammoth's egg is four times a Hatch's, and this app has one Egg item; the cracker uses Hatch figures |
 | E4-21 | ✅ | Wild versus groomed | a `(wild)` twin per ranched critter: no grooming, no Duplicant time, a tenth of the eggs |
 | E4-21b | P3 | Glo Squid and Seaquine wild twins | wants somebody to check in game which outputs the milking station takes |
 | E4-22 | P3 | The Grooming Station's power draw | if it is ever published |

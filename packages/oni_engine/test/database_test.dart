@@ -233,7 +233,16 @@ void main() {
     test('a pack-tagged item is one the packs really added', () {
       // Not exhaustive — it only pins the three that were wrong — but a
       // regression here means somebody has re-tagged a base-game material.
-      for (final id in ['phosphorite', 'liquid_sulfur', 'dirt', 'sand']) {
+      for (final id in [
+        'phosphorite',
+        'liquid_sulfur',
+        'dirt',
+        'sand',
+        // Egg shells, Pokeshell molts and fossil all make lime with no pack at
+        // all. It was tagged Aquatic because a Beakon is how this app first
+        // met it — the same mistake phosphorite made.
+        'lime',
+      ]) {
         expect(packsOf(db.itemOrThrow(id).tags), isEmpty, reason: id);
       }
       expect(db.itemOrThrow('coquina').tags, contains('aquatic'));

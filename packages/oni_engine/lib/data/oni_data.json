@@ -435,9 +435,7 @@
       "id": "lime",
       "name": "Lime",
       "category": "solid",
-      "tags": [
-        "aquatic"
-      ]
+      "tags": []
     },
     {
       "id": "phosphorite",
@@ -1008,6 +1006,12 @@
       "tags": [
         "class"
       ]
+    },
+    {
+      "id": "egg_shell",
+      "name": "Egg Shell",
+      "category": "solid",
+      "tags": []
     }
   ],
   "processes": [
@@ -6881,6 +6885,73 @@
       ],
       "build": {
         "metal_ore": 200
+      }
+    },
+    {
+      "id": "egg_cracker",
+      "name": "Egg Cracker",
+      "kind": "building",
+      "buildingId": "egg_cracker",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 0,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: a Hatch egg cracks into 1 600 kcal of raw egg and a kilogram of shell, which is the published recipe. Two things are not published: how long an operation takes, assumed here to be the 40 s every other Duplicant-worked crafting step uses, and the power, modelled as none. A bigger critter’s egg gives more — a Bammoth’s is four times a Hatch’s — and this app has one Egg item, so these are Hatch figures.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "egg",
+          "direction": "input",
+          "rate": 0.025
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 40.0
+        },
+        {
+          "item": "egg_shell",
+          "direction": "output",
+          "rate": 25.0
+        }
+      ],
+      "build": {
+        "metal_ore": 50
+      }
+    },
+    {
+      "id": "rock_crusher_lime",
+      "name": "Rock Crusher (Lime)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "Egg shell into lime, kilogram for kilogram. The other way to get lime is a Pokeshell or a Beakon; this is the one that comes free with a ranch you were keeping anyway.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "egg_shell",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 2500
+        }
+      ],
+      "build": {
+        "metal_ore": 800
       }
     }
   ],
