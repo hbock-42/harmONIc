@@ -389,8 +389,18 @@ void main() {
       final metals = db.itemOrThrow('refined_metal').members;
       expect(metals, isNot(contains('mercury')));
       expect(metals, isNot(contains('solid_mercury')));
-      expect(metals, unorderedEquals(
-          ['iron', 'copper', 'gold', 'nickel', 'zinc', 'lead']));
+      expect(metals, unorderedEquals([
+        'iron',
+        'copper',
+        'gold',
+        'nickel',
+        'zinc',
+        'lead',
+        // A centrifuge's leftovers, and the page says outright that it builds
+        // "like any other Refined Metal" — with the best radiation shielding
+        // of the lot, which is why anybody keeps it.
+        'depleted_uranium',
+      ]));
     });
   });
 

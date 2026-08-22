@@ -71,6 +71,17 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-9a` **Enriching uranium** — 10 kg of ore every 40 seconds, 2 kg of enriched uranium
+  and 8 of depleted, balancing to the gram and running with no Duplicant at all. The
+  leftover eighty per cent is the interesting part: the page says it builds "like any other
+  Refined Metal", so it joined the class — and a Vulcanizer made of it and a Plug Slug
+  eating it both fall out of that rather than being written anywhere. Uranium ore stays
+  *out* of the metal ore class, because the game's own Crafting Station recipe reads "excl.
+  Uranium" and a refinery does not smelt it: a centrifuge splits it twenty for eighty
+- `E4-9d` **Rockets, decided against** — a launch is an event and this model holds rates. Fuel
+  is spent per journey; a journey has a distance and a duration, and averaging one over a
+  cycle is exactly what the Beeta's five-day life is already refused for. The engine pages do
+  not publish a consumption figure in any unit at all, which rather settles it
 - `E1-9` **The app builds and opens** — never checked anywhere until now. `flutter test` runs
   the widgets in a harness with no bundle, no plugins and no file system, which is exactly
   why the guide panel takes an injectable loader and the exporter an injectable directory:
@@ -692,7 +703,10 @@ _(empty)_
 | E4-6 | ✅ | Seed set — food & farming | plants (per fertiliser/irrigation mode), Grill, Microbe Musher, Electric Grill, Gas Range |
 | E4-7 | ✅ | Seed set — duplicants | O₂ consumption, CO₂ / dirt / polluted-water output, calories, so "20 dupes" is a pinnable node |
 | E4-8 | ✅ | Ranching | critters: food in, meat/eggs/coal out, per-critter |
-| E4-9 | P2 | Spaced Out variants | rockets and radiation. The base-game filter half of this shipped as E4-12 |
+| E4-9 | ✅ | Spaced Out variants | split in two on 2026-08-22: the radiation half is `E4-9a`, the rocket half `E4-9d`. The base-game filter part shipped long ago as E4-12 |
+| E4-9a | ✅ | Enriching uranium | 10 kg of ore every 40 s into 2 of enriched and 8 of depleted, which builds like any other refined metal. The Research Reactor is `E4-9c` |
+| E4-9d | ❌ | Rockets | decided against. A launch is an event, not a rate: fuel is spent per journey, and a journey has a distance and a duration this model has no way to hold. Averaging a launch over a cycle would be the mistake the Beeta's five-day life is already refused for |
+| E4-9c | P3 | The Research Reactor | its page gives the fuel (16.7 g/s of enriched uranium) and the waste (1.67 kg/s) and never the coolant between them, so the mass cannot be made to balance |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
 | E4-11a | ✅ | The Marine Drill's sulfur | 250 kg an operation over a 1 300 s cycle is 192 g/s, and a thousandth of that had been sitting in a field measured in grams since the day it was seeded |
 | E4-12 | ✅ | Palette filter by DLC |

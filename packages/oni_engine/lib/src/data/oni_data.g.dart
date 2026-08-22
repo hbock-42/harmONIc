@@ -266,6 +266,30 @@ const String oniDataJson = r"""
       ]
     },
     {
+      "id": "uranium_ore",
+      "name": "Uranium Ore",
+      "category": "solid",
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "enriched_uranium",
+      "name": "Enriched Uranium",
+      "category": "solid",
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "depleted_uranium",
+      "name": "Depleted Uranium",
+      "category": "solid",
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
       "id": "molten_zinc",
       "name": "Molten Zinc",
       "category": "liquid",
@@ -920,7 +944,8 @@ const String oniDataJson = r"""
         "gold",
         "nickel",
         "zinc",
-        "lead"
+        "lead",
+        "depleted_uranium"
       ],
       "tags": [
         "class"
@@ -7149,6 +7174,44 @@ const String oniDataJson = r"""
       ],
       "build": {
         "metal_ore": 50
+      }
+    },
+    {
+      "id": "uranium_centrifuge",
+      "name": "Uranium Centrifuge",
+      "kind": "building",
+      "buildingId": "uranium_centrifuge",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 0.625,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "10 kg of uranium ore every 40 seconds becomes 2 kg of enriched uranium and 8 kg of depleted uranium — a fifth of what goes in is the part a reactor runs on, and the rest is a building material with the best radiation shielding of any refined metal. It runs itself, with no Duplicant. What comes out is hot enough that the pipe matters: depleted uranium melts at 132.85 °C. Nothing here burns the enriched half yet — a Research Reactor's page gives its fuel and its waste and never the coolant between them, so the numbers would not add up.",
+      "tags": [
+        "refining",
+        "spacedout",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "uranium_ore",
+          "direction": "input",
+          "rate": 250
+        },
+        {
+          "item": "enriched_uranium",
+          "direction": "output",
+          "rate": 50
+        },
+        {
+          "item": "depleted_uranium",
+          "direction": "output",
+          "rate": 200
+        }
+      ],
+      "build": {
+        "refined_metal": 800,
+        "plastic": 100
       }
     },
     {

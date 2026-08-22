@@ -1205,4 +1205,62 @@ void main() {
           closeTo(8000, 1));
     });
   });
+
+  group('enriching uranium', () {
+    test('a fifth of the ore is the part a reactor runs on', () {
+      final spec = db.processOrThrow('uranium_centrifuge');
+      double rate(String item) =>
+          spec.ports.firstWhere((p) => p.itemId == item).ratePerSecond;
+
+      // 10 kg every 40 seconds: 2 enriched, 8 depleted, and it balances.
+      expect(rate('uranium_ore'), closeTo(10000 / 40, 1e-9));
+      expect(rate('enriched_uranium') / rate('uranium_ore'), closeTo(0.2, 1e-9));
+      expect(rate('depleted_uranium') / rate('uranium_ore'), closeTo(0.8, 1e-9));
+      expect(rate('enriched_uranium') + rate('depleted_uranium'),
+          rate('uranium_ore'));
+
+      // It runs itself, which is unusual enough among refiners to pin.
+      expect(spec.dupeLabourSecondsPerCycle, 0);
+      expect(spec.netPowerWatts, 480);
+    });
+
+    test('the leftovers build like any other refined metal', () {
+      // The page says so outright, so a Vulcanizer could be made of it — and
+      // a Plug Slug can eat it, both of which fall out of the class rather
+      // than being written anywhere.
+      expect(db.itemOrThrow('refined_metal').members,
+          contains('depleted_uranium'));
+      final slug = db.processOrThrow('plug_slug').inputs
+          .firstWhere((p) => p.id == 'feed');
+      expect(
+        portAccepts(
+          db,
+          (PipelineBuilder(db, name: 'slug')..add('plug_slug', nodeId: 's'))
+              .build()
+              .nodeOrThrow('s'),
+          db.processOrThrow('plug_slug'),
+          slug,
+          'depleted_uranium',
+        ),
+        isTrue,
+      );
+    });
+
+    test('uranium ore is not in the metal ore class', () {
+      // The game's own Crafting Station recipe reads "50 kg Metal Ore (excl.
+      // Uranium)", and a Metal Refinery does not smelt it — a centrifuge
+      // splits it, twenty for eighty. Putting it in the class would have the
+      // refinery claiming to give a kilogram of metal for a kilogram of it.
+      expect(db.itemOrThrow('metal_ore').members,
+          isNot(contains('uranium_ore')));
+    });
+
+    test('and all three belong to the pack that added them', () {
+      for (final id in ['uranium_ore', 'enriched_uranium', 'depleted_uranium']) {
+        expect(db.itemOrThrow(id).tags, contains('spacedout'), reason: id);
+      }
+      expect(db.processOrThrow('uranium_centrifuge').tags,
+          contains('spacedout'));
+    });
+  });
 }
