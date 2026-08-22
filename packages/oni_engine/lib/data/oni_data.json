@@ -630,6 +630,14 @@
       ]
     },
     {
+      "id": "bammoth_patty",
+      "name": "Bammoth Patty",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
       "id": "peat",
       "name": "Peat",
       "category": "solid",
@@ -3297,6 +3305,88 @@
           "item": "meat",
           "direction": "output",
           "rate": 0.166667
+        }
+      ]
+    },
+    {
+      "id": "bammoth",
+      "name": "Bammoth",
+      "kind": "critter",
+      "description": "Eats 30 kg/cycle of Plume Squash or Nosh Bean — the same either way — and gives all of it back as Bammoth Patty, which a Rock Crusher turns into clay and phosphorite. It eats Squash Fries too, and this app has no item for a cooked food. Groomed: one egg every 12 cycles, and 12 s of Duplicant time per cycle. The meat figure is the 22 400 kcal it drops at the end of a 200-cycle life, at the 1 600 kcal a kilogram the game prices meat at, spread across that life. Shearing a grown one gives 5 kg of reed fibre and nobody has published how often, so it is not here.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "id": "feed",
+          "item": "plume_squash",
+          "direction": "input",
+          "rate": 50.0,
+          "alternatives": [
+            "nosh_bean"
+          ]
+        },
+        {
+          "item": "bammoth_patty",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0001388889
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.1166666667
+        }
+      ]
+    },
+    {
+      "id": "bammoth_wild",
+      "name": "Bammoth (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "feed",
+          "item": "plume_squash",
+          "direction": "input",
+          "rate": 50.0,
+          "alternatives": [
+            "nosh_bean"
+          ]
+        },
+        {
+          "item": "bammoth_patty",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.00001388889
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.1166666667
         }
       ]
     },
@@ -7052,6 +7142,43 @@
       ],
       "build": {
         "metal_ore": 50
+      }
+    },
+    {
+      "id": "rock_crusher_bammoth_patty",
+      "name": "Rock Crusher (Bammoth Patty)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "UNVERIFIED RATE: 120 kg of Bammoth Patty gives 88 kg of clay and 32 kg of phosphorite, which is published; how long that operation takes is not. It is taken here as the same 40 s the crusher's other recipes run at, which is where 3 kg/s comes from. The split itself is exact, so a ranch sized on the ratio is right whatever the rate turns out to be.",
+      "tags": [
+        "refining",
+        "frosty",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "bammoth_patty",
+          "direction": "input",
+          "rate": 3000
+        },
+        {
+          "item": "clay",
+          "direction": "output",
+          "rate": 2200
+        },
+        {
+          "item": "phosphorite",
+          "direction": "output",
+          "rate": 800
+        }
+      ],
+      "build": {
+        "metal_ore": 800
       }
     },
     {

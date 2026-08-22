@@ -1128,4 +1128,62 @@ void main() {
           closeTo(1600, 1));
     });
   });
+
+  group('the Bammoth, and what it leaves behind', () {
+    test('it eats either crop at one rate and gives all of it back', () {
+      final bammoth = db.processOrThrow('bammoth');
+      final feed = bammoth.inputs.firstWhere((p) => p.id == 'feed');
+      final patty = bammoth.outputs
+          .firstWhere((p) => p.itemId == 'bammoth_patty');
+
+      expect(feed.accepted, ['plume_squash', 'nosh_bean']);
+      expect(feed.ratePerSecond * secondsPerCycle, closeTo(30000, 1));
+      expect(patty.ratePerSecond, feed.ratePerSecond);
+    });
+
+    test('its meat is the published calories at the published price', () {
+      // 22 400 kcal over a 200-cycle life, at the 1 600 kcal a kilogram the
+      // game prices meat at — the same arithmetic that makes a Sage Hatch's
+      // 3 200 kcal two kilograms.
+      final meat = db.processOrThrow('bammoth').outputs
+          .firstWhere((p) => p.itemId == 'meat');
+      expect(meat.ratePerSecond * secondsPerCycle * 200, closeTo(14000, 1));
+    });
+
+    test('and the crusher splits its patty exactly', () {
+      // 120 kg gives 88 of clay and 32 of phosphorite: published, and it
+      // balances to the gram, which is the part a ranch is sized on.
+      final spec = db.processOrThrow('rock_crusher_bammoth_patty');
+      double rate(String item) =>
+          spec.ports.firstWhere((p) => p.itemId == item).ratePerSecond;
+
+      expect(rate('clay') / rate('bammoth_patty'), closeTo(88 / 120, 1e-9));
+      expect(rate('phosphorite') / rate('bammoth_patty'), closeTo(32 / 120, 1e-9));
+      expect(rate('clay') + rate('phosphorite'), rate('bammoth_patty'));
+
+      // The rate is an assumption about how long an operation takes, and says
+      // so where somebody will read it.
+      expect(spec.tags, contains('unverified'));
+      expect(spec.description, contains('40 s'));
+    });
+
+    test('a herd feeds itself phosphorite for a Shine Bug farm', () {
+      // The chain the item existed for: squash in, patty out, crusher, and
+      // eight bugs' worth of phosphorite falls out of one Bammoth.
+      final pipeline = (PipelineBuilder(db, name: 'herd')
+            ..addSource('plume_squash')
+            ..add('bammoth', nodeId: 'bammoth')
+            ..add('rock_crusher_bammoth_patty', nodeId: 'crusher')
+            ..connectItem('src_plume_squash', 'bammoth', 'plume_squash')
+            ..connectItem('bammoth', 'crusher', 'bammoth_patty')
+            ..pinCount('bammoth', 1))
+          .build();
+      final solution = PipelineSolver(db).solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // 30 kg of patty a cycle is 8 kg of phosphorite a cycle.
+      expect(solution.externalOutputs['phosphorite']! * secondsPerCycle,
+          closeTo(8000, 1));
+    });
+  });
 }

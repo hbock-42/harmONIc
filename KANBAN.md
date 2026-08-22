@@ -53,9 +53,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 
 - `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
-- `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
-  critters, which a flow model cannot express), Gnit and Mimika (produce nothing), and the
-  regular Lumb (its peat rate is stated nowhere)
+- `E4-26` The rest of both packs: Jawbo (yields unpublished), Rhex (eats other critters,
+  which a flow model cannot express), Gnit and Mimika (produce nothing), and the regular
+  Lumb (its peat rate is stated nowhere). The Bammoth came out of this list on 2026-08-22,
+  its page having been filled in since somebody last looked
 - `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
   be misrepresented by a per-cycle average
 - `E4-28` Seaquine's ovolene rate. Checked again on 2026-08-22: the page says who may be
@@ -75,6 +76,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-26a` **The Bammoth** — filed for a year under "yields unpublished", and its page has
+  them now: 30 kg a cycle of Plume Squash or Nosh Bean, the same either way, and all of it
+  back as Bammoth Patty. A Rock Crusher splits 120 kg of that into 88 of clay and 32 of
+  phosphorite, exactly, which makes a herd the renewable phosphorite a Shine Bug farm wants.
+  How long that crusher operation takes is the one figure still missing, so the rate carries
+  the doubt tag and the ratio — the part a ranch is sized on — does not
 - `E4-25a` **A Shine Bug eats a fifth of what it was being fed** — 200 g of phosphorite a
   cycle, published, against the 1 kg placeholder that had been sitting there saying it was
   a placeholder. Its page weighs exactly one of its foods and counts the rest in calories,
@@ -626,7 +633,8 @@ _(empty)_
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
 | E4-25 | P3 | Firm up the inferred 50 % conversions | two of the three answered: the Pokeshell's 50 % is published, and the Shine Bug's feed is 200 g of phosphorite a cycle — the one food of its several the page weighs rather than counts in calories. The Pip's is not: its page says what it eats and what it excretes and never puts the two in one sentence |
 | E4-25a | ✅ | The Shine Bug's feed | 200 g of phosphorite a cycle, which its page weighs while counting its other foods in calories |
-| E4-26 | P3 | The rest of both packs | Bammoth, Jawbo, Rhex, Gnit, Mimika, Lumb — yields unpublished or inexpressible |
+| E4-26 | P3 | The rest of both packs | the Bammoth is done (`E4-26a`). Jawbo's yields are unpublished, Rhex eats other critters and a flow model cannot express that, Gnit and Mimika produce nothing, and the regular Lumb's peat rate is stated nowhere |
+| E4-26a | ✅ | The Bammoth | 30 kg/cycle of Plume Squash or Nosh Bean, all of it back as patty, and a Rock Crusher recipe that splits 120 kg of patty into 88 of clay and 32 of phosphorite |
 | E4-27 | ✅ | Mercury and cinnabar processing | the generic refinery and crusher already covered the rates — 1:1 and 50 % with sand — but the ore refined to the wrong element: a refinery hands its metal back at 40 °C and mercury freezes at −38.85 °C, so what you get is a liquid |
 | E4-28 | P3 | Seaquine's ovolene rate | checked again 2026-08-22: the page says who may be milked and never how much. Its diet and its carbon dioxide are published and are already here |
 | E4-29 | ✅ | The remaining grazers, properly | Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real growth links |

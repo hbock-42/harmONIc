@@ -552,6 +552,9 @@ void main() {
         // 8.89 % of a plant's maturity a cycle, whichever plant it is.
         'pip.grazing',
         'pip_wild.grazing',
+        // 30 kg a cycle of Plume Squash or Nosh Bean, all of it back as patty.
+        'bammoth.feed',
+        'bammoth_wild.feed',
         // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
         'gas_grass.chlorine',
         'gas_grass.fertiliser',
