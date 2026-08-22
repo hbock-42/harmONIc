@@ -423,6 +423,20 @@ class _NodeInspectorState extends State<_NodeInspector> {
           const SizedBox(height: OniSpacing.lg),
         ],
 
+        // A building on a sensor is not a building that has stopped: the
+        // ratios hold, you just need more of them. Nothing could say so until
+        // now, though the solver has always known how.
+        // Not for a geyser, whose duty cycle is a fact about the world and
+        // already has its own control; nor for a critter or a plant, which do
+        // not have an off switch.
+        if (!_isBoundary &&
+            !controller.isGeyser(node) &&
+            spec.kind != ProcessKind.critter &&
+            spec.kind != ProcessKind.plant) ...[
+          _Uptime(controller: controller, node: node, result: result),
+          const SizedBox(height: OniSpacing.lg),
+        ],
+
         if (controller.isGeyser(node)) ...[
           _GeyserActivity(
             controller: controller,
@@ -607,6 +621,77 @@ class _NodeInspectorState extends State<_NodeInspector> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// How much of the time you intend to run this.
+///
+/// Distinct from the "busy" figure beside the count, which is what rounding
+/// leaves you with: build three where you needed 2.5 and the third is idle a
+/// third of the time whether you like it or not. This is the other direction —
+/// a choice you are making, usually with a sensor. A SPOM's Electrolyzers on a
+/// pressure switch are the standard example, and the ratios do not change when
+/// you do it. You simply need more Electrolyzers.
+class _Uptime extends StatefulWidget {
+  const _Uptime({
+    required this.controller,
+    required this.node,
+    required this.result,
+  });
+
+  final PipelineController controller;
+  final PipelineNode node;
+  final NodeResult? result;
+
+  @override
+  State<_Uptime> createState() => _UptimeState();
+}
+
+class _UptimeState extends State<_Uptime> {
+  static const List<double> _presets = [1, 0.75, 0.5, 0.25];
+
+  @override
+  Widget build(BuildContext context) {
+    final uptime = widget.node.uptime;
+    final result = widget.result;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('RUNS', style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.sm,
+          children: [
+            for (final preset in _presets)
+              OniButton(
+                label: preset == 1
+                    ? 'All the time'
+                    : '${(preset * 100).toStringAsFixed(0)}%',
+                compact: true,
+                tone: (uptime - preset).abs() < 1e-6
+                    ? OniButtonTone.accent
+                    : OniButtonTone.neutral,
+                onPressed: () =>
+                    widget.controller.setNodeUptime(widget.node.id, preset),
+              ),
+          ],
+        ),
+        if (uptime < 1 && result != null) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Text(
+            'Running ${(uptime * 100).toStringAsFixed(0)} % of the time, so '
+            '${result.count.toStringAsFixed(2)} × of work needs '
+            '${result.wholeCount} built rather than '
+            '${result.count.ceil()}. Everything it makes and eats stays the '
+            'same; there is simply more of it standing there.',
+            style: OniType.body
+                .copyWith(fontSize: 11.5, color: OniColors.textMuted),
+          ),
+        ],
+      ],
     );
   }
 }

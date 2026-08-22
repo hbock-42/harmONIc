@@ -107,8 +107,15 @@ void main() {
     controller.select(const NodeSelection('sieve'));
     await tester.pump();
     // A Water Sieve publishes no output temperature, so it hands back what it
-    // was given — which is the assumption, and it is marked as one.
-    expect(find.text('~40 °C'), findsNWidgets(2));
+    // was given — which is the assumption, and it is marked as one. The
+    // inspector is a list and only the first of its port rows is on screen, so
+    // the second is checked where it is decided rather than where it is drawn.
+    expect(find.text('~40 °C'), findsWidgets);
+    expect(controller.temperatures.at(const PortRef('sieve', 'water')),
+        closeTo(40, 1e-9));
+    expect(
+        controller.temperatures.at(const PortRef('sieve', 'polluted_water')),
+        closeTo(40, 1e-9));
   });
 
   testWidgets('an edge says what temperature the flow arrives at',

@@ -34,6 +34,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 ### 📋 Ready (next up)
 
+**Model**
+
+- `E13-11` A port that names its alternatives, so "either peat or wood" is neither an
+  invented material nor two copies of the same recipe. The port lists what it accepts and
+  the node picks one, the way a Metal Refinery picks its ore
+
 **Canvas and interaction**
 
 - `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
@@ -112,6 +118,8 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E10-16` **Part-time buildings** — a node can say it only runs half the time, which is how
+  a real SPOM works. The solver has always known how; nothing in the app could say it
 - `E13-10` **"Either peat or wood"** — one Smoker recipe per fuel. The first attempt invented
   a "Peat or Wood" material, which is not a thing the game has and turned up in the palette
   as a supply node nobody could own
@@ -657,6 +665,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-13 | ✅ | Saving a build as a node, explained | its own section in the menu, saying what it will do and where the result goes |
 | E10-14 | ✅ | The pipelines menu reads as sections | pressable headers with a turning chevron, a heading over the saved builds, and a rule between each |
 | E10-15 | ✅ | Draw the supplies | a supply or output node for every unfed port, in one press and one undo; the button appears only while there is something to draw |
+| E10-16 | ✅ | Part-time buildings | an uptime control, distinct from the "busy" figure: one is a choice you make, the other is what rounding leaves you |
 
 ## E11 — What a build actually costs to run
 
@@ -718,6 +727,7 @@ flow, so the solver never had to learn about it.
 | E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
 | E13-10 | ✅ | The Smoker's fuel | one recipe per fuel, the Beakon pattern. A class is for a category the *game* groups; "either of these two" is not one |
+| E13-11 | P2 | A port that names its alternatives | neither an invented material nor a duplicated spec: a port lists what it will take (`wood`, `peat`) and the node picks, the way a refinery picks its ore. Would let the two Smokers become one again, and would give the Plug Slug its ore-or-metal diet |
 
 ## E8 — Quality
 
