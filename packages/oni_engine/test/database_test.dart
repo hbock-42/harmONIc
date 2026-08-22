@@ -587,6 +587,21 @@ void main() {
           greaterThan(solution.nodes['peppers']!.count * 10));
     });
 
+    test('a preserving step makes no food, and says so', () {
+      // A Dehydrator is a cost with no yield in a flow model: the calories out
+      // are the calories in, and what it actually buys — food that never
+      // spoils — is a thing this app has no notion of. Worth pinning, because
+      // a future edit that "fixes" the balance by inventing a yield would be
+      // inventing food.
+      final dehydrator = db.processOrThrow('dehydrator');
+      final into =
+          dehydrator.inputs.firstWhere((p) => p.itemId == 'calories');
+      final out =
+          dehydrator.outputs.firstWhere((p) => p.itemId == 'calories');
+      expect(out.ratePerSecond, into.ratePerSecond);
+      expect(dehydrator.description, contains('never spoils'));
+    });
+
     test('a cooker without a published batch time says so', () {
       for (final id in ['deep_fryer_squash_fries', 'deep_fryer_fish_taco',
           'sushi_bar_sushi_roll']) {

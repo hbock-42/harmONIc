@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E13-2b` **The Smoker and the Dehydrator** — brisket out of tough meat and wood, and a
+  dryer that makes no food at all: its calories out are its calories in, and what it really
+  buys is food that never spoils, which this app has no notion of
 - `E8-5` **A benchmark that means something on a machine you do not own** — the perf test
   now asserts the *shape* of the cost as well as the clock: doubling the nodes must not
   quadruple the time, which is what a return to the cubic elimination would do
@@ -554,7 +557,8 @@ _(empty)_
 | E4-32 | P3 | Bammoth on Plume Squash | and Thimble Reed as the Pip's other crop |
 | E4-33 | ✅ | The food chain | Bristle Blossom, Dusk Cap, Waterweed, Sleet Wheat and the Electric Grill |
 | E4-34 | ✅ | Cooking | Gas Range, Deep Fryer and Sushi Bar, gas burned and Duplicant time included |
-| E4-34b | P2 | The Microbe Musher and Smoker | pages list what each recipe yields but not what goes into it; food quality likewise |
+| E4-34b | ✅ | The Microbe Musher and Smoker | both seeded; food *quality* remains unmodelled, which is E4-38 |
+| E4-38 | P3 | Food quality | morale is half the reason anyone cooks, and this model has no notion of it |
 | E4-35 | ✅ | Three more crops | Pincha Pepperplant, Thimble Reed, Nosh Sprout, each with a grazed twin |
 | E4-35b | P3 | Sporechid, and the Prehistoric and Aquatic food plants |  |
 | E4-36 | ✅ | Harvested and grazed are separate processes | offering both on one process let a farm be counted twice |
@@ -699,7 +703,10 @@ flow, so the solver never had to learn about it.
 | E13-1b | ✅ | Naming the metal | a node says which member it uses, and an output that follows an input takes it from there: copper ore in, copper out |
 | E13-1c | ✅ | Classes applied where verified | Deodorizer and Water Sieve on Filtration Medium, a Hatch on rock, a Smooth Hatch on any ore, the Ethanol Distiller on wood |
 | E13-2 | ✅ | The cooling loop | Aquatuner and Thermo Regulator move heat, the Steam Turbine deletes it; heat ports at both ends so a build must say where it went |
-| E13-2b | P2 | The rest of the roster | Supermaterial Refinery, Molecular Forge, Spice Grinder, Dehydrator, Smoker |
+| E13-2b | ✅ | The rest of the roster | the Smoker and the Dehydrator seeded; the other three cannot be, each for its own reason, written out below |
+| E13-2c | P3 | The Molecular Forge | its recipes are niobium, tungsten, isosap, abyssalite, brackwax and thermium, five of which this app has no item for, and the page publishes no cycle time |
+| E13-2d | P3 | The Spice Grinder | every recipe is 0.1 of a *seed*, and seeds are not items here; no power or cycle time published either |
+| E13-2e | P3 | The Supermaterial Refinery | the wiki has no page for it under that name |
 | E13-3 | P2 | The Crafting Station | every recipe is known except how many gaskets 50 kg of plastic makes |
 | E13-4 | P3 | Lead, and the metals behind galena | the ore is in the class with nothing to refine into |
 | E13-5 | P3 | Sage Hatch's organics | polluted dirt, slime, algae, dirt, fertiliser and most Duplicant food: a class this app does not have |

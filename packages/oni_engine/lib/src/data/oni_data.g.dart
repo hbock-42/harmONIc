@@ -6871,6 +6871,97 @@ const String oniDataJson = r"""
       "build": {
         "metal_ore": 800
       }
+    },
+    {
+      "id": "smoker_brisket",
+      "name": "Smoker (Tender Brisket)",
+      "kind": "building",
+      "buildingId": "smoker",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 9,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "UNVERIFIED: six kilograms of tough meat and a hundred of wood make 16 000 kcal of tender brisket over ten cycles, which is the published recipe. Peat works in place of the wood, kilogram for kilogram, and only the wood is modelled here. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
+      "tags": [
+        "food",
+        "prehistoric",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "tough_meat",
+          "direction": "input",
+          "rate": 10.0
+        },
+        {
+          "item": "wood",
+          "direction": "input",
+          "rate": 166.66666666666666
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 26.666666666666668
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "dehydrator",
+      "name": "Dehydrator",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED: dries 6 000 kcal of cooked food into 6 000 kcal that never spoils, using 12 kg of plastic and a trickle of natural gas, and giving back 6 kg of water. It makes no food — the calories out are the calories in — so in a flow model it is purely a cost, and what it buys is a thing this app has no notion of. Its power is not published and is modelled as none; the 300 s is 250 of drying plus 50 of somebody unloading it.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "calories",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 20.0,
+          "id": "preserved"
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0,
+          "temperatureC": 95
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "plastic": 100
+      }
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
