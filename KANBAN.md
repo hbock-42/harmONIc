@@ -36,6 +36,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Canvas and interaction**
 
+- `E7-20` Arrow keys to nudge a selection. `moveSelectionBy` is on the controller and
+  nothing calls it; dragging is the only way to move a node a few pixels
+- `E10-19` Clearing every amount at once. `clearAllPins` is on the controller and nothing
+  calls it
+
 - `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
   plain drag for selection, which is what most editors do
 - `E6-6` Tabs, so two pipelines can be compared side by side
@@ -112,6 +117,8 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E10-18` **"I have this much in store"** — the third kind of pin could be shown and never
+  made. Two tonnes of coal to last twenty cycles is 167 g/s, and the build is sized to it
 - `E10-17` **Splitting an output between two lines** — a push line's share has been in the
   model since the solver was written with no way to set it, so the app was deciding for you
   and not saying so
@@ -670,6 +677,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-15 | ✅ | Draw the supplies | a supply or output node for every unfed port, in one press and one undo; the button appears only while there is something to draw |
 | E10-16 | ✅ | Part-time buildings | an uptime control, distinct from the "busy" figure: one is a choice you make, the other is what rounding leaves you |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
+| E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 
 ## E11 — What a build actually costs to run
 

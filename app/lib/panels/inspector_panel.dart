@@ -320,6 +320,15 @@ class _NodeInspectorState extends State<_NodeInspector> {
             ),
           ],
         ),
+        if (_isBoundary) ...[
+          const SizedBox(height: OniSpacing.sm),
+          _Stockpile(
+            controller: controller,
+            node: node,
+            portId: _boundaryPortId!,
+            onPinned: () => setState(() => _amount.text = _currentPinText()),
+          ),
+        ],
         const SizedBox(height: OniSpacing.md),
 
         if (result != null) ...[
@@ -1266,6 +1275,139 @@ class _EdgeInspector extends StatelessWidget {
     );
   }
 }
+
+/// "I have this much of it, and I want it to last."
+///
+/// The third kind of pin, and the one nothing could ever create: the model has
+/// had it since the solver was written, the inspector could already *show* one,
+/// and there was no way to make one. It answers a question the other two
+/// cannot — not "what rate do I have" but "I have two tonnes of coal in a
+/// store, how big a build will that keep running for twenty cycles?" — and a
+/// rate is what it works out for you.
+class _Stockpile extends StatefulWidget {
+  const _Stockpile({
+    required this.controller,
+    required this.node,
+    required this.portId,
+    required this.onPinned,
+  });
+
+  final PipelineController controller;
+  final PipelineNode node;
+  final String portId;
+  final VoidCallback onPinned;
+
+  @override
+  State<_Stockpile> createState() => _StockpileState();
+}
+
+class _StockpileState extends State<_Stockpile> {
+  final TextEditingController _amount = TextEditingController();
+  final TextEditingController _cycles = TextEditingController();
+  bool _open = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final pin = widget.controller.pinFor(widget.node.id);
+    if (pin is StockPin) {
+      _open = true;
+      _amount.text = (pin.amount / 1000).toStringAsFixed(0);
+      _cycles.text = (pin.durationSeconds / secondsPerCycle).toStringAsFixed(0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    _cycles.dispose();
+    super.dispose();
+  }
+
+  void _apply() {
+    final kilograms = double.tryParse(_amount.text.trim());
+    final cycles = double.tryParse(_cycles.text.trim());
+    if (kilograms == null || cycles == null || cycles <= 0) return;
+    widget.controller.pin(StockPin(
+      nodeId: widget.node.id,
+      portId: widget.portId,
+      amount: kilograms * 1000,
+      durationSeconds: cycles * secondsPerCycle,
+    ));
+    widget.onPinned();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_open) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _open = true),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Text('or say what you have in store',
+              style: OniType.body
+                  .copyWith(fontSize: 11.5, color: OniColors.accent)),
+        ),
+      );
+    }
+
+    final pin = widget.controller.pinFor(widget.node.id);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: OniSpacing.sm),
+        Text('IN STORE', style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        // Wrapped rather than one row: the inspector is 240-odd pixels wide
+        // and two fields with words between them do not fit across it.
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.xs,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            SizedBox(
+              width: 76,
+              child: OniField(
+                key: stockAmountFieldKey,
+                controller: _amount,
+                hint: 'kg',
+                textAlign: TextAlign.right,
+                onChanged: (_) => _apply(),
+              ),
+            ),
+            Text('kg, to last', style: OniType.body.copyWith(fontSize: 11.5)),
+            SizedBox(
+              width: 56,
+              child: OniField(
+                key: stockCyclesFieldKey,
+                controller: _cycles,
+                hint: '20',
+                textAlign: TextAlign.right,
+                onChanged: (_) => _apply(),
+              ),
+            ),
+            Text('cycles', style: OniType.body.copyWith(fontSize: 11.5)),
+          ],
+        ),
+        if (pin is StockPin) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Text(
+            'Which is ${(pin.ratePerSecond).toStringAsFixed(1)} g/s, and that '
+            'is what the build is sized to. Run it faster and the store runs '
+            'out sooner.',
+            style: OniType.body
+                .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Named so tests can drive them directly.
+const Key stockAmountFieldKey = ValueKey('stock-amount');
+const Key stockCyclesFieldKey = ValueKey('stock-cycles');
 
 /// How much of a producer's output this particular line takes.
 ///
