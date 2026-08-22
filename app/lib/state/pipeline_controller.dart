@@ -157,6 +157,25 @@ class PipelineController extends ChangeNotifier {
     }
     return null;
   }
+  /// Puts the current graph on the undo stack, and bounds it.
+  ///
+  /// One place, because there are two ways in — an ordinary edit and the start
+  /// of a drag — and the drag one was pushing without the limit. A hundred
+  /// whole graphs is already generous for a canvas of a few hundred nodes;
+  /// an unbounded pile of them is a session that gets heavier the longer you
+  /// arrange things.
+  void _recordUndo() {
+    _undoStack.add(_pipeline);
+    _redoStack.clear();
+    if (_undoStack.length > _undoDepthLimit) _undoStack.removeAt(0);
+  }
+
+  static const int _undoDepthLimit = 100;
+
+  /// How many steps back you could go. Exposed for the test that proves the
+  /// stack stays bounded, the way the store exposes its write count.
+  int get undoDepth => _undoStack.length;
+
   bool get canUndo => _undoStack.isNotEmpty;
   bool get canRedo => _redoStack.isNotEmpty;
 
@@ -239,11 +258,7 @@ class PipelineController extends ChangeNotifier {
   /// Applies a change and re-solves. [record] is false for the intermediate
   /// frames of a drag, so one drag is one undo step.
   void _apply(Pipeline next, {bool record = true}) {
-    if (record) {
-      _undoStack.add(_pipeline);
-      _redoStack.clear();
-      if (_undoStack.length > 100) _undoStack.removeAt(0);
-    }
+    if (record) _recordUndo();
     _pipeline = next;
     _solution = _solver.solve(next);
     _asBuilt = null;
@@ -340,8 +355,7 @@ class PipelineController extends ChangeNotifier {
 
   /// Called once when a node drag starts, so the whole drag is one undo step.
   void beginNodeDrag() {
-    _undoStack.add(_pipeline);
-    _redoStack.clear();
+    _recordUndo();
     _dragOrigins = {
       for (final n in _pipeline.nodes)
         if (_selectedNodeIds.contains(n.id)) n.id: Offset(n.x, n.y),

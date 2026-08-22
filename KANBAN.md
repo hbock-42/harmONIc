@@ -71,6 +71,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-16` **The undo stack grew for ever while you arranged a build** — it holds whole
+  graphs and is capped at a hundred, and the cap was written into the ordinary edit path
+  only. Starting a node drag pushes too, and that one had no limit: every drag added a copy
+  of the entire pipeline and none of them ever left, so a session spent tidying a
+  300-node canvas got heavier the longer it went on. One `_recordUndo` now, used by both,
+  because the way to forget a rule twice is to write it twice
 - `E8-15` **The rest of the per-frame work, measured then cached** — having found one scan
   running sixty times a second, I measured the others rather than guessing which were next.
   At 300 nodes: the connected components 300 µs, scoping the totals to one build 193 µs,
@@ -1040,6 +1046,7 @@ flow, so the solver never had to learn about it.
 | E8-13 | ✅ | Every sentence the app says, checked | 134 of them read against what the code does. Two named a figure the engine holds as a constant and would have gone on saying it after the constant changed |
 | E8-14 | ✅ | The per-frame scan | `hasASplitToChoose` walked the whole edge list once per port, on every frame, and the answer that cost most was the usual one. One pass over the edges, and cached with the solve |
 | E8-15 | ✅ | The rest of the per-frame work | connected components and the scoped totals were recomputed on every frame; measured at 300 nodes, cached, and the dropping is what the tests check |
+| E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 
 ---
 
