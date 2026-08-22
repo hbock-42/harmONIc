@@ -258,7 +258,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 0.388
     },
     {
       "id": "zinc_gas",
@@ -266,7 +267,8 @@ const String oniDataJson = r"""
       "category": "gas",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 0.388
     },
     {
       "id": "basalt",
@@ -306,7 +308,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 4.1
     },
     {
       "id": "frozen_ovolene",
@@ -322,7 +325,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 3.0
     },
     {
       "id": "frozen_mucin",
@@ -338,7 +342,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 2.0
     },
     {
       "id": "frozen_squid_ink",
@@ -354,7 +359,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 2.01
     },
     {
       "id": "polluted_brine",
@@ -401,7 +407,8 @@ const String oniDataJson = r"""
       "id": "liquid_sulfur",
       "name": "Liquid Sulfur",
       "category": "liquid",
-      "tags": []
+      "tags": [],
+      "specificHeat": 0.7
     },
     {
       "id": "diamond",
@@ -417,7 +424,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 0.9
     },
     {
       "id": "resin",
@@ -551,7 +559,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "specificHeat": 0.14
     },
     {
       "id": "mercury_gas",
@@ -559,7 +568,8 @@ const String oniDataJson = r"""
       "category": "gas",
       "tags": [
         "frosty"
-      ]
+      ],
+      "specificHeat": 0.14
     },
     {
       "id": "nectar",
@@ -567,7 +577,8 @@ const String oniDataJson = r"""
       "category": "liquid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "specificHeat": 4.1
     },
     {
       "id": "lumen_quartz",
@@ -782,7 +793,8 @@ const String oniDataJson = r"""
       "id": "liquid_chlorine",
       "name": "Liquid Chlorine",
       "category": "liquid",
-      "tags": []
+      "tags": [],
+      "specificHeat": 0.48
     },
     {
       "id": "mealwood_growth",
@@ -956,7 +968,8 @@ const String oniDataJson = r"""
       "id": "molten_glass",
       "name": "Molten Glass",
       "category": "liquid",
-      "tags": []
+      "tags": [],
+      "specificHeat": 0.2
     },
     {
       "id": "glass",

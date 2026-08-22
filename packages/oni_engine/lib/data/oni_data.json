@@ -254,7 +254,8 @@
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 0.388
     },
     {
       "id": "zinc_gas",
@@ -262,7 +263,8 @@
       "category": "gas",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 0.388
     },
     {
       "id": "basalt",
@@ -302,7 +304,8 @@
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 4.1
     },
     {
       "id": "frozen_ovolene",
@@ -318,7 +321,8 @@
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 3.0
     },
     {
       "id": "frozen_mucin",
@@ -334,7 +338,8 @@
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 2.0
     },
     {
       "id": "frozen_squid_ink",
@@ -350,7 +355,8 @@
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 2.01
     },
     {
       "id": "polluted_brine",
@@ -397,7 +403,8 @@
       "id": "liquid_sulfur",
       "name": "Liquid Sulfur",
       "category": "liquid",
-      "tags": []
+      "tags": [],
+      "specificHeat": 0.7
     },
     {
       "id": "diamond",
@@ -413,7 +420,8 @@
       "category": "liquid",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "specificHeat": 0.9
     },
     {
       "id": "resin",
@@ -547,7 +555,8 @@
       "category": "liquid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "specificHeat": 0.14
     },
     {
       "id": "mercury_gas",
@@ -555,7 +564,8 @@
       "category": "gas",
       "tags": [
         "frosty"
-      ]
+      ],
+      "specificHeat": 0.14
     },
     {
       "id": "nectar",
@@ -563,7 +573,8 @@
       "category": "liquid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "specificHeat": 4.1
     },
     {
       "id": "lumen_quartz",
@@ -778,7 +789,8 @@
       "id": "liquid_chlorine",
       "name": "Liquid Chlorine",
       "category": "liquid",
-      "tags": []
+      "tags": [],
+      "specificHeat": 0.48
     },
     {
       "id": "mealwood_growth",
@@ -952,7 +964,8 @@
       "id": "molten_glass",
       "name": "Molten Glass",
       "category": "liquid",
-      "tags": []
+      "tags": [],
+      "specificHeat": 0.2
     },
     {
       "id": "glass",

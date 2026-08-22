@@ -168,14 +168,10 @@ void main() {
             item.specificHeat == null)
           item.id,
     ];
-    // The ones left are DLC exotica and molten metals — nothing a build plumbs
-    // into a mixing point today. The list is written out so that adding a
-    // liquid without measuring it fails here rather than being quietly left
-    // out of every mixture it takes part in.
-    expect(missing, [
-      'molten_zinc', 'zinc_gas', 'ovolene', 'mucin', 'squid_ink', 'latex',
-      'liquid_sulfur', 'phyto_oil', 'mercury', 'mercury_gas', 'nectar',
-      'liquid_chlorine', 'molten_glass',
-    ]);
+    // There were thirteen left — molten metals and DLC exotica — and each has
+    // been read off its own page since. A fluid without a specific heat is
+    // silently left out of every mixture it takes part in, so an empty list is
+    // the only version of this test worth having.
+    expect(missing, isEmpty);
   });
 }

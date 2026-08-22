@@ -123,10 +123,22 @@ void main() {
       }
     });
 
-    test('a fluid with no measured specific heat gets no cooler', () {
-      // Rather than one built on a guessed figure.
-      expect(db.itemOrThrow('liquid_sulfur').specificHeat, isNull);
-      expect(db.process('aquatuner_liquid_sulfur'), isNull);
+    test('every fluid has one, and nothing else does', () {
+      // Every liquid and gas this app models has a measured specific heat now,
+      // so every one of them has a cooler. The guard that a fluid without one
+      // gets none rather than a guessed figure still stands in the generator;
+      // there is simply nothing left for it to catch.
+      for (final item in db.items) {
+        final expected = item.category == ItemCategory.liquid ||
+            item.category == ItemCategory.gas;
+        final id = item.category == ItemCategory.liquid
+            ? 'aquatuner_${item.id}'
+            : 'thermo_regulator_${item.id}';
+        expect(db.process(id) != null, expected, reason: item.id);
+      }
+      // Sulfur, which had none until its page was read, now has both.
+      expect(db.itemOrThrow('liquid_sulfur').specificHeat, 0.7);
+      expect(db.process('aquatuner_liquid_sulfur'), isNotNull);
     });
   });
 }

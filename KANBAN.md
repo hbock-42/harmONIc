@@ -116,6 +116,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E11-6b` **Every fluid knows what it holds** — the last thirteen specific heats, read off
+  their own pages. A fluid without one is dropped from any mixture it joins, so the test
+  that used to list the gaps now asserts there are none
 - `E8-7` **The guide is in the app** — a ? in the toolbar renders the same file, not a
   second copy of the words for a screen; two explanations of one thing disagree within a
   fortnight
@@ -705,7 +708,7 @@ does not see.
 | E11-9 | P3 | Valves | a valve caps a flow, and a cap is an inequality the solver has no way to hold. Pinning the rate says the same thing today |
 | E11-5 | P2 | Conduit heat | a pipe full of 95 °C water heats whatever it runs past |
 | E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
-| E11-6b | P2 | The specific heats not yet measured | molten metals and DLC exotica; a fluid without one is silently left out of any mixture it joins |
+| E11-6b | ✅ | The specific heats not yet measured | all thirty fluids have one now, so no mixture drops a term and every coolant has an Aquatuner |
 | E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
 | E11-7b | P3 | What a Gasket costs | 50 kg of plastic or rubber makes some unstated number of them |
 
