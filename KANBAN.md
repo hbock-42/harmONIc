@@ -112,6 +112,10 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E7-19` **A passing wire keeps its lane** — the dummy vertices reserved a lane while the
+  columns were sorted and it was forgotten the moment anything moved, so a node could
+  straighten itself into the middle of a wire that was passing it. Lanes now survive to the
+  end, and the layout counts wires-over-nodes as something to avoid: 1 266 down to 983
 - `E7-18` **Nodes slide to meet their wires** — Sugiyama's fourth phase, which Tidy had been
   skipping: each node now sits where its heaviest wire runs flat, and a pass is kept only if
   it does not tangle anything. Both measures improved — 2 683 crossings to 2 431, and the
@@ -603,6 +607,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E7-16 | ✅ | The view follows a drag off the edge |
 | E7-17 | ✅ | Port-aware ordering | the barycentre and the crossing count both use where a wire attaches, not the middle of the node |
 | E7-18 | ✅ | Coordinate assignment | the priority method: the heaviest wire decides where a node sits, scored so straightening never costs a crossing |
+| E7-19 | ✅ | Lanes kept through placement | a wire passing a column keeps its room, and the layout scores crossings, then wires over nodes, then droop |
 
 ## E10 — Panels & the pin interaction
 

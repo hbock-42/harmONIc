@@ -24,15 +24,45 @@ const String _dummyPrefix = '\u0000edge:';
 
 bool _isDummy(String id) => id.startsWith(_dummyPrefix);
 
-/// One end of a wire, seen from the vertex being placed: who is at the other
-/// end, how far down *that* node the wire attaches, and how far down this one.
+/// One end of a wire, seen from the vertex being placed.
 class _Link {
-  const _Link(this.other, this.otherPort, this.ownPort);
+  const _Link({
+    required this.other,
+    required this.otherPort,
+    required this.ownPort,
+    required this.delta,
+    required this.weight,
+  });
 
+  /// Who is at the other end.
   final String other;
+
+  /// How far down each node the wire attaches, as a fraction of its height.
+  /// Used for ordering, where positions are counted in rows of a column.
   final double otherPort;
   final double ownPort;
+
+  /// What this vertex's top would have to be, relative to the other's, for the
+  /// wire to run flat. In pixels, for the placing.
+  final double delta;
+
+  /// How many columns the whole wire crosses.
+  final double weight;
 }
+
+/// The graph with dummy vertices standing in for the columns a wire passes
+/// through, and every link between them.
+class _Expanded {
+  const _Expanded(this.columns, this.incoming, this.outgoing);
+
+  final List<List<String>> columns;
+  final Map<String, List<_Link>> incoming;
+  final Map<String, List<_Link>> outgoing;
+}
+
+/// The port id a dummy vertex pretends to have. It has no real ports; wires
+/// pass through its middle.
+const String _dummyPort = '';
 
 class AutoLayout {
   const AutoLayout({
@@ -116,7 +146,79 @@ class AutoLayout {
           );
     final forward = layout._forwardEdges();
     final layers = layout._assignLayers(forward);
-    return layout._placeColumns(layout._orderWithinColumns(layers, forward));
+    final expanded = layout._expand(layers, forward);
+    return layout._placeColumns(
+        layout._orderWithinColumns(expanded), expanded);
+  }
+
+  /// The graph with a dummy vertex for every column a wire passes through.
+  ///
+  /// Built once and used by both the ordering and the placing. It used to be
+  /// built inside the ordering and thrown away, which is why a long wire's lane
+  /// was respected while the columns were being sorted and forgotten the moment
+  /// anything moved: a node straightened into the middle of a wire that was
+  /// supposed to be passing it.
+  _Expanded _expand(Map<String, int> layer, List<PipelineEdge> forward) {
+    final depth = layer.values.fold<int>(0, math.max);
+    final columns = <List<String>>[for (var i = 0; i <= depth; i++) []];
+    for (final node in _nodes) {
+      columns[layer[node.id]!].add(node.id);
+    }
+
+    final incoming = <String, List<_Link>>{};
+    final outgoing = <String, List<_Link>>{};
+    void link(
+      String from,
+      String to,
+      String fromPort,
+      String toPort,
+      double weight,
+    ) {
+      incoming.putIfAbsent(to, () => []).add(_Link(
+            other: from,
+            otherPort: _portFraction(from, fromPort),
+            ownPort: _portFraction(to, toPort),
+            delta: _portY(from, fromPort) - _portY(to, toPort),
+            weight: weight,
+          ));
+      outgoing.putIfAbsent(from, () => []).add(_Link(
+            other: to,
+            otherPort: _portFraction(to, toPort),
+            ownPort: _portFraction(from, fromPort),
+            delta: _portY(to, toPort) - _portY(from, fromPort),
+            weight: weight,
+          ));
+    }
+
+    const middle = _dummyPort;
+    for (final edge in forward) {
+      final from = layer[edge.fromNodeId];
+      final to = layer[edge.toNodeId];
+      if (from == null || to == null) continue;
+      // How far the wire travels, in columns. A wire crossing three columns
+      // pulls three times as hard as one going next door: its sag is spread
+      // over more of the picture and it passes more nodes on the way. Every
+      // link of a chain carries the whole wire's weight, so the chain
+      // straightens as one thing.
+      final weight = math.max(1, to - from).toDouble();
+      if (to - from <= 1) {
+        link(edge.fromNodeId, edge.toNodeId, edge.fromPortId, edge.toPortId,
+            weight);
+        continue;
+      }
+      var previous = edge.fromNodeId;
+      var previousPort = edge.fromPortId;
+      for (var column = from + 1; column < to; column++) {
+        final dummy = '$_dummyPrefix${edge.id}:$column';
+        columns[column].add(dummy);
+        link(previous, dummy, previousPort, middle, weight);
+        previous = dummy;
+        previousPort = middle;
+      }
+      link(previous, edge.toNodeId, previousPort, edge.toPortId, weight);
+    }
+
+    return _Expanded(columns, incoming, outgoing);
   }
 
   /// Edges that go "forwards", with the ones closing a cycle left out.
@@ -204,45 +306,10 @@ class AutoLayout {
   /// make a pass worse as easily as better, so every pass is scored by counting
   /// the crossings it actually leaves and the best ordering seen is the one
   /// returned.
-  List<List<String>> _orderWithinColumns(
-    Map<String, int> layer,
-    List<PipelineEdge> forward,
-  ) {
-    final depth = layer.values.fold<int>(0, math.max);
-    var columns = <List<String>>[for (var i = 0; i <= depth; i++) []];
-    for (final node in _nodes) {
-      columns[layer[node.id]!].add(node.id);
-    }
-
-    // Phase 3: dummy vertices for every edge that skips a column.
-    final incoming = <String, List<_Link>>{};
-    final outgoing = <String, List<_Link>>{};
-    void link(String from, String to, double fromPort, double toPort) {
-      incoming.putIfAbsent(to, () => []).add(_Link(from, fromPort, toPort));
-      outgoing.putIfAbsent(from, () => []).add(_Link(to, toPort, fromPort));
-    }
-
-    for (final edge in forward) {
-      final from = layer[edge.fromNodeId];
-      final to = layer[edge.toNodeId];
-      if (from == null || to == null) continue;
-      final fromPort = _portFraction(edge.fromNodeId, edge.fromPortId);
-      final toPort = _portFraction(edge.toNodeId, edge.toPortId);
-      if (to - from <= 1) {
-        link(edge.fromNodeId, edge.toNodeId, fromPort, toPort);
-        continue;
-      }
-      var previous = edge.fromNodeId;
-      var previousPort = fromPort;
-      for (var column = from + 1; column < to; column++) {
-        final dummy = '$_dummyPrefix${edge.id}:$column';
-        columns[column].add(dummy);
-        link(previous, dummy, previousPort, 0.5);
-        previous = dummy;
-        previousPort = 0.5;
-      }
-      link(previous, edge.toNodeId, previousPort, toPort);
-    }
+  List<List<String>> _orderWithinColumns(_Expanded expanded) {
+    var columns = [for (final column in expanded.columns) [...column]];
+    final incoming = expanded.incoming;
+    final outgoing = expanded.outgoing;
 
     // Where a vertex wants to sit, in units of "rows of the next column
     // along". A node is not a point: its wires leave and arrive at particular
@@ -345,7 +412,10 @@ class AutoLayout {
     return total;
   }
 
-  Map<String, Offset> _placeColumns(List<List<String>> columns) {
+  Map<String, Offset> _placeColumns(
+    List<List<String>> columns,
+    _Expanded expanded,
+  ) {
     final positions = <String, Offset>{};
     var x = 0.0;
 
@@ -360,17 +430,22 @@ class AutoLayout {
       var widest = 0.0;
       for (final id in column) {
         final size = _sizeOf(id);
-        // Dummies take up their lane and are then forgotten: nothing is placed
-        // for them, because there is nothing there but wire.
-        if (!_isDummy(id)) {
-          positions[id] = Offset(NodeLayout.snap(x), NodeLayout.snap(y));
-        }
+        // Dummies are placed like anything else and dropped at the very end.
+        // Keeping them through the straightening is what reserves a lane for a
+        // long wire: a node cannot move into it without passing the dummy, and
+        // nothing is ever allowed to pass its neighbour.
+        positions[id] = Offset(NodeLayout.snap(x), NodeLayout.snap(y));
         y += size.height + rowGap;
         widest = math.max(widest, size.width);
       }
       x += widest + columnGap;
     }
-    return _straighten(columns, positions);
+
+    final straightened = _straighten(columns, positions, expanded);
+    return {
+      for (final entry in straightened.entries)
+        if (!_isDummy(entry.key)) entry.key: entry.value,
+    };
   }
 
   /// Slides nodes up and down so wires run flat.
@@ -388,40 +463,15 @@ class AutoLayout {
   Map<String, Offset> _straighten(
     List<List<String>> columns,
     Map<String, Offset> positions,
+    _Expanded expanded,
   ) {
-    // Where each wire attaches, as an offset from the top of its node.
-    double portY(String nodeId, String portId) {
-      if (_isDummy(nodeId)) return _sizeOf(nodeId).height / 2;
-      final node = pipeline.node(nodeId);
-      final spec = node == null ? null : database.process(node.specId);
-      if (spec == null || spec.portById(portId) == null) {
-        return _sizeOf(nodeId).height / 2;
-      }
-      return NodeLayout.portOffset(spec, portId).dy;
-    }
-
-    final wires =
-        <String, List<({String other, double delta, double weight})>>{};
-    for (final edge in pipeline.edges) {
-      if (!_inScope(edge) || edge.fromNodeId == edge.toNodeId) continue;
-      final from = positions[edge.fromNodeId];
-      final to = positions[edge.toNodeId];
-      if (from == null || to == null) continue;
-
-      final fromY = portY(edge.fromNodeId, edge.fromPortId);
-      final toY = portY(edge.toNodeId, edge.toPortId);
-      // A wire crossing three columns pulls three times as hard as one going
-      // next door. Its sag is spread over more of the picture and it passes
-      // more nodes on the way, so when two wires want a node in different
-      // places the long one should win — which is what a person does by hand.
-      final weight = math.max(
-          1.0, (to.dx - from.dx).abs() / (NodeLayout.width + columnGap));
-
-      wires.putIfAbsent(edge.toNodeId, () => []).add(
-          (other: edge.fromNodeId, delta: fromY - toY, weight: weight));
-      wires.putIfAbsent(edge.fromNodeId, () => []).add(
-          (other: edge.toNodeId, delta: toY - fromY, weight: weight));
-    }
+    // Each pass looks one way only, alternating, the way the ordering sweeps
+    // do. Looking both ways at once averages a node between the wire coming in
+    // and the wire going out and leaves neither flat — a Starnacle fed coquina
+    // from the left and feeding growth to the right sat 24 pixels off both.
+    List<_Link> linksFor(String id, bool downstream) =>
+        (downstream ? expanded.incoming[id] : expanded.outgoing[id]) ??
+        const <_Link>[];
 
     final y = {for (final entry in positions.entries) entry.key: entry.value.dy};
 
@@ -430,21 +480,26 @@ class AutoLayout {
     // ordering phase is, and the best arrangement seen is the one kept —
     // fewest crossings first, and only then the flattest.
     var best = {...y};
-    var bestScore = _score(positions, y);
+    var bestScore = _score(positions, y, columns);
+    bool better((int, int, double) a, (int, int, double) b) =>
+        a.$1 != b.$1
+            ? a.$1 < b.$1
+            : (a.$2 != b.$2 ? a.$2 < b.$2 : a.$3 < b.$3);
 
-    for (var pass = 0; pass < 4; pass++) {
+    for (var pass = 0; pass < 6; pass++) {
+      final downstream = pass.isEven;
       for (final column in columns) {
-        final real = [for (final id in column) if (!_isDummy(id)) id];
+        final real = [...column];
         // Most-connected first: a node with four wires has more say about
         // where it sits than one with a single wire that can bend instead.
-        double pull(String id) => (wires[id] ?? const [])
+        double pull(String id) => linksFor(id, downstream)
             .fold<double>(0, (sum, link) => sum + link.weight);
         final order = [...real]..sort((a, b) => pull(b).compareTo(pull(a)));
 
         final settled = <String>{};
         for (final id in order) {
-          final links = wires[id];
-          if (links == null || links.isEmpty) {
+          final links = linksFor(id, downstream);
+          if (links.isEmpty) {
             settled.add(id);
             continue;
           }
@@ -495,9 +550,8 @@ class AutoLayout {
         }
       }
 
-      final score = _score(positions, y);
-      if (score.$1 < bestScore.$1 ||
-          (score.$1 == bestScore.$1 && score.$2 < bestScore.$2)) {
+      final score = _score(positions, y, columns);
+      if (better(score, bestScore)) {
         best = {...y};
         bestScore = score;
       }
@@ -509,11 +563,17 @@ class AutoLayout {
     };
   }
 
-  /// How tangled and how sagging an arrangement is, in that order of concern.
+  /// How bad an arrangement is, in the order these things matter.
   ///
-  /// A wire that droops is untidy; a wire that crosses another is harder to
-  /// follow. So crossings are compared first and the drop only breaks ties.
-  (int, double) _score(Map<String, Offset> positions, Map<String, double> y) {
+  /// Crossings first: a wire that crosses another is the hardest to follow.
+  /// Then wires running across a node they have nothing to do with, which is
+  /// not a crossing and adds no droop and still leaves you unable to tell where
+  /// the wire goes. Then the droop itself, which is only untidiness.
+  (int, int, double) _score(
+    Map<String, Offset> positions,
+    Map<String, double> y, [
+    List<List<String>> columns = const [],
+  ]) {
     Offset? endOf(String nodeId, String portId) {
       final node = pipeline.node(nodeId);
       final spec = node == null ? null : database.process(node.specId);
@@ -557,7 +617,39 @@ class AutoLayout {
         if ((d1 > 0) != (d2 > 0) && (d3 > 0) != (d4 > 0)) crossings++;
       }
     }
-    return (crossings, sag);
+    // Wires running over a node that is not either of its ends, sampled along
+    // the line rather than solved — twenty points is plenty at this scale.
+    var through = 0;
+    for (final (a, b, fromEnd, toEnd) in segments) {
+      for (final column in columns) {
+        for (final id in column) {
+          if (fromEnd.startsWith('$id.') || toEnd.startsWith('$id.')) continue;
+          final at = positions[id];
+          final top = y[id];
+          if (at == null || top == null) continue;
+          final box = Offset(at.dx, top) & _sizeOf(id);
+          for (var i = 1; i < 20; i++) {
+            if (box.contains(Offset.lerp(a, b, i / 20)!)) {
+              through++;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    return (crossings, through, sag);
+  }
+
+  /// How far down a node its port sits, in pixels from the node's top.
+  double _portY(String nodeId, String portId) {
+    if (_isDummy(nodeId)) return _sizeOf(nodeId).height / 2;
+    final node = pipeline.node(nodeId);
+    final spec = node == null ? null : database.process(node.specId);
+    if (spec == null || spec.portById(portId) == null) {
+      return _sizeOf(nodeId).height / 2;
+    }
+    return NodeLayout.portOffset(spec, portId).dy;
   }
 
   /// How far down a node its port sits, as a fraction of the node's height.
@@ -565,13 +657,8 @@ class AutoLayout {
   /// 0.5 for a dummy, which stands for a wire passing through and has no ports
   /// of its own.
   double _portFraction(String nodeId, String portId) {
-    if (_isDummy(nodeId)) return 0.5;
-    final node = pipeline.node(nodeId);
-    final spec = node == null ? null : database.process(node.specId);
-    if (spec == null || spec.portById(portId) == null) return 0.5;
-    final size = NodeLayout.sizeOf(spec);
-    if (size.height <= 0) return 0.5;
-    return NodeLayout.portOffset(spec, portId).dy / size.height;
+    final height = _sizeOf(nodeId).height;
+    return height <= 0 ? 0.5 : _portY(nodeId, portId) / height;
   }
 
   Size _sizeOf(String nodeId) {

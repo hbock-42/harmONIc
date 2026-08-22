@@ -82,6 +82,40 @@ double sag(Pipeline pipeline, Map<String, Offset> at) {
   return total;
 }
 
+/// How many wires run across a node they have nothing to do with.
+///
+/// The measure the other two cannot see. A wire passing straight through the
+/// middle of a card is not a crossing and adds no sag, and it is the thing that
+/// makes a picture unreadable — you cannot tell where it goes.
+int wiresOverNodes(Pipeline pipeline, Map<String, Offset> at) {
+  Offset endOf(String nodeId, String portId) {
+    final node = pipeline.nodeOrThrow(nodeId);
+    final spec = testDatabase.processOrThrow(node.specId);
+    return at[nodeId]! + NodeLayout.portOffset(spec, portId);
+  }
+
+  var total = 0;
+  for (final edge in pipeline.edges) {
+    final a = endOf(edge.fromNodeId, edge.fromPortId);
+    final b = endOf(edge.toNodeId, edge.toPortId);
+    for (final node in pipeline.nodes) {
+      if (node.id == edge.fromNodeId || node.id == edge.toNodeId) continue;
+      final box = at[node.id]! &
+          NodeLayout.sizeOf(testDatabase.processOrThrow(node.specId));
+      // Sampled along the wire rather than solved: a straight line is a fair
+      // stand-in for the curve actually drawn, and twenty points is plenty at
+      // this scale.
+      for (var i = 1; i < 20; i++) {
+        if (box.contains(Offset.lerp(a, b, i / 20)!)) {
+          total++;
+          break;
+        }
+      }
+    }
+  }
+  return total;
+}
+
 void main() {
   Map<String, Offset> layoutOf(Pipeline pipeline) =>
       AutoLayout(pipeline: pipeline, database: testDatabase).positions();
@@ -140,9 +174,10 @@ void main() {
     // order — the commonest crossing there is — and it skipped every pair of
     // edges that shared a node, which is exactly that case. Counted honestly,
     // port to port: 2 993 before the layout learned about ports, 2 683 after,
-    // and 2 431 once nodes were allowed to slide up and down to meet their
-    // wires — straightening turns out to untangle as well, because a wire that
-    // runs flat crosses less on the way.
+    // 2 431 once nodes were allowed to slide up and down to meet their wires —
+    // straightening turns out to untangle as well, because a wire that runs
+    // flat crosses less on the way — and 2 329 once the lanes a wire needs to
+    // pass a column were kept all the way through the placing.
     //
     // The cast is written out rather than taken from the database, because a
     // corpus drawn from "everything there is" moves every time the database
@@ -205,7 +240,7 @@ void main() {
 
     expect(graphs, 427, reason: 'the corpus itself changed, so the score below '
         'is no longer comparable — re-measure before moving it');
-    expect(total, lessThanOrEqualTo(2431));
+    expect(total, lessThanOrEqualTo(2329));
   });
 
   group('ports decide the order within a column', () {
@@ -316,6 +351,7 @@ void main() {
       }
 
       var total = 0.0;
+      var through = 0;
       var graphs = 0;
       for (var trial = 0; trial < 600; trial++) {
         final chosen = <ProcessSpec>[];
@@ -348,14 +384,73 @@ void main() {
         }
         if (edges < 4) continue;
         final pipeline = b.build();
-        total += sag(pipeline, layoutOf(pipeline));
+        final at = layoutOf(pipeline);
+        total += sag(pipeline, at);
+        through += wiresOverNodes(pipeline, at);
         graphs++;
       }
 
-      // Stacked and centred — every column at the middle of the page, no node
-      // ever moving to meet a wire — the same corpus sagged 667 650 pixels.
+      // The three measures pull against each other, so all three are pinned.
+      // Stacked and centred, with no node ever moving to meet a wire, this
+      // corpus sagged 667 650 pixels and ran 1 266 wires across a node that had
+      // nothing to do with them. Straightening cut the sag to 567 858 and left
+      // the wires-over-nodes exactly where they were.
+      //
+      // Keeping a lane for every wire that passes a column, and scoring for it,
+      // trades the other way: 983 wires over nodes, and more droop. That is the
+      // right way round. A wire that sags is untidy; a wire crossing the middle
+      // of a card is one you cannot follow at all — and it is the trade a
+      // person makes by hand, moving a node down out of the way even though its
+      // own wire then has further to fall.
       expect(graphs, 427);
-      expect(total, lessThanOrEqualTo(567858));
+      expect(through, lessThanOrEqualTo(983));
+      expect(total, lessThanOrEqualTo(720102));
     });
+  });
+
+  test('a wire passing a column keeps its lane, and its own wire runs flat',
+      () {
+    // The reef again, and the two things a person fixes by hand in about ten
+    // seconds: the grooming wire runs the length of the picture without
+    // crossing anything, and the Starnacle sits below it rather than in it.
+    final pipeline = (PipelineBuilder(testDatabase, name: 'Reef')
+          ..addSource('salt_water')
+          ..addSource('coquina')
+          ..add('aquatic_grooming_station', nodeId: 'station')
+          ..add('starnacle_grazed', nodeId: 'plants')
+          ..add('beakon_grazing', nodeId: 'fish')
+          ..add('flue_coral', nodeId: 'coral')
+          ..add('duplicant', nodeId: 'dupes')
+          ..connectItem('src_coquina', 'plants', 'coquina')
+          ..connectItem('plants', 'fish', 'starnacle_growth')
+          ..connectItem('station', 'fish', 'grooming')
+          ..connectItem('fish', 'coral', 'lime')
+          ..connectItem('src_salt_water', 'coral', 'salt_water')
+          ..connectItem('coral', 'dupes', 'oxygen')
+          ..pinCount('plants', 2))
+        .build();
+    final at = layoutOf(pipeline);
+
+    expect(wiresOverNodes(pipeline, at), 0);
+    expect(crossings(pipeline, at), 0);
+
+    // Every wire that can run flat does: coquina into the Starnacle, grooming
+    // the length of the build, salt water into the coral, oxygen to the crew.
+    // The two that cannot are the ones a person also draws as curves.
+    double drop(String fromNode, String fromPort, String toNode, String port) {
+      final from = pipeline.nodeOrThrow(fromNode);
+      final to = pipeline.nodeOrThrow(toNode);
+      final a = at[fromNode]! +
+          NodeLayout.portOffset(
+              testDatabase.processOrThrow(from.specId), fromPort);
+      final b = at[toNode]! +
+          NodeLayout.portOffset(testDatabase.processOrThrow(to.specId), port);
+      return (a.dy - b.dy).abs();
+    }
+
+    expect(drop('station', 'grooming', 'fish', 'grooming'), 0);
+    expect(drop('src_coquina', 'out', 'plants', 'coquina'), 0);
+    expect(drop('src_salt_water', 'out', 'coral', 'salt_water'), 0);
+    expect(drop('coral', 'oxygen', 'dupes', 'oxygen'), 0);
   });
 }
