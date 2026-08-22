@@ -33,6 +33,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _oneMore.clear();
   }
 
   GameDatabase _database;
@@ -48,6 +49,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _oneMore.clear();
     notifyListeners();
   }
 
@@ -103,6 +105,16 @@ class PipelineController extends ChangeNotifier {
     final build = focusedBuild;
     return build == null ? _solution : _solution.scopedTo(build);
   }
+
+  final Map<String, OneMore?> _oneMore = {};
+
+  /// What one more of this node would buy and cost.
+  ///
+  /// Worked out on demand and remembered until the build changes: it is a
+  /// second solve, which is nothing at this size, but the inspector asks on
+  /// every frame it draws.
+  OneMore? oneMoreOf(String nodeId) => _oneMore.putIfAbsent(
+      nodeId, () => oneMore(_pipeline, database, _solution, nodeId));
 
   Temperatures? _temperatures;
 
@@ -208,6 +220,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(next);
     _asBuilt = null;
     _temperatures = null;
+    _oneMore.clear();
     notifyListeners();
   }
 
@@ -218,6 +231,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _oneMore.clear();
     notifyListeners();
   }
 
@@ -228,6 +242,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _oneMore.clear();
     notifyListeners();
   }
 

@@ -353,6 +353,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
             ],
           ),
           _asBuiltNote(controller, result),
+          _oneMoreNote(controller, node),
           _buildCost(controller, spec, result),
           const SizedBox(height: OniSpacing.lg),
           if (!_isBoundary)
@@ -451,6 +452,65 @@ class _NodeInspectorState extends State<_NodeInspector> {
           },
         ),
       ],
+    );
+  }
+
+  /// What the next one of these would buy, and cost.
+  ///
+  /// The question a ratio raises and never answers. It could always be asked by
+  /// editing the amount and looking, which is two moves and a memory of what
+  /// the numbers were before.
+  Widget _oneMoreNote(PipelineController controller, PipelineNode node) {
+    final answer = controller.oneMoreOf(node.id);
+    if (answer == null) return const SizedBox.shrink();
+
+    String rate(String itemId, double value) {
+      final item = controller.database.item(itemId);
+      final formatted =
+          item?.formatRate(value.abs(), widget.rateDisplay, precision: 1) ??
+              value.abs().toStringAsFixed(1);
+      return '${value < 0 ? '−' : '+'}$formatted ${item?.name ?? itemId}';
+    }
+
+    final lines = <String>[
+      for (final entry in answer.outputs.entries) rate(entry.key, entry.value),
+      for (final entry in answer.inputs.entries) rate(entry.key, -entry.value),
+    ];
+    final power = controller.database.itemOrThrow(WellKnownItems.power);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: OniSpacing.md),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: OniSpacing.sm, vertical: 6),
+        decoration: BoxDecoration(
+          color: OniColors.surface,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: OniColors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('GOING FROM ${answer.from} TO ${answer.to}',
+                style: OniType.label),
+            const SizedBox(height: 4),
+            for (final line in lines.take(6))
+              Text(line, style: OniType.body.copyWith(fontSize: 11.5)),
+            Text(
+              '${answer.powerWatts < 0 ? '−' : '+'}'
+              '${power.formatRate(answer.powerWatts.abs(), widget.rateDisplay, precision: 0)}'
+              '  ·  ${answer.heatKdtu < 0 ? '−' : '+'}'
+              '${answer.heatKdtu.abs().toStringAsFixed(1)} kDTU/s',
+              style: OniType.body.copyWith(
+                fontSize: 11.5,
+                color: answer.powerWatts < 0
+                    ? OniColors.warning
+                    : OniColors.textMuted,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

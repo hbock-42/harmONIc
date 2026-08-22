@@ -64,6 +64,10 @@ void main() {
     final controller = await pumpEditor(tester);
     controller.select(const NodeSelection('geyser'));
     await tester.pump();
+    // The inspector is a list, and it has grown: scroll the presets into view
+    // before pressing one.
+    await tester.ensureVisible(find.textContaining('Best'));
+    await tester.pump();
     await tester.tap(find.textContaining('Best'));
     await tester.pump();
 

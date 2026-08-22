@@ -26,6 +26,7 @@ export 'src/model/build_material.dart';
 export 'src/model/units.dart';
 export 'src/solver/as_built.dart';
 export 'src/solver/linear_algebra.dart';
+export 'src/solver/one_more.dart';
 export 'src/solver/report.dart';
 export 'src/solver/shares.dart';
 export 'src/solver/solution.dart';

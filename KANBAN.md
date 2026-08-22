@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E3-8` **What the next one buys** — a node says what going from three to four would cost
+  and make, which is the question a ratio raises and never answers. It is a second solve,
+  which the solver work made free
 - `E13-9` **A cooler for every coolant** — the two written by hand are now generated from
   each fluid's specific heat, which reproduces both published figures exactly and gives the
   other twenty. A petroleum loop is as ordinary a thing to plan as a water one
@@ -496,7 +499,7 @@ _(empty)_
 | E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
 | E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
-| E3-8 | P2 | Sensitivity | "+1 Electrolyzer ⇒ +X g/s O₂, +Y W" |
+| E3-8 | ✅ | Sensitivity | "going from 3 to 4": what the next one buys and costs, worked out by solving the build again rather than by estimating |
 | E3-9 | ✅ | Solver perf test | 500-node chain and 500-node fan, both under 50 ms; writing it found the elimination doing eight times the work it needed to |
 | E3-5b | ✅ | Floor space | every building's footprint was recorded and never shown; per node and in total, counting whole buildings |
 
