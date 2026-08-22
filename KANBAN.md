@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-13` **Every sentence the app says, read against what it does** — the method that found
+  the last two bugs, done deliberately this time: all 134 user-facing strings in `lib/`,
+  checked one at a time. Most were true. Two named a figure that lives in the engine as a
+  constant and had been typed out by hand — "a geyser is active 40–80 %… the shipped rate
+  assumes 60 %", and the 75 °C a bare building tolerates — so the app would have gone on
+  saying the old number after somebody changed what it assumes. Both are written against the
+  constants now, and a test holds the sentence to them: putting a literal back fails it
 - `E5-6a` **Correcting a recipe stopped erasing what it is built from** — found by writing
   the message that told people to fix an unpriced building with + Recipe, and then looking
   at whether + Recipe could. It could not, and worse: `editable` did not carry the build
@@ -1014,6 +1021,7 @@ flow, so the solver never had to learn about it.
 | E8-10 | ✅ | The kanban audit | the board has to agree with itself: one row per id, a row behind every board entry, nothing offered in Ready that its own row calls finished, and no status the legend does not explain |
 | E8-11 | ✅ | The guide is checked as a rendered thing | every heading reaches the screen, and nothing is written in Markdown the thirty-line renderer would hand the reader as punctuation |
 | E8-12 | ✅ | The second reachability sweep | every public engine symbol against every call site in `lib/`: two things the engine worked out and nobody could read — what rounding costs the build, and which buildings the shopping list could not price |
+| E8-13 | ✅ | Every sentence the app says, checked | 134 of them read against what the code does. Two named a figure the engine holds as a constant and would have gone on saying it after the constant changed |
 
 ---
 

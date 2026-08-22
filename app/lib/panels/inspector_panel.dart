@@ -879,9 +879,15 @@ class _GeyserActivityState extends State<_GeyserActivity> {
           ),
         const SizedBox(height: OniSpacing.sm),
         Text(
-          'A geyser is active 40–80 % of a dormancy cycle, rolled when the '
-          'world was made. The shipped rate assumes 60 %. Field Research on '
-          'this geyser tells you its real figure.',
+          // The three figures come from the engine rather than from this
+          // sentence. They were typed out here, which meant the app would go
+          // on saying "60 %" after somebody changed what it assumes.
+          'A geyser is active '
+          '${(GeyserActivity.minimumActiveFraction * 100).toStringAsFixed(0)}–'
+          '${_asPercent(GeyserActivity.maximumActiveFraction)} of a dormancy '
+          'cycle, rolled when the world was made. The shipped rate assumes '
+          '${_asPercent(GeyserActivity.typicalActiveFraction)}. Field Research '
+          'on this geyser tells you its real figure.',
           style: OniType.body
               .copyWith(fontSize: 11.5, color: OniColors.textFaint),
         ),
@@ -1729,6 +1735,11 @@ String _madeFrom(PipelineController controller, String materialId, double count)
 ///
 /// Null below the bare 75 °C, where the choice is free and a line about it
 /// would be noise on every node in a cool build.
+String _asPercent(double fraction) =>
+    '${(fraction * 100).toStringAsFixed(0)} %';
+
+String _degrees(double celsius) => '${celsius.toStringAsFixed(0)} °C';
+
 String? _materialAdvice(
     PipelineController controller, ProcessSpec spec, String nodeId) {
   final celsius = controller.temperatures.hottestAt(nodeId);
@@ -1771,7 +1782,8 @@ String _overheatAdvice(PipelineController controller, double celsius) {
         'will hold it — every material here gives up first. Whatever carries '
         'this is a problem to solve before the rest of the build matters.';
   }
-  return 'Hotter than the 75 °C a plain building tolerates, so what this is '
+  return 'Hotter than the ${_degrees(commonOverheatCelsius)} a plain building '
+      'tolerates, so what this is '
       'made of stops being a detail: ${named(survivors.first)} is the coolest '
       'that holds, up to ${named(survivors.last)}. Whether it actually cooks '
       'anything also depends on what it runs past, which this model cannot see.';

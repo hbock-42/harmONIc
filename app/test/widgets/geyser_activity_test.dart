@@ -220,4 +220,25 @@ void main() {
     expect(restored.nodeOrThrow('geyser').outputScale,
         closeTo(GeyserActivity.scaleFor(0.4), 1e-9));
   });
+
+  testWidgets('and the figures in that sentence come from the engine',
+      (tester) async {
+    // They were typed into the sentence, so the app would have gone on saying
+    // "60 %" after somebody changed what the shipped rates assume. Written
+    // against the constants now, and checked against them here rather than
+    // against a string somebody remembered.
+    final controller = await pumpEditor(tester);
+    controller.select(const NodeSelection('geyser'));
+    await tester.pump();
+
+    final typical =
+        (GeyserActivity.typicalActiveFraction * 100).toStringAsFixed(0);
+    final worst =
+        (GeyserActivity.minimumActiveFraction * 100).toStringAsFixed(0);
+    final best =
+        (GeyserActivity.maximumActiveFraction * 100).toStringAsFixed(0);
+
+    expect(textContaining('$worst–$best %'), findsOneWidget);
+    expect(textContaining('assumes $typical %'), findsOneWidget);
+  });
 }
