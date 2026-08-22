@@ -36,8 +36,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Canvas and interaction**
 
-- `E7-20` Arrow keys to nudge a selection. `moveSelectionBy` is on the controller and
-  nothing calls it; dragging is the only way to move a node a few pixels
 - `E10-19` Clearing every amount at once. `clearAllPins` is on the controller and nothing
   calls it
 
@@ -117,6 +115,8 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E7-20` **Arrow keys nudge the selection** — one grid cell, eight with shift, and a run of
+  presses is one undo rather than twelve
 - `E10-18` **"I have this much in store"** — the third kind of pin could be shown and never
   made. Two tonnes of coal to last twenty cycles is 167 g/s, and the build is sized to it
 - `E10-17` **Splitting an output between two lines** — a push line's share has been in the
@@ -655,6 +655,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E7-17 | ✅ | Port-aware ordering | the barycentre and the crossing count both use where a wire attaches, not the middle of the node |
 | E7-18 | ✅ | Coordinate assignment | the priority method: the heaviest wire decides where a node sits, scored so straightening never costs a crossing |
 | E7-19 | ✅ | Lanes kept through placement | a wire passing a column keeps its room, and the layout scores crossings, then wires over nodes, then droop |
+| E7-20 | ✅ | Arrow keys nudge the selection | one grid cell, eight with shift; a run of presses collapses into one undo |
 
 ## E10 — Panels & the pin interaction
 

@@ -43,6 +43,11 @@ class _EditorScreenState extends State<EditorScreen> {
 
   PipelineController get controller => widget.controller;
 
+  /// Kept rather than built with the rest of the actions: it remembers when
+  /// the last arrow press was, so a run of them is one edit, and a fresh
+  /// instance on every rebuild would forget between keystrokes.
+  late final _NudgeAction _nudge = _NudgeAction(controller);
+
   /// The recipe being edited, shown over the whole editor.
   ProcessSpec? _editing;
   bool _pipelinesOpen = false;
@@ -112,6 +117,26 @@ class _EditorScreenState extends State<EditorScreen> {
                 _ZoomResetIntent(),
             SingleActivator(LogicalKeyboardKey.keyC, meta: true): _CopyIntent(),
             SingleActivator(LogicalKeyboardKey.keyV, meta: true): _PasteIntent(),
+            // One grid cell per press — the grid is 8 — and eight cells with
+            // shift. Written out rather than referred to, because the map is
+            // const. Dragging was the only way to move a node, and dragging
+            // something four pixels is a thing hands are bad at.
+            SingleActivator(LogicalKeyboardKey.arrowLeft):
+                _NudgeIntent(Offset(-8, 0)),
+            SingleActivator(LogicalKeyboardKey.arrowRight):
+                _NudgeIntent(Offset(8, 0)),
+            SingleActivator(LogicalKeyboardKey.arrowUp):
+                _NudgeIntent(Offset(0, -8)),
+            SingleActivator(LogicalKeyboardKey.arrowDown):
+                _NudgeIntent(Offset(0, 8)),
+            SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true):
+                _NudgeIntent(Offset(-64, 0)),
+            SingleActivator(LogicalKeyboardKey.arrowRight, shift: true):
+                _NudgeIntent(Offset(64, 0)),
+            SingleActivator(LogicalKeyboardKey.arrowUp, shift: true):
+                _NudgeIntent(Offset(0, -64)),
+            SingleActivator(LogicalKeyboardKey.arrowDown, shift: true):
+                _NudgeIntent(Offset(0, 64)),
           },
           child: Actions(
             actions: <Type, Action<Intent>>{
@@ -129,6 +154,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   () => _canvasKey.currentState?.resetView()),
               _CopyIntent: _CanvasAction<_CopyIntent>(_copySelection),
               _PasteIntent: _CanvasAction<_PasteIntent>(_pasteNodes),
+              _NudgeIntent: _nudge,
             },
             child: Focus(
               autofocus: true,
@@ -390,6 +416,49 @@ class _CopyIntent extends Intent {
 
 class _PasteIntent extends Intent {
   const _PasteIntent();
+}
+
+class _NudgeIntent extends Intent {
+  const _NudgeIntent(this.by);
+
+  final Offset by;
+}
+
+/// Moves the selection with the arrow keys.
+///
+/// Its own action rather than a [_CanvasAction] because it carries a direction,
+/// and its own undo rule: a run of presses is one edit. Twelve arrow presses
+/// that take twelve ⌘Z to undo is a worse editor than one that cannot nudge at
+/// all.
+class _NudgeAction extends Action<_NudgeIntent> {
+  _NudgeAction(this.controller);
+
+  final PipelineController controller;
+
+  @override
+  bool get isActionEnabled => controller.selectedNodeIds.isNotEmpty;
+
+  @override
+  bool consumesKey(_NudgeIntent intent) =>
+      controller.selectedNodeIds.isNotEmpty;
+
+  /// When the last press was, so a run of them collapses into one edit.
+  ///
+  /// Holding an arrow key for a second should be one thing to undo, the way
+  /// typing a word is. A second of quiet ends the run, which is roughly how
+  /// long it takes to decide the node is in the wrong place after all.
+  final Stopwatch _since = Stopwatch();
+
+  @override
+  void invoke(_NudgeIntent intent) {
+    if (controller.selectedNodeIds.isEmpty) return;
+    final fresh = !_since.isRunning || _since.elapsedMilliseconds > 1000;
+    if (fresh) controller.beginNodeDrag();
+    _since
+      ..reset()
+      ..start();
+    controller.moveSelectionBy(intent.by);
+  }
 }
 
 class _TopBar extends StatefulWidget {
