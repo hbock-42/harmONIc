@@ -43,6 +43,7 @@ class BestCase {
 ///
 /// - every pin, exactly as the ordinary solver does;
 /// - a share somebody set by hand, which is a decision and not a gap;
+/// - a valve, which the ordinary solver can only complain about afterwards;
 /// - a vented port, which constrains nothing, being spare on purpose.
 ///
 /// What it leaves free is the rest: the shares nobody chose.
@@ -148,6 +149,15 @@ BestCase _optimise(
         constraints.add(Constraint.atMost(coefficients, 0));
       }
     }
+  }
+
+  // A valve is the one constraint the ordinary solver cannot hold and this one
+  // can. There it is a warning after the fact — the build needs more than you
+  // have allowed — and here it is a wall the answer is worked out inside.
+  for (final edge in pipeline.edges) {
+    final cap = edge.capPerSecond;
+    if (cap == null) continue;
+    constraints.add(Constraint.atMost(row()..[edgeColumn[edge.id]!] = 1, cap));
   }
 
   // A share somebody set by hand is a decision, so the optimiser works around

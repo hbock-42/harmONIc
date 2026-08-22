@@ -5,6 +5,7 @@ import '../graph/validation.dart';
 import '../model/game_database.dart';
 import '../model/item.dart';
 import '../model/port.dart';
+import '../model/units.dart';
 import 'linear_algebra.dart';
 import 'shares.dart';
 import 'solution.dart';
@@ -218,6 +219,31 @@ class PipelineSolver {
       edgeFlows[edge.id] = factor.fraction *
           rateOf(drivingNode, port) *
           counts[index[driving]!];
+    }
+
+    // A valve is a cap, and a cap is an inequality this solver cannot hold —
+    // so it says when the build breaks one instead of quietly obeying it. The
+    // flow above is what the line would *have* to carry; a valve set below
+    // that is a valve you will have to open.
+    for (final edge in pipeline.edges) {
+      final cap = edge.capPerSecond;
+      if (cap == null) continue;
+      final flow = edgeFlows[edge.id] ?? 0;
+      if (flow <= cap + 1e-6) continue;
+      final source = pipeline.nodeOrThrow(edge.fromNodeId);
+      final sourceSpec = database.processOrThrow(source.specId);
+      final item = database.item(itemFlowingIn(database, source, sourceSpec,
+          sourceSpec.portByIdOrThrow(edge.fromPortId)));
+      resolvedIssues.add(PipelineIssue(
+        IssueSeverity.warning,
+        'This line has to carry '
+        '${item?.formatRate(flow, RateDisplay.perSecond) ?? flow.toStringAsFixed(1)}'
+        ', and its valve is set to '
+        '${item?.formatRate(cap, RateDisplay.perSecond) ?? cap.toStringAsFixed(1)}'
+        '. The figures here are what the build needs; the valve is what you '
+        'have allowed it.',
+        edgeId: edge.id,
+      ));
     }
 
     // Port balances.

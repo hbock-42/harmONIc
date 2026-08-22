@@ -69,6 +69,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E11-9` **Valves** — the row said a cap is an inequality and this solver holds equations,
+  which was true and stopped being the whole story when the simplex arrived. Two jobs from
+  one number: the ordinary solver works out what the line *has* to carry and says when that
+  is more than you have allowed — the figures do not change, because they are what the build
+  needs — and the optimiser, which holds inequalities natively, works its answer out inside
+  the valve instead. Cap the refinery line at 4 kg/s and "get as much as possible" comes back
+  with 7 kg/s of metal rather than 10, and nothing has anything to complain about
 - `E4-23` **Sulfur into dirt and water** — a Sweetle eats 20 kg/cycle of sulfur and gives
   half of it back as sucrose; a Grubgrub eats 30 kg/cycle of sucrose and gives all of it
   back as mud; a Sludge Press turns 150 kg of mud into 60 of dirt and 90 of water. Sulfur
@@ -866,7 +873,7 @@ does not see.
 | E11-3 | ✅ | Pumps | generated per fluid the way sources and sinks are, since a pump is the same machine whatever it moves |
 | E11-4 | ✅ | Filters | generated per fluid; what a separation *costs*, since the separation itself needs mixtures the model does not have |
 | E11-8 | ❌ | Mixtures | decided against for now in `docs/MIXTURES.md`, with the conditions that would change it. Of the three things it was wanted for, two are about layout and the third — two gases sharing a pipe — was built, measured against every template, and found to occur on none of them |
-| E11-9 | P3 | Valves | a valve caps a flow, and a cap is an inequality the solver has no way to hold. Pinning the rate says the same thing today |
+| E11-9 | ✅ | Valves | the blocker dissolved when `E3-7a` landed a simplex: the solver still cannot hold a cap and now says when the build breaks one, and the optimiser holds it natively so "as much as possible" answers with your valves shut |
 | E11-5 | ✅ | Conduit heat | how much heat a line carries against a 25 °C base, which is the cooling it would cost. Where that heat lands needs the pipe's material and what it runs past — geometry this model does not have — so the size is said and the destination is not |
 | E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
 | E11-6b | ✅ | The specific heats not yet measured | all thirty fluids have one now, so no mixture drops a term and every coolant has an Aquatuner |

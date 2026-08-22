@@ -624,6 +624,24 @@ class PipelineController extends ChangeNotifier {
     return best.ratePerSecond;
   }
 
+  /// A valve on this line, in the item's own unit per second.
+  ///
+  /// The solver holds equations, so this does not change what the build needs
+  /// — it changes whether the build says you have allowed enough. Null takes
+  /// the valve off again.
+  void setEdgeCap(String edgeId, double? capPerSecond) =>
+      _apply(_pipeline.copyWith(
+        edges: [
+          for (final e in _pipeline.edges)
+            if (e.id == edgeId)
+              (capPerSecond == null
+                  ? e.copyWith(clearCap: true)
+                  : e.copyWith(capPerSecond: capPerSecond))
+            else
+              e,
+        ],
+      ));
+
   /// How active this geyser is assumed to be, as a fraction of its dormancy
   /// cycle. The shipped rates assume the typical roll, so this scales away
   /// from that.

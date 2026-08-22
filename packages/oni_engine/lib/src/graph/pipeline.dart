@@ -166,6 +166,7 @@ class PipelineEdge {
     required this.toPortId,
     this.mode = EdgeMode.pull,
     this.share,
+    this.capPerSecond,
   });
 
   factory PipelineEdge.fromJson(Map<String, dynamic> json) => PipelineEdge(
@@ -178,6 +179,7 @@ class PipelineEdge {
             ? EdgeMode.pull
             : EdgeMode.parse(json['mode'] as String),
         share: (json['share'] as num?)?.toDouble(),
+        capPerSecond: (json['cap'] as num?)?.toDouble(),
       );
 
   final String id;
@@ -188,10 +190,24 @@ class PipelineEdge {
   final EdgeMode mode;
   final double? share;
 
+  /// A valve on this line, in the item's own unit per second.
+  ///
+  /// A valve caps a flow, and a cap is an inequality: the solver here holds
+  /// equations, so it cannot *make* the build obey one. What it can do is say
+  /// when the build does not — the flow it works out is what the line would
+  /// have to carry, and a valve set below that is a valve you will have to
+  /// open. That is reported, not silently applied.
+  ///
+  /// The optimiser is the other half: it holds inequalities natively, so
+  /// "as much as possible" answers with your valves respected.
+  final double? capPerSecond;
+
   PipelineEdge copyWith({
     EdgeMode? mode,
     double? share,
+    double? capPerSecond,
     bool clearShare = false,
+    bool clearCap = false,
   }) =>
       PipelineEdge(
         id: id,
@@ -201,6 +217,7 @@ class PipelineEdge {
         toPortId: toPortId,
         mode: mode ?? this.mode,
         share: clearShare ? null : (share ?? this.share),
+        capPerSecond: clearCap ? null : (capPerSecond ?? this.capPerSecond),
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -211,6 +228,7 @@ class PipelineEdge {
         'toPortId': toPortId,
         if (mode != EdgeMode.pull) 'mode': mode.name,
         if (share != null) 'share': share,
+        if (capPerSecond != null) 'cap': capPerSecond,
       };
 }
 

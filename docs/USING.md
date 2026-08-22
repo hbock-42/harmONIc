@@ -91,6 +91,11 @@ On a node:
   least or stand on the least, while still delivering what you asked for. The
   three rarely agree — a Rock Crusher is a fifth of a Metal Refinery's power and
   twice its ore.
+- **Valve** on a wire — a cap on what that line may carry. It does not change
+  what the build needs, because the solver works out what it needs: it tells you
+  when the build has outgrown what you allowed. Asking an output node for as
+  much as possible does work inside your valves, since the optimiser can hold a
+  cap where the solver cannot.
 - **Vent** on a port — this output goes nowhere on purpose. Without it, a port
   making more than anything takes reads as a contradiction rather than as spare.
 
@@ -176,9 +181,9 @@ The app is most misleading where it is most confident, so:
   nothing here models is where that heat actually goes: a pipe warming the room
   it runs through needs to know what the pipe is made of and what it runs past,
   and this model has no notion of space.
-- **Valves and rounding of your own.** A valve caps a flow; caps are
-  inequalities and this solver holds equations. Pinning the rate says the same
-  thing.
+- **Rounding of your own.** Whole buildings are counted by rounding up, and
+  what that leaves idle is reported. Any other rounding you do by hand is
+  yours.
 
 Anything the data is unsure of says so on the node itself, in amber, in the
 words of what is doubtful — a rate nobody has published, a cycle time assumed

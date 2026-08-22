@@ -1287,6 +1287,8 @@ class _EdgeInspector extends StatelessWidget {
           const SizedBox(height: OniSpacing.lg),
           _EdgeShare(controller: controller, edge: edge),
         ],
+        const SizedBox(height: OniSpacing.lg),
+        _Valve(controller: controller, edge: edge, item: item),
         const SizedBox(height: OniSpacing.xl),
         OniButton(
           label: 'Delete connection   ⌫',
@@ -1429,6 +1431,80 @@ class _StockpileState extends State<_Stockpile> {
     );
   }
 }
+
+/// A cap on this line, which is a valve.
+///
+/// It does not change what the build needs — the solver holds equations, and a
+/// cap is an inequality — so what it buys is being told when the build has
+/// outgrown what you allowed it. The optimiser is the other half: it holds
+/// inequalities, so "get as much as possible" answers with your valves shut.
+class _Valve extends StatefulWidget {
+  const _Valve({required this.controller, required this.edge, this.item});
+
+  final PipelineController controller;
+  final PipelineEdge edge;
+  final Item? item;
+
+  @override
+  State<_Valve> createState() => _ValveState();
+}
+
+class _ValveState extends State<_Valve> {
+  late final TextEditingController _cap = TextEditingController(
+      text: widget.edge.capPerSecond?.toStringAsFixed(0) ?? '');
+
+  @override
+  void dispose() {
+    _cap.dispose();
+    super.dispose();
+  }
+
+  void _apply() {
+    final typed = double.tryParse(_cap.text.trim());
+    widget.controller.setEdgeCap(
+        widget.edge.id, typed == null || typed < 0 ? null : typed);
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('VALVE', style: OniType.label),
+          const SizedBox(height: OniSpacing.sm),
+          Wrap(
+            spacing: OniSpacing.sm,
+            runSpacing: OniSpacing.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              SizedBox(
+                width: 76,
+                child: OniField(
+                  key: valveFieldKey,
+                  controller: _cap,
+                  hint: 'none',
+                  textAlign: TextAlign.right,
+                  onChanged: (_) => _apply(),
+                ),
+              ),
+              Text(
+                '${widget.item?.unit.symbol ?? 'g/s'} at most',
+                style: OniType.body.copyWith(fontSize: 11.5),
+              ),
+            ],
+          ),
+          const SizedBox(height: OniSpacing.sm),
+          Text(
+            'A cap on this line. It does not change what the build needs — it '
+            'says when the build needs more than you have allowed. Asking an '
+            'output node for as much as possible works inside your valves.',
+            style: OniType.body
+                .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+          ),
+        ],
+      );
+}
+
+const Key valveFieldKey = ValueKey('edge-valve');
 
 /// Named so tests can drive them directly.
 const Key stockAmountFieldKey = ValueKey('stock-amount');
