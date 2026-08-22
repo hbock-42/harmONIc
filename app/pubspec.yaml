@@ -38,6 +38,9 @@ dependencies:
     path: ../packages/oni_engine
   forui: ^0.25.0
   path_provider: ^2.1.6
+  # Only the browser store uses it, and only on a web build. It is here rather
+  # than as a transitive dependency because that store imports it by name.
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_test:

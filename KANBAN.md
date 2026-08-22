@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-9` **A browser keeps your builds now** — `localStorage`, behind the same interface the
+  file store is behind, chosen by a conditional import so that neither half is compiled into
+  the other. The seam has said "so a future web build can swap in browser storage without
+  the rest of the app noticing" since it was written; this is the first time anything took
+  it up, and nothing above the storage folder changed. Verified in a real Chrome rather than
+  reasoned about — a test that writes a pipeline, opens a second store on the same name and
+  reads it back, run with `flutter test --platform chrome`
 - `E5-8a` **The README stopped claiming four platforms** — it said "macOS, web, iOS,
   Android", and what is true is that macOS is built and opened by `tool/smoke.sh` while the
   rest have never been run. Web is the interesting one: it *compiles*, because `dart:io` is
@@ -803,7 +810,7 @@ _(empty)_
 | E5-6 | ✅ | Corrected recipes are named |
 | E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
-| E5-9 | P2 | Somewhere for a browser to keep things | the `JsonStore` seam was built for this and nothing has filled it. Until it is, a web build keeps the session in memory and forgets it on reload — which is at least said out loud now, rather than throwing at the first autosave |
+| E5-9 | ✅ | Somewhere for a browser to keep things | `localStorage`, behind the same `JsonStore` the file store is behind. Checked in a real Chrome rather than assumed: `flutter test --platform chrome` |
 | E5-8a | ✅ | Which platforms this really runs on | macOS is built and smoke-tested; web compiles and would forget everything, so it says so and takes a memory store rather than a file store that throws |
 
 ## E6 — App shell & foundations

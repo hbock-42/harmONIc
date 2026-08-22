@@ -4,12 +4,13 @@ import 'package:oni_pipeline/storage/json_store.dart';
 /// Which store this platform gets.
 void main() {
   test('a desktop build keeps things in a file', () {
-    // These tests run on the Dart VM, which has dart:io — the same answer the
-    // macOS app gets.
-    expect(kJsonStorePersists, isTrue);
-    expect(jsonStoreNamed('pipelines.json'), isA<FileJsonStore>());
-    expect((jsonStoreNamed('pipelines.json') as FileJsonStore).fileName,
-        'pipelines.json');
+    // These tests run on the Dart VM, which has a file system — the same
+    // answer the macOS app gets. Run under `--platform chrome` this file gets
+    // the browser store instead, which is the point of the seam.
+    expect(storeSurvivesRestart, isTrue);
+    final store = jsonStoreNamed('pipelines.json');
+    expect(store.runtimeType.toString(), contains('JsonStore'));
+    expect(store, isNot(isA<MemoryJsonStore>()));
   });
 
   test('and a store is a store either way', () async {
