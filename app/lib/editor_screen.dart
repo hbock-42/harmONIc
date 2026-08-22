@@ -505,6 +505,19 @@ class _TopBarState extends State<_TopBar> {
               compact: true,
               onPressed: controller.canRedo ? controller.redo : null,
             ),
+            // Only while there is something to draw. A permanent button for a
+            // thing a finished build never needs is a permanent cost to every
+            // other button's room, and this toolbar has run out of it once
+            // already.
+            if (controller.openPorts.isNotEmpty) ...[
+              const _ToolbarDivider(),
+              OniButton(
+                // Says how many: the number is the reason to press it.
+                label: 'Draw ${controller.openPorts.length} supplies',
+                compact: true,
+                onPressed: controller.closeOpenPorts,
+              ),
+            ],
             const _ToolbarDivider(),
             OniButton(
               label: 'Tidy',

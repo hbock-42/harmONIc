@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E10-15` **Draw the supplies** — one press puts a supply or output node on every port
+  nothing feeds or takes from, so a build's edges become things you can price, warm and
+  point at rather than a line in the totals. One undo for the lot
 - `E3-8` **What the next one buys** — a node says what going from three to four would cost
   and make, which is the question a ratio raises and never answers. It is a second solve,
   which the solver work made free
@@ -643,6 +646,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-12 | ✅ | The summary bar fits any window | single-line labels and a bar that scrolls sideways; tested at five widths, with the panels and the menu at three |
 | E10-13 | ✅ | Saving a build as a node, explained | its own section in the menu, saying what it will do and where the result goes |
 | E10-14 | ✅ | The pipelines menu reads as sections | pressable headers with a turning chevron, a heading over the saved builds, and a rule between each |
+| E10-15 | ✅ | Draw the supplies | a supply or output node for every unfed port, in one press and one undo; the button appears only while there is something to draw |
 
 ## E11 — What a build actually costs to run
 

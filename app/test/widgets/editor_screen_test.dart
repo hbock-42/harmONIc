@@ -147,10 +147,16 @@ void main() {
     await tester.pump();
     expect(controller.pipeline.nodes.length, before + 1);
 
+    // The toolbar scrolls, and adding an unfed node makes it wider by putting
+    // a "draw supplies" button on it.
+    await tester.ensureVisible(find.text('Undo'));
+    await tester.pump();
     await tester.tap(find.text('Undo'));
     await tester.pump();
     expect(controller.pipeline.nodes.length, before);
 
+    await tester.ensureVisible(find.text('Redo'));
+    await tester.pump();
     await tester.tap(find.text('Redo'));
     await tester.pump();
     expect(controller.pipeline.nodes.length, before + 1);

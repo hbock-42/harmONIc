@@ -407,7 +407,7 @@ class PipelineController extends ChangeNotifier {
 
   /// Places [specId] beside [ref]'s node, lined up with that port's row, and
   /// wires the two together. The one-click answer to an unfed input.
-  String? addNodeFor(PortRef ref, String specId) {
+  String? addNodeFor(PortRef ref, String specId, {bool recordUndo = true}) {
     final anchorNode = _pipeline.node(ref.nodeId);
     if (anchorNode == null) return null;
     final anchorSpec = specOf(anchorNode);
@@ -458,11 +458,14 @@ class PipelineController extends ChangeNotifier {
             toPortId: newPort.id,
           );
 
-    _apply(_pipeline.copyWith(
-      nodes: [..._pipeline.nodes, node],
-      edges: [..._pipeline.edges, edge],
-    ));
-    selectNode(id);
+    _apply(
+      _pipeline.copyWith(
+        nodes: [..._pipeline.nodes, node],
+        edges: [..._pipeline.edges, edge],
+      ),
+      record: recordUndo,
+    );
+    if (recordUndo) selectNode(id);
     return id;
   }
 
@@ -601,6 +604,72 @@ class PipelineController extends ChangeNotifier {
           if (n.id == nodeId) n.copyWith(ventedPorts: ports) else n,
       ],
     ));
+  }
+
+  /// Every port in the build that nothing feeds or takes from.
+  ///
+  /// These are what a build's totals are made of — "inputs needed" is exactly
+  /// this list — and until they are drawn, the boundary of the build is
+  /// implicit. Which is fine while you are sketching and unhelpful the moment
+  /// you want to know what the thing arrives at, or costs, or where it comes
+  /// from.
+  List<PortRef> get openPorts {
+    final open = <PortRef>[];
+    for (final balance in _solution.portBalances) {
+      if (!balance.isExternalInput && !balance.isSurplus) continue;
+      final node = _pipeline.node(balance.ref.nodeId);
+      final spec = node == null ? null : specFor(node);
+      if (node == null || spec == null) continue;
+      // A boundary node is already the edge of the build; giving one its own
+      // supply node would be drawing the same fact twice.
+      if (spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink) {
+        continue;
+      }
+      // Power and heat leave by wire and by air, not by pipe. A build with
+      // spare power says so in its totals; drawing a node for it every time
+      // would bury the graph in boxes nobody asked for.
+      if (balance.itemId == WellKnownItems.power ||
+          balance.itemId == WellKnownItems.heat) {
+        continue;
+      }
+      if (_pipeline
+          .nodeOrThrow(node.id)
+          .ventsPort(balance.ref.portId)) {
+        continue;
+      }
+      open.add(balance.ref);
+    }
+    return open;
+  }
+
+  /// Draws a supply or output node for every port nothing feeds or takes from.
+  ///
+  /// One undo, not one per port: it is a single decision — "close this build
+  /// off" — and having to press ⌘Z eleven times to change your mind would make
+  /// it a decision nobody takes.
+  int closeOpenPorts() {
+    final refs = openPorts;
+    if (refs.isEmpty) return 0;
+
+    // One undo for the whole thing, so the first node added records the state
+    // before any of them and the rest ride along.
+    var added = 0;
+    var first = true;
+    for (final ref in refs) {
+      final node = _pipeline.node(ref.nodeId);
+      final spec = node == null ? null : specFor(node);
+      final port = spec?.portById(ref.portId);
+      if (node == null || spec == null || port == null) continue;
+      final specId = port.isInput
+          ? sourceSpecId(itemFlowingIn(database, node, spec, port))
+          : sinkSpecId(itemFlowingIn(database, node, spec, port));
+      if (database.process(specId) == null) continue;
+      if (addNodeFor(ref, specId, recordUndo: first) != null) {
+        added++;
+        first = false;
+      }
+    }
+    return added;
   }
 
   /// What temperature this node's material arrives at. Mostly for supply
