@@ -81,11 +81,42 @@ class LibraryController extends ChangeNotifier {
     await _persist();
   }
 
-  Future<void> _persist() => _store.write(<String, dynamic>{
-        'schemaVersion': 1,
-        'items': [for (final i in _customItems.values) i.toJson()],
-        'processes': [for (final p in _customProcesses.values) p.toJson()],
-      });
+  /// Everything the player has written, packed up to hand to somebody else.
+  ///
+  /// The items travel with the processes: a recipe for a material this app has
+  /// never heard of arrives broken without them, and that is the usual reason
+  /// somebody had to write the recipe in the first place.
+  RecipePack get pack => RecipePack(
+        items: _customItems.values.toList(),
+        processes: _customProcesses.values.toList(),
+      );
+
+  /// Merges somebody else's pack in, and says what it did.
+  ///
+  /// Their recipes win where the ids collide, which is what importing means —
+  /// but the count says how many were replaced rather than added, because
+  /// quietly overwriting an evening's measuring would be the one unforgivable
+  /// thing this could do.
+  Future<({int added, int replaced})> import(RecipePack incoming) async {
+    var added = 0;
+    var replaced = 0;
+    for (final spec in incoming.processes) {
+      if (_customProcesses.containsKey(spec.id)) {
+        replaced++;
+      } else {
+        added++;
+      }
+      _customProcesses[spec.id] = spec;
+    }
+    for (final item in incoming.items) {
+      _customItems[item.id] = item;
+    }
+    _rebuild();
+    await _persist();
+    return (added: added, replaced: replaced);
+  }
+
+  Future<void> _persist() => _store.write(pack.toJson());
 
   void _rebuild() {
     _database = GameDatabase(

@@ -79,6 +79,41 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     if (mounted) setState(() => _message = 'Summary copied.');
   }
 
+  /// Puts the player's own recipes on the clipboard, as one pack.
+  ///
+  /// Measuring a Smoker's cycle time in game is half an hour's work, and until
+  /// now everybody who wanted it had to spend that half hour themselves. The
+  /// wiki gap gets filled once and handed on.
+  Future<void> _copyRecipes() async {
+    final pack = widget.library.pack;
+    if (pack.isEmpty) return;
+    await Clipboard.setData(ClipboardData(text: pack.encode()));
+    if (mounted) {
+      setState(() => _message =
+          '${pack.processes.length} recipe${pack.processes.length == 1 ? '' : 's'} '
+          'copied. Anybody can paste that here.');
+    }
+  }
+
+  /// Merges a pack from the clipboard, and says what it changed.
+  Future<void> _pasteRecipes() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    try {
+      final result = await widget.library.import(
+          RecipePack.decode(data?.text ?? ''));
+      if (!mounted) return;
+      setState(() => _message = [
+            if (result.added > 0) '${result.added} added',
+            // Said out loud, because overwriting an evening's measuring
+            // without a word would be the one unforgivable thing here.
+            if (result.replaced > 0)
+              '${result.replaced} replaced one of yours',
+          ].join(', '));
+    } on FormatException catch (error) {
+      if (mounted) setState(() => _message = error.message);
+    }
+  }
+
   /// Writes the open build out as a file, for keeping rather than for sending.
   ///
   /// The share code is the thing you paste to somebody; it lives until the
@@ -139,6 +174,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
 
   bool _templatesOpen = false;
   bool _reuseOpen = false;
+  bool _recipesOpen = false;
 
   /// Starting points, folded away.
   ///
@@ -187,6 +223,64 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
   /// It was a button called "Save as recipe" sitting between "Copy code" and
   /// "Paste build", which told you neither what it did nor where the result
   /// went. Said properly it is a small idea: this whole build, as one node.
+  /// Handing your own recipes to somebody, and taking theirs.
+  ///
+  /// Folded away like the other two sections, and for the same reason: the
+  /// list of saved builds is what this menu is for, and every row above it is
+  /// a row the list does not have. A different thing from a build, too, so it
+  /// is labelled rather than sharing the row that says "copy".
+  Widget _recipes() {
+    final pack = widget.library.pack;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SectionHeader(
+          label: 'Recipes you wrote',
+          open: _recipesOpen,
+          onTap: () => setState(() => _recipesOpen = !_recipesOpen),
+        ),
+        if (_recipesOpen)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  pack.isEmpty
+                      ? 'Nothing yet. A recipe you write with + Recipe can be '
+                          'handed to somebody else from here, so a figure the '
+                          'wiki never published is measured once.'
+                      : '${pack.processes.length} of them. Copying puts the '
+                          'lot on the clipboard as one code; anybody can '
+                          'paste it back here.',
+                  style: OniType.body
+                      .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+                ),
+                const SizedBox(height: OniSpacing.sm),
+                Wrap(
+                  spacing: OniSpacing.sm,
+                  runSpacing: OniSpacing.sm,
+                  children: [
+                    OniButton(
+                      label: 'Copy recipes',
+                      compact: true,
+                      onPressed: pack.isEmpty ? null : _copyRecipes,
+                    ),
+                    OniButton(
+                      label: 'Paste recipes',
+                      compact: true,
+                      onPressed: _pasteRecipes,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget _reuse() {
     final controller = widget.controller;
     final name = controller.pipeline.name;
@@ -301,6 +395,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
               ],
             ),
           ),
+          _recipes(),
           if (_message != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(

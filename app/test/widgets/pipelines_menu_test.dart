@@ -423,8 +423,9 @@ void main() {
       await openMenu(tester);
 
       // The chevron turns when it opens, which is the difference between a
-      // heading and a thing you can press.
-      expect(find.text('›'), findsNWidgets(2));
+      // heading and a thing you can press. Three sections fold: templates,
+      // reuse, and the recipes you wrote.
+      expect(find.text('›'), findsNWidgets(3));
       await tester.tap(find.text('Start from a build'));
       await tester.pump();
       // Opened, its own chevron has turned. The other section's may have been

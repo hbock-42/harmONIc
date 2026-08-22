@@ -74,6 +74,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-17` **Recipes you wrote, handed to somebody who has not** — measuring a Smoker's cycle
+  time in game is half an hour, and until now everybody who wanted it spent that half hour
+  themselves. All of them go on the clipboard as one code, items included, since a recipe
+  for a material the app has never heard of arrives broken without them. Pasting merges;
+  theirs wins where the ids collide, and the count says how many of yours were replaced,
+  because overwriting an evening's measuring without a word is the one unforgivable thing
+  this could do
 - `E13-8` **Spaced Out is a pack you can turn off** — the fourth, and the one the other
   three sit on top of, so having a planet pack implies it and not the other way round. It
   waited a long time on "a filter that hides some of a pack is worse than none", and the
@@ -628,7 +635,7 @@ _(empty)_
 | E4-11a | ✅ | The Marine Drill's sulfur | 250 kg an operation over a 1 300 s cycle is 192 g/s, and a thousandth of that had been sitting in a field measured in grams since the day it was seeded |
 | E4-12 | ✅ | Palette filter by DLC |
 | E4-13 | ✅ | User-defined / overridable processes, edited in the app |
-| E4-17 | P2 | Share a custom recipe pack, so a wiki gap gets filled once for everyone |
+| E4-17 | ✅ | Share a custom recipe pack, so a wiki gap gets filled once for everyone | one code for everything you have written, items included, merged on paste with the replacements counted out loud |
 | E4-10 | ✅ | Data version stamp | `dataVersion` + game build in the JSON so saved pipelines can warn on mismatch |
 | E4-9b | ✅ | The Aquatic critter roster | Beakon, Slogo, Gildgo, Orehull, Glo Squid, Seaquine, Kelpole — individual pages carry rates the summary table omits |
 | E4-12a | ✅ | The port menu obeys the palette filters | and learned about material classes while there |

@@ -130,6 +130,11 @@ usually too pale to read on near-white.
   snapshot: editing the original later does not change the copy in your plan.
 - **Copy code** puts the build on the clipboard for somebody else's app;
   **copy summary** puts it there as text for a forum post or a note.
+- **Recipes you wrote** hands your own recipes to somebody else, all of them
+  as one code. A figure the wiki never published — a Smoker's cycle time, say —
+  is worth measuring once between everybody. Pasting somebody's pack merges it
+  in; where an id collides theirs wins, and the app says how many of yours it
+  replaced.
 - **Export** writes the build out as a file you can keep. It lands in your
   downloads folder and the app says the full path; exporting the same build
   twice keeps both rather than overwriting yesterday's copy. The clipboard is
