@@ -167,7 +167,9 @@ The app is most misleading where it is most confident, so:
   fits.
 - **Spoilage, morale and germs.** A Dehydrator preserves food and this app sees
   only that it costs plastic. Food quality is half the reason anyone cooks and
-  is not modelled at all.
+  is not modelled at all. Germs are deliberate too: they change no rate in the
+  game — a Water Sieve passes them through at the same 5 kg/s either way — so a
+  germ count here would be a number that never entered a calculation.
 - **Heat, mostly.** Temperature is carried along wires and mixed by mass and
   specific heat, and a published figure always wins. A wire says how much heat
   it carries against a 25 °C base, which is what cooling it would cost. What

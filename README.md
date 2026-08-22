@@ -25,6 +25,7 @@ Flutter is pinned with [FVM](https://fvm.app) — see `.fvmrc`. Always prefix co
 fvm flutter run -d macos       # the app
 fvm dart test                  # from packages/oni_engine
 ./tool/test_all.sh             # everything
+./tool/smoke.sh                # and that it builds, opens and stays open
 ```
 
 ## Try the engine without the UI

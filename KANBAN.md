@@ -71,6 +71,18 @@ _(empty)_
 
 ### ✅ Done
 
+- `E1-9` **The app builds and opens** — never checked anywhere until now. `flutter test` runs
+  the widgets in a harness with no bundle, no plugins and no file system, which is exactly
+  why the guide panel takes an injectable loader and the exporter an injectable directory:
+  every seam that makes those testable also hides the real thing from the tests. CI cannot
+  do it either, having no desktop. `tool/smoke.sh` builds it, diffs the guide *inside the
+  bundle* against `docs/USING.md`, opens it and checks it is still up six seconds later. It
+  is, and it was
+- `E1-8` **Germs, decided against** — they change no rate. A Water Sieve passes 5 kg/s
+  whether the water is clean or crawling, and what germs actually do — health, morale, a
+  Duplicant off work — is a person rather than a flow. They also multiply and die over time,
+  and this model has no time in it. The row said "keep a field so it can be added", which is
+  precisely the unreachable-feature mistake `E10-16` to `E10-19` spent a fortnight undoing
 - `E11-8` **Mixtures, decided against** — and the useful part is the experiment. A mixture
   cannot be an item, because its identity would depend on the answer and the answer on its
   identity; the honest version is a flow variable per edge *per item*, which is where a
@@ -630,7 +642,8 @@ _(empty)_
 | E1-5 | ✅ | Operating modes | one building = several specs (e.g. Oil Refinery is one, but Metal Refinery has one spec *per* metal; Generators have "on demand" vs "100% uptime") |
 | E1-6 | ✅ | `uptime` factor on a node | a building fed at 60 % runs at 60 %; solver works in "effective building-seconds", UI shows both `count` and `physicalCount = ceil(count/uptime)` |
 | E1-7 | ✅ | Temperature reported | ports carry a temperature and the app shows it; heat exchange is still not modelled |
-| E1-8 | P2 | Germs / disease | out of scope v1, keep a field so it can be added |
+| E1-8 | ❌ | Germs / disease | decided against on 2026-08-22. Germs change no rate: a Water Sieve moves 5 kg/s whether the water is clean or crawling, and what germs do — health, morale, a Duplicant off work — is a person and not a flow. They also multiply and die over time, and this model has no time. "Keep a field so it can be added" is the unreachable-feature mistake this repository has spent a fortnight undoing |
+| E1-9 | ✅ | The app builds and opens | `tool/smoke.sh`: build it as an app, check the guide really shipped in the bundle, start it and see that it stays up. Nothing else does this — a widget test has no bundle, no plugins and no file system |
 
 ## E2 — Pipeline graph
 
