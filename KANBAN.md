@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E13-6` **The Plug Slug eats either** — any ore or any refined metal, 60 kg a cycle
+  whichever it is, and it *generates*: 1 600 W for the 75 s of each cycle it is awake, which
+  the app had no note of at all
 - `E13-11` **A port that names what it will take** — "either peat or wood" is one recipe
   with two acceptable fuels now, rather than an invented material or two copies of the same
   recipe. The node picks, exactly as a refinery picks its ore
@@ -719,7 +722,7 @@ flow, so the solver never had to learn about it.
 | E13-3 | P2 | The Crafting Station | every recipe is known except how many gaskets 50 kg of plastic makes |
 | E13-4 | P3 | Lead, and the metals behind galena | the ore is in the class with nothing to refine into |
 | E13-5 | P3 | Sage Hatch's organics | polluted dirt, slime, algae, dirt, fertiliser and most Duplicant food: a class this app does not have |
-| E13-6 | P2 | Alternative diets | a Plug Slug eats ore *or* refined metal, and the model has no "either" — one spec per diet is the answer |
+| E13-6 | ✅ | Alternative diets | a Plug Slug eats ore or refined metal at the same 60 kg a cycle, so it is one port with alternatives rather than two specs |
 | E13-7 | P3 | Rot Pile | a Pokeshell's second food and the Compost's second input |
 | E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |

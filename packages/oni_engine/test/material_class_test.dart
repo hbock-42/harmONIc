@@ -246,20 +246,35 @@ void main() {
       expect(solution.nodes['src_lumber']!.count, closeTo(100000 / 600, 1e-6));
     });
 
-    test('alternatives are for the same rate; different rates are two specs',
-        () {
-      // The rule that keeps this from becoming a way to hide real differences.
-      // A Plug Slug eats 60 kg of ore a cycle or 30 kg of refined metal, and
-      // that is two recipes, not one port with a list.
-      for (final spec in db.processes) {
-        for (final port in spec.ports) {
-          if (port.alternatives.isEmpty) continue;
-          // Nothing to assert about the rate itself — one port has one rate —
-          // but the seeded data must not be pretending otherwise, so this at
-          // least pins which ports make the claim.
-          expect(spec.id, 'smoker_brisket');
-        }
-      }
+    test('alternatives are for the same rate, and only that', () {
+      // The rule that keeps this from becoming a way to hide real differences:
+      // a port has one rate, so listing alternatives on it claims they all run
+      // at that rate. Where they do not, they are different recipes.
+      //
+      // Which ports make the claim is pinned here, so a third cannot appear
+      // without somebody saying out loud that the rate really is the same.
+      final claiming = {
+        for (final spec in db.processes)
+          for (final port in spec.ports)
+            if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
+      };
+      expect(claiming, {
+        // "Either Peat or Wood", 100 kg of it whichever you use.
+        'smoker_brisket.fuel',
+        // 60 kg a cycle of any ore or any refined metal, the same either way.
+        'plug_slug.feed',
+        'plug_slug_wild.feed',
+      });
+    });
+
+    test('a Plug Slug eats ore or refined metal at one rate', () {
+      final feed = db
+          .processOrThrow('plug_slug')
+          .inputs
+          .firstWhere((p) => p.id == 'feed');
+      expect(feed.accepted, ['metal_ore', 'refined_metal']);
+      // 60 kg a cycle.
+      expect(feed.ratePerSecond * secondsPerCycle / 1000, closeTo(60, 1e-6));
     });
   });
 

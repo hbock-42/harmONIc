@@ -700,6 +700,18 @@ void main() {
       }
     });
 
+    test('a Plug Slug is a generator that eats metal', () {
+      final slug = db.processOrThrow('plug_slug');
+      // 1 600 W for the 75 s of each cycle it is awake: 200 W averaged, which
+      // is what a flow model can say and is not the same promise as 1 600 W
+      // when you need it.
+      expect(slug.netPowerWatts, closeTo(-200, 1e-6));
+      expect(slug.description, contains('only for the'));
+      // And it was eating iron ore in particular before, which is one of the
+      // eight ores it will take.
+      expect(slug.inputs.map((p) => p.itemId), contains('metal_ore'));
+    });
+
     test('a Gassy Moo lays no eggs, because it does not', () {
       // Moos summon another Moo by meteor rather than laying.
       final moo = db.processOrThrow('gassy_moo');

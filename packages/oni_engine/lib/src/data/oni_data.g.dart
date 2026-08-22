@@ -3188,7 +3188,7 @@ const String oniDataJson = r"""
       "id": "plug_slug",
       "name": "Plug Slug",
       "kind": "critter",
-      "description": "UNVERIFIED: eats 60 kg/cycle of metal ore and gives off 3 kg/cycle of hydrogen. Its power output is deliberately absent: a tame slug generates 800–1600 W depending on how well fed it is, and only at night, which this model has no way to express. Treat it as a hydrogen source and size the generator yourself.",
+      "description": "UNVERIFIED: eats 60 kg a cycle of any metal ore or any refined metal — the same amount either way — and gives back hydrogen, eggs, meat and power. The power is the awkward one: 1 600 W, but only for the 75 s of each cycle it is awake, so the 200 W here is the average and a build that needs it at a particular moment will not find it there. It also drops to 1 200 W below 5 000 kcal and 800 W below 3 000, which this does not model.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3202,9 +3202,13 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
-          "item": "iron_ore",
+          "item": "metal_ore",
           "direction": "input",
-          "rate": 100.0
+          "rate": 100.0,
+          "alternatives": [
+            "refined_metal"
+          ],
+          "id": "feed"
         },
         {
           "item": "hydrogen",
@@ -3220,6 +3224,12 @@ const String oniDataJson = r"""
           "item": "meat",
           "direction": "output",
           "rate": 0.033333
+        },
+        {
+          "id": "power_out",
+          "item": "power",
+          "direction": "output",
+          "rate": 200.0
         }
       ]
     },
@@ -5326,7 +5336,7 @@ const String oniDataJson = r"""
       "id": "plug_slug_wild",
       "name": "Plug Slug (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "UNVERIFIED: eats 60 kg a cycle of any metal ore or any refined metal — the same amount either way — and gives back hydrogen, eggs, meat and power. The power is the awkward one: 1 600 W, but only for the 75 s of each cycle it is awake, so the 200 W here is the average and a build that needs it at a particular moment will not find it there. It also drops to 1 200 W below 5 000 kcal and 800 W below 3 000, which this does not model.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -5336,9 +5346,13 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "iron_ore",
+          "item": "metal_ore",
           "direction": "input",
-          "rate": 100.0
+          "rate": 100.0,
+          "alternatives": [
+            "refined_metal"
+          ],
+          "id": "feed"
         },
         {
           "item": "hydrogen",
@@ -5354,6 +5368,12 @@ const String oniDataJson = r"""
           "item": "meat",
           "direction": "output",
           "rate": 0.033333
+        },
+        {
+          "id": "power_out",
+          "item": "power",
+          "direction": "output",
+          "rate": 200.0
         }
       ]
     },
