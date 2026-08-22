@@ -100,6 +100,12 @@ survives tidying the rest.
 **Fit** frames everything, or just the selection. Arrow keys nudge by a grid
 cell, eight with shift. Drag a node to the window edge and the view follows.
 
+**☀ / ☾** on the toolbar switches between the dark and the light look, and shows
+what pressing it gives you rather than what you are already in. The choice is
+remembered. The light palette is not the dark one inverted — every colour is
+picked for the background it sits on, because a hue that reads on near-black is
+usually too pale to read on near-white.
+
 ## Reusing work
 
 - **Start from a build** in the pipelines menu opens one of four worked

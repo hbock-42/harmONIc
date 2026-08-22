@@ -236,7 +236,7 @@ class NodeWidget extends StatelessWidget {
                   height: 4,
                   child: Stack(
                     children: [
-                      const ColoredBox(
+                      ColoredBox(
                           color: OniColors.surfaceRaised,
                           child: SizedBox.expand()),
                       FractionallySizedBox(

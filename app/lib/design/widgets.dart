@@ -22,7 +22,7 @@ class OniPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         width: width,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: OniColors.surface,
           border: Border(
             left: BorderSide(color: OniColors.border),
@@ -36,7 +36,7 @@ class OniPanel extends StatelessWidget {
               Container(
                 height: 36,
                 padding: const EdgeInsets.symmetric(horizontal: OniSpacing.md),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: OniColors.border)),
                 ),
                 child: Row(

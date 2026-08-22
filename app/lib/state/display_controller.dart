@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:oni_engine/oni_engine.dart';
 
+import '../design/tokens.dart';
 import '../storage/json_store.dart';
 
 /// The packs this app knows about, and what to call them.
@@ -46,9 +47,14 @@ class DisplayController extends ChangeNotifier {
   /// and plant lists, and most builds are farmed.
   bool _showWild = true;
 
+  /// Dark unless somebody says otherwise. A tool people leave open beside a
+  /// game that is itself dark should not be the bright thing on the desk.
+  bool _light = false;
+
   RateDisplay get display => _display;
   Set<String> get packs => Set.unmodifiable(_packs);
   bool get showWild => _showWild;
+  bool get isLight => _light;
 
   bool packEnabled(String pack) => _packs.contains(pack);
 
@@ -73,6 +79,14 @@ class DisplayController extends ChangeNotifier {
 
   Future<void> setPack(String pack, {required bool enabled}) async {
     if (enabled ? !_packs.add(pack) : !_packs.remove(pack)) return;
+    notifyListeners();
+    await _save();
+  }
+
+  Future<void> setLight({required bool light}) async {
+    if (light == _light) return;
+    _light = light;
+    OniTheme.current = light ? OniPalette.light : OniPalette.dark;
     notifyListeners();
     await _save();
   }
@@ -105,6 +119,8 @@ class DisplayController extends ChangeNotifier {
         ..addAll(packs.cast<String>().where(kContentPacks.containsKey));
     }
     _showWild = raw?['showWild'] as bool? ?? true;
+    _light = raw?['light'] as bool? ?? false;
+    OniTheme.current = _light ? OniPalette.light : OniPalette.dark;
     notifyListeners();
   }
 
@@ -121,5 +137,6 @@ class DisplayController extends ChangeNotifier {
         'rateDisplay': _display.name,
         'packs': _packs.toList(),
         'showWild': _showWild,
+        'light': _light,
       });
 }

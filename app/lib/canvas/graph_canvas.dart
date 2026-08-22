@@ -664,7 +664,7 @@ class GraphCanvasState extends State<GraphCanvas>
             child: Stack(
               children: [
             DecoratedBox(
-              decoration: const BoxDecoration(color: OniColors.background),
+              decoration: BoxDecoration(color: OniColors.background),
               child: CustomPaint(
                 painter: _GridPainter(offset: _offset, scale: _scale),
                 child: Transform(

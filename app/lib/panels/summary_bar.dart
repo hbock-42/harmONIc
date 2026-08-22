@@ -34,7 +34,7 @@ class SummaryBar extends StatelessWidget {
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: OniSpacing.lg),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: OniColors.surface,
         border: Border(top: BorderSide(color: OniColors.border)),
       ),

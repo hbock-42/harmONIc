@@ -311,7 +311,7 @@ class _ProcessEditorState extends State<ProcessEditor> {
           ),
           Container(
             padding: const EdgeInsets.all(OniSpacing.lg),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(top: BorderSide(color: OniColors.border)),
             ),
             child: Row(

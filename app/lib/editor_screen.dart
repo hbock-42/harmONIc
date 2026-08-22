@@ -167,7 +167,7 @@ class _EditorScreenState extends State<EditorScreen> {
               child: Stack(
                 children: [
               DecoratedBox(
-                decoration: const BoxDecoration(color: OniColors.background),
+                decoration: BoxDecoration(color: OniColors.background),
                 child: Column(
                   children: [
                     _TopBar(
@@ -454,7 +454,7 @@ class _Tabs extends StatelessWidget {
 
     return Container(
       height: 30,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: OniColors.surface,
         border: Border(bottom: BorderSide(color: OniColors.border)),
       ),
@@ -507,7 +507,7 @@ class _TabState extends State<_Tab> {
                   ? OniColors.surfaceRaised
                   : (_hover ? OniColors.surfaceHover : null),
               border: Border(
-                right: const BorderSide(color: OniColors.border),
+                right: BorderSide(color: OniColors.border),
                 bottom: BorderSide(
                   width: 2,
                   color: widget.current
@@ -637,7 +637,7 @@ class _TopBarState extends State<_TopBar> {
     return Container(
         height: 44,
         padding: const EdgeInsets.symmetric(horizontal: OniSpacing.lg),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: OniColors.surface,
           border: Border(bottom: BorderSide(color: OniColors.border)),
         ),
@@ -759,6 +759,15 @@ class _TopBarState extends State<_TopBar> {
             ),
             const _ToolbarDivider(),
             OniButton(
+              // The moon is what pressing it takes you *to*, the way the rate
+              // button names the unit it switches into rather than the one you
+              // are already reading.
+              label: widget.displaySettings.isLight ? '☾' : '☀',
+              compact: true,
+              onPressed: () => widget.displaySettings
+                  .setLight(light: !widget.displaySettings.isLight),
+            ),
+            OniButton(
               label: '?',
               compact: true,
               onPressed: widget.onOpenGuide,
@@ -777,7 +786,7 @@ class _EmptyCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-        decoration: const BoxDecoration(color: OniColors.background),
+        decoration: BoxDecoration(color: OniColors.background),
         child: Center(
           child: SizedBox(
             width: 320,

@@ -115,6 +115,9 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-6` **A light theme** — ☀/☾ on the toolbar, remembered between sessions. Not the dark
+  palette inverted: every colour is chosen for the background it sits on, because a hue
+  that reads on near-black is usually too pale to read on near-white
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
 - `E11-7c` **Gaskets are things, not kilograms** — four of them is four, and a total in
@@ -651,12 +654,12 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E9-1 | ✅ | Tokens | `OniColors`, `OniSpacing`, `OniTypography`. One dark palette; colour is *data*, not decoration |
+| E9-1 | ✅ | Tokens | `OniColors`, `OniSpacing`, `OniTypography`; colour is *data*, not decoration. Two palettes since E9-6, read through `OniTheme.current` |
 | E9-2 | ✅ | Item-category palette | solid / liquid / gas / power / heat each get a hue, used identically on ports, edges and legends — the single most important visual rule in the app |
 | E9-3 | ✅ | Wrappers | `OniPanel`, `OniButton`, `OniField`, `OniSelect`, `OniTooltip` over forui equivalents |
 | E9-4 | ✅ | Numeric formatting widget | reuses the engine's `Unit.format`; per-second ⇄ per-cycle toggle in one place |
 | E9-5 | ✅ | Icon set | a drawn glyph per item category — drop, ring, square, bolt, diamond, pill, cross — so shape carries what colour alone was carrying |
-| E9-6 | P2 | Light theme |
+| E9-6 | ✅ | Light theme | `OniPalette.dark` / `.light` behind `OniTheme.current`; ☀/☾ on the toolbar, remembered. Not an inversion — each colour picked for its own background; tests hold every pair apart and hold text ≥7:1 against the page |
 | E9-7 | ✅ | A cross to empty a search | on every search field, since getting back to the whole list should not mean holding backspace |
 
 ## E7 — The canvas

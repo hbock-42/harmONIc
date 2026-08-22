@@ -99,11 +99,22 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
           settings: settings,
           pageBuilder: (context, _, _) => builder(context),
         ),
-        builder: (context, child) => FTheme(
-          data: FTheme.neutral.dark.desktop,
-          child: DefaultTextStyle(
-            style: OniType.body,
-            child: child ?? const SizedBox.shrink(),
+        // Rebuilt when the display settings change, so switching the palette
+        // repaints everything below rather than only the widgets that happened
+        // to be listening.
+        builder: (context, child) => ListenableBuilder(
+          listenable: _display,
+          builder: (context, _) => FTheme(
+            data: _display.isLight
+                ? FTheme.neutral.light.desktop
+                : FTheme.neutral.dark.desktop,
+            child: DefaultTextStyle(
+              style: OniType.body,
+              child: ColoredBox(
+                color: OniColors.background,
+                child: child ?? const SizedBox.shrink(),
+              ),
+            ),
           ),
         ),
         home: _ready
@@ -113,7 +124,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
                 workspace: _workspace,
                 displaySettings: _display,
               )
-            : const ColoredBox(color: OniColors.background),
+            : ColoredBox(color: OniColors.background),
       );
 }
 
