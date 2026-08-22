@@ -117,6 +117,8 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E11-7c` **Gaskets are things, not kilograms** — four of them is four, and a total in
+  kilograms leaves them out rather than adding four to twelve hundred
 - `E8-9` **Two more audits** — every building takes up floor (the Grooming Station and the
   Aquatic Milking Station took none, so a ranch under-counted its room), and every item is
   used or says why it is not
@@ -726,6 +728,7 @@ does not see.
 | E11-6b | ✅ | The specific heats not yet measured | all thirty fluids have one now, so no mixture drops a term and every coolant has an Aquatuner |
 | E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
 | E11-7b | P3 | What a Gasket costs | 50 kg of plastic or rubber makes some unstated number of them |
+| E11-7c | ✅ | Build costs in their own unit | gaskets are counted, everything else weighed; the headline total sums only what has a weight |
 
 ## E12 — What using it turned up
 

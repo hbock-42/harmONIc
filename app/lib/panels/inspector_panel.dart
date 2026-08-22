@@ -566,7 +566,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
               children: [
                 for (final entry in entries)
                   Text(
-                    '${formatMass(entry.value * result.wholeCount)} '
+                    '${formatMaterial(controller.database.item(entry.key), entry.value * result.wholeCount)} '
                     '${controller.database.item(entry.key)?.name ?? entry.key}',
                     style: OniType.body,
                   ),

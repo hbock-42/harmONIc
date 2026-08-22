@@ -81,8 +81,12 @@ class SummaryBar extends StatelessWidget {
               label: 'to build',
               // A stock, not a flow: this is what you carry to the site once,
               // so it does not answer to the per-cycle toggle.
-              value: formatMass(
-                  _materials.values.reduce((a, b) => a + b)),
+              // Mass only. Adding four gaskets to 1.2 t of ore gives a number
+              // that is not a weight and not a count of anything.
+              value: formatMass(_materials.entries
+                  .where((e) =>
+                      database.item(e.key)?.unit != Unit.count)
+                  .fold<double>(0, (sum, e) => sum + e.value)),
             ),
           ],
           if (solution.dupeLabourSecondsPerCycle > 0) ...[

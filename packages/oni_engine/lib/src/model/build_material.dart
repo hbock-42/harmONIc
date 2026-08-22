@@ -1,3 +1,6 @@
+import 'item.dart';
+import 'units.dart';
+
 /// What a building costs to *put up*, as opposed to what it runs on.
 ///
 /// The game asks for a class of material rather than a particular one: an
@@ -22,6 +25,17 @@ abstract final class BuildMaterials {
   /// number of them, and the wiki does not say how many.
   static const String gasket = 'gasket';
 }
+
+/// A build cost, in whatever unit that material is counted in.
+///
+/// Almost everything is kilograms. Gaskets are not: they are things, and the
+/// Aquatic Milking Station wants four of them rather than four kilograms of
+/// them. Writing "4 kg Gaskets" is the sort of small wrongness that makes a
+/// reader distrust the figures beside it.
+String formatMaterial(Item? material, double amount) =>
+    material?.unit == Unit.count
+        ? amount.toStringAsFixed(0)
+        : formatMass(amount);
 
 /// Kilograms, written the way a shopping list would be.
 ///

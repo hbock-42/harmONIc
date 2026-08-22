@@ -87,8 +87,9 @@ String formatSolution(
     final sorted = materials.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     for (final entry in sorted) {
-      out.writeln('  ${database.item(entry.key)?.name ?? entry.key}: '
-          '${formatMass(entry.value)}');
+      final material = database.item(entry.key);
+      out.writeln('  ${material?.name ?? entry.key}: '
+          '${formatMaterial(material, entry.value)}');
     }
     if (solution.totalFootprintTiles > 0) {
       out.writeln('  Floor: ${solution.totalFootprintTiles} tiles');

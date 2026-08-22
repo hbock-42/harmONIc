@@ -67,4 +67,26 @@ void main() {
 
     expect(find.text('TO BUILD'), findsNothing);
   });
+
+  testWidgets('a material counted in things is not weighed in kilograms',
+      (tester) async {
+    // An Aquatic Milking Station wants 400 kg of refined metal and four
+    // gaskets. Gaskets are things.
+    final controller = await pumpEditor(
+      tester,
+      (PipelineBuilder(testDatabase, name: 'Milking')
+            ..add('aquatic_milking_station', nodeId: 'station', x: 0, y: 0)
+            ..pinCount('station', 1))
+          .build(),
+    );
+    controller.select(const NodeSelection('station'));
+    await tester.pump();
+
+    expect(textContaining('4 Gaskets'), findsOneWidget);
+    expect(textContaining('4 kg Gaskets'), findsNothing);
+
+    // And the headline figure is a weight, so it leaves them out rather than
+    // adding four to twelve hundred and calling the result kilograms.
+    expect(textContaining('400 kg'), findsWidgets);
+  });
 }
