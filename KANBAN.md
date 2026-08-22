@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E8-5` **A benchmark that means something on a machine you do not own** — the perf test
+  now asserts the *shape* of the cost as well as the clock: doubling the nodes must not
+  quadruple the time, which is what a return to the cubic elimination would do
 - `E10-15` **Draw the supplies** — one press puts a supply or output node on every port
   nothing feeds or takes from, so a build's edges become things you can price, warm and
   point at rather than a line in the totals. One undo for the lot
@@ -713,7 +716,7 @@ flow, so the solver never had to learn about it.
 | E8-2 | ✅ | Golden real-world scenarios | the SPOM, the petroleum boiler, the oxylite chain and the coal farm, every figure worked out by hand before the test was run |
 | E8-3 | ✅ | Property test: any solved graph satisfies mass balance within ε |
 | E8-4 | ✅ | Widget/golden tests for the canvas |
-| E8-5 | P2 | Benchmarks in CI |
+| E8-5 | ✅ | Benchmarks in CI |
 | E8-3b | ✅ | Mass-balance audit |
 
 ---

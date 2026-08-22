@@ -1,7 +1,18 @@
+import 'dart:io';
+
 import 'package:oni_engine/oni_engine.dart';
 import 'package:test/test.dart';
 
 void main() {
+  /// The wall-clock bar. E3-9 asked for a 500-node build in under 50 ms and it
+  /// takes about 14 on a laptop, so 50 is a real limit here.
+  ///
+  /// On a shared CI runner it is not: everything is slower by an amount nobody
+  /// controls, and a limit loose enough never to flake is loose enough to catch
+  /// nothing. So CI gets a generous bar that only trips on a catastrophe, and
+  /// the assertion that actually protects the algorithm is the ratio below,
+  /// which does not care how fast the machine is.
+  final budgetMillis = Platform.environment['CI'] == null ? 50 : 400;
   final db = loadDefaultDatabase();
   final solver = PipelineSolver(db);
 
@@ -37,21 +48,23 @@ void main() {
     return b.build();
   }
 
-  int fastestMillis(Pipeline pipeline) {
-    // Best of three, after a warm-up: the JIT needs one pass before the figure
+  int fastestMicros(Pipeline pipeline) {
+    // Best of five, after a warm-up: the JIT needs a pass before the figure
     // means anything, and a shared machine can lose a slice of any single run.
     solver.solve(pipeline);
     var best = 1 << 30;
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 5; i++) {
       final watch = Stopwatch()..start();
       solver.solve(pipeline);
       watch.stop();
-      if (watch.elapsedMilliseconds < best) best = watch.elapsedMilliseconds;
+      if (watch.elapsedMicroseconds < best) best = watch.elapsedMicroseconds;
     }
     return best;
   }
 
-  test('a 500-node chain solves in under 50 ms', () {
+  int fastestMillis(Pipeline pipeline) => fastestMicros(pipeline) ~/ 1000;
+
+  test('a 500-node chain solves quickly', () {
     final pipeline = chain(500);
     expect(pipeline.nodes, hasLength(501));
 
@@ -61,16 +74,37 @@ void main() {
     // as far as the answer is concerned. It is the matrix that is 501 wide.
     expect(solution.nodes['p499']!.count, closeTo(1, 1e-6));
 
-    expect(fastestMillis(pipeline), lessThan(50));
+    expect(fastestMillis(pipeline), lessThan(budgetMillis));
   });
 
-  test('a 500-wide fan solves in under 50 ms', () {
+  test('a 500-wide fan solves quickly', () {
     final pipeline = fan(250);
     expect(pipeline.nodes.length, greaterThan(500));
 
     final solution = solver.solve(pipeline);
     expect(solution.status, SolveStatus.solved);
-    expect(fastestMillis(pipeline), lessThan(50));
+    expect(fastestMillis(pipeline), lessThan(budgetMillis));
+  });
+
+  test('twice the build is not eight times the work', () {
+    // The assertion that actually protects the fix, and the only one here that
+    // means the same thing on every machine.
+    //
+    // The old elimination was cubic: it filled in the rows it had already
+    // finished with, so doubling the nodes multiplied the work by eight. A
+    // wall-clock limit catches that on my desk and not on a busy CI runner,
+    // where everything is slower and the limit has to be loose enough to be
+    // useless. A ratio does not care how fast the machine is.
+    //
+    // Four is the bar rather than two, because there is real per-node work
+    // outside the elimination and small runs are dominated by fixed costs.
+    // Eight would pass while cubic; four will not.
+    final small = fastestMicros(chain(250));
+    final large = fastestMicros(chain(500));
+
+    expect(large, lessThan(small * 4),
+        reason: '250 nodes took ${small}µs and 500 took ${large}µs, which is '
+            'the shape of an elimination that fills in behind itself');
   });
 
   test('the answer does not depend on how the elimination was done', () {

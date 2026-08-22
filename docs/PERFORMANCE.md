@@ -133,14 +133,30 @@ both changes at once and attribute the whole win to the clever one.
 ## How it is kept
 
 `test/solver_perf_test.dart` solves a 500-node chain and a 500-node fan — the
-deepest and the widest shapes a build can take — and fails over 50 ms. It takes
-the best of three runs after a warm-up, because the first pass through a Dart
-function is measuring the compiler rather than the code, and a shared machine
-can lose a slice of any single run.
+deepest and the widest shapes a build can take. It takes the best of five runs
+after a warm-up, because the first pass through a Dart function measures the
+compiler rather than the code, and a shared machine can lose a slice of any
+single run.
 
-The test was checked against the old implementation before being kept: it
-reported 120 ms and failed. A performance test that has never failed is a
-performance test you have no reason to believe.
+It makes two different kinds of assertion, and the second is the one that
+matters.
+
+**A wall-clock limit**, 50 ms locally. On CI it is 400, because everything on a
+shared runner is slower by an amount nobody controls, and a limit loose enough
+never to flake is loose enough to catch nothing. What it catches is a
+catastrophe, not a regression.
+
+**A ratio**: doubling the nodes must not quadruple the time. This is the
+assertion that protects the fix, and it means the same thing on every machine.
+The old elimination was cubic — twice the build was eight times the work — so a
+return to it fails here whether the runner is fast or slow. Four rather than two
+because there is real per-node work outside the elimination and small runs are
+dominated by fixed costs; eight would pass while cubic, four will not.
+
+Both were checked against the old implementation before being kept. The
+wall-clock test reported 120 ms and failed; the ratio test reported 28 323 µs
+against a bar of 19 408 and failed. A performance test that has never failed is
+a performance test you have no reason to believe.
 
 ## What made it safe
 
