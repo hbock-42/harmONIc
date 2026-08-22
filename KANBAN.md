@@ -116,6 +116,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E8-6` **A guide to using it** — `docs/USING.md`, written because every control in this
+  app is obvious to whoever added it and to nobody else. Its last section is what the app
+  does not know, which is where it is most misleading
 - `E6-6` **Tabs** — the builds you have open, in a row, one click apart. Closing one puts it
   away rather than throwing it out; the menu still has everything you have ever drawn
 - `E7-20` **Arrow keys nudge the selection** — one grid cell, eight with shift, and a run of
@@ -755,6 +758,8 @@ flow, so the solver never had to learn about it.
 | E8-4 | ✅ | Widget/golden tests for the canvas |
 | E8-5 | ✅ | Benchmarks in CI |
 | E8-3b | ✅ | Mass-balance audit |
+| E8-6 | ✅ | A guide to using it | `docs/USING.md`: the one idea, the controls in the order you meet them, and a section on what the app deliberately does not know |
+| E8-7 | P3 | The guide, reachable from inside the app | it is a file in the repo; somebody using the built app has no way to it |
 
 ---
 
