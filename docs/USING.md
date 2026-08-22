@@ -63,6 +63,13 @@ On a node:
   what the spare one costs you.
 - **going from 3 to 4** is what one more would buy and cost, worked out by
   solving the build again rather than estimating.
+- **as built**, in the bottom bar, is what all that rounding costs the build.
+  The other figures there are the exact ratio; the thirteenth Hatch you had to
+  place eats like a Hatch, so a ranch needs more raw mineral than the ratio
+  says and gives back more coal. It appears only when something had to be
+  rounded.
+- A building **nobody has priced** — one of your own recipes, until you give it
+  a cost — is named in the bar rather than left out of the total in silence.
 - **to build** is the shopping list for the ones you place. A part counted in
   ones rather than kilograms says what one costs beside it — four gaskets, and
   the 200 kg of plastic behind them.

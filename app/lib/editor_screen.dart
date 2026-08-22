@@ -233,6 +233,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onMinimise: controller.hasASplitToChoose
                           ? controller.optimiseTotal
                           : null,
+                      asBuilt: controller.asBuiltReport,
                     ),
                   ],
                 ),

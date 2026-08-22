@@ -71,6 +71,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-12` **Two more things the engine knew and nobody could read** — the sweep that found
+  uptime, edge shares, the stockpile pin and the arrow keys, run again now that a fortnight
+  of features has landed. `AsBuiltReport.drifts` has been computing what rounding costs the
+  whole build since it was written, and only the per-node half ever reached a screen: a
+  Hatch ranch eats 100 g/s more raw mineral than the figures beside it say, because the
+  thirteenth Hatch cannot idle. It is in the bar now, and only when something was rounded.
+  And `unpricedBuildings` — "a shopping list that quietly omits a building is worse than no
+  list" — was never called: nothing shipped is unpriced, but a recipe *you* write has no cost
+  until you give it one, so your own buildings were being left out of the total in silence
 - `E5-9` **A browser keeps your builds now** — `localStorage`, behind the same interface the
   file store is behind, chosen by a conditional import so that neither half is compiled into
   the other. The seam has said "so a future web build can swap in browser storage without
@@ -977,6 +986,7 @@ flow, so the solver never had to learn about it.
 | E8-9 | ✅ | Footprint and vocabulary audits | no building with no floor; no item nothing uses without a sentence saying what it is for |
 | E8-10 | ✅ | The kanban audit | the board has to agree with itself: one row per id, a row behind every board entry, nothing offered in Ready that its own row calls finished, and no status the legend does not explain |
 | E8-11 | ✅ | The guide is checked as a rendered thing | every heading reaches the screen, and nothing is written in Markdown the thirty-line renderer would hand the reader as punctuation |
+| E8-12 | ✅ | The second reachability sweep | every public engine symbol against every call site in `lib/`: two things the engine worked out and nobody could read — what rounding costs the build, and which buildings the shopping list could not price |
 
 ---
 

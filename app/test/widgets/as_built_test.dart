@@ -61,4 +61,36 @@ void main() {
 
     expect(textContaining('does not idle'), findsNothing);
   });
+
+  testWidgets('the bar says what the rounding costs the whole build',
+      (tester) async {
+    // The node says what the spare Hatch costs where it stands. This is the
+    // other question: what must I actually supply? The figures beside it are
+    // the exact ratio, and a critter that cannot idle makes the ratio an
+    // understatement.
+    final controller = await pumpEditor(tester, ranch());
+    final report = controller.asBuiltReport;
+    expect(report.roundedUp, isNotEmpty);
+    expect(report.drifts, isNotEmpty);
+
+    expect(find.text('AS BUILT'), findsOneWidget);
+    // Worst first: the extra Hatch eats raw mineral it was not counted for.
+    expect(textContaining('Raw Mineral'), findsWidgets);
+  });
+
+  testWidgets('and says nothing of the kind when nothing was rounded',
+      (tester) async {
+    // Machines idle, so a build of machines lands exactly where the ratio put
+    // it and there is nothing to report.
+    final exact = (PipelineBuilder(testDatabase, name: 'Exact')
+          ..addSource('water', x: 0, y: 0)
+          ..add('electrolyzer', nodeId: 'elec', x: 340, y: 0)
+          ..connectItem('src_water', 'elec', 'water')
+          ..pinCount('elec', 2.5))
+        .build();
+    final controller = await pumpEditor(tester, exact);
+
+    expect(controller.asBuiltReport.isExact, isTrue);
+    expect(find.text('AS BUILT'), findsNothing);
+  });
 }

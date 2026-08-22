@@ -14,6 +14,7 @@ class SummaryBar extends StatelessWidget {
     required this.rateDisplay,
     required this.onToggleRates,
     this.onMinimise,
+    this.asBuilt,
     super.key,
   });
 
@@ -24,6 +25,10 @@ class SummaryBar extends StatelessWidget {
   /// beside the number it is about, which is the only place somebody looking
   /// at a power figure they dislike would think to look.
   final void Function(BuildTotal total)? onMinimise;
+
+  /// The build as it would really be placed, when that differs from the exact
+  /// ratio. Null where nothing had to be rounded, which is most builds.
+  final AsBuiltReport? asBuilt;
 
   final PipelineSolution solution;
 
@@ -36,6 +41,8 @@ class SummaryBar extends StatelessWidget {
 
   Map<String, double> get _materials =>
       solution.constructionMaterials(database);
+
+  Set<String> get _unpriced => solution.unpricedBuildings(database);
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +95,7 @@ class SummaryBar extends StatelessWidget {
                   _Minimise(total: BuildTotal.floor, onMinimise: onMinimise),
             ),
           ],
-          if (_materials.isNotEmpty) ...[
+          if (_materials.isNotEmpty || _unpriced.isNotEmpty) ...[
             const _Divider(),
             OniStat(
               label: 'to build',
@@ -100,6 +107,30 @@ class SummaryBar extends StatelessWidget {
                   .where((e) =>
                       database.item(e.key)?.unit != Unit.count)
                   .fold<double>(0, (sum, e) => sum + e.value)),
+              // A shopping list that quietly leaves a building out is worse
+              // than no list. Nothing shipped is unpriced; a recipe you wrote
+              // yourself has no cost until you give it one, and the total has
+              // been silently ignoring those.
+              trailing: _unpriced.isEmpty
+                  ? null
+                  : Text(
+                      '+${_unpriced.length} NOT PRICED',
+                      style: OniType.label.copyWith(color: OniColors.warning),
+                    ),
+            ),
+          ],
+          // What the build does once it is real. The figures beside this one
+          // are the exact ratio; a critter cannot idle, so the thirteenth
+          // Hatch you had to place eats like a Hatch and the ratio quietly
+          // understates what you must supply.
+          if (asBuilt case final AsBuiltReport report
+              when report.drifts.isNotEmpty) ...[
+            const _Divider(),
+            _AsBuilt(
+              report: report,
+              database: database,
+              rateDisplay: rateDisplay,
+              onToggle: onToggleRates,
             ),
           ],
           if (solution.dupeLabourSecondsPerCycle > 0) ...[
@@ -252,6 +283,46 @@ class _Minimise extends StatelessWidget {
         child: Text('LEAST',
             style: OniType.label.copyWith(color: OniColors.accent)),
       ),
+    );
+  }
+}
+
+
+/// What rounding up costs the whole build.
+///
+/// A machine you half need idles; a critter, a plant or a Duplicant does not.
+/// The inspector says what the spare one costs on the node that has it, and
+/// this says what the build ends up eating and making because of all of them —
+/// which is the figure you supply against, and not the one beside it.
+class _AsBuilt extends StatelessWidget {
+  const _AsBuilt({
+    required this.report,
+    required this.database,
+    required this.rateDisplay,
+    required this.onToggle,
+  });
+
+  final AsBuiltReport report;
+  final GameDatabase database;
+  final RateDisplay rateDisplay;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    // Worst first, which is how the engine sorts them.
+    final worst = report.drifts.first;
+    final item = database.item(worst.itemId);
+    final more = report.drifts.length - 1;
+
+    return OniStat(
+      label: 'as built',
+      value: '${worst.change > 0 ? '+' : '−'}'
+          '${item?.formatRate(worst.change.abs(), rateDisplay) ?? worst.change.abs().toStringAsFixed(1)}'
+          ' ${item?.name ?? worst.itemId}'
+          '${more > 0 ? '  ·  and $more more' : ''}',
+      // Eating more is the half worth noticing; making more is a surplus.
+      valueColour: worst.change < 0 ? OniColors.warning : OniColors.text,
+      onToggle: onToggle,
     );
   }
 }

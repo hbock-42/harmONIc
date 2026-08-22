@@ -105,4 +105,67 @@ void main() {
     expect(textContaining('4 Gaskets'), findsOneWidget);
     expect(textContaining('200 kg Plastic'), findsOneWidget);
   });
+
+  testWidgets('a building nobody has priced is said, not skipped',
+      (tester) async {
+    // The reachable case: a recipe you wrote yourself has no build cost until
+    // you give it one, and the total was quietly leaving it out.
+    final library = testLibrary();
+    final mine = ProcessSpec(
+      id: 'my_smoker',
+      name: 'My Smoker',
+      kind: ProcessKind.building,
+      tags: const {'custom', 'unverified'},
+      description: 'UNVERIFIED: measured by hand.',
+      ports: const [
+        Port(
+          id: 'wood',
+          itemId: 'lumber',
+          direction: PortDirection.input,
+          ratePerSecond: 100,
+        ),
+        Port(
+          id: 'calories',
+          itemId: 'calories',
+          direction: PortDirection.output,
+          ratePerSecond: 20,
+        ),
+      ],
+    );
+    await library.save(mine);
+
+    final pipeline = (PipelineBuilder(library.database, name: 'Mine')
+          ..addSource('lumber', x: 0, y: 0)
+          ..add('my_smoker', nodeId: 'smoker', x: 340, y: 0)
+          ..add('electrolyzer', nodeId: 'elec', x: 340, y: 260)
+          ..connectItem('src_lumber', 'smoker', 'lumber')
+          ..pinCount('smoker', 2)
+          ..pinCount('elec', 1))
+        .build();
+
+    await useDesktopSurface(tester);
+    final controller = PipelineController(library.database, initial: pipeline);
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: library,
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+
+    // The bar still totals what it can, and admits what it could not.
+    expect(textContaining('NOT PRICED'), findsOneWidget);
+
+    // And the node itself says why it is missing from that total.
+    controller.select(const NodeSelection('smoker'));
+    await tester.pumpAndSettle();
+    expect(textContaining('Nobody has said what this costs'), findsOneWidget);
+  });
+
+  testWidgets('and a build of shipped buildings says nothing of the kind',
+      (tester) async {
+    // Every building in the shipped data has a price, so this must not appear
+    // on an ordinary build.
+    await pumpEditor(tester, spom(4));
+    expect(textContaining('NOT PRICED'), findsNothing);
+  });
 }

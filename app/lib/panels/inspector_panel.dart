@@ -549,8 +549,21 @@ class _NodeInspectorState extends State<_NodeInspector> {
   /// changes its heat tolerance rather than whether it can be built.
   Widget _buildCost(
       PipelineController controller, ProcessSpec spec, NodeResult? result) {
-    if (result == null || spec.buildCost.isEmpty || result.wholeCount == 0) {
-      return const SizedBox.shrink();
+    if (result == null || result.wholeCount == 0) return const SizedBox.shrink();
+    // Nothing shipped is unpriced, and a recipe you wrote yourself is until
+    // you say otherwise. Saying so beats leaving it out of the total in
+    // silence, which is what happened before.
+    if (spec.buildCost.isEmpty) {
+      if (spec.kind != ProcessKind.building) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(top: OniSpacing.md),
+        child: Text(
+          'Nobody has said what this costs to put up, so it is missing from '
+          'the build total. Add it with + Recipe if you know.',
+          style: OniType.body
+              .copyWith(fontSize: 11.5, color: OniColors.warning),
+        ),
+      );
     }
     final entries = spec.buildCost.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
