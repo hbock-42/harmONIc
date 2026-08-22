@@ -306,6 +306,53 @@ void main() {
     });
   });
 
+  group('rot, and the two things that eat it', () {
+    test('a rot pile is compostable, alongside the other two', () {
+      expect(db.itemOrThrow('compostable').members,
+          unorderedEquals(['polluted_dirt', 'slime', 'rot_pile']));
+      // The Compost takes the class, so it took rot piles the moment the item
+      // joined it — one kilogram of anything rotting for one of dirt.
+      final compost = db.processOrThrow('compost');
+      expect(compost.ports.first.itemId, 'compostable');
+      expect(portAccepts(
+          db,
+          (PipelineBuilder(db, name: 'c')..add('compost', nodeId: 'c')).build()
+              .nodeOrThrow('c'),
+          compost,
+          compost.ports.first,
+          'rot_pile'), isTrue);
+    });
+
+    test('a Pokeshell eats either at one rate, and slime is not offered', () {
+      final feed = db
+          .processOrThrow('pokeshell')
+          .inputs
+          .firstWhere((p) => p.itemId != 'grooming');
+      // 70 kg a cycle of polluted dirt or rot pile. Slime is for the Oakshell
+      // and the Sanishell, which this app does not model, so offering it here
+      // would be offering a recipe nobody can build.
+      expect(feed.accepted, ['polluted_dirt', 'rot_pile']);
+      expect(feed.accepted, isNot(contains('slime')));
+
+      final sand = db
+          .processOrThrow('pokeshell')
+          .outputs
+          .firstWhere((p) => p.itemId == 'sand');
+      expect(sand.ratePerSecond / feed.ratePerSecond, closeTo(0.5, 1e-6));
+    });
+
+    test('and it is no longer guesswork', () {
+      // The 50 % was inferred from the critters that do publish theirs. The
+      // page states it now — "70 kg/cycle ► 35 kg/cycle Sand" — so the doubt
+      // tag comes off, and the mass-balance audit starts checking it.
+      for (final id in ['pokeshell', 'pokeshell_wild']) {
+        expect(db.processOrThrow(id).tags, contains('verified'), reason: id);
+        expect(db.processOrThrow(id).tags, isNot(contains('unverified')),
+            reason: id);
+      }
+    });
+  });
+
   group('either one thing or another', () {
     test('is one recipe that takes either, not an invented material', () {
       // The Smoker burns "either Peat or Wood". Two wrong answers came first.
@@ -410,6 +457,9 @@ void main() {
         // corallium, all back as coal, whichever it was.
         'sage_hatch.dirt',
         'sage_hatch_wild.dirt',
+        // 70 kg a cycle of polluted dirt or rot pile, half of it back as sand.
+        'pokeshell.polluted_dirt',
+        'pokeshell_wild.polluted_dirt',
         // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
         'gas_grass.chlorine',
         'gas_grass.fertiliser',

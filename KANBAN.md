@@ -52,7 +52,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
   deal else that is not tagged — a filter that hides some of a pack and not the rest would
   be worse than none, so this wants a full audit before it is offered
 
-- `E13-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
 - `E13-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
   plastic makes, which is the one figure a build actually needs
 
@@ -69,8 +68,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
   be misrepresented by a per-cycle average
 - `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop
 - `E4-28` Seaquine's ovolene rate
-- `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
-  feed in kilograms
+- `E4-25` Firm up the inferred 50 % conversion on the Pip, and the Shine Bug's feed in
+  kilograms. The Pokeshell's is published and now verified; the Pip's page says what it
+  eats and what it excretes without ever putting the two in one sentence
 - `E4-11` Nail down the unverified DLC rates: the Vulcanizer's latex and rubber rates, the
   Plant Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2. Checked
   again on 2026-08-22 — all four are still unpublished
@@ -87,6 +87,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E13-7` **Rot Pile** — what food becomes when it spoils, which is a Pokeshell's other
+  food at the same 70 kg a cycle and a third thing the Compost turns into dirt. Spoilage
+  itself stays unmodelled, so a rot pile arrives the way a geyser's water does: from
+  outside. Reading the page also settled the Pokeshell's 50 %, which had been an inference
+  from the critters that do publish theirs — the doubt tag is off and the mass-balance
+  audit checks it now. Its slime went the other way: that is the Oakshell and the
+  Sanishell, which this app does not model
 - `E13-5` **A Sage Hatch eats six things at one rate** — dirt, slime, algae, fertiliser,
   polluted dirt or corallium, 140 kg a cycle whichever it is and all of it back as coal. The
   same rate is what makes it one recipe you pick the feed for, rather than six recipes or an
@@ -593,7 +600,7 @@ _(empty)_
 | E4-22 | P3 | The Grooming Station's power draw | if it is ever published |
 | E4-23 | P3 | Beeta, Sweetle and Grubgrub | rates unpublished, and a Beeta's 5-cycle life would be misrepresented by a per-cycle average |
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
-| E4-25 | P3 | Firm up the inferred 50 % conversions | Pip and Pokeshell, and the Shine Bug's feed in kilograms |
+| E4-25 | P3 | Firm up the inferred 50 % conversions | the Pokeshell's is published now and is checked by the mass-balance audit. The Pip's is not: its page says what it eats and what it excretes, and never puts the two in one sentence. The Shine Bug's feed in kilograms is likewise absent |
 | E4-26 | P3 | The rest of both packs | Bammoth, Jawbo, Rhex, Gnit, Mimika, Lumb — yields unpublished or inexpressible |
 | E4-27 | P3 | Mercury and cinnabar processing |  |
 | E4-28 | P3 | Seaquine's ovolene rate |  |
@@ -765,7 +772,7 @@ flow, so the solver never had to learn about it.
 | E13-4 | ✅ | Lead, and the metals behind galena | galena is the one ore that is two things — 87 % lead, 13 % sulfur — so it has its own refinery and crusher recipes and the generic ones exclude it, which is what `excludes` on a port is for |
 | E13-5 | ✅ | Sage Hatch's organics | six foods at one rate, so it is a port with alternatives rather than an invented "organic" class. Prepared food is 700 kcal a cycle rather than a weight, which is a different recipe and stays unmodelled |
 | E13-6 | ✅ | Alternative diets | a Plug Slug eats ore or refined metal at the same 60 kg a cycle, so it is one port with alternatives rather than two specs |
-| E13-7 | P3 | Rot Pile | a Pokeshell's second food and the Compost's second input |
+| E13-7 | ✅ | Rot Pile | the Pokeshell's second food and the Compost's third input; what makes it is food spoiling, which this app does not model, so it arrives as a supply |
 | E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
 | E13-10 | ✅ | The Smoker's fuel | one recipe per fuel, the Beakon pattern. A class is for a category the *game* groups; "either of these two" is not one |

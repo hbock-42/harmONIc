@@ -17,6 +17,8 @@ const Map<String, String> expectedImbalance = <String, String>{
 
   // Conversion rates the game states outright.
   'hatch': 'half the mineral it eats comes back as coal',
+  'pokeshell': 'half the polluted dirt or rot pile comes back as sand, which '
+      'the game states outright',
   'smooth_hatch': 'ore to refined metal at the stated 75 %',
   'slickster': 'CO2 to crude oil at the stated 50 %',
   'molten_slickster': 'CO2 to petroleum at the stated 50 %',

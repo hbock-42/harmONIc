@@ -127,6 +127,11 @@ const String oniDataJson = r"""
       "category": "solid"
     },
     {
+      "id": "rot_pile",
+      "name": "Rot Pile",
+      "category": "solid"
+    },
+    {
       "id": "sand",
       "name": "Sand",
       "category": "solid"
@@ -939,7 +944,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "members": [
         "polluted_dirt",
-        "slime"
+        "slime",
+        "rot_pile"
       ],
       "tags": [
         "class"
@@ -3130,11 +3136,11 @@ const String oniDataJson = r"""
       "id": "pokeshell",
       "name": "Pokeshell",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: eats 70 kg/cycle of polluted dirt, rot pile or slime and excretes sand — renewable sand without a Rock Crusher. The 50 % conversion is not stated for this critter; it is the ratio the game uses for the ones that do publish it, so treat the output as an estimate and correct it with + Recipe if you measure otherwise. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
+      "description": "Eats 70 kg/cycle of polluted dirt or rot pile — the same either way — and gives half of it back as sand: renewable sand without a Rock Crusher. Slime is for the Oakshell and the Sanishell, which this app does not model, so it is not offered here. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
@@ -3145,7 +3151,10 @@ const String oniDataJson = r"""
         {
           "item": "polluted_dirt",
           "direction": "input",
-          "rate": 116.666667
+          "rate": 116.666667,
+          "alternatives": [
+            "rot_pile"
+          ]
         },
         {
           "item": "sand",
@@ -5220,11 +5229,11 @@ const String oniDataJson = r"""
       "id": "pacu_wild",
       "name": "Pacu (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
       "tags": [
         "ranching",
-        "unverified",
-        "wild"
+        "wild",
+        "verified"
       ],
       "ports": [
         {
@@ -5314,18 +5323,21 @@ const String oniDataJson = r"""
       "id": "pokeshell_wild",
       "name": "Pokeshell (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
-        "unverified",
-        "wild"
+        "wild",
+        "verified"
       ],
       "ports": [
         {
           "item": "polluted_dirt",
           "direction": "input",
-          "rate": 116.666667
+          "rate": 116.666667,
+          "alternatives": [
+            "rot_pile"
+          ]
         },
         {
           "item": "sand",
