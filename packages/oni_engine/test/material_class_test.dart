@@ -306,6 +306,45 @@ void main() {
     });
   });
 
+  group('a Pip grazes a share, not a plant', () {
+    test('either crop, at the one rate', () {
+      for (final id in ['pip', 'pip_wild']) {
+        final grazing = db.processOrThrow(id).inputs
+            .firstWhere((p) => p.id == 'grazing');
+        // 8.89 % of maturity a cycle is a fact about the Pip. What that costs
+        // depends on the plant — four fifths of an Arbor Tree, a sixth of a
+        // Thimble Reed — and that difference is in the plants' own growth
+        // rates, not in what the Pip eats.
+        expect(grazing.accepted, ['arbor_tree_growth', 'thimble_reed_growth'],
+            reason: id);
+        expect(grazing.ratePerSecond * secondsPerCycle, closeTo(8.89, 0.01),
+            reason: id);
+      }
+    });
+
+    test('and the grazed reed finally has something to graze it', () {
+      // "Left for a Pip to graze", said the Thimble Reed, to nobody.
+      final reed = db.processOrThrow('thimble_reed_grazed');
+      final growth = reed.outputs.single;
+      final pip = db.processOrThrow('pip').inputs
+          .firstWhere((p) => p.id == 'grazing');
+
+      final pipeline = (PipelineBuilder(db, name: 'reeds')
+            ..add('thimble_reed_grazed', nodeId: 'reed')
+            ..add('pip', nodeId: 'pip')
+            ..connectItem('reed', 'pip', 'thimble_reed_growth')
+            ..pinCount('pip', 1))
+          .build();
+      final solution = PipelineSolver(db).solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+      // One Pip takes 8.89 points a cycle and the reed offers 50, so a sixth
+      // of a plant feeds it.
+      expect(solution.nodes['reed']!.count,
+          closeTo(pip.ratePerSecond / growth.ratePerSecond, 1e-6));
+      expect(solution.nodes['reed']!.count, lessThan(0.2));
+    });
+  });
+
   group('the ore that comes out as a liquid', () {
     test('cinnabar refines to mercury, and mercury is a liquid', () {
       // A Metal Refinery hands its metal back at 40 °C, and mercury freezes at
@@ -510,6 +549,9 @@ void main() {
         'pokeshell_wild.polluted_dirt',
         // 50 kg of plastic or of rubber, one gasket either way.
         'crafting_station_gasket.feedstock',
+        // 8.89 % of a plant's maturity a cycle, whichever plant it is.
+        'pip.grazing',
+        'pip_wild.grazing',
         // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
         'gas_grass.chlorine',
         'gas_grass.fertiliser',

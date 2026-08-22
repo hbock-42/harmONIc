@@ -59,7 +59,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
   regular Lumb (its peat rate is stated nowhere)
 - `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
   be misrepresented by a per-cycle average
-- `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop
 - `E4-28` Seaquine's ovolene rate
 - `E4-25` Firm up the inferred 50 % conversion on the Pip, and the Shine Bug's feed in
   kilograms. The Pokeshell's is published and now verified; the Pip's page says what it
@@ -80,6 +79,10 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-32` **A Pip grazes a share, not a plant** — 8.89 % of maturity a cycle, which is four
+  fifths of an Arbor Tree or a sixth of a Thimble Reed. That the figure is the same either
+  way is what makes it one recipe you pick the crop for. The grazed Thimble Reed has said
+  "left for a Pip to graze" since it was seeded, to a Pip that could not eat it
 - `E13-3` **A gasket is 50 kg of plastic** — the Crafting Station's page has the figure four
   buildings had been waiting on, and it is the same either way: 50 kg of plastic or of
   rubber, one gasket, 30 seconds. So a counted part now says what one costs beside it, and
@@ -615,7 +618,7 @@ _(empty)_
 | E4-29 | ✅ | The remaining grazers, properly | Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real growth links |
 | E4-30 | ✅ | Plant growth as a capacity link | a grazing critter eats a fraction of a living plant, not kilograms off a pile |
 | E4-31 | ✅ | Wild plants | a wild twin per crop: no water, no fertiliser, a quarter of the speed |
-| E4-32 | P3 | Bammoth on Plume Squash | and Thimble Reed as the Pip's other crop |
+| E4-32 | ✅ | Thimble Reed as the Pip's other crop | one recipe with two crops, since 8.89 % of maturity a cycle is a fact about the Pip and not about what it is eating. The Bammoth half belongs to `E4-26`, whose yields are unpublished |
 | E4-33 | ✅ | The food chain | Bristle Blossom, Dusk Cap, Waterweed, Sleet Wheat and the Electric Grill |
 | E4-34 | ✅ | Cooking | Gas Range, Deep Fryer and Sushi Bar, gas burned and Duplicant time included |
 | E4-34b | ✅ | The Microbe Musher and Smoker | both seeded; food *quality* remains unmodelled, which is E4-38 |

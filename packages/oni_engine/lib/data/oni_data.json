@@ -3093,7 +3093,7 @@
       "id": "pip",
       "name": "Pip",
       "kind": "critter",
-      "description": "Grazes 8.89 % of a plant’s maturity a cycle, which is four fifths of a domesticated Arbor Tree. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
+      "description": "Grazes 8.89 % of a plant’s maturity a cycle — four fifths of a domesticated Arbor Tree, or a sixth of a Thimble Reed. The figure is a share of whatever it is grazing, so the two crops are one recipe and the node says which. A Bonbon Tree and a Gum Palm feed it too, and neither has a grazed form here yet. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3106,9 +3106,13 @@
           "rate": 1
         },
         {
+          "id": "grazing",
           "item": "arbor_tree_growth",
           "direction": "input",
-          "rate": 0.0148148148
+          "rate": 0.0148148148,
+          "alternatives": [
+            "thimble_reed_growth"
+          ]
         },
         {
           "item": "dirt",
@@ -5293,9 +5297,13 @@
       ],
       "ports": [
         {
+          "id": "grazing",
           "item": "arbor_tree_growth",
           "direction": "input",
-          "rate": 0.0148148148
+          "rate": 0.0148148148,
+          "alternatives": [
+            "thimble_reed_growth"
+          ]
         },
         {
           "item": "dirt",
