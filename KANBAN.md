@@ -57,7 +57,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
   which a flow model cannot express), Gnit and Mimika (produce nothing), and the regular
   Lumb (its peat rate is stated nowhere). The Bammoth came out of this list on 2026-08-22,
   its page having been filled in since somebody last looked
-- `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
+- `E4-23` Beeta, Sweetle and Grubgrub. No longer waiting on figures: the Grubgrub's are
+  published and the Sweetle's follow from its stated 50 %. All three are Spaced Out, as are
+  Mud and Liquid Sucrose, so this waits on `E13-8` now. A Beeta's 5-cycle life would still
   be misrepresented by a per-cycle average
 - `E4-28` Seaquine's ovolene rate. Checked again on 2026-08-22: the page says who may be
   milked and never how much
@@ -76,6 +78,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E13-8a` **Five pack tags were wrong** — read against the packs' own published lists
+  rather than against what this app happened to meet where. Ice was Frosty because an Alveo
+  Vera eats it and Abyssalite was Prehistoric although a Glo Squid is what excretes it here,
+  and both are base game. Sucrose was Frosty because a Spigot Seal drinks it, and a Sweetle
+  makes it with no pack at all. Amber and Resin are named on the Prehistoric pack's own list
+  and carried the Aquatic tag — the app's own note beside Resin had said "Prehistoric" the
+  whole time. A wrong tag hides a material somebody owns, which is the one thing a pack
+  filter must not do
 - `E4-26a` **The Bammoth** — filed for a year under "yields unpublished", and its page has
   them now: 30 kg a cycle of Plume Squash or Nosh Bean, the same either way, and all of it
   back as Bammoth Patty. A Rock Crusher splits 120 kg of that into 88 of clay and 32 of
@@ -629,7 +639,7 @@ _(empty)_
 | E4-21 | ✅ | Wild versus groomed | a `(wild)` twin per ranched critter: no grooming, no Duplicant time, a tenth of the eggs |
 | E4-21b | P3 | Glo Squid and Seaquine wild twins | wants somebody to check in game which outputs the milking station takes |
 | E4-22 | P3 | The Grooming Station's power draw | checked again 2026-08-22: the page gives its 400 kg of ore and its 2×3 footprint and no watts at all, nor a heat figure |
-| E4-23 | P3 | Beeta, Sweetle and Grubgrub | rates unpublished, and a Beeta's 5-cycle life would be misrepresented by a per-cycle average |
+| E4-23 | P3 | Beeta, Sweetle and Grubgrub | the blocker changed on 2026-08-22: the Grubgrub's rates are published (50 kg/cycle sulfur → 5 of mud, or 30 of sucrose → 30 of mud, groomed every 9 cycles) and the Sweetle's are inferable (20 kg/cycle sulfur at the stated 50 %). All three are Spaced Out, and so are Mud and Liquid Sucrose, so this now waits on `E13-8` rather than on figures. A Beeta's 5-cycle life would still be misrepresented by a per-cycle average |
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
 | E4-25 | P3 | Firm up the inferred 50 % conversions | two of the three answered: the Pokeshell's 50 % is published, and the Shine Bug's feed is 200 g of phosphorite a cycle — the one food of its several the page weighs rather than counts in calories. The Pip's is not: its page says what it eats and what it excretes and never puts the two in one sentence |
 | E4-25a | ✅ | The Shine Bug's feed | 200 g of phosphorite a cycle, which its page weighs while counting its other foods in calories |
@@ -806,7 +816,8 @@ flow, so the solver never had to learn about it.
 | E13-5 | ✅ | Sage Hatch's organics | six foods at one rate, so it is a port with alternatives rather than an invented "organic" class. Prepared food is 700 kcal a cycle rather than a weight, which is a different recipe and stays unmodelled |
 | E13-6 | ✅ | Alternative diets | a Plug Slug eats ore or refined metal at the same 60 kg a cycle, so it is one port with alternatives rather than two specs |
 | E13-7 | ✅ | Rot Pile | the Pokeshell's second food and the Compost's third input; what makes it is food spoiling, which this app does not model, so it arrives as a supply |
-| E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
+| E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so do Sucrose, Mud and the Sweetle/Grubgrub line; wants a full audit before it is offered. `E13-8a` did the other half of that audit — the tags that were simply wrong |
+| E13-8a | ✅ | The pack tags, read against the packs' own lists | five wrong: Ice and Abyssalite are base game, Sucrose is Spaced Out, and Amber and Resin are named on the Prehistoric pack's own list while carrying the Aquatic tag |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
 | E13-10 | ✅ | The Smoker's fuel | one recipe per fuel, the Beakon pattern. A class is for a category the *game* groups; "either of these two" is not one |
 | E13-11 | ✅ | A port that names its alternatives | a port lists what it will take and the node picks, the way a refinery picks its ore. Only where the rate is the same for each; different rates are different recipes |

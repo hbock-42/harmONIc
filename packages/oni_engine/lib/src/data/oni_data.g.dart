@@ -445,7 +445,7 @@ const String oniDataJson = r"""
       "name": "Resin",
       "category": "solid",
       "tags": [
-        "aquatic"
+        "prehistoric"
       ]
     },
     {
@@ -453,7 +453,7 @@ const String oniDataJson = r"""
       "name": "Amber",
       "category": "solid",
       "tags": [
-        "aquatic"
+        "prehistoric"
       ]
     },
     {
@@ -605,9 +605,7 @@ const String oniDataJson = r"""
       "id": "sucrose",
       "name": "Sucrose",
       "category": "solid",
-      "tags": [
-        "frosty"
-      ]
+      "tags": []
     },
     {
       "id": "tallow",
@@ -621,9 +619,7 @@ const String oniDataJson = r"""
       "id": "ice",
       "name": "Ice",
       "category": "solid",
-      "tags": [
-        "frosty"
-      ]
+      "tags": []
     },
     {
       "id": "plume_squash",
@@ -718,9 +714,7 @@ const String oniDataJson = r"""
       "id": "abyssalite",
       "name": "Abyssalite",
       "category": "solid",
-      "tags": [
-        "prehistoric"
-      ]
+      "tags": []
     },
     {
       "id": "obsidian",

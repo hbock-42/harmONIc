@@ -16,7 +16,8 @@ const Map<String, String> unusedOnPurpose = {
   'duplicant': 'the unit a crew is counted in',
   'liquid_oxygen': 'stored oxygen, and what a rocket runs on',
   'naphtha': 'a liquid you find rather than make',
-  'resin': 'dropped by Prehistoric critters this app does not model yet',
+  'resin': 'dropped by Prehistoric critters this app does not model yet, and '
+      'by a Shine Bug egg, which this app prices as a Hatch egg',
   'amber': 'the same, and the Plant Pulverizer takes it in a recipe nobody has '
       'published a cycle time for',
   'bristle_blossom': 'the crop, where the plant reports calories directly',

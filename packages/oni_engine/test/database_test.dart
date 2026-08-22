@@ -231,8 +231,10 @@ void main() {
     });
 
     test('a pack-tagged item is one the packs really added', () {
-      // Not exhaustive — it only pins the three that were wrong — but a
-      // regression here means somebody has re-tagged a base-game material.
+      // Not exhaustive, but every entry here was wrong once, and they were all
+      // wrong the same way: an item gets tagged for the pack this app happened
+      // to meet it in rather than the pack that added it. The tag decides what
+      // a player is shown, so the mistake hides materials somebody owns.
       for (final id in [
         'phosphorite',
         'liquid_sulfur',
@@ -242,11 +244,25 @@ void main() {
         // all. It was tagged Aquatic because a Beakon is how this app first
         // met it — the same mistake phosphorite made.
         'lime',
+        // Base game, both of them. Ice was tagged Frosty because an Alveo Vera
+        // eats it, and abyssalite Prehistoric although a Glo Squid — Aquatic —
+        // is what excretes it here, so that one was not even the pack it was
+        // met in.
+        'ice',
+        'abyssalite',
+        // Spaced Out, which this app does not offer as a pack and so does not
+        // tag. A Spigot Seal drinking it is why it was marked Frosty; a
+        // Sweetle makes it without any pack at all.
+        'sucrose',
       ]) {
         expect(packsOf(db.itemOrThrow(id).tags), isEmpty, reason: id);
       }
       expect(db.itemOrThrow('coquina').tags, contains('aquatic'));
       expect(db.itemOrThrow('tallow').tags, contains('frosty'));
+      // Both are on the Prehistoric pack's own list of what it adds, and both
+      // were marked Aquatic.
+      expect(db.itemOrThrow('amber').tags, contains('prehistoric'));
+      expect(db.itemOrThrow('resin').tags, contains('prehistoric'));
     });
   });
 

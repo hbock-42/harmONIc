@@ -441,7 +441,7 @@
       "name": "Resin",
       "category": "solid",
       "tags": [
-        "aquatic"
+        "prehistoric"
       ]
     },
     {
@@ -449,7 +449,7 @@
       "name": "Amber",
       "category": "solid",
       "tags": [
-        "aquatic"
+        "prehistoric"
       ]
     },
     {
@@ -601,9 +601,7 @@
       "id": "sucrose",
       "name": "Sucrose",
       "category": "solid",
-      "tags": [
-        "frosty"
-      ]
+      "tags": []
     },
     {
       "id": "tallow",
@@ -617,9 +615,7 @@
       "id": "ice",
       "name": "Ice",
       "category": "solid",
-      "tags": [
-        "frosty"
-      ]
+      "tags": []
     },
     {
       "id": "plume_squash",
@@ -714,9 +710,7 @@
       "id": "abyssalite",
       "name": "Abyssalite",
       "category": "solid",
-      "tags": [
-        "prehistoric"
-      ]
+      "tags": []
     },
     {
       "id": "obsidian",
