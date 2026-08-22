@@ -16,9 +16,9 @@ abstract final class Overheating {
   ///
   /// Only materials this app has an item for are listed. The game's table also
   /// gives Plastium and Thermium at +900, Niobium at +500, Steel at +200,
-  /// Tungsten at +50, Granite and Igneous Rock at +15 and Lead at −20 — none of
-  /// which are modelled here yet, and inventing items for them so a table could
-  /// be complete would be inventing items.
+  /// Tungsten at +50 and Granite and Igneous Rock at +15 — none of which are
+  /// modelled here yet, and inventing items for them so a table could be
+  /// complete would be inventing items.
   ///
   /// Nickel and Zinc are deliberately absent. They were here at +50 on the
   /// reasoning that a refined metal gets what the other refined metals get, and
@@ -36,6 +36,7 @@ abstract final class Overheating {
     'iron': 50,
     'obsidian': 15,
     'dirt': -10,
+    'lead': -20,
   };
 
   /// What a building made of this survives, in °C.

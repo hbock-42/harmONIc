@@ -31,6 +31,7 @@ class Port {
     this.temperatureC,
     this.followsPortId,
     this.alternatives = const [],
+    this.excludes = const [],
   });
 
   factory Port.fromJson(Map<String, dynamic> json) {
@@ -44,6 +45,9 @@ class Port {
       followsPortId: json['follows'] as String?,
       alternatives: [
         ...(json['alternatives'] as List<dynamic>? ?? const []).cast<String>(),
+      ],
+      excludes: [
+        ...(json['excludes'] as List<dynamic>? ?? const []).cast<String>(),
       ],
     );
   }
@@ -72,6 +76,18 @@ class Port {
   /// ore a cycle or 30 kg of refined metal, and that is two specs.
   final List<String> alternatives;
 
+  /// Members of the class this port asks for that it will *not* take.
+  ///
+  /// A Metal Refinery takes any metal ore and gives back the metal it came
+  /// from, kilogram for kilogram — except galena, which is 87 % lead and 13 %
+  /// sulfur and is therefore a different recipe with its own spec. Without
+  /// this the class would be a small lie: "any ore" would include the one ore
+  /// the figures beside it do not describe.
+  ///
+  /// An exception, and meant to stay one. A class riddled with exclusions is a
+  /// class that was drawn wrong.
+  final List<String> excludes;
+
   /// Every material this port would accept, the declared one first.
   List<String> get accepted => [itemId, ...alternatives];
 
@@ -97,6 +113,7 @@ class Port {
         if (temperatureC != null) 'temperatureC': temperatureC,
         if (followsPortId != null) 'follows': followsPortId,
         if (alternatives.isNotEmpty) 'alternatives': alternatives,
+        if (excludes.isNotEmpty) 'excludes': excludes,
       };
 
   @override

@@ -253,6 +253,14 @@ const String oniDataJson = r"""
       ]
     },
     {
+      "id": "lead",
+      "name": "Lead",
+      "category": "solid",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
       "id": "molten_zinc",
       "name": "Molten Zinc",
       "category": "liquid",
@@ -901,7 +909,8 @@ const String oniDataJson = r"""
         "gold",
         "nickel",
         "zinc",
-        "solid_mercury"
+        "solid_mercury",
+        "lead"
       ],
       "tags": [
         "class"
@@ -1614,7 +1623,10 @@ const String oniDataJson = r"""
         {
           "item": "metal_ore",
           "direction": "input",
-          "rate": 2500
+          "rate": 2500,
+          "excludes": [
+            "galena"
+          ]
         },
         {
           "id": "coolant_in",
@@ -1637,7 +1649,7 @@ const String oniDataJson = r"""
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is. The coolant comes back 14 °C hotter per kilogram refined; the figure here is water.",
+      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is — galena excepted, which is 87 % lead and 13 % sulfur and has its own recipe. The coolant comes back 14 °C hotter per kilogram refined; the figure here is water.",
       "build": {
         "raw_mineral": 800
       }
@@ -6820,7 +6832,10 @@ const String oniDataJson = r"""
         {
           "item": "metal_ore",
           "direction": "input",
-          "rate": 2500
+          "rate": 2500,
+          "excludes": [
+            "galena"
+          ]
         },
         {
           "id": "refined_metal",
@@ -6837,6 +6852,99 @@ const String oniDataJson = r"""
       ],
       "heatKdtuPerSecond": 16,
       "description": "Any metal ore, half of it back as the matching metal and half as sand. Worse than a Metal Refinery, and it needs no power grid or coolant loop to run.",
+      "build": {
+        "metal_ore": 800
+      }
+    },
+    {
+      "id": "metal_refinery_galena",
+      "name": "Metal Refinery (Galena)",
+      "kind": "building",
+      "buildingId": "metal_refinery",
+      "powerWatts": 1200,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 5,
+      "footprintHeight": 3,
+      "tags": [
+        "refining",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "galena",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "id": "coolant_in",
+          "item": "water",
+          "direction": "input",
+          "rate": 10000
+        },
+        {
+          "item": "lead",
+          "direction": "output",
+          "rate": 2175,
+          "temperatureC": 40
+        },
+        {
+          "item": "sulfur",
+          "direction": "output",
+          "rate": 325,
+          "temperatureC": 40
+        },
+        {
+          "id": "coolant_out",
+          "item": "water",
+          "direction": "output",
+          "rate": 10000
+        }
+      ],
+      "heatKdtuPerSecond": 16,
+      "description": "100 kg of galena is 87 kg of lead and 13 kg of sulfur, which is why it does not go through the ordinary refinery recipe: every other ore comes back as one metal, kilogram for kilogram. The coolant behaves as it does there.",
+      "build": {
+        "raw_mineral": 800
+      }
+    },
+    {
+      "id": "rock_crusher_galena",
+      "name": "Rock Crusher (Galena)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "tags": [
+        "refining",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "galena",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "item": "lead",
+          "direction": "output",
+          "rate": 1087.5
+        },
+        {
+          "item": "sulfur",
+          "direction": "output",
+          "rate": 162.5
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 1250
+        }
+      ],
+      "heatKdtuPerSecond": 16,
+      "description": "Half of what the refinery gives, and the other half as sand: 100 kg of galena crushes to 43.5 kg of lead, 6.5 kg of sulfur and 50 kg of sand. No power grid or coolant loop to run.",
       "build": {
         "metal_ore": 800
       }

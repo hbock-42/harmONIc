@@ -56,6 +56,22 @@ Iterable<Port> choosablePorts(GameDatabase database, ProcessSpec spec) sync* {
   }
 }
 
+/// Every particular material this port offers a choice between.
+///
+/// A class expands to its members, alternatives to what they list, and
+/// anything the port excludes is dropped. One place, because the inspector
+/// showing a button for galena and the canvas refusing to connect it would be
+/// two answers to the same question.
+List<String> optionsAt(GameDatabase database, Port port) {
+  final options = <String>{
+    for (final accepted in port.accepted)
+      ...(database.item(accepted)?.members.isNotEmpty ?? false)
+          ? database.item(accepted)!.members
+          : {accepted},
+  }..removeAll(port.excludes);
+  return options.toList();
+}
+
 /// What this node's port would take: everything the recipe allows, or the one
 /// thing it has been set to.
 ///
@@ -79,6 +95,8 @@ bool portAccepts(
   ProcessSpec spec,
   Port port,
   String offered,
-) =>
-    acceptedAt(node, spec, port)
-        .any((wanted) => database.accepts(wanted, offered));
+) {
+  if (port.excludes.contains(offered)) return false;
+  return acceptedAt(node, spec, port)
+      .any((wanted) => database.accepts(wanted, offered));
+}

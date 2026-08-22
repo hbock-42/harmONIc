@@ -40,6 +40,10 @@ void main() {
   testWidgets('picking one says what comes out of it', (tester) async {
     final controller = await pumpEditor(tester);
 
+    // The ore buttons sit near the bottom of a panel that has grown, so reach
+    // them the way a person would.
+    await tester.ensureVisible(find.text('Copper Ore').first);
+    await tester.pump();
     await tester.tap(find.text('Copper Ore').first);
     await tester.pump();
 
@@ -74,5 +78,18 @@ void main() {
             .join()
             .toLowerCase(),
         contains('carries iron_ore'));
+  });
+
+  testWidgets('the one ore the recipe cannot describe is not offered',
+      (tester) async {
+    await pumpEditor(tester);
+    await tester.ensureVisible(find.text('Copper Ore').first);
+    await tester.pump();
+
+    // Galena is 87 % lead and 13 % sulfur, so "kilogram for kilogram" does not
+    // describe it and it has recipes of its own. Offering it here would be the
+    // app quietly agreeing to figures it does not hold.
+    expect(find.text('Galena'), findsNothing);
+    expect(find.text('Cinnabar Ore'), findsWidgets);
   });
 }

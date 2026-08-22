@@ -898,14 +898,8 @@ class _MaterialChoice extends StatelessWidget {
     // outright, whose options are what it listed — with a class among them
     // expanded, since "wood" means any wood.
     final klass = db.item(port.itemId);
-    final options = <String>{
-      for (final accepted in port.accepted)
-        ...(db.item(accepted)?.members.isNotEmpty ?? false
-            ? db.item(accepted)!.members
-            : {accepted}),
-    }.toList()
+    final members = optionsAt(db, port)
       ..sort((a, b) => (db.item(a)?.name ?? a).compareTo(db.item(b)?.name ?? b));
-    final members = options;
     final heading = port.alternatives.isEmpty && (klass?.isClass ?? false)
         ? '${klass!.name.toUpperCase()} USED'
         : 'TAKES';
