@@ -145,8 +145,7 @@ class _CandidateRowState extends State<_CandidateRow> {
   bool _hover = false;
 
   bool get _isBoundary =>
-      widget.spec.kind == ProcessKind.source ||
-      widget.spec.kind == ProcessKind.sink;
+      widget.spec.kind.isBoundary;
 
   @override
   Widget build(BuildContext context) => MouseRegion(

@@ -1367,4 +1367,39 @@ void main() {
       expect(solution.nodes['sink_water']!.count, greaterThan(0));
     });
   });
+
+  group('the rules that used to be written in several places', () {
+    test('what has mass, and what only balances like it does', () {
+      // Power and heat are ordinary items so a grid balances like anything
+      // else. They weigh nothing, and neither does a grooming slot or a
+      // plant's growth — which is what the mass-balance audit turns on.
+      expect(db.itemOrThrow('water').hasMass, isTrue);
+      expect(db.itemOrThrow('oxygen').hasMass, isTrue);
+      expect(db.itemOrThrow('coal').hasMass, isTrue);
+      expect(db.itemOrThrow(WellKnownItems.power).hasMass, isFalse);
+      expect(db.itemOrThrow(WellKnownItems.heat).hasMass, isFalse);
+      expect(db.itemOrThrow('grooming').hasMass, isFalse);
+      expect(db.itemOrThrow('egg').hasMass, isFalse);
+    });
+
+    test('what is counted rather than weighed', () {
+      // Four kinds of arithmetic ask this: what to leave out of a mass total,
+      // what a building is really made of, what one of something costs, and
+      // how to write it down.
+      expect(db.itemOrThrow('gasket').isCounted, isTrue);
+      expect(db.itemOrThrow('egg').isCounted, isTrue);
+      expect(db.itemOrThrow('duplicant').isCounted, isTrue);
+      expect(db.itemOrThrow('water').isCounted, isFalse);
+      expect(db.itemOrThrow(WellKnownItems.power).isCounted, isFalse);
+    });
+
+    test('and what counts as the edge of a build', () {
+      expect(ProcessKind.source.isBoundary, isTrue);
+      expect(ProcessKind.sink.isBoundary, isTrue);
+      for (final kind in ProcessKind.values) {
+        if (kind == ProcessKind.source || kind == ProcessKind.sink) continue;
+        expect(kind.isBoundary, isFalse, reason: kind.name);
+      }
+    });
+  });
 }

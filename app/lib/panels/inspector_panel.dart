@@ -68,7 +68,7 @@ class _MultiSelection extends StatelessWidget {
       final result = controller.solution.nodes[id];
       if (node == null || result == null) continue;
       final spec = controller.specOf(node);
-      if (spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink) {
+      if (spec.kind.isBoundary) {
         continue;
       }
       power += spec.netPowerWatts * result.count;
@@ -184,7 +184,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
   ProcessSpec get spec => controller.specOf(node);
 
   bool get _isBoundary =>
-      spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink;
+      spec.kind.isBoundary;
 
   /// Boundary nodes are pinned by rate; real buildings by how many you have.
   String? get _boundaryPortId =>

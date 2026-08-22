@@ -43,7 +43,7 @@ abstract final class BuildMaterials {
   GameDatabase database,
   String itemId,
 ) {
-  if (database.item(itemId)?.unit != Unit.count) return null;
+  if (!(database.item(itemId)?.isCounted ?? false)) return null;
 
   ({String materialId, double amountEach})? found;
   for (final spec in database.processes) {
@@ -80,7 +80,7 @@ abstract final class BuildMaterials {
 /// them. Writing "4 kg Gaskets" is the sort of small wrongness that makes a
 /// reader distrust the figures beside it.
 String formatMaterial(Item? material, double amount) =>
-    material?.unit == Unit.count
+    material?.isCounted ?? false
         ? amount.toStringAsFixed(0)
         : formatMass(amount);
 

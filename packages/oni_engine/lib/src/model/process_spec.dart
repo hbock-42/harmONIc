@@ -17,6 +17,12 @@ enum ProcessKind {
   sink,
   custom;
 
+  /// A supply or an output: the edge of a build rather than a thing in it.
+  ///
+  /// Written out as `kind == source || kind == sink` in nine places before
+  /// this existed, which is nine chances to write one of them as `&&`.
+  bool get isBoundary => this == ProcessKind.source || this == ProcessKind.sink;
+
   static ProcessKind parse(String raw) => ProcessKind.values.firstWhere(
         (k) => k.name == raw,
         orElse: () => throw FormatException('Unknown process kind "$raw"'),

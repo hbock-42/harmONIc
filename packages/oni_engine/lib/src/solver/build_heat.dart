@@ -1,5 +1,4 @@
 import '../model/game_database.dart';
-import '../model/units.dart';
 import '../model/overheating.dart';
 import '../model/process_spec.dart';
 
@@ -64,7 +63,7 @@ List<MaterialVerdict> materialVerdicts(
     // Counted parts are not what a building's tolerance comes from. Four
     // gaskets are four gaskets whatever the turbine is plumbed into, and
     // "no gasket holds 95 °C" is a sentence about nothing.
-    if (item?.unit == Unit.count) continue;
+    if (item?.isCounted ?? false) continue;
     // A class stands for its members; anything else stands for itself. A
     // material the database has never heard of is skipped rather than guessed
     // at, since its tolerance would be the bare 75 °C by default and that would

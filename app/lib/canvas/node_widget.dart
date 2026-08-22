@@ -37,7 +37,7 @@ class NodeWidget extends StatelessWidget {
   final bool Function(PortRef ref) highlightPort;
 
   bool get _isBoundary =>
-      spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink;
+      spec.kind.isBoundary;
 
   @override
   Widget build(BuildContext context) {

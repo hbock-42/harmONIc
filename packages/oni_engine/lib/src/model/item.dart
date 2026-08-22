@@ -62,6 +62,24 @@ class Item {
 
   bool get isClass => members.isNotEmpty;
 
+  /// Counted in ones rather than weighed: gaskets, eggs, Duplicants.
+  ///
+  /// Four kinds of arithmetic ask this — what to leave out of a mass total,
+  /// what a building is really made of, what one of something costs, and how
+  /// to write it down — and each of them used to ask it in its own words.
+  bool get isCounted => unit == Unit.count;
+
+  /// Matter: something with a weight that a balance sheet must account for.
+  ///
+  /// Power and heat are ordinary items here so that a grid balances like
+  /// anything else, but they weigh nothing, and neither does a grooming slot
+  /// or a plant's growth. The mass-balance audit is the thing that cares.
+  bool get hasMass => const {
+        ItemCategory.solid,
+        ItemCategory.liquid,
+        ItemCategory.gas,
+      }.contains(category);
+
   /// What this becomes in a refinery: iron ore makes iron, and nothing else.
   final String? refinesTo;
 

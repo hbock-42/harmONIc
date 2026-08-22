@@ -3,7 +3,6 @@ import '../graph/pin.dart';
 import '../graph/pipeline.dart';
 import '../graph/validation.dart';
 import '../model/game_database.dart';
-import '../model/item.dart';
 import '../model/port.dart';
 import '../model/units.dart';
 import 'linear_algebra.dart';
@@ -343,5 +342,3 @@ List<PipelineIssue> _overCommittedOutputHints(Pipeline pipeline) {
   return hints;
 }
 
-/// Kept close to the solver so power/heat stay ordinary items everywhere.
-const Set<String> nonMassItems = {WellKnownItems.power, WellKnownItems.heat};

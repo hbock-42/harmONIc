@@ -776,7 +776,7 @@ class PipelineController extends ChangeNotifier {
       if (node == null || spec == null) continue;
       // A boundary node is already the edge of the build; giving one its own
       // supply node would be drawing the same fact twice.
-      if (spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink) {
+      if (spec.kind.isBoundary) {
         continue;
       }
       // Power and heat leave by wire and by air, not by pipe. A build with

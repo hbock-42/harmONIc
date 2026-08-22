@@ -62,11 +62,6 @@ const Map<String, String> expectedImbalance = <String, String>{
 
 void main() {
   final db = loadDefaultDatabase();
-  const massCategories = {
-    ItemCategory.solid,
-    ItemCategory.liquid,
-    ItemCategory.gas,
-  };
 
   /// Matter in and out, ignoring power, heat, calories, growth and grooming.
   (double, double) massOf(ProcessSpec spec) {
@@ -74,7 +69,7 @@ void main() {
     var output = 0.0;
     for (final port in spec.ports) {
       final item = db.item(port.itemId);
-      if (item == null || !massCategories.contains(item.category)) continue;
+      if (item == null || !item.hasMass) continue;
       if (port.isInput) {
         input += port.ratePerSecond;
       } else {
@@ -162,7 +157,7 @@ void main() {
     var output = 0.0;
     for (final port in broken.ports) {
       final item = db.item(port.itemId);
-      if (item == null || !massCategories.contains(item.category)) continue;
+      if (item == null || !item.hasMass) continue;
       if (port.isInput) {
         input += port.ratePerSecond;
       } else {

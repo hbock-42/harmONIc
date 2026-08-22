@@ -205,10 +205,7 @@ BestCase _optimise(
     final spec = database.processOrThrow(node.specId);
     final double coefficient;
     if (buildTotal != null) {
-      if (spec.kind == ProcessKind.source ||
-          spec.kind == ProcessKind.sink) {
-        continue;
-      }
+      if (spec.kind.isBoundary) continue;
       coefficient = switch (buildTotal) {
         BuildTotal.power => spec.netPowerWatts,
         BuildTotal.heat => spec.netHeatKdtu,

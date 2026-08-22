@@ -104,8 +104,7 @@ class SummaryBar extends StatelessWidget {
               // Mass only. Adding four gaskets to 1.2 t of ore gives a number
               // that is not a weight and not a count of anything.
               value: formatMass(_materials.entries
-                  .where((e) =>
-                      database.item(e.key)?.unit != Unit.count)
+                  .where((e) => !(database.item(e.key)?.isCounted ?? false))
                   .fold<double>(0, (sum, e) => sum + e.value)),
               // A shopping list that quietly leaves a building out is worse
               // than no list. Nothing shipped is unpriced; a recipe you wrote
