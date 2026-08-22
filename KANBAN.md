@@ -19,6 +19,7 @@
 | `P3` | Waiting on something outside this repo, usually a figure nobody has published |
 | `spike` | Research / decide, output is a written decision, not code |
 | ✅ | Done. The board below says what was actually built; the epic tables say what each id *is* |
+| ❌ | Decided against. The row says why, because "we thought about it and said no" is worth keeping |
 
 Every id has exactly one row in its epic's table and, once it is finished, one entry on the
 board. Anything new gets an id from the *next free number in its epic* — E12 and E7-14 were
@@ -36,20 +37,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Canvas and interaction**
 
-- `E10-19` ~~Clearing every amount at once~~ — not wanted. `clearAllPins` looked unreachable
-  because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is
-  a fair reason for a method to exist. Nobody needs a button for it
-
 - `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
   plain drag for selection, which is what most editors do
-- `E6-6` Tabs, so two pipelines can be compared side by side
 
 **Things the model cannot yet say**
 
 - `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
-- `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
-  model has no notion of a mixture
-- `E4-20` Egg mass and shells, so shell-to-lime and omelette chains can be modelled
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
   their outputs the milking station takes and which they give off anyway
 
@@ -62,17 +55,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E13-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
   and most Duplicant food. That is a class this app does not have, and inventing one
   called "organic" without checking what the game really groups would be a guess
-- `E13-6` Alternative diets: a Plug Slug eats metal ore *or* refined metal, and the model
-  has no "either" — the Beakon pattern (one spec per diet) is the answer, and nobody has
-  written the second spec yet
 - `E13-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
 - `E13-4` Lead, and the metals behind galena: the ore is in the class but has nothing to
   refine into, so a refinery set to galena cannot say what it made
-- `E13-2b` The rest of the roster: Supermaterial Refinery, Molecular Forge, Spice Grinder,
-  Dehydrator, Smoker
-- `E13-9` Aquatuner and Thermo Regulator for the other coolants. The heat each moves is
-  the coolant's specific heat times 14 °C, so a class would be wrong here — every member
-  behaves differently, which is the one thing a class must not do
 - `E13-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
   plastic makes, which is the one figure a build actually needs
 
@@ -80,17 +65,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
   the wiki does not say how many, so a build wanting four is priced in gaskets rather than
   in the plastic behind them
 
-- `E4-34b` The Microbe Musher and Smoker: their pages list what each recipe yields but not
-  what goes into it, so there is nothing to model yet. Food *quality* likewise — the model
-  has no notion of it, and morale is half the reason anyone cooks
 - `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
 - `E4-27` Mercury and cinnabar processing
 - `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
   critters, which a flow model cannot express), Gnit and Mimika (produce nothing), and the
   regular Lumb (its peat rate is stated nowhere)
-- `E4-37` Aquatic plants: 5 of 12 seeded. Sodicane, Bulbloom, Mussel Sprout, Clampum,
-  Pinpoket, Petta Pouf and Husha Cups have no usable numbers. Check each page individually
-  rather than the summary table — that mistake cost us the whole critter roster once
 - `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
   be misrepresented by a per-cycle average
 - `E4-32` Bammoth on Plume Squash, and Thimble Reed as the Pip's other crop
@@ -113,6 +92,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-10` **The board is checked like the data is** — nine of twenty-eight entries in Ready
+  were work the tables already called done, two of them for weeks. A board nobody trusts is
+  worse than no board, so the disagreements it can have are a test now: an id in two tables,
+  an entry with no row, a Ready entry its own row calls finished, a status the legend does
+  not explain
 - `E11-2b` **What to build a hot building out of** — an Electrolyzer is 200 kg of any metal
   ore, and at 95 °C only Gold Amalgam holds. Naming the whole overheat table was no use in
   front of a building that cannot choose from it. Two rows of that table were also wrong:
@@ -582,6 +566,7 @@ _(empty)_
 | E4-8 | ✅ | Ranching | critters: food in, meat/eggs/coal out, per-critter |
 | E4-9 | P2 | Spaced Out variants | rockets and radiation. The base-game filter half of this shipped as E4-12 |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
+| E4-11a | ✅ | The Marine Drill's sulfur | 250 kg an operation over a 1 300 s cycle is 192 g/s, and a thousandth of that had been sitting in a field measured in grams since the day it was seeded |
 | E4-12 | ✅ | Palette filter by DLC |
 | E4-13 | ✅ | User-defined / overridable processes, edited in the app |
 | E4-17 | P2 | Share a custom recipe pack, so a wiki gap gets filled once for everyone |
@@ -714,6 +699,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-16 | ✅ | Part-time buildings | an uptime control, distinct from the "busy" figure: one is a choice you make, the other is what rounding leaves you |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
+| E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |
 
 ## E11 — What a build actually costs to run
 
@@ -793,6 +779,7 @@ flow, so the solver never had to learn about it.
 | E8-7 | ✅ | The guide, reachable from inside the app | a ? in the toolbar renders `docs/USING.md` itself, copied into the assets and checked for drift the way the generated data is |
 | E8-8 | ✅ | Rate-plausibility audit | a gram a second at the bottom, ten pipes at the top, and an allowlist that has to say why each exception is real |
 | E8-9 | ✅ | Footprint and vocabulary audits | no building with no floor; no item nothing uses without a sentence saying what it is for |
+| E8-10 | ✅ | The kanban audit | the board has to agree with itself: one row per id, a row behind every board entry, nothing offered in Ready that its own row calls finished, and no status the legend does not explain |
 
 ---
 
