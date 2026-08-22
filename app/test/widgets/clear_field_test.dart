@@ -42,9 +42,11 @@ void main() {
     // Scoped to the palette: the canvas has an Electrolyzer card on it too.
     Finder inPalette(String label) => find.descendant(
         of: find.byType(PalettePanel), matching: textLabel(label));
-    // Duplicant sits in the first group of the unfiltered list and matches
-    // nothing in "oxyg", so it is a good witness for the filter.
-    expect(inPalette('Duplicant'), findsNothing,
+    // A witness that genuinely does not match. It used to be the Duplicant,
+    // which sits at the top of the unfiltered list — and then the search
+    // learned to match materials, and a Duplicant breathes oxygen. A Coal
+    // Generator neither makes nor takes any.
+    expect(inPalette('Coal Generator'), findsNothing,
         reason: 'the list is filtered to the search');
     expect(inPalette('Oxygen Diffuser'), findsWidgets);
 

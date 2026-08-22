@@ -71,6 +71,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-8` **Searching the palette by material** — "what makes oxygen?" is the first question
+  anybody asks a production planner, and typing it found the Oxygen Diffuser and the Oxylite
+  Refinery and not the Electrolyzer, because the list matched names. It matches what a
+  recipe carries now, and says which — *makes oxygen* under the name, since a Hatch turning
+  up in a search for "coal" has to explain itself. Ordered by what you probably meant: a
+  name, then what makes the stuff, then what eats it. The ranking is a function of its own
+  so it can be tested as one, which is how the port menu's contextual answer has always
+  worked and the palette now does too
 - `E8-17` **One place for each rule** — three bugs this week were a rule that held in one
   place and not in its twin, so I went looking for rules written more than once. "This is
   the edge of a build" was spelled out as `kind == source || kind == sink` in nine places,
@@ -917,6 +925,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-5 | ✅ | Icon set | a drawn glyph per item category — drop, ring, square, bolt, diamond, pill, cross — so shape carries what colour alone was carrying |
 | E9-6 | ✅ | Light theme | `OniPalette.dark` / `.light` behind `OniTheme.current`; ☀/☾ on the toolbar, remembered. Not an inversion — each colour picked for its own background; tests hold every pair apart and hold text ≥7:1 against the page |
 | E9-7 | ✅ | A cross to empty a search | on every search field, since getting back to the whole list should not mean holding backspace |
+| E9-8 | ✅ | Searching the palette by material | "what makes oxygen?" is the first question anybody asks a production planner, and the list matched names only |
 
 ## E7 — The canvas
 

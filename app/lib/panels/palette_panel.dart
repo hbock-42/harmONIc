@@ -7,6 +7,39 @@ import '../state/display_controller.dart';
 
 /// The catalogue of things you can place: buildings grouped by what they are
 /// for, plus a supply and an output node per item.
+/// Why a search turned a row up, when it was not the name.
+///
+/// A production planner is asked about materials — "what makes oxygen?" — far
+/// more often than about names, and this list matched names only. So an
+/// Electrolyzer did not answer "oxygen", which is the first thing anybody
+/// types.
+///
+/// Null means the name matched, or that nothing matched at all; [paletteRank]
+/// is what tells those apart.
+String? paletteWhy(ProcessSpec spec, String query, GameDatabase database) {
+  if (query.isEmpty || spec.name.toLowerCase().contains(query)) return null;
+  String? takes;
+  for (final port in spec.ports) {
+    final name = database.item(port.itemId)?.name ?? port.itemId;
+    if (!name.toLowerCase().contains(query)) continue;
+    // What a thing *makes* is the usual reason for asking, so it wins over
+    // what the same thing happens to eat.
+    if (port.isOutput) return 'makes ${name.toLowerCase()}';
+    takes ??= 'takes ${name.toLowerCase()}';
+  }
+  return takes;
+}
+
+/// 0 for a name, 1 for something that makes it, 2 for something that eats it,
+/// and 3 for no match at all. Somebody typing "oxygen" wants the Electrolyzer
+/// above the Duplicant that breathes it.
+int paletteRank(ProcessSpec spec, String query, GameDatabase database) {
+  if (query.isEmpty || spec.name.toLowerCase().contains(query)) return 0;
+  final why = paletteWhy(spec, query, database);
+  if (why == null) return 3;
+  return why.startsWith('makes') ? 1 : 2;
+}
+
 class PalettePanel extends StatefulWidget {
   const PalettePanel({
     required this.database,
@@ -76,7 +109,7 @@ class _PalettePanelState extends State<PalettePanel> {
     final groups = <String, List<ProcessSpec>>{};
     for (final spec in widget.database.processes) {
       if (!widget.display.includes(spec)) continue;
-      if (query.isNotEmpty && !spec.name.toLowerCase().contains(query)) continue;
+      if (paletteRank(spec, query, widget.database) == 3) continue;
       final group = switch (spec.kind) {
         ProcessKind.source => 'Supply',
         ProcessKind.sink => 'Output',
@@ -95,7 +128,11 @@ class _PalettePanelState extends State<PalettePanel> {
       groups.putIfAbsent(group, () => []).add(spec);
     }
     for (final list in groups.values) {
-      list.sort((a, b) => a.name.compareTo(b.name));
+      list.sort((a, b) {
+        final byRank = paletteRank(a, query, widget.database)
+            .compareTo(paletteRank(b, query, widget.database));
+        return byRank != 0 ? byRank : a.name.compareTo(b.name);
+      });
     }
     return groups;
   }
@@ -227,6 +264,8 @@ class _PalettePanelState extends State<PalettePanel> {
                     _PaletteRow(
                       spec: spec,
                       database: widget.database,
+                      why: paletteWhy(spec,
+                          _search.text.trim().toLowerCase(), widget.database),
                       onTap: () => widget.onAdd(spec.id),
                       onEdit: () => widget.onEditRecipe(spec),
                     ),
@@ -246,10 +285,15 @@ class _PaletteRow extends StatefulWidget {
     required this.database,
     required this.onTap,
     required this.onEdit,
+    this.why,
   });
 
   final ProcessSpec spec;
   final GameDatabase database;
+
+  /// Why this row is in a filtered list, when the name is not the reason.
+  /// A Hatch answering a search for "coal" has to say that it makes some.
+  final String? why;
   final VoidCallback onTap;
   final VoidCallback onEdit;
 
@@ -282,11 +326,25 @@ class _PaletteRowState extends State<_PaletteRow> {
               Container(width: 3, height: 16, color: colour),
               const SizedBox(width: OniSpacing.sm),
               Expanded(
-                child: Text(
-                  widget.spec.name,
-                  style: OniType.body.copyWith(fontSize: 12),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.spec.name,
+                      style: OniType.body.copyWith(fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (widget.why case final String why)
+                      Text(
+                        why,
+                        style: OniType.numberSmall
+                            .copyWith(color: OniColors.textFaint),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  ],
                 ),
               ),
               if (_hover)

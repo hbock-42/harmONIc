@@ -21,6 +21,11 @@ and pick from the list: it shows everything that could plug in there, places it
 beside the node and connects it in one move. That list obeys your pack filters,
 so nothing is offered that you cannot build.
 
+Search the palette by what you want rather than by what it is called: typing
+**oxygen** finds the Electrolyzer, and says *makes oxygen* under its name. What
+makes a thing is listed before what eats it, and a name that matches outright
+comes first of all.
+
 **Showing** at the top of the palette is what you own. Turn off a pack you do
 not have — Frosty, Prehistoric, Aquatic, or Spaced Out, which the other three
 sit on top of — and everything from it leaves the list, including the supplies
