@@ -1249,6 +1249,10 @@ class _EdgeInspector extends StatelessWidget {
           style: OniType.body
               .copyWith(fontSize: 11.5, color: OniColors.textFaint),
         ),
+        if (edge.mode == EdgeMode.push) ...[
+          const SizedBox(height: OniSpacing.lg),
+          _EdgeShare(controller: controller, edge: edge),
+        ],
         const SizedBox(height: OniSpacing.xl),
         OniButton(
           label: 'Delete connection   ⌫',
@@ -1257,6 +1261,81 @@ class _EdgeInspector extends StatelessWidget {
             controller.select(EdgeSelection(edge.id));
             controller.deleteSelection();
           },
+        ),
+      ],
+    );
+  }
+}
+
+/// How much of a producer's output this particular line takes.
+///
+/// Only a push line has one: a pull line carries whatever its consumer needs.
+/// The share has been in the model since the solver was written and there has
+/// never been a way to set it — split an Electrolyzer's oxygen between a crew
+/// and an Oxylite Refinery and the app would give them half each for ever,
+/// which is a decision it was making on your behalf without saying so.
+///
+/// Leaving it unset is a real answer and the default one: the lines with no
+/// share split whatever the explicit ones leave, equally.
+class _EdgeShare extends StatelessWidget {
+  const _EdgeShare({required this.controller, required this.edge});
+
+  final PipelineController controller;
+  final PipelineEdge edge;
+
+  static const List<double> _presets = [0.25, 0.5, 0.75, 1];
+
+  @override
+  Widget build(BuildContext context) {
+    final share = edge.share;
+    final siblings = controller.pipeline.edges
+        .where((e) =>
+            e.mode == EdgeMode.push &&
+            e.fromNodeId == edge.fromNodeId &&
+            e.fromPortId == edge.fromPortId)
+        .length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('TAKES', style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.sm,
+          children: [
+            OniButton(
+              label: siblings > 1 ? 'An even split' : 'Whatever is left',
+              compact: true,
+              tone: share == null
+                  ? OniButtonTone.accent
+                  : OniButtonTone.neutral,
+              onPressed: () => controller.setEdgeShare(edge.id, null),
+            ),
+            for (final preset in _presets)
+              OniButton(
+                label: '${(preset * 100).toStringAsFixed(0)}%',
+                compact: true,
+                tone: share != null && (share - preset).abs() < 1e-6
+                    ? OniButtonTone.accent
+                    : OniButtonTone.neutral,
+                onPressed: () => controller.setEdgeShare(edge.id, preset),
+              ),
+          ],
+        ),
+        const SizedBox(height: OniSpacing.sm),
+        Text(
+          share == null
+              ? (siblings > 1
+                  ? 'Sharing what the other $siblings lines off this port do '
+                      'not claim, equally between them.'
+                  : 'Taking everything the port makes, since nothing else is '
+                      'asking for it.')
+              : 'Taking ${(share * 100).toStringAsFixed(0)} % of what the port '
+                  'makes. Whatever the other lines do not claim after that is '
+                  'surplus.',
+          style: OniType.body
+              .copyWith(fontSize: 11.5, color: OniColors.textFaint),
         ),
       ],
     );

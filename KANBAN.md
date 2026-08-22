@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E10-17` **Splitting an output between two lines** — a push line's share has been in the
+  model since the solver was written with no way to set it, so the app was deciding for you
+  and not saying so
 - `E13-6` **The Plug Slug eats either** — any ore or any refined metal, 60 kg a cycle
   whichever it is, and it *generates*: 1 600 W for the 75 s of each cycle it is awake, which
   the app had no note of at all
@@ -666,6 +669,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-14 | ✅ | The pipelines menu reads as sections | pressable headers with a turning chevron, a heading over the saved builds, and a rule between each |
 | E10-15 | ✅ | Draw the supplies | a supply or output node for every unfed port, in one press and one undo; the button appears only while there is something to draw |
 | E10-16 | ✅ | Part-time buildings | an uptime control, distinct from the "busy" figure: one is a choice you make, the other is what rounding leaves you |
+| E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 
 ## E11 — What a build actually costs to run
 
