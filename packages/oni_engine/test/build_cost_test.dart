@@ -95,4 +95,38 @@ void main() {
       );
     });
   });
+
+  group('what a counted part costs', () {
+    test('a gasket is 50 kg of plastic, or of rubber', () {
+      // The figure four buildings waited on. The Crafting Station takes either
+      // at the same rate, so the recipe names plastic and accepts rubber.
+      final each = costOfOne(db, 'gasket');
+      expect(each, isNotNull);
+      expect(each!.materialId, 'plastic');
+      expect(each.amountEach, closeTo(50, 1e-6));
+
+      final spec = db.processOrThrow('crafting_station_gasket');
+      expect(spec.inputs.firstWhere((p) => p.id == 'feedstock').accepted,
+          ['plastic', 'rubber']);
+    });
+
+    test('an Aquatic Milking Station is four of them, so 200 kg', () {
+      final station = db.processOrThrow('aquatic_milking_station');
+      expect(station.buildCost[BuildMaterials.gasket], 4);
+      expect(costOfOne(db, 'gasket')!.amountEach * 4, closeTo(200, 1e-5));
+    });
+
+    test('and a weighed material is not answered at all', () {
+      // The question is what a *counted* thing costs. Ore is already
+      // kilograms, and "800 kg of ore is 800 kg of ore" is noise.
+      expect(costOfOne(db, BuildMaterials.metalOre), isNull);
+      expect(costOfOne(db, 'plastic'), isNull);
+    });
+
+    test('an egg has no price, because two critters lay one', () {
+      // Not a recipe with one ingredient: eggs come out of Hatches and
+      // Pokeshells alike, and half an answer here would read as a whole one.
+      expect(costOfOne(db, 'egg'), isNull);
+    });
+  });
 }

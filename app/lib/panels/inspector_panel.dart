@@ -567,7 +567,11 @@ class _NodeInspectorState extends State<_NodeInspector> {
                 for (final entry in entries)
                   Text(
                     '${formatMaterial(controller.database.item(entry.key), entry.value * result.wholeCount)} '
-                    '${controller.database.item(entry.key)?.name ?? entry.key}',
+                    '${controller.database.item(entry.key)?.name ?? entry.key}'
+                    // A counted part is the right way to say what a building
+                    // asks for, and it leaves you having to know what one
+                    // costs before you can tell whether you can afford it.
+                    '${_madeFrom(controller, entry.key, entry.value * result.wholeCount)}',
                     style: OniType.body,
                   ),
                 // Which member of that class, when the building runs hot
@@ -1491,6 +1495,19 @@ class _EdgeShare extends StatelessWidget {
 
 /// What to build a pipe out of, for something this hot.
 ///
+/// "  ·  200 kg Plastic", for a material counted rather than weighed.
+///
+/// Empty for everything already measured in kilograms, and for a counted thing
+/// nobody has a recipe for — the app has been pricing gaskets in gaskets since
+/// they were seeded, and that was the honest answer until the recipe existed.
+String _madeFrom(PipelineController controller, String materialId, double count) {
+  final each = costOfOne(controller.database, materialId);
+  if (each == null) return '';
+  final material = controller.database.item(each.materialId);
+  return '  ·  ${formatMass(each.amountEach * count)} '
+      '${material?.name ?? each.materialId}';
+}
+
 /// What to build *this* out of, when what runs through it makes it matter.
 ///
 /// The wire's advice names the whole table; a building cannot use the whole

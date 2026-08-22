@@ -56,7 +56,9 @@ On a node:
   what the spare one costs you.
 - **going from 3 to 4** is what one more would buy and cost, worked out by
   solving the build again rather than estimating.
-- **to build** is the shopping list for the ones you place. When what runs
+- **to build** is the shopping list for the ones you place. A part counted in
+  ones rather than kilograms says what one costs beside it — four gaskets, and
+  the 200 kg of plastic behind them. When what runs
   through a building is hotter than the 75 °C a bare one tolerates, it also says
   which of the materials you may build it from survive that — an Electrolyzer is
   200 kg of any metal ore, and at 95 °C only Gold Amalgam holds. A building the

@@ -52,12 +52,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
   deal else that is not tagged — a filter that hides some of a pack and not the rest would
   be worse than none, so this wants a full audit before it is offered
 
-- `E13-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
-  plastic makes, which is the one figure a build actually needs
-
-- `E11-7b` What a Gasket costs: 50 kg of plastic or rubber makes some number of them, and
-  the wiki does not say how many, so a build wanting four is priced in gaskets rather than
-  in the plastic behind them
 
 - `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
 - `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
@@ -86,6 +80,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E13-3` **A gasket is 50 kg of plastic** — the Crafting Station's page has the figure four
+  buildings had been waiting on, and it is the same either way: 50 kg of plastic or of
+  rubber, one gasket, 30 seconds. So a counted part now says what one costs beside it, and
+  a Marine Drill asking for a gasket is a Marine Drill asking for 50 kg of plastic. The
+  price is worked out from whatever recipe makes the thing, not written down a second time,
+  so it says nothing where two recipes make one item or a recipe takes two things — half an
+  answer here would read as a whole one. The station's other recipes make equipment, which
+  is not a flow (`E11-7b` with it)
 - `E4-27` **Cinnabar comes out of the refinery as a puddle** — 100 kg of ore is 100 kg of
   mercury, and mercury freezes at −38.85 °C while a refinery hands its metal back at 40 °C.
   The app had it making Solid Mercury, which is what a Frosty asteroid keeps in the ground
@@ -738,7 +740,7 @@ does not see.
 | E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
 | E11-6b | ✅ | The specific heats not yet measured | all thirty fluids have one now, so no mixture drops a term and every coolant has an Aquatuner |
 | E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
-| E11-7b | P3 | What a Gasket costs | 50 kg of plastic or rubber makes some unstated number of them |
+| E11-7b | ✅ | What a Gasket costs | 50 kg makes one, in 30 s at the Crafting Station. A counted part now says what one costs beside it, worked out from whatever recipe makes it rather than written down twice |
 | E11-2b | ✅ | What to build *this* out of | the wire's advice names the whole table, and a building cannot use the whole table: it narrows to the class the build cost asks for, and says plainly when nothing in that class holds. Buildings the game rates itself (Steam Turbine, 1 000 °C) are not asked |
 | E11-7c | ✅ | Build costs in their own unit | gaskets are counted, everything else weighed; the headline total sums only what has a weight |
 
@@ -774,7 +776,7 @@ flow, so the solver never had to learn about it.
 | E13-2c | P3 | The Molecular Forge | its recipes are niobium, tungsten, isosap, abyssalite, brackwax and thermium, five of which this app has no item for, and the page publishes no cycle time |
 | E13-2d | P3 | The Spice Grinder | every recipe is 0.1 of a *seed*, and seeds are not items here; no power or cycle time published either |
 | E13-2e | P3 | The Supermaterial Refinery | the wiki has no page for it under that name |
-| E13-3 | P2 | The Crafting Station | every recipe is known except how many gaskets 50 kg of plastic makes |
+| E13-3 | ✅ | The Crafting Station | the gasket recipe seeded — 50 kg of plastic or rubber, one gasket, 30 s, 60 W. Its other recipes make equipment rather than materials: oxygen masks, power banks and boosters, none of which is a flow |
 | E13-4 | ✅ | Lead, and the metals behind galena | galena is the one ore that is two things — 87 % lead, 13 % sulfur — so it has its own refinery and crusher recipes and the generic ones exclude it, which is what `excludes` on a port is for |
 | E13-5 | ✅ | Sage Hatch's organics | six foods at one rate, so it is a port with alternatives rather than an invented "organic" class. Prepared food is 700 kcal a cycle rather than a weight, which is a different recipe and stays unmodelled |
 | E13-6 | ✅ | Alternative diets | a Plug Slug eats ore or refined metal at the same 60 kg a cycle, so it is one port with alternatives rather than two specs |

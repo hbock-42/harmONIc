@@ -508,6 +508,8 @@ void main() {
         // 70 kg a cycle of polluted dirt or rot pile, half of it back as sand.
         'pokeshell.polluted_dirt',
         'pokeshell_wild.polluted_dirt',
+        // 50 kg of plastic or of rubber, one gasket either way.
+        'crafting_station_gasket.feedstock',
         // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
         'gas_grass.chlorine',
         'gas_grass.fertiliser',

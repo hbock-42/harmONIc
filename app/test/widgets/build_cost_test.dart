@@ -89,4 +89,20 @@ void main() {
     // adding four to twelve hundred and calling the result kilograms.
     expect(textContaining('400 kg'), findsWidgets);
   });
+
+  testWidgets('a part counted in ones says what one costs', (tester) async {
+    final pipeline = (PipelineBuilder(testDatabase, name: 'Milk')
+          ..add('aquatic_milking_station', nodeId: 'station', x: 0, y: 0)
+          ..pinCount('station', 1))
+        .build();
+    final controller = await pumpEditor(tester, pipeline);
+    controller.select(const NodeSelection('station'));
+    await tester.pumpAndSettle();
+
+    // Four gaskets, and a gasket is 50 kg of plastic: the app has been able to
+    // say the first since gaskets were seeded and the second only since the
+    // Crafting Station's recipe was published.
+    expect(textContaining('4 Gaskets'), findsOneWidget);
+    expect(textContaining('200 kg Plastic'), findsOneWidget);
+  });
 }

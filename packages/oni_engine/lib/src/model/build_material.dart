@@ -1,4 +1,6 @@
+import 'game_database.dart';
 import 'item.dart';
+import 'process_spec.dart';
 import 'units.dart';
 
 /// What a building costs to *put up*, as opposed to what it runs on.
@@ -24,6 +26,51 @@ abstract final class BuildMaterials {
   /// A crafted part rather than a class: 50 kg of plastic or rubber makes some
   /// number of them, and the wiki does not say how many.
   static const String gasket = 'gasket';
+}
+
+/// What one of a counted material costs, in the stuff it is made from.
+///
+/// Four gaskets is four gaskets, and that is the right way to say what a
+/// Marine Drill needs — but it leaves you having to know that a gasket is
+/// 50 kg of plastic before you can tell whether you can afford one. This finds
+/// the recipe that makes it and reports the price of one.
+///
+/// Null unless there is exactly one recipe and exactly one thing that goes
+/// into it. Two recipes and the answer depends on which you run; two inputs
+/// and "the plastic behind it" is not a whole answer. Both are better said as
+/// nothing than as half a figure.
+({String materialId, double amountEach})? costOfOne(
+  GameDatabase database,
+  String itemId,
+) {
+  if (database.item(itemId)?.unit != Unit.count) return null;
+
+  ({String materialId, double amountEach})? found;
+  for (final spec in database.processes) {
+    // A supply node offers every item there is; being able to *have* a gasket
+    // is not a recipe for one.
+    if (spec.kind != ProcessKind.building) continue;
+    for (final made in spec.outputs) {
+      if (made.itemId != itemId || made.ratePerSecond <= 0) continue;
+      final ingredients = [
+        for (final port in spec.inputs)
+          if (!(database.item(port.itemId)?.isCapacity ?? true) &&
+              database.item(port.itemId)?.unit == Unit.gramsPerSecond)
+            port,
+      ];
+      if (ingredients.length != 1) return null;
+      if (found != null) return null; // a second recipe: which one did you run?
+      // Both rates are thirds — one gasket every 30 s out of 50 kg — so the
+      // division comes back as 50.000000051 kg. Rounded to the gram, because
+      // the answer is a recipe figure and not a measurement.
+      final kg = ingredients.single.ratePerSecond / made.ratePerSecond / 1000;
+      found = (
+        materialId: ingredients.single.itemId,
+        amountEach: (kg * 1000).roundToDouble() / 1000,
+      );
+    }
+  }
+  return found;
 }
 
 /// A build cost, in whatever unit that material is counted in.

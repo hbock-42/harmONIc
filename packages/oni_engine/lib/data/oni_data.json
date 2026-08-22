@@ -6977,6 +6977,40 @@
       }
     },
     {
+      "id": "crafting_station_gasket",
+      "name": "Crafting Station (Gasket)",
+      "kind": "building",
+      "buildingId": "crafting_station",
+      "powerWatts": 60,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "50 kg of plastic — or of rubber, in the same amount — makes one gasket in 30 seconds. That is the figure four buildings on this list have been waiting on: a Marine Drill wanting a gasket could be priced in gaskets and not in what a gasket costs. A Duplicant runs it the whole time, and the other recipes here make equipment rather than materials: oxygen masks, power banks and boosters, none of which is a flow a pipeline can carry.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "feedstock",
+          "item": "plastic",
+          "direction": "input",
+          "rate": 1666.6666667,
+          "alternatives": [
+            "rubber"
+          ]
+        },
+        {
+          "item": "gasket",
+          "direction": "output",
+          "rate": 0.0333333333
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
       "id": "egg_cracker",
       "name": "Egg Cracker",
       "kind": "building",
