@@ -71,6 +71,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-15` **The rest of the per-frame work, measured then cached** — having found one scan
+  running sixty times a second, I measured the others rather than guessing which were next.
+  At 300 nodes: the connected components 300 µs, scoping the totals to one build 193 µs,
+  and both are read at least twice a frame by the editor and the bar — about a millisecond a
+  frame of walking a graph that had not changed. Cached, and dropped where the graph changes
+  and, for the scoped one, where the *selection* does. The tests are for the dropping, not
+  the keeping: cutting a wire makes three builds out of two, and selecting the other build
+  must not show the first one's totals. Leaving one line out makes that fail
 - `E8-14` **A scan that ran on every frame** — `hasASplitToChoose` decides whether to offer
   "get as much as possible", and the editor reads it while it builds. It asked every port
   how many edges touched it, and each of those questions walked the whole edge list: on a
@@ -1031,6 +1039,7 @@ flow, so the solver never had to learn about it.
 | E8-12 | ✅ | The second reachability sweep | every public engine symbol against every call site in `lib/`: two things the engine worked out and nobody could read — what rounding costs the build, and which buildings the shopping list could not price |
 | E8-13 | ✅ | Every sentence the app says, checked | 134 of them read against what the code does. Two named a figure the engine holds as a constant and would have gone on saying it after the constant changed |
 | E8-14 | ✅ | The per-frame scan | `hasASplitToChoose` walked the whole edge list once per port, on every frame, and the answer that cost most was the usual one. One pass over the edges, and cached with the solve |
+| E8-15 | ✅ | The rest of the per-frame work | connected components and the scoped totals were recomputed on every frame; measured at 300 nodes, cached, and the dropping is what the tests check |
 
 ---
 

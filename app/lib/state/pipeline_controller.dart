@@ -33,6 +33,8 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _builds = null;
+    _focusedSolution = null;
     _hasSplit = null;
     _oneMore.clear();
   }
@@ -50,6 +52,8 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _builds = null;
+    _focusedSolution = null;
     _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
@@ -69,13 +73,23 @@ class PipelineController extends ChangeNotifier {
   AsBuiltReport? _asBuilt;
 
   /// The build as you would actually place it — whole critters, whole plants,
-  /// whole Duplicants. Computed on demand, because only the inspector asks and
-  /// only when a rounded node is selected.
+  /// whole Duplicants.
+  ///
+  /// Cached rather than computed on demand: it began as something only the
+  /// inspector asked for, and the bottom bar reads it on every frame now to
+  /// say what the rounding costs. 424 µs at 300 nodes is not a thing to do
+  /// sixty times a second.
   AsBuiltReport get asBuiltReport =>
       _asBuilt ??= asBuilt(_pipeline, database, _solution);
 
+  List<Set<String>>? _builds;
+
   /// The builds on this canvas: nodes that reach each other by wires.
-  List<Set<String>> get builds => connectedComponents(_pipeline);
+  ///
+  /// Cached, because the editor asks on every frame and the answer only
+  /// changes when the graph does. At 300 nodes the walk is 300 µs, which is a
+  /// fiftieth of a frame given away for nothing.
+  List<Set<String>> get builds => _builds ??= connectedComponents(_pipeline);
 
   /// The build being worked in, when there is more than one to choose from.
   ///
@@ -103,10 +117,16 @@ class PipelineController extends ChangeNotifier {
   }
 
   /// The solution as it applies to the build being worked in.
-  PipelineSolution get focusedSolution {
-    final build = focusedBuild;
-    return build == null ? _solution : _solution.scopedTo(build);
-  }
+  PipelineSolution? _focusedSolution;
+
+  /// The same, scoped to the build being worked in — also cached, and also
+  /// because it is read once a frame by the bar and once by the editor.
+  /// Scoping copies the maps, so it is not free.
+  PipelineSolution get focusedSolution => _focusedSolution ??= switch (
+          focusedBuild) {
+        null => _solution,
+        final Set<String> build => _solution.scopedTo(build),
+      };
 
   final Map<String, OneMore?> _oneMore = {};
 
@@ -156,6 +176,8 @@ class PipelineController extends ChangeNotifier {
   ProcessSpec? specFor(PipelineNode node) => database.process(node.specId);
 
   void select(Selection? selection) {
+    // What is selected decides which build the totals describe.
+    _focusedSolution = null;
     _selectedNodeIds.clear();
     _selectedEdgeId = null;
     switch (selection) {
@@ -192,6 +214,8 @@ class PipelineController extends ChangeNotifier {
 
   /// Adds to the selection rather than replacing it, for shift-clicking.
   void selectNode(String nodeId, {bool additive = false}) {
+    // What is selected decides which build the totals describe.
+    _focusedSolution = null;
     _selectedEdgeId = null;
     if (!additive) {
       _selectedNodeIds
@@ -204,6 +228,8 @@ class PipelineController extends ChangeNotifier {
   }
 
   void selectNodes(Iterable<String> nodeIds, {bool additive = false}) {
+    // What is selected decides which build the totals describe.
+    _focusedSolution = null;
     _selectedEdgeId = null;
     if (!additive) _selectedNodeIds.clear();
     _selectedNodeIds.addAll(nodeIds);
@@ -222,6 +248,8 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(next);
     _asBuilt = null;
     _temperatures = null;
+    _builds = null;
+    _focusedSolution = null;
     _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
@@ -234,6 +262,8 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _builds = null;
+    _focusedSolution = null;
     _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
@@ -246,6 +276,8 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _builds = null;
+    _focusedSolution = null;
     _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
