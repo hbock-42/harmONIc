@@ -33,6 +33,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _hasSplit = null;
     _oneMore.clear();
   }
 
@@ -49,6 +50,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
   }
@@ -220,6 +222,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(next);
     _asBuilt = null;
     _temperatures = null;
+    _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
   }
@@ -231,6 +234,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
   }
@@ -242,6 +246,7 @@ class PipelineController extends ChangeNotifier {
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
     _temperatures = null;
+    _hasSplit = null;
     _oneMore.clear();
     notifyListeners();
   }
@@ -558,16 +563,25 @@ class PipelineController extends ChangeNotifier {
   /// shape of the graph rather than about the shares, because a build already
   /// divided by hand can still be asked the question: it will simply answer
   /// that your own splits are what they are.
-  bool get hasASplitToChoose {
-    for (final node in _pipeline.nodes) {
-      final spec = database.process(node.specId);
-      if (spec == null) continue;
-      for (final port in spec.ports) {
-        final ref = PortRef(node.id, port.id);
-        final attached =
-            port.isInput ? _pipeline.edgesInto(ref) : _pipeline.edgesOutOf(ref);
-        if (attached.length > 1) return true;
-      }
+  bool get hasASplitToChoose => _hasSplit ??= _findASplit();
+
+  bool? _hasSplit;
+
+  /// One pass over the edges rather than a scan of them per port.
+  ///
+  /// This is read while the editor builds, so it runs on every frame. Asking
+  /// each port "how many edges touch you?" walks the whole edge list once per
+  /// port — and the answer that costs most is *no*, which is the usual one,
+  /// because nothing short-circuits it. On a 300-node build that was about a
+  /// million comparisons a frame for a boolean that is almost always false.
+  ///
+  /// Counting the other way round is the same answer for the price of one
+  /// walk: two lines meeting at a port is a split, whichever port it is.
+  bool _findASplit() {
+    final seen = <String>{};
+    for (final edge in _pipeline.edges) {
+      if (!seen.add('>${edge.fromNodeId}.${edge.fromPortId}')) return true;
+      if (!seen.add('<${edge.toNodeId}.${edge.toPortId}')) return true;
     }
     return false;
   }
