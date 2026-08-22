@@ -37,9 +37,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Canvas and interaction**
 
-- `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
-  plain drag for selection, which is what most editors do
-
 **Things the model cannot yet say**
 
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
@@ -74,6 +71,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E7-13` **A plain drag selects; space pans** — the gesture every other editor spends on
+  selection was being spent here on panning, and a marquee needed ⇧. Held back for weeks
+  because it changes something people already do, and settled by asking. The middle button
+  pans too, on the raw pointer stream because a `GestureDetector` only ever sees the primary
+  one, and two fingers still pan — three ways, so nothing is taken away without a
+  replacement. The trackpad turned out to be the whole difficulty: its gesture arrives twice,
+  once as a pan-zoom and once as a drag, and with the drag half no longer panning the pan had
+  to move to the other one and the drag half be ignored outright
 - `E4-17` **Recipes you wrote, handed to somebody who has not** — measuring a Smoker's cycle
   time in game is half an hour, and until now everybody who wanted it spent that half hour
   themselves. All of them go on the clipboard as one code, items included, since a recipe
@@ -736,7 +741,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E7-10 | ✅ | Marquee select, group move |
 | E7-11 | ✅ | Minimap |
 | E7-12 | ✅ | Tidy a selection |
-| E7-13 | P2 | Space-drag-to-pan |
+| E7-13 | ✅ | Space-drag-to-pan, and a plain drag selects | decided by Hugo on 2026-08-22, having been held back because it changes a gesture in use. Three ways to pan — space, middle button, two fingers — so nothing is taken away without a replacement |
 | E7-14 | ✅ | Fit a selection |
 | E7-15 | ✅ | The view glides |
 | E7-16 | ✅ | The view follows a drag off the edge |

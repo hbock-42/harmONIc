@@ -90,9 +90,24 @@ class GraphCanvasState extends State<GraphCanvas>
   Offset? _marqueeFrom;
   Offset? _marqueeTo;
 
+  /// Whether this drag is moving the view rather than rubber-banding.
+  ///
+  /// Decided when the drag starts and remembered, because letting go of space
+  /// halfway should not turn a pan into a selection under the cursor.
+  bool _dragPans = false;
+
   static bool get _additive =>
       HardwareKeyboard.instance.isShiftPressed ||
       HardwareKeyboard.instance.isMetaPressed;
+
+  /// Held space means "move the paper, not the things on it".
+  ///
+  /// A plain drag on empty canvas selects, because that is the gesture every
+  /// editor spends on selection and it was being spent on panning here. Space
+  /// is what those editors use to get panning back, and it is the only way to
+  /// pan with one hand on a trackpad, so it is worth learning once.
+  static bool get _panning =>
+      HardwareKeyboard.instance.isLogicalKeyPressed(LogicalKeyboardKey.space);
 
   PipelineController get controller => widget.controller;
 
@@ -574,14 +589,19 @@ class GraphCanvasState extends State<GraphCanvas>
 
   void _onPanZoomStart(PointerPanZoomStartEvent event) => _panZoomScale = 1;
 
-  /// Only the pinch is handled here.
+  /// Both halves of a trackpad gesture are handled here.
   ///
-  /// The pan half of a trackpad gesture also reaches the pan recogniser on the
-  /// background, which already moves the view — handling it here as well moved
-  /// the canvas twice as far as the fingers did.
+  /// The pan half also reaches the drag recogniser on the background, and that
+  /// used to be where it was handled — moving the view there and here would
+  /// have taken the canvas twice as far as the fingers did. Now a background
+  /// drag rubber-bands instead, so the pan has to be applied here, and the
+  /// recogniser has to be told to leave trackpad drags alone.
   void _onPanZoomUpdate(PointerPanZoomUpdateEvent event) {
     final local = _localOf(event.position);
     if (local == null || event.scale <= 0) return;
+    if (event.panDelta != Offset.zero) {
+      setState(() => _offset += event.panDelta);
+    }
     if (event.scale != _panZoomScale) {
       zoomBy(event.scale / _panZoomScale, local);
       _panZoomScale = event.scale;
@@ -610,6 +630,13 @@ class GraphCanvasState extends State<GraphCanvas>
           _pointerDownWorld = worldFromLocal(box.globalToLocal(event.position));
         }
       },
+      // The middle button pans, and has to be handled here: a GestureDetector
+      // only ever sees the primary one, so its drag callbacks never fire for
+      // this and there is nothing to conflict with.
+      onPointerMove: (event) {
+        if (event.buttons & kMiddleMouseButton == 0) return;
+        setState(() => _offset += event.delta);
+      },
       onPointerSignal: _onPointerSignal,
       onPointerPanZoomStart: _onPanZoomStart,
       onPointerPanZoomUpdate: _onPanZoomUpdate,
@@ -631,9 +658,17 @@ class GraphCanvasState extends State<GraphCanvas>
             _onBackgroundTap(d.localPosition);
           },
           onPanStart: (d) {
-            // Shift turns a drag on empty canvas into a rubber band; a plain
-            // drag still pans, which is the gesture people reach for first.
-            if (!_additive) return;
+            // A drag on empty canvas selects. Space, the middle button and two
+            // fingers pan — three ways, because taking the plain drag away
+            // from panning would be unkind without them.
+            _dragPans = _panning;
+            if (_dragPans) return;
+            // Two fingers on a trackpad arrive here as a drag as well as a
+            // pan-zoom gesture. The pan-zoom half moves the view; this half is
+            // ignored outright, since a rubber band appearing under a
+            // scrolling cursor would be nobody's intent and panning here as
+            // well would take the canvas twice as far as the fingers did.
+            if (d.kind == PointerDeviceKind.trackpad) return;
             setState(() {
               _marqueeFrom =
                   _pointerDownWorld ?? worldFromLocal(d.localPosition);
@@ -647,10 +682,12 @@ class GraphCanvasState extends State<GraphCanvas>
               updateEdgePan(d.globalPosition);
               return;
             }
+            if (!_dragPans) return;
             setState(() => _offset += d.delta);
           },
           onPanEnd: (_) {
             endEdgePan();
+            _dragPans = false;
             final from = _marqueeFrom;
             final to = _marqueeTo;
             if (from == null || to == null) return;

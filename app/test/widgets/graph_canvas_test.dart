@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -104,9 +105,12 @@ void main() {
       final offsetBefore = state.offset;
       final nodeXBefore = controller.pipeline.nodeOrThrow('elec').x;
 
-      // An empty patch of canvas, far from any node.
+      // An empty patch of canvas, far from any node. Space, because a plain
+      // drag there selects now.
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.space);
       await tester.dragFrom(const Offset(1200, 700), const Offset(-60, 40));
       await tester.pump();
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.space);
 
       // The gesture recogniser eats the touch slop, so assert the direction
       // rather than an exact delta.

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -144,15 +145,67 @@ void main() {
       expect(controller.selectedNodeIds, isNot(contains('dupes')));
     });
 
-    testWidgets('a plain drag on empty space still pans', (tester) async {
+    testWidgets('a plain drag on empty space selects, and does not pan',
+        (tester) async {
+      // The swap: the gesture every other editor spends on selection was being
+      // spent here on panning. Nothing pans by accident any more.
       final controller = await pumpCanvas(tester);
       final before = canvasKey.currentState!.offset;
 
       await tester.dragFrom(const Offset(1200, 700), const Offset(-60, 40));
       await tester.pump();
 
+      expect(canvasKey.currentState!.offset, before);
+      expect(controller.selectedNodeIds, isEmpty, reason: 'empty space');
+    });
+
+    testWidgets('and a plain drag across the nodes catches them',
+        (tester) async {
+      final controller = await pumpCanvas(tester);
+      final from = tester.getCenter(find.text('Water supply'));
+      final to = tester.getCenter(find.text('Electrolyzer'));
+
+      // Starting on empty canvas above the two, ending below and past them.
+      await tester.dragFrom(
+        Offset(from.dx - 60, from.dy - 60),
+        Offset(to.dx - from.dx + 120, to.dy - from.dy + 120),
+      );
+      await tester.pump();
+
+      expect(controller.selectedNodeIds,
+          containsAll(<String>['src_water', 'elec']));
+    });
+
+    testWidgets('space is how you pan with the mouse now', (tester) async {
+      final controller = await pumpCanvas(tester);
+      final before = canvasKey.currentState!.offset;
+
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.space);
+      await tester.dragFrom(const Offset(1200, 700), const Offset(-60, 40));
+      await tester.pump();
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.space);
+
       expect(canvasKey.currentState!.offset.dx, lessThan(before.dx));
+      // And it panned rather than selecting on the way.
       expect(controller.selectedNodeIds, isEmpty);
+    });
+
+    testWidgets('so is the middle button, for anybody who would rather',
+        (tester) async {
+      await pumpCanvas(tester);
+      final before = canvasKey.currentState!.offset;
+
+      // A GestureDetector only ever sees the primary button, so this is
+      // handled on the raw pointer stream and has its own test.
+      final pointer = TestPointer(1, PointerDeviceKind.mouse);
+      await tester.sendEventToBinding(
+          pointer.down(const Offset(1200, 700), buttons: kMiddleMouseButton));
+      await tester.sendEventToBinding(pointer.move(const Offset(1140, 740),
+          buttons: kMiddleMouseButton));
+      await tester.sendEventToBinding(pointer.up());
+      await tester.pump();
+
+      expect(canvasKey.currentState!.offset.dx, lessThan(before.dx));
     });
 
     testWidgets('dragging a node in a group carries the rest', (tester) async {

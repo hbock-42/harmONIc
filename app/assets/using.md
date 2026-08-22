@@ -114,6 +114,11 @@ survives tidying the rest.
 **Fit** frames everything, or just the selection. Arrow keys nudge by a grid
 cell, eight with shift. Drag a node to the window edge and the view follows.
 
+Dragging on empty canvas draws a box and selects what it touches. To move the
+view instead, hold **space** and drag, or use the middle mouse button, or scroll
+with two fingers — three ways, because a plain drag is worth spending on
+selection and taking it away from panning would be unkind without them.
+
 **☀ / ☾** on the toolbar switches between the dark and the light look, and shows
 what pressing it gives you rather than what you are already in. The choice is
 remembered. The light palette is not the dark one inverted — every colour is
