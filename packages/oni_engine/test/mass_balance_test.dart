@@ -19,6 +19,10 @@ const Map<String, String> expectedImbalance = <String, String>{
   'hatch': 'half the mineral it eats comes back as coal',
   'pokeshell': 'half the polluted dirt or rot pile comes back as sand, which '
       'the game states outright',
+  'sweetle': 'half the sulfur comes back as sucrose, at the 50 % three of its '
+      'own pages agree on',
+  'grubgrub_sulfur': 'a tenth of the sulfur comes back as mud, which is why '
+      'nobody feeds them sulfur',
   'smooth_hatch': 'ore to refined metal at the stated 75 %',
   'slickster': 'CO2 to crude oil at the stated 50 %',
   'molten_slickster': 'CO2 to petroleum at the stated 50 %',

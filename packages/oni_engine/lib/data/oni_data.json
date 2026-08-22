@@ -632,6 +632,23 @@
       ]
     },
     {
+      "id": "liquid_sucrose",
+      "name": "Liquid Sucrose",
+      "category": "liquid",
+      "tags": [
+        "spacedout"
+      ],
+      "specificHeat": 1.255
+    },
+    {
+      "id": "mud",
+      "name": "Mud",
+      "category": "solid",
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
       "id": "tallow",
       "name": "Tallow",
       "category": "solid",
@@ -3413,6 +3430,252 @@
           "item": "meat",
           "direction": "output",
           "rate": 0.1166666667
+        }
+      ]
+    },
+    {
+      "id": "sweetle",
+      "name": "Sweetle",
+      "kind": "critter",
+      "description": "Eats 20 kg/cycle of sulfur — solid or liquid, the same either way — and excretes half of it as sucrose: renewable sugar out of a material most bases are throwing away. Three figures agree on the 50 %: the diet, the sucrose page's stated efficiency, and the farm on its own page, 45 of them on 1.5 kg/s of liquid sulfur for 450 kg/cycle. It also eats sucrose at 10 kg/cycle, which is a different recipe and one nobody has published an output for. Groomed: one egg every 4.5 cycles. The meat is the 1 600 kcal it drops at the end of a 75-cycle life, spread across it.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "spacedout",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "id": "feed",
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 33.3333333,
+          "alternatives": [
+            "liquid_sulfur"
+          ]
+        },
+        {
+          "item": "sucrose",
+          "direction": "output",
+          "rate": 16.6666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000370370
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.0222222
+        }
+      ]
+    },
+    {
+      "id": "sweetle_wild",
+      "name": "Sweetle (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — every 45 cycles against 4.5, which is the published pair rather than this app's usual assumption. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "spacedout",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "feed",
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 33.3333333,
+          "alternatives": [
+            "liquid_sulfur"
+          ]
+        },
+        {
+          "item": "sucrose",
+          "direction": "output",
+          "rate": 16.6666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0000370370
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.0222222
+        }
+      ]
+    },
+    {
+      "id": "grubgrub_sulfur",
+      "name": "Grubgrub (sulfur)",
+      "kind": "critter",
+      "description": "Eats 50 kg/cycle of sulfur, solid or liquid, and leaves 5 kg of mud: a tenth back, which is why the sucrose diet is the one anybody uses. The two diets are two recipes because the rates differ, not one recipe with a choice. Groomed: one egg every 9 cycles, against 90 wild. The meat is the 4 800 kcal it drops at the end of a 150-cycle life, spread across it.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "spacedout",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "id": "feed",
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 83.3333333,
+          "alternatives": [
+            "liquid_sulfur"
+          ]
+        },
+        {
+          "item": "mud",
+          "direction": "output",
+          "rate": 8.3333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000185185
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.0333333
+        }
+      ]
+    },
+    {
+      "id": "grubgrub_sulfur_wild",
+      "name": "Grubgrub (sulfur, wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — every 90 cycles against 9, which the page states rather than this app assuming it. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "spacedout",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "feed",
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 83.3333333,
+          "alternatives": [
+            "liquid_sulfur"
+          ]
+        },
+        {
+          "item": "mud",
+          "direction": "output",
+          "rate": 8.3333333
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0000185185
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.0333333
+        }
+      ]
+    },
+    {
+      "id": "grubgrub_sucrose",
+      "name": "Grubgrub (sucrose)",
+      "kind": "critter",
+      "description": "Eats 30 kg/cycle of sucrose, solid or liquid, and turns all of it into mud — kilogram for kilogram, which is what makes a Sweetle and a Grubgrub together into dirt and water out of sulfur. A different recipe from the sulfur diet rather than a choice on one, because the rates are not the same.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "spacedout",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "id": "feed",
+          "item": "sucrose",
+          "direction": "input",
+          "rate": 50.0,
+          "alternatives": [
+            "liquid_sucrose"
+          ]
+        },
+        {
+          "item": "mud",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000185185
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.0333333
+        }
+      ]
+    },
+    {
+      "id": "grubgrub_sucrose_wild",
+      "name": "Grubgrub (sucrose, wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — every 90 cycles against 9. What it eats and what it produces are otherwise unchanged.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "spacedout",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "feed",
+          "item": "sucrose",
+          "direction": "input",
+          "rate": 50.0,
+          "alternatives": [
+            "liquid_sucrose"
+          ]
+        },
+        {
+          "item": "mud",
+          "direction": "output",
+          "rate": 50.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.0000185185
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.0333333
         }
       ]
     },
@@ -7170,6 +7433,81 @@
       ],
       "build": {
         "metal_ore": 50
+      }
+    },
+    {
+      "id": "sludge_press_mud",
+      "name": "Sludge Press (Mud)",
+      "kind": "building",
+      "buildingId": "sludge_press",
+      "powerWatts": 120,
+      "heatKdtuPerSecond": 4,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "150 kg of mud into 60 kg of dirt and 90 kg of water, which is where a Grubgrub ranch stops being a curiosity: sulfur in, dirt and water out. A Duplicant runs it, and how fast depends on their Machinery skill — 7.5 kg/s untrained, 10 with 13 skill and a liquid pipe. The untrained figure is the one here, being the one anybody gets first.",
+      "tags": [
+        "refining",
+        "spacedout",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mud",
+          "direction": "input",
+          "rate": 7500
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 3000
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 4500
+        }
+      ],
+      "build": {
+        "raw_mineral": 200
+      }
+    },
+    {
+      "id": "sludge_press_polluted_mud",
+      "name": "Sludge Press (Polluted Mud)",
+      "kind": "building",
+      "buildingId": "sludge_press",
+      "powerWatts": 120,
+      "heatKdtuPerSecond": 4,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "The same press on the polluted kind, in the same proportions: 150 kg gives 60 kg of polluted dirt and 90 kg of polluted water. What an Orehull leaves behind becomes something a Puft or a sieve can use.",
+      "tags": [
+        "refining",
+        "spacedout",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_mud",
+          "direction": "input",
+          "rate": 7500
+        },
+        {
+          "item": "polluted_dirt",
+          "direction": "output",
+          "rate": 3000
+        },
+        {
+          "item": "polluted_water",
+          "direction": "output",
+          "rate": 4500
+        }
+      ],
+      "build": {
+        "raw_mineral": 200
       }
     },
     {

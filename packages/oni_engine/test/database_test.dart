@@ -1263,4 +1263,108 @@ void main() {
           contains('spacedout'));
     });
   });
+
+  group('sulfur into dirt and water', () {
+    test('a Sweetle gives back half of what it eats, as sugar', () {
+      final sweetle = db.processOrThrow('sweetle');
+      final feed = sweetle.inputs.firstWhere((p) => p.id == 'feed');
+      final sucrose =
+          sweetle.outputs.firstWhere((p) => p.itemId == 'sucrose');
+
+      expect(feed.accepted, ['sulfur', 'liquid_sulfur']);
+      expect(feed.ratePerSecond * secondsPerCycle, closeTo(20000, 1));
+      expect(sucrose.ratePerSecond / feed.ratePerSecond, closeTo(0.5, 1e-6));
+    });
+
+    test('and its farm figure agrees with its diet figure', () {
+      // The page's own worked example: 45 Sweetles on 1.5 kg/s of liquid
+      // sulfur make 450 kg/cycle of sucrose. Two independent numbers that have
+      // to come out the same, which is why this one is verified rather than
+      // inferred.
+      final sweetle = db.processOrThrow('sweetle');
+      final feed = sweetle.inputs.firstWhere((p) => p.id == 'feed');
+      final sucrose =
+          sweetle.outputs.firstWhere((p) => p.itemId == 'sucrose');
+
+      expect(feed.ratePerSecond * 45, closeTo(1500, 1));
+      expect(sucrose.ratePerSecond * 45 * secondsPerCycle, closeTo(450000, 20));
+    });
+
+    test('a Grubgrub is two recipes, because the rates differ', () {
+      // 50 kg of sulfur gives 5 kg of mud; 30 kg of sucrose gives 30. One
+      // port cannot carry both claims, so they are two specs — the same rule
+      // that keeps a Plug Slug's two diets apart.
+      final sulfur = db.processOrThrow('grubgrub_sulfur');
+      final sucrose = db.processOrThrow('grubgrub_sucrose');
+      double mudFrom(ProcessSpec spec) =>
+          spec.outputs.firstWhere((p) => p.itemId == 'mud').ratePerSecond /
+          spec.inputs.firstWhere((p) => p.id == 'feed').ratePerSecond;
+
+      expect(mudFrom(sulfur), closeTo(0.1, 1e-6));
+      expect(mudFrom(sucrose), closeTo(1, 1e-6));
+    });
+
+    test('and the wild pairs are the ones the page publishes', () {
+      // Every other wild twin in this database lays a tenth as often because
+      // that is what the app assumes. These two say it outright — 4.5 cycles
+      // against 45, and 9 against 90 — so the assumption is checked rather
+      // than merely applied.
+      for (final pair in [
+        ('sweetle', 'sweetle_wild'),
+        ('grubgrub_sulfur', 'grubgrub_sulfur_wild'),
+      ]) {
+        double eggs(String id) => db
+            .processOrThrow(id)
+            .outputs
+            .firstWhere((p) => p.itemId == 'egg')
+            .ratePerSecond;
+        expect(eggs(pair.$1) / eggs(pair.$2), closeTo(10, 1e-3),
+            reason: pair.$1);
+      }
+      expect(
+          db
+                  .processOrThrow('sweetle')
+                  .outputs
+                  .firstWhere((p) => p.itemId == 'egg')
+                  .ratePerSecond *
+              4.5 *
+              secondsPerCycle,
+          closeTo(1, 1e-3));
+    });
+
+    test('the press closes the chain', () {
+      // Sulfur in one end, dirt and water out the other, which is the whole
+      // reason any of this is worth modelling.
+      final press = db.processOrThrow('sludge_press_mud');
+      double rate(String item) =>
+          press.ports.firstWhere((p) => p.itemId == item).ratePerSecond;
+
+      expect(rate('dirt') / rate('mud'), closeTo(60 / 150, 1e-9));
+      expect(rate('water') / rate('mud'), closeTo(90 / 150, 1e-9));
+      expect(rate('dirt') + rate('water'), rate('mud'));
+
+      final pipeline = (PipelineBuilder(db, name: 'sugar')
+            ..addSource('sulfur')
+            ..add('sweetle', nodeId: 'sweetles')
+            ..add('grubgrub_sucrose', nodeId: 'grubs')
+            ..add('sludge_press_mud', nodeId: 'press')
+            ..addSink('water')
+            ..connectItem('src_sulfur', 'sweetles', 'sulfur')
+            ..connectItem('sweetles', 'grubs', 'sucrose')
+            ..connectItem('grubs', 'press', 'mud')
+            ..connectItem('press', 'sink_water', 'water')
+            ..pinCount('sweetles', 12))
+          .build();
+      final solution = PipelineSolver(db).solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // Twelve Sweetles eat 240 kg/cycle of sulfur and the far end gives back
+      // water, which is a trade most bases would take. The supply is drawn
+      // inside the build, so it is that node's rate rather than an external
+      // input.
+      expect(solution.nodes['src_sulfur']!.count * secondsPerCycle,
+          closeTo(240000, 10));
+      expect(solution.nodes['sink_water']!.count, greaterThan(0));
+    });
+  });
 }

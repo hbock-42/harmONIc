@@ -566,6 +566,14 @@ void main() {
         // 30 kg a cycle of Plume Squash or Nosh Bean, all of it back as patty.
         'bammoth.feed',
         'bammoth_wild.feed',
+        // Sulfur or liquid sulfur, sucrose or liquid sucrose: a Sweetle and a
+        // Grubgrub do not care which state theirs arrives in.
+        'sweetle.feed',
+        'sweetle_wild.feed',
+        'grubgrub_sulfur.feed',
+        'grubgrub_sulfur_wild.feed',
+        'grubgrub_sucrose.feed',
+        'grubgrub_sucrose_wild.feed',
         // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
         'gas_grass.chlorine',
         'gas_grass.fertiliser',

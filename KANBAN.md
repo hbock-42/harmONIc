@@ -50,10 +50,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
   which a flow model cannot express), Gnit and Mimika (produce nothing), and the regular
   Lumb (its peat rate is stated nowhere). The Bammoth came out of this list on 2026-08-22,
   its page having been filled in since somebody last looked
-- `E4-23` Beeta, Sweetle and Grubgrub. No longer waiting on figures: the Grubgrub's are
-  published and the Sweetle's follow from its stated 50 %. All three are Spaced Out, as are
-  Mud and Liquid Sucrose, so this waits on `E13-8` now. A Beeta's 5-cycle life would still
-  be misrepresented by a per-cycle average
+- `E4-23a` The Beeta: five cycles of life, and the honey at the end of them. A rate is the
+  wrong shape for that, which is why it was left out when its two neighbours went in
 - `E4-28` Seaquine's ovolene rate. Checked again on 2026-08-22: the page says who may be
   milked and never how much
 - `E4-25` Firm up the inferred 50 % conversion on the Pip: its page says what it eats and
@@ -71,6 +69,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-23` **Sulfur into dirt and water** — a Sweetle eats 20 kg/cycle of sulfur and gives
+  half of it back as sucrose; a Grubgrub eats 30 kg/cycle of sucrose and gives all of it
+  back as mud; a Sludge Press turns 150 kg of mud into 60 of dirt and 90 of water. Sulfur
+  in one end, dirt and water out the other, and every step published. Two things it
+  confirmed rather than assumed: the 50 % is agreed by three separate figures on the
+  Sweetle's own pages, and the wild twins state their egg intervals — 4.5 cycles against 45,
+  9 against 90 — so this app's "a tenth as often" convention is checked here instead of
+  merely applied. The Grubgrub is two specs because its two diets have different rates,
+  which is the Plug Slug rule again. It waited on nothing but `E13-8`
 - `E4-9a` **Enriching uranium** — 10 kg of ore every 40 seconds, 2 kg of enriched uranium
   and 8 of depleted, balancing to the gram and running with no Duplicant at all. The
   leftover eighty per cent is the interesting part: the page says it builds "like any other
@@ -727,7 +734,8 @@ _(empty)_
 | E4-21 | ✅ | Wild versus groomed | a `(wild)` twin per ranched critter: no grooming, no Duplicant time, a tenth of the eggs |
 | E4-21b | P3 | Glo Squid and Seaquine wild twins | wants somebody to check in game which outputs the milking station takes |
 | E4-22 | P3 | The Grooming Station's power draw | checked again 2026-08-22: the page gives its 400 kg of ore and its 2×3 footprint and no watts at all, nor a heat figure |
-| E4-23 | P3 | Beeta, Sweetle and Grubgrub | the blocker changed on 2026-08-22: the Grubgrub's rates are published (50 kg/cycle sulfur → 5 of mud, or 30 of sucrose → 30 of mud, groomed every 9 cycles) and the Sweetle's are inferable (20 kg/cycle sulfur at the stated 50 %). All three are Spaced Out, and so are Mud and Liquid Sucrose, so this now waits on `E13-8` rather than on figures. A Beeta's 5-cycle life would still be misrepresented by a per-cycle average |
+| E4-23 | ✅ | Sweetle and Grubgrub | seeded once `E13-8` made Spaced Out a pack you can switch off. The Beeta is `E4-23a`: a five-cycle life would be misrepresented by a per-cycle average |
+| E4-23a | P3 | The Beeta | it lives five cycles and its honey comes at the end of them, so a rate is the wrong shape for it — the same reason the app refuses to average a Bammoth's shearing |
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
 | E4-25 | P3 | Firm up the inferred 50 % conversions | two of the three answered: the Pokeshell's 50 % is published, and the Shine Bug's feed is 200 g of phosphorite a cycle — the one food of its several the page weighs rather than counts in calories. The Pip's is not: its page says what it eats and what it excretes and never puts the two in one sentence |
 | E4-25a | ✅ | The Shine Bug's feed | 200 g of phosphorite a cycle, which its page weighs while counting its other foods in calories |
