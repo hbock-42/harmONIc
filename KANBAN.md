@@ -112,6 +112,8 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E13-10` **"Either peat or wood"** — the Smoker's fuel is a class of the pair, the same
+  way a refinery takes any ore, rather than one of them modelled and the other in a comment
 - `E13-2b` **The Smoker and the Dehydrator** — brisket out of tough meat and wood, and a
   dryer that makes no food at all: its calories out are its calories in, and what it really
   buys is food that never spoils, which this app has no notion of
@@ -714,6 +716,7 @@ flow, so the solver never had to learn about it.
 | E13-7 | P3 | Rot Pile | a Pokeshell's second food and the Compost's second input |
 | E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
+| E13-10 | ✅ | The Smoker's fuel | "either Peat or Wood" modelled as a class of the three concrete things, flat rather than nested |
 
 ## E8 — Quality
 

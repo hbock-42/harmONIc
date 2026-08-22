@@ -103,7 +103,7 @@ void main() {
     final large = fastestMicros(chain(500));
 
     expect(large, lessThan(small * 4),
-        reason: '250 nodes took ${small}µs and 500 took ${large}µs, which is '
+        reason: '250 nodes took $small µs and 500 took $large µs, which is '
             'the shape of an elimination that fills in behind itself');
   });
 

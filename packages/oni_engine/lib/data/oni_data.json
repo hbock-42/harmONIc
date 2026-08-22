@@ -1012,6 +1012,19 @@
       "name": "Egg Shell",
       "category": "solid",
       "tags": []
+    },
+    {
+      "id": "peat_or_wood",
+      "name": "Peat or Wood",
+      "category": "solid",
+      "members": [
+        "peat",
+        "lumber",
+        "gum_wood"
+      ],
+      "tags": [
+        "class"
+      ]
     }
   ],
   "processes": [
@@ -6878,7 +6891,7 @@
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: six kilograms of tough meat and a hundred of wood make 16 000 kcal of tender brisket over ten cycles, which is the published recipe. Peat works in place of the wood, kilogram for kilogram, and only the wood is modelled here. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
+      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, and every recipe on this building also burns 100 kg of \"either Peat or Wood\" — the page says so under the table rather than in the recipe, which is easy to miss. Either does, in the same amount, so the port asks for the pair of them. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
       "tags": [
         "food",
         "prehistoric",
@@ -6891,7 +6904,7 @@
           "rate": 10.0
         },
         {
-          "item": "wood",
+          "item": "peat_or_wood",
           "direction": "input",
           "rate": 166.66666666666666
         },

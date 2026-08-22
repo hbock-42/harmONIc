@@ -167,4 +167,44 @@ void main() {
       expect(silent, ['galena']);
     });
   });
+
+  group('a fuel that is one thing or another', () {
+    test('the Smoker burns peat or wood, and either will do', () {
+      final fuel = db.itemOrThrow('peat_or_wood');
+      expect(fuel.members, {'peat', 'lumber', 'gum_wood'});
+
+      // Every member satisfies the port, which is what "either" means and
+      // what a class is for.
+      for (final member in fuel.members) {
+        expect(db.accepts('peat_or_wood', member), isTrue, reason: member);
+      }
+      expect(db.accepts('peat_or_wood', 'coal'), isFalse);
+    });
+
+    test('and the members are named flat rather than nested', () {
+      // "Peat plus the wood class" would be a class of classes, which the
+      // database refuses on load. Membership has to be things you can hold.
+      for (final member in db.itemOrThrow('peat_or_wood').members) {
+        expect(db.itemOrThrow(member).isClass, isFalse, reason: member);
+      }
+    });
+
+    test('a lumber supply feeds a Smoker without anybody saying which', () {
+      final pipeline = (PipelineBuilder(db, name: 'smokehouse')
+            ..addSource('lumber')
+            ..addSource('tough_meat')
+            ..add('smoker_brisket', nodeId: 'smoker')
+            ..add('duplicant', nodeId: 'dupes')
+            ..connectItem('src_lumber', 'smoker', 'lumber')
+            ..connectItem('src_tough_meat', 'smoker', 'tough_meat')
+            ..connectItem('smoker', 'dupes', 'calories')
+            ..pinCount('smoker', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      // 100 kg of it every 600 s.
+      expect(solution.nodes['src_lumber']!.count, closeTo(100000 / 600, 1e-6));
+    });
+  });
 }
