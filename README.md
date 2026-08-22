@@ -12,6 +12,7 @@ app/                   Flutter app (macOS, web, iOS, Android).
 docs/USING.md          how to use the app, and what it deliberately does not know.
 docs/SOLVER.md         how the solver works, decided before it was written.
 docs/PERFORMANCE.md    how it was made eight times quicker, and how to do it again.
+docs/CHOOSING-SHARES.md what it would take to let the solver pick the splits itself.
 KANBAN.md              the plan, epic by epic.
 ```
 

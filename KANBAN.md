@@ -71,6 +71,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-7a` **A simplex, decided in writing first** — `E3-7` has read "let the solver choose the
+  shares" since the solver was designed, and the first job was to say what that means. It
+  cannot mean making the shares variables: `share·x` is a product of two unknowns and no
+  simplex takes it. It means making the *flows* variables, which turns an output port's
+  balance from an equality into an inequality — and that inequality is exactly the freedom an
+  optimiser needs and the thing the current solver cannot express. `docs/CHOOSING-SHARES.md`
+  is the decision; this is step one of three, the solver on its own, tested against problems
+  whose answers were known before it existed. Beale's cycling example is in there, because
+  every build with a loop in it is degenerate
 - `E7-13` **A plain drag selects; space pans** — the gesture every other editor spends on
   selection was being spent here on panning, and a marquee needed ⇧. Held back for weeks
   because it changes something people already do, and settled by asking. The middle button
@@ -616,7 +625,10 @@ _(empty)_
 | E3-4 | ✅ | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
 | E3-5 | ✅ | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
-| E3-7 | P2 | Simplex / LP upgrade | let the solver *choose* the shares to maximise a target output or minimise a raw input, instead of user-set shares |
+| E3-7 | spike | Simplex / LP upgrade | decided in `docs/CHOOSING-SHARES.md`: the shares cannot be variables (`share·x` is not linear) — the *flows* have to be, with output balances becoming inequalities. Do it in three steps, and never as the only path |
+| E3-7a | ✅ | The simplex itself | two-phase, Bland's rule throughout because every graph with a loop is degenerate; tested against textbook problems and against brute force on a hundred random ones |
+| E3-7c | P2 | One question, end to end | "maximise this output" on a build with a choice in it, with the two solvers compared on every build that has no freedom |
+| E3-7d | P2 | The rest of the questions | minimise a raw input; then least heat, least power, least floor |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | ✅ | Sensitivity | "going from 3 to 4": what the next one buys and costs, worked out by solving the build again rather than by estimating |
 | E3-9 | ✅ | Solver perf test | 500-node chain and 500-node fan, both under 50 ms; writing it found the elimination doing eight times the work it needed to |
