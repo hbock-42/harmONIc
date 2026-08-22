@@ -168,34 +168,45 @@ void main() {
     });
   });
 
-  group('a fuel that is one thing or another', () {
-    test('the Smoker burns peat or wood, and either will do', () {
-      final fuel = db.itemOrThrow('peat_or_wood');
-      expect(fuel.members, {'peat', 'lumber', 'gum_wood'});
+  group('either one thing or another', () {
+    test('is one recipe per option, not an invented material', () {
+      // The Smoker burns "either Peat or Wood". The first attempt at that was
+      // an item called "Peat or Wood" with both inside it, which is a class of
+      // something the game does not have — and it turned up in the palette as
+      // a supply node nobody could ever own.
+      //
+      // A class is for a category the game itself groups: any Metal Ore in a
+      // refinery, any Filtration Medium in a Deodorizer. "Either of these two"
+      // is a different thing, and the answer here has been one spec per option
+      // since the Beakon got one for phosphorite and one for grazing.
+      expect(db.item('peat_or_wood'), isNull);
 
-      // Every member satisfies the port, which is what "either" means and
-      // what a class is for.
-      for (final member in fuel.members) {
-        expect(db.accepts('peat_or_wood', member), isTrue, reason: member);
-      }
-      expect(db.accepts('peat_or_wood', 'coal'), isFalse);
+      final smokers =
+          db.processes.where((s) => s.buildingId == 'smoker').toList();
+      expect(smokers.map((s) => s.id),
+          containsAll(['smoker_brisket_wood', 'smoker_brisket_peat']));
+
+      final wood = db.processOrThrow('smoker_brisket_wood');
+      final peat = db.processOrThrow('smoker_brisket_peat');
+      expect(wood.inputs.map((p) => p.itemId), contains('wood'));
+      expect(peat.inputs.map((p) => p.itemId), contains('peat'));
+      // Same building, same recipe, same 100 kg — only the fuel differs.
+      expect(
+        peat.inputs.firstWhere((p) => p.itemId == 'peat').ratePerSecond,
+        wood.inputs.firstWhere((p) => p.itemId == 'wood').ratePerSecond,
+      );
+      double calories(ProcessSpec spec) =>
+          spec.outputs.firstWhere((p) => p.itemId == 'calories').ratePerSecond;
+      expect(calories(peat), calories(wood));
     });
 
-    test('and the members are named flat rather than nested', () {
-      // "Peat plus the wood class" would be a class of classes, which the
-      // database refuses on load. Membership has to be things you can hold.
-      for (final member in db.itemOrThrow('peat_or_wood').members) {
-        expect(db.itemOrThrow(member).isClass, isFalse, reason: member);
-      }
-    });
-
-    test('a lumber supply feeds a Smoker without anybody saying which', () {
+    test('and a peat supply feeds the peat one', () {
       final pipeline = (PipelineBuilder(db, name: 'smokehouse')
-            ..addSource('lumber')
+            ..addSource('peat')
             ..addSource('tough_meat')
-            ..add('smoker_brisket', nodeId: 'smoker')
+            ..add('smoker_brisket_peat', nodeId: 'smoker')
             ..add('duplicant', nodeId: 'dupes')
-            ..connectItem('src_lumber', 'smoker', 'lumber')
+            ..connectItem('src_peat', 'smoker', 'peat')
             ..connectItem('src_tough_meat', 'smoker', 'tough_meat')
             ..connectItem('smoker', 'dupes', 'calories')
             ..pinCount('smoker', 1))
@@ -203,8 +214,101 @@ void main() {
       final solution = solver.solve(pipeline);
 
       expect(solution.status, SolveStatus.solved);
-      // 100 kg of it every 600 s.
-      expect(solution.nodes['src_lumber']!.count, closeTo(100000 / 600, 1e-6));
+      expect(solution.nodes['src_peat']!.count, closeTo(100000 / 600, 1e-6));
     });
   });
+
+  group('choosing a material', () {
+    Pipeline smelting({String? ore}) {
+      final refinery = PipelineNode(
+        id: 'refinery',
+        specId: 'metal_refinery',
+        materials: ore == null ? const {} : {'metal_ore': ore},
+      );
+      return Pipeline(id: 'p', name: 'smelting', nodes: [refinery]);
+    }
+
+    test('unset, a refinery is honestly generic', () {
+      final node = smelting().nodeOrThrow('refinery');
+      final spec = db.processOrThrow('metal_refinery');
+      final out = spec.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+
+      expect(itemFlowingIn(db, node, spec, out), 'refined_metal');
+    });
+
+    test('set to copper ore, it makes copper', () {
+      final node = smelting(ore: 'copper_ore').nodeOrThrow('refinery');
+      final spec = db.processOrThrow('metal_refinery');
+      final ore = spec.inputs.firstWhere((p) => p.itemId == 'metal_ore');
+      final out = spec.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+
+      expect(itemFlowingIn(db, node, spec, ore), 'copper_ore');
+      expect(itemFlowingIn(db, node, spec, out), 'copper');
+    });
+
+    test('a refinery set to iron will not feed a copper port', () {
+      // The whole point of the choice: generic output satisfies anything, and
+      // a chosen one satisfies only what it really is.
+      final spec = db.processOrThrow('metal_refinery');
+      final out = spec.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+      final iron = smelting(ore: 'iron_ore').nodeOrThrow('refinery');
+
+      expect(db.accepts('copper', itemFlowingIn(db, iron, spec, out)), isFalse);
+      expect(db.accepts('iron', itemFlowingIn(db, iron, spec, out)), isTrue);
+      // And unset, it still feeds either, because nobody has said otherwise.
+      final generic = smelting().nodeOrThrow('refinery');
+      expect(
+          db.accepts('copper', itemFlowingIn(db, generic, spec, out)), isTrue);
+    });
+
+    test('the wiring is checked against the choice, not the recipe', () {
+      final spec = db.processOrThrow('metal_refinery');
+      final orePort = spec.inputs.firstWhere((p) => p.itemId == 'metal_ore');
+
+      Pipeline fed(String ore, String chosen) => Pipeline(
+            id: 'p',
+            name: 'smelting',
+            nodes: [
+              PipelineNode(id: 'src', specId: sourceSpecId(ore)),
+              PipelineNode(
+                id: 'refinery',
+                specId: 'metal_refinery',
+                materials: {'metal_ore': chosen},
+              ),
+            ],
+            edges: [
+              PipelineEdge(
+                id: 'e',
+                fromNodeId: 'src',
+                fromPortId: sourcePortId,
+                toNodeId: 'refinery',
+                toPortId: orePort.id,
+              ),
+            ],
+          );
+
+      expect(
+          solver
+              .solve(fed('iron_ore', 'iron_ore'))
+              .issues
+              .where((i) => i.severity == IssueSeverity.error),
+          isEmpty);
+      final wrong = solver.solve(fed('copper_ore', 'iron_ore'));
+      expect(wrong.status, SolveStatus.invalid);
+      expect(wrong.issues.map((i) => i.message).join(),
+          contains('carries copper_ore into a iron_ore port'));
+    });
+
+    test('every ore in the class says what it refines into', () {
+      final ore = db.itemOrThrow('metal_ore');
+      final silent = [
+        for (final member in ore.members)
+          if (db.itemOrThrow(member).refinesTo == null) member,
+      ];
+      // Galena makes lead, which this app has no item for; anything else going
+      // quiet here means a refinery that cannot say what it made.
+      expect(silent, ['galena']);
+    });
+  });
+
 }

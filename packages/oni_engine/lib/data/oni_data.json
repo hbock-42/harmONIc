@@ -1012,19 +1012,6 @@
       "name": "Egg Shell",
       "category": "solid",
       "tags": []
-    },
-    {
-      "id": "peat_or_wood",
-      "name": "Peat or Wood",
-      "category": "solid",
-      "members": [
-        "peat",
-        "lumber",
-        "gum_wood"
-      ],
-      "tags": [
-        "class"
-      ]
     }
   ],
   "processes": [
@@ -6882,43 +6869,6 @@
       }
     },
     {
-      "id": "smoker_brisket",
-      "name": "Smoker (Tender Brisket)",
-      "kind": "building",
-      "buildingId": "smoker",
-      "powerWatts": 0,
-      "heatKdtuPerSecond": 9,
-      "dupeLabourSecondsPerCycle": 0,
-      "footprintWidth": 4,
-      "footprintHeight": 3,
-      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, and every recipe on this building also burns 100 kg of \"either Peat or Wood\" — the page says so under the table rather than in the recipe, which is easy to miss. Either does, in the same amount, so the port asks for the pair of them. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
-      "tags": [
-        "food",
-        "prehistoric",
-        "unverified"
-      ],
-      "ports": [
-        {
-          "item": "tough_meat",
-          "direction": "input",
-          "rate": 10.0
-        },
-        {
-          "item": "peat_or_wood",
-          "direction": "input",
-          "rate": 166.66666666666666
-        },
-        {
-          "item": "calories",
-          "direction": "output",
-          "rate": 26.666666666666668
-        }
-      ],
-      "build": {
-        "metal_ore": 400
-      }
-    },
-    {
       "id": "dehydrator",
       "name": "Dehydrator",
       "kind": "building",
@@ -6970,6 +6920,82 @@
       "build": {
         "refined_metal": 200,
         "plastic": 100
+      }
+    },
+    {
+      "id": "smoker_brisket_wood",
+      "name": "Smoker (Tender Brisket, Wood)",
+      "kind": "building",
+      "buildingId": "smoker",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 9,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of wood to do it. The page gives the fuel as \"either Peat or Wood\" in a note under the recipes, so there is one of these per fuel rather than an invented \"peat or wood\" material — the game has no such thing. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
+      "tags": [
+        "food",
+        "prehistoric",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "tough_meat",
+          "direction": "input",
+          "rate": 10.0
+        },
+        {
+          "item": "wood",
+          "direction": "input",
+          "rate": 166.66666666666666,
+          "id": "fuel"
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 26.666666666666668
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "smoker_brisket_peat",
+      "name": "Smoker (Tender Brisket, Peat)",
+      "kind": "building",
+      "buildingId": "smoker",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 9,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of peat to do it. The page gives the fuel as \"either Peat or Wood\" in a note under the recipes, so there is one of these per fuel rather than an invented \"peat or wood\" material — the game has no such thing. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
+      "tags": [
+        "food",
+        "prehistoric",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "tough_meat",
+          "direction": "input",
+          "rate": 10.0
+        },
+        {
+          "item": "peat",
+          "direction": "input",
+          "rate": 166.66666666666666,
+          "id": "fuel"
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 26.666666666666668
+        }
+      ],
+      "build": {
+        "metal_ore": 400
       }
     }
   ],
