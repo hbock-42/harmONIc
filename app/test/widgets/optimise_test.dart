@@ -104,4 +104,41 @@ void main() {
     // build is bounded. "As much as you like" is not an answer.
     expect(textContaining('nothing in this build limits it'), findsOneWidget);
   });
+
+  testWidgets('a supply node asks the same question from the other end',
+      (tester) async {
+    // You have said what you want: 5 kg/s of iron. The question is now what it
+    // costs you, and the answer is a third less ore.
+    final pipeline = twoWays().copyWith(pins: [
+      const PortRatePin(
+          nodeId: 'sink_iron', portId: 'in', ratePerSecond: 5000),
+    ]);
+    final controller = await pumpEditor(tester, pipeline);
+    expect(controller.solution.nodes['src_iron_ore']!.count,
+        closeTo(7500, 1e-6));
+
+    controller.select(const NodeSelection('src_iron_ore'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Use as little as possible'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Use as little as possible'));
+    await tester.pumpAndSettle();
+
+    expect(controller.solution.nodes['src_iron_ore']!.count,
+        closeTo(5000, 1e-6));
+    expect(controller.solution.nodes['sink_iron']!.count, closeTo(5000, 1e-6),
+        reason: 'and you still get what you asked for');
+    expect(textContaining('Divided to need only'), findsOneWidget);
+  });
+
+  testWidgets('and an output node is not asked to use less of itself',
+      (tester) async {
+    // The two ends ask different questions, and each node asks only its own.
+    final controller = await pumpEditor(tester, twoWays());
+    controller.select(const NodeSelection('sink_iron'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Use as little as possible'), findsNothing);
+    expect(find.text('Get as much as possible'), findsOneWidget);
+  });
 }

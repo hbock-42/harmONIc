@@ -572,7 +572,12 @@ class PipelineController extends ChangeNotifier {
     return false;
   }
 
-  /// Divides everything that is divided so this output gets as much as it can.
+  /// Divides everything that is divided, to the good of this boundary node.
+  ///
+  /// On an output node that means as much of it as the build can give; on a
+  /// supply node, as little of it as the build can manage. The two are the
+  /// same question asked from either end, and which one is being asked is a
+  /// fact about the node rather than a setting.
   ///
   /// The simplex chooses; what it chose is written back as ordinary shares, so
   /// every number on screen still comes from the solver that has always
@@ -580,15 +585,27 @@ class PipelineController extends ChangeNotifier {
   ///
   /// Returns what the answer came to, or null when there is not one: an
   /// unpinned supply makes "as much as possible" unbounded, and contradictory
-  /// pins make it impossible.
-  double? optimiseFor(String sinkNodeId) {
-    final node = _pipeline.node(sinkNodeId);
+  /// pins make either question impossible.
+  double? optimiseFor(String boundaryNodeId) {
+    final node = _pipeline.node(boundaryNodeId);
     if (node == null) return null;
     final spec = database.process(node.specId);
-    final wanted = spec?.inputs.firstOrNull?.itemId;
-    if (wanted == null) return null;
+    if (spec == null) return null;
 
-    final best = mostOf(_pipeline, database, wanted);
+    final BestCase best;
+    switch (spec.kind) {
+      case ProcessKind.sink:
+        final wanted = spec.inputs.firstOrNull?.itemId;
+        if (wanted == null) return null;
+        best = mostOf(_pipeline, database, wanted);
+      case ProcessKind.source:
+        final spent = spec.outputs.firstOrNull?.itemId;
+        if (spent == null) return null;
+        best = leastOf(_pipeline, database, spent);
+      default:
+        return null;
+    }
+
     if (!best.isAnswer) return null;
     _apply(withShares(_pipeline, database, best));
     return best.ratePerSecond;

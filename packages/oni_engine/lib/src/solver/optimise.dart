@@ -46,7 +46,26 @@ class BestCase {
 /// - a vented port, which constrains nothing, being spare on purpose.
 ///
 /// What it leaves free is the rest: the shares nobody chose.
-BestCase mostOf(Pipeline pipeline, GameDatabase database, String itemId) {
+BestCase mostOf(Pipeline pipeline, GameDatabase database, String itemId) =>
+    _optimise(pipeline, database, itemId, ProcessKind.sink);
+
+/// The least of [itemId] this build could get away with using.
+///
+/// The mirror of [mostOf], and the question you ask once you know what you
+/// want: *"I want two kilograms of oxygen a second — what is the least algae
+/// that does it?"*. It only means anything when something in the build says
+/// what you want, since the cheapest way to make nothing is to make nothing:
+/// with no pin at all the answer is a build of nothing, and that is what it
+/// will honestly report.
+BestCase leastOf(Pipeline pipeline, GameDatabase database, String itemId) =>
+    _optimise(pipeline, database, itemId, ProcessKind.source);
+
+BestCase _optimise(
+  Pipeline pipeline,
+  GameDatabase database,
+  String itemId,
+  ProcessKind boundary,
+) {
   final nodes = pipeline.nodes;
   if (nodes.isEmpty) return const BestCase(status: LpStatus.infeasible);
 
@@ -127,20 +146,24 @@ BestCase mostOf(Pipeline pipeline, GameDatabase database, String itemId) {
     }
   }
 
-  // What we are asking for: everything this item delivers to an output node.
-  // An output node is defined as one unit per g/s, so its count *is* the rate.
+  // What we are asking about: every boundary node that carries this item, in
+  // or out. A boundary node is defined as one unit per g/s, so its count *is*
+  // the rate, and the objective is simply their sum.
   final objective = row();
   var asked = false;
   for (final node in nodes) {
     final spec = database.processOrThrow(node.specId);
-    if (spec.kind != ProcessKind.sink) continue;
-    if (!spec.inputs.any((p) => p.itemId == itemId)) continue;
+    if (spec.kind != boundary) continue;
+    final ports = boundary == ProcessKind.sink ? spec.inputs : spec.outputs;
+    if (!ports.any((p) => p.itemId == itemId)) continue;
     objective[nodeColumn[node.id]!] = 1;
     asked = true;
   }
   if (!asked) return const BestCase(status: LpStatus.infeasible);
 
-  final result = solveLp(objective: objective, constraints: constraints);
+  final result = boundary == ProcessKind.sink
+      ? solveLp(objective: objective, constraints: constraints)
+      : minimiseLp(objective: objective, constraints: constraints);
   if (result.status != LpStatus.optimal) {
     return BestCase(status: result.status);
   }

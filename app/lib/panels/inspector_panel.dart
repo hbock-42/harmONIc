@@ -329,8 +329,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
             onPinned: () => setState(() => _amount.text = _currentPinText()),
           ),
         ],
-        if (spec.kind == ProcessKind.sink &&
-            controller.hasSplitToChoose(node.id)) ...[
+        if (_isBoundary && controller.hasSplitToChoose(node.id)) ...[
           const SizedBox(height: OniSpacing.sm),
           _TheMostOfIt(controller: controller, node: node, spec: spec),
         ],
@@ -1512,11 +1511,12 @@ class _EdgeShare extends StatelessWidget {
 
 /// What to build a pipe out of, for something this hot.
 ///
-/// "Get as much of this as the build can give."
+/// "Get as much of this as the build can give", or as little as it can manage.
 ///
-/// Shown on an output node, and only where something in the build is divided
-/// and nobody has said how: without a choice there is nothing to choose, and
-/// the button would be offering to do nothing.
+/// The same question from either end: an output node wants the most of what it
+/// collects, a supply node wants to spend the least of what it brings. Shown
+/// only where something in the build is divided, since without a choice there
+/// is nothing to choose and the button would be offering to do nothing.
 ///
 /// What it does is set shares — the same ones somebody could have typed — so
 /// afterwards the build is an ordinary build, the numbers come from the
@@ -1541,25 +1541,40 @@ class _TheMostOfItState extends State<_TheMostOfIt> {
 
   @override
   Widget build(BuildContext context) {
-    final item =
-        widget.controller.database.item(widget.spec.inputs.first.itemId);
+    final wanting = widget.spec.kind == ProcessKind.sink;
+    final ports = wanting ? widget.spec.inputs : widget.spec.outputs;
+    final item = widget.controller.database.item(ports.first.itemId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         OniButton(
-          label: 'Get as much as possible',
+          label: wanting
+              ? 'Get as much as possible'
+              : 'Use as little as possible',
           compact: true,
           onPressed: () {
             final most = widget.controller.optimiseFor(widget.node.id);
             setState(() {
+              final rate = most == null
+                  ? ''
+                  : item?.formatRate(most, RateDisplay.perSecond) ??
+                      most.toStringAsFixed(1);
               _said = most == null
-                  // The two ways there is no answer, said as what to do about
-                  // them rather than as a status.
-                  ? 'There is no most: nothing in this build limits it, or two '
-                      'amounts you have set contradict each other.'
-                  : 'Divided to give ${item?.formatRate(most, RateDisplay.perSecond) ?? most.toStringAsFixed(1)}. '
-                      'The splits it chose are on the wires, and undo puts '
-                      'them back.';
+                  // The ways there is no answer, said as what to do about them
+                  // rather than as a status. A supply with no amount set is
+                  // infinite, so "the most" has no answer; and pins that
+                  // contradict each other have none either way.
+                  ? (wanting
+                      ? 'There is no most: nothing in this build limits it, or '
+                          'two amounts you have set contradict each other.'
+                      : 'There is no least: say what you want out of the build '
+                          'first, or two amounts you have set contradict each '
+                          'other.')
+                  : wanting
+                      ? 'Divided to give $rate. The splits it chose are on the '
+                          'wires, and undo puts them back.'
+                      : 'Divided to need only $rate. The splits it chose are on '
+                          'the wires, and undo puts them back.';
             });
           },
         ),

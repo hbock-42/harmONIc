@@ -87,8 +87,16 @@ Do it, in this order, and never with the LP as the only path.
    typed, and every figure the app shows still comes from the elimination. The
    agreement test is per template: optimise, write the shares back, solve, and
    the counts must match what the ordinary solver said to six places.
-3. **`E3-7d` — the rest of the questions.** Minimise a raw input, then the
-   objectives that are not a single port: least heat, least power, least floor.
+3. **`E3-7d` — minimise a raw input. Done**, and it is the same machinery read
+   from the other end: an output node maximises what it collects, a supply node
+   minimises what it brings. Which question a node asks is a fact about the
+   node, not a setting.
+4. **`E3-7e` — the objectives that are not a port.** Least heat, least power,
+   least floor. The engine could take any of them tomorrow — they are one
+   coefficient per node — and none of them has an obvious home in the app,
+   which is the part to work out first. Building them before that would be
+   building something nobody can reach, which this repository has spent a
+   fortnight undoing.
 
 Nothing here changes the default path. A build with every share set has no
 freedom, the LP would return exactly what the elimination returns, and running

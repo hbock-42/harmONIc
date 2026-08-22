@@ -103,6 +103,47 @@ void main() {
     }
   });
 
+  group('the same question from the other end', () {
+    /// The same two ways of refining, but now you have said what you want out
+    /// of it: 5 kg/s of iron.
+    Pipeline wanting() {
+      final pipeline = twoWays();
+      return pipeline.copyWith(pins: [
+        const PortRatePin(nodeId: 'sink_iron', portId: 'in', ratePerSecond: 5000),
+      ]);
+    }
+
+    test('the least ore that gets you what you asked for', () {
+      // Split evenly it takes 7.5 kg/s of ore to make 5 of metal. Through the
+      // refinery alone it takes 5, and the crusher stands idle.
+      expect(solver.solve(wanting()).nodes['src_iron_ore']!.count,
+          closeTo(7500, 1e-6));
+
+      final least = leastOf(wanting(), db, 'iron_ore');
+      expect(least.status, LpStatus.optimal);
+      expect(least.ratePerSecond, closeTo(5000, 1e-6));
+      expect(least.nodeCounts['crusher'], closeTo(0, 1e-9));
+    });
+
+    test('and the ordinary solver reproduces that too', () {
+      final chosen = withShares(wanting(), db, leastOf(wanting(), db, 'iron_ore'));
+      final solved = solver.solve(chosen);
+
+      expect(solved.status, SolveStatus.solved);
+      expect(solved.nodes['src_iron_ore']!.count, closeTo(5000, 1e-6));
+      expect(solved.nodes['sink_iron']!.count, closeTo(5000, 1e-6),
+          reason: 'you still get what you asked for');
+    });
+
+    test('with nothing asked for, the cheapest build is no build', () {
+      // Honest rather than clever: the least ore that makes nothing is none,
+      // and a build with no amount set is asking for nothing.
+      final least = leastOf(twoWays().copyWith(pins: const []), db, 'iron_ore');
+      expect(least.status, LpStatus.optimal);
+      expect(least.ratePerSecond, closeTo(0, 1e-9));
+    });
+  });
+
   group('what it will not argue with', () {
     test('a share you set yourself', () {
       // An explicit share is a decision. The optimiser works around it rather

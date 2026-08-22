@@ -81,12 +81,12 @@ On a node:
   cares.
 - **Takes** on a wire — how much of a producer's output that line gets, when one
   output feeds two things. "An even split" is a real answer, not a default
-  nobody chose. Or select the output node and press **Get as much as
-  possible**: where a build divides and nobody has said how, that works out the
-  division that delivers the most, and writes it onto the wires as ordinary
-  shares you can then change. It answers "there is no most" when nothing limits
-  the build — an unpinned supply is infinite — or when two amounts you have set
-  contradict each other.
+  nobody chose. Or let it choose: where a build divides
+  and nobody has said how, an output node offers **Get as much as possible** and
+  a supply node offers **Use as little as possible**. Both work out the division
+  that answers the question and write it onto the wires as ordinary shares you
+  can then change. Both say when there is no answer — nothing limits the build,
+  or nothing has been asked of it, or two amounts you set contradict each other.
 - **Vent** on a port — this output goes nowhere on purpose. Without it, a port
   making more than anything takes reads as a contradiction rather than as spare.
 

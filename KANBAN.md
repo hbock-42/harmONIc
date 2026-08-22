@@ -71,6 +71,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-7d` **"Use as little as possible"** — the mirror of the last one, and the question you
+  ask once you know what you want: five kilograms of iron a second costs 7.5 of ore split
+  evenly and 5 through the refinery alone. Which question a boundary node asks is a fact
+  about the node rather than a setting — an output node wants the most of what it collects,
+  a supply node the least of what it brings. With nothing asked of the build it answers
+  honestly that the cheapest way to make nothing is to make nothing
 - `E3-7c` **"Get as much as possible"** — 10 kg/s of ore feeding a refinery and a crusher
   gives 6.7 kg/s of metal split evenly, and 10 through the refinery alone. The app has
   always split what nobody divided evenly, which is a fair guess and rarely the best one;
@@ -637,7 +643,8 @@ _(empty)_
 | E3-7 | spike | Simplex / LP upgrade | decided in `docs/CHOOSING-SHARES.md`: the shares cannot be variables (`share·x` is not linear) — the *flows* have to be, with output balances becoming inequalities. Do it in three steps, and never as the only path |
 | E3-7a | ✅ | The simplex itself | two-phase, Bland's rule throughout because every graph with a loop is degenerate; tested against textbook problems and against brute force on a hundred random ones |
 | E3-7c | ✅ | One question, end to end | "Get as much as possible" on an output node. The simplex chooses the splits and they are written back as ordinary shares, so there is still one solver and one set of numbers |
-| E3-7d | P2 | The rest of the questions | minimise a raw input; then least heat, least power, least floor |
+| E3-7d | ✅ | Minimise a raw input | the same machinery from the other end: a supply node asks what the build could get away with using, and still delivers what was asked of it |
+| E3-7e | P2 | The objectives that are not a port | least heat, least power, least floor — one coefficient per node in the engine, and no obvious home in the app, which is the part to work out first |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | ✅ | Sensitivity | "going from 3 to 4": what the next one buys and costs, worked out by solving the build again rather than by estimating |
 | E3-9 | ✅ | Solver perf test | 500-node chain and 500-node fan, both under 50 ms; writing it found the elimination doing eight times the work it needed to |
