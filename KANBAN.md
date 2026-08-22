@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-6b` **A material you invent is a material you have** — went looking to put a "write the
+  recipe" button on the port menu's dead end, and asking *why* that list is ever empty found
+  the real thing: an item added by hand got none of the generated nodes every other item
+  gets, so a recipe using it could not be fed — not even with "I have some". The generator
+  runs over the merged catalogue now, so an invented material has a supply, an output, and a
+  pump if it flows. The button was the wrong fix and is not here; with that closed, an empty
+  port menu can only mean a pack you switched off, and it says so instead
 - `E9-8` **Searching the palette by material** — "what makes oxygen?" is the first question
   anybody asks a production planner, and typing it found the Oxygen Diffuser and the Oxylite
   Refinery and not the Electrolyzer, because the list matched names. It matches what a
@@ -889,6 +896,7 @@ _(empty)_
 | E5-2a | ✅ | Persistence groundwork |
 | E5-6 | ✅ | Corrected recipes are named |
 | E5-6a | ✅ | Correcting a recipe stopped erasing what it is built from | `editable` dropped the build cost and the overheat rating, and the form had no field for either. Both carried through now, and the cost has a line per material |
+| E5-6b | ✅ | A material you invent is a material you have | a custom item got no supply or output node, so nothing could feed the recipe that asked for it |
 | E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
 | E5-9 | ✅ | Somewhere for a browser to keep things | `localStorage`, behind the same `JsonStore` the file store is behind. Checked in a real Chrome rather than assumed: `flutter test --platform chrome` |

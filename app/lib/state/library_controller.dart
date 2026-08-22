@@ -119,7 +119,12 @@ class LibraryController extends ChangeNotifier {
   Future<void> _persist() => _store.write(pack.toJson());
 
   void _rebuild() {
-    _database = GameDatabase(
+    // Generated afterwards rather than merged in: an item somebody invented
+    // needs a supply and an output like any other, and the bundled database
+    // cannot have made them because the item did not exist yet. Without this
+    // a custom material was a dead end — nothing could feed the recipe that
+    // asked for it, not even "I have some".
+    _database = withGeneratedNodes(GameDatabase(
       dataVersion: _bundled.dataVersion,
       gameBuild: _bundled.gameBuild,
       items: {
@@ -130,19 +135,34 @@ class LibraryController extends ChangeNotifier {
         for (final p in _bundled.processes) p.id: p,
         ..._customProcesses,
       }.values,
-    );
+    ));
     notifyListeners();
   }
 
   /// A blank definition to start editing from.
-  ProcessSpec draft({String? id}) => ProcessSpec(
+  ProcessSpec draft({String? id, List<Port> ports = const []}) => ProcessSpec(
         id: id ?? 'custom_${DateTime.now().microsecondsSinceEpoch}',
         name: 'New process',
         kind: ProcessKind.building,
-        ports: const [],
+        ports: ports,
         tags: const {'custom', 'unverified'},
         description: 'UNVERIFIED: added by hand.',
       );
+
+  /// A draft that already answers the port somebody was looking at.
+  ///
+  /// Reached from "nothing here makes that": the form opens knowing what was
+  /// wanted, so the first line is filled in and only the rate is missing. What
+  /// fills an *input* is something that produces, and the other way round.
+  ProcessSpec draftFor(Port port) => draft(ports: [
+        Port(
+          id: port.itemId,
+          itemId: port.itemId,
+          direction:
+              port.isInput ? PortDirection.output : PortDirection.input,
+          ratePerSecond: 0,
+        ),
+      ]);
 
   /// A copy of an existing process, ready to be edited into an override.
   ///

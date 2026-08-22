@@ -37,6 +37,10 @@ class PortMenu extends StatefulWidget {
 class _PortMenuState extends State<PortMenu> {
   final TextEditingController _search = TextEditingController();
 
+  /// How many of the things that *could* fill this port your pack switches
+  /// are hiding. The reason an empty list is empty.
+  int _hidden = 0;
+
   @override
   void dispose() {
     _search.dispose();
@@ -54,11 +58,14 @@ class _PortMenuState extends State<PortMenu> {
 
     final item = controller.database.item(port.itemId);
     final query = _search.text.trim().toLowerCase();
-    final candidates = controller
-        .candidatesFor(widget.ref)
+    final offered = controller.candidatesFor(widget.ref);
+    final candidates = offered
         .where(widget.offers)
         .where((s) => query.isEmpty || s.name.toLowerCase().contains(query))
         .toList();
+    // Only what the packs hide, not what the search box narrows: somebody who
+    // typed a word knows why the list is short.
+    _hidden = query.isEmpty ? offered.length - offered.where(widget.offers).length : 0;
 
     return Container(
       width: PortMenu.width,
@@ -111,9 +118,21 @@ class _PortMenuState extends State<PortMenu> {
             child: candidates.isEmpty
                 ? Padding(
                     padding: const EdgeInsets.all(OniSpacing.md),
-                    child: Text('Nothing in the database makes that.',
-                        style: OniType.body.copyWith(
-                            fontSize: 12, color: OniColors.textFaint)),
+                    child: Text(
+                      // Every item has a supply and an output, generated —
+                      // including one you invented — so an empty list is not
+                      // "the app knows nothing about this". It is a pack you
+                      // have switched off, and saying which is the difference
+                      // between a dead end and a door.
+                      _hidden == 0
+                          ? 'Nothing here ${port.isInput ? 'makes' : 'takes'} '
+                              '${item?.name.toLowerCase() ?? port.itemId}.'
+                          : '$_hidden '
+                              '${_hidden == 1 ? 'recipe is' : 'recipes are'} '
+                              'hidden by your pack filters.',
+                      style: OniType.body
+                          .copyWith(fontSize: 12, color: OniColors.textFaint),
+                    ),
                   )
                 : ListView.builder(
                     shrinkWrap: true,

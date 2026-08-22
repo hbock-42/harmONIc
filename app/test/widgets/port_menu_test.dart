@@ -310,15 +310,18 @@ void main() {
       expect(find.textContaining('Salt Water supply'), findsWidgets);
     });
 
-    testWidgets('with nothing left to offer it says so, not nothing',
-        (tester) async {
+    testWidgets('with everything filtered out it says which', (tester) async {
+      // An empty list has two meanings and they want different answers. This
+      // one is "you switched a pack off", and saying so is the difference
+      // between a dead end and a door — every item has a supply node, so the
+      // *other* meaning is now rare enough to be worth distinguishing.
       final controller = await pumpCanvas(tester, offers: (_) => false);
 
       await tester.tapAt(screenPort(controller, const PortRef('elec', 'water')));
       await tester.pump();
 
       expect(find.byType(PortMenu), findsOneWidget);
-      expect(find.textContaining('Nothing'), findsWidgets);
+      expect(find.textContaining('hidden by your pack filters'), findsOneWidget);
     });
   });
 }

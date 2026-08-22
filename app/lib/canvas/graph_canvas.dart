@@ -46,6 +46,7 @@ class GraphCanvas extends StatefulWidget {
   /// labels on the wires, which are where most rates are actually read.
   final VoidCallback onToggleRates;
 
+
   @override
   State<GraphCanvas> createState() => GraphCanvasState();
 }

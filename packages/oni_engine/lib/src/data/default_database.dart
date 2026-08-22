@@ -12,8 +12,17 @@ import 'oni_data.g.dart';
 /// A source is defined as **1 unit per second per running unit**, so its solved
 /// count *is* the rate: pin `source:water` to 10000 and you have said
 /// "I have 10 kg/s of water".
-GameDatabase loadDefaultDatabase() {
-  final base = GameDatabase.fromJsonString(oniDataJson);
+GameDatabase loadDefaultDatabase() => withGeneratedNodes(
+      GameDatabase.fromJsonString(oniDataJson),
+    );
+
+/// The same generation, for a database somebody has added to.
+///
+/// A material you invent is a material you have: it needs a supply and an
+/// output like any other, and a pump and a filter and a cooler if it flows.
+/// Without this a custom item was a dead end — nothing could feed the recipe
+/// that asked for it, not even "I have some".
+GameDatabase withGeneratedNodes(GameDatabase base) {
   final extra = <ProcessSpec>[];
   for (final item in base.items) {
     // A supply node is only as base-game as the thing it supplies. Without
