@@ -8,7 +8,10 @@ oxygen"), and every other building, flow, watt and kDTU scales to match.
 
 ```
 packages/oni_engine/   pure Dart — model, solver, game data. No Flutter.
-app/                   Flutter app (macOS, web, iOS, Android).
+app/                   Flutter app. macOS is the one that is built and opened
+                       by tool/smoke.sh; web compiles and would forget your work
+                       at the first autosave, since nobody has written the
+                       browser half of the store yet.
 docs/USING.md          how to use the app, and what it deliberately does not know.
 docs/SOLVER.md         how the solver works, decided before it was written.
 docs/PERFORMANCE.md    how it was made eight times quicker, and how to do it again.

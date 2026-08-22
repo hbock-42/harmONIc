@@ -14,6 +14,22 @@ abstract class JsonStore {
   Future<void> write(Map<String, dynamic> data);
 }
 
+/// The store this platform can actually keep something in.
+///
+/// A file, everywhere this app has been run. On the web `dart:io` compiles —
+/// it is stubbed there — and then throws the moment anything touches a file,
+/// so a build served in a browser would lose the pipeline you were drawing at
+/// the first autosave. Until somebody writes the browser half, saying so is
+/// better than throwing: this keeps the session in memory and the app works
+/// for as long as the tab is open.
+///
+/// [kJsonStorePersists] is how the app can say which it got.
+JsonStore jsonStoreNamed(String fileName) =>
+    kJsonStorePersists ? FileJsonStore(fileName) : MemoryJsonStore();
+
+/// False where nothing written here survives a restart.
+const bool kJsonStorePersists = bool.fromEnvironment('dart.library.io');
+
 /// A JSON file in the platform's application-support directory.
 class FileJsonStore implements JsonStore {
   const FileJsonStore(this.fileName);

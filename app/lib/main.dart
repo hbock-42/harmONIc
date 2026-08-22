@@ -17,16 +17,16 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final library = LibraryController(
     bundled: loadDefaultDatabase(),
-    store: const FileJsonStore('user_processes.json'),
+    store: jsonStoreNamed('user_processes.json'),
   );
   // Recipes the player has written down are part of the catalogue from the
   // first frame, so nothing on screen ever shows the stale numbers.
   await library.load();
-  final display = DisplayController(const FileJsonStore('settings.json'));
+  final display = DisplayController(jsonStoreNamed('settings.json'));
   await display.load();
   runApp(OniPipelineApp(
     library: library,
-    pipelineStore: const FileJsonStore('pipelines.json'),
+    pipelineStore: jsonStoreNamed('pipelines.json'),
     displaySettings: display,
   ));
 }

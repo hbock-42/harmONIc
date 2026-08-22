@@ -45,7 +45,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 **Data still to gather**
 
 
-- `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
+- `E4-35c` The plants that want a pollinator: a Sweatcorn Stalk sets fruit only when a
+  Mimika or a Divergent visits it, and how often that happens is a fact about your base
+  rather than about the plant. Its water is unpublished as well
 - `E4-26` The rest of both packs: Jawbo (yields unpublished), Rhex (eats other critters,
   which a flow model cannot express), Gnit and Mimika (produce nothing), and the regular
   Lumb (its peat rate is stated nowhere). The Bammoth came out of this list on 2026-08-22,
@@ -69,6 +71,23 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-8a` **The README stopped claiming four platforms** — it said "macOS, web, iOS,
+  Android", and what is true is that macOS is built and opened by `tool/smoke.sh` while the
+  rest have never been run. Web is the interesting one: it *compiles*, because `dart:io` is
+  stubbed there rather than absent, and then throws the moment anything touches a file — so
+  a browser build would have lost the pipeline you were drawing at the first autosave. It
+  now gets a memory store instead, which forgets on reload and says so, and the browser half
+  is `E5-9`
+- `E4-35b` **The plants that were never checked** — the row had an empty note, which is the
+  worst kind: nobody could tell whether it was hard or merely unread. Read now. A Sporechid
+  produces nothing a pipeline carries — a thousand zombie spores a second and eighty decor —
+  so it is not a recipe at all. The Prehistoric food plants are a different problem: a
+  Sweatcorn Stalk needs a Mimika or a Divergent to pollinate it, and how often that happens
+  is a fact about your base's critters rather than about the plant. That half is `E4-35c`,
+  with the reason written down
+- `E4-38` **Food quality, decided against** — for the reason germs were. It changes no rate:
+  a Duplicant eats the same kilocalories of a bad meal as a good one, and what quality buys
+  is morale, which is a person rather than a flow
 - `E8-11` **The guide, read as a reader would** — fifteen features in a fortnight were each
   appended to whatever bullet was nearest, and one bullet had quietly become three features
   and a broken line. Letting the app choose the splits now has a section of its own, the
@@ -764,9 +783,10 @@ _(empty)_
 | E4-33 | ✅ | The food chain | Bristle Blossom, Dusk Cap, Waterweed, Sleet Wheat and the Electric Grill |
 | E4-34 | ✅ | Cooking | Gas Range, Deep Fryer and Sushi Bar, gas burned and Duplicant time included |
 | E4-34b | ✅ | The Microbe Musher and Smoker | both seeded; food *quality* remains unmodelled, which is E4-38 |
-| E4-38 | P3 | Food quality | morale is half the reason anyone cooks, and this model has no notion of it |
+| E4-38 | ❌ | Food quality | decided against, for the reason germs were: it changes no rate. A Duplicant eats the same kilocalories of a bad meal as a good one — what quality buys is morale, which is a person and not a flow |
 | E4-35 | ✅ | Three more crops | Pincha Pepperplant, Thimble Reed, Nosh Sprout, each with a grazed twin |
-| E4-35b | P3 | Sporechid, and the Prehistoric and Aquatic food plants |  |
+| E4-35b | ✅ | Sporechid, and the Prehistoric and Aquatic food plants | checked 2026-08-23 and closed by finding out what each one is: the Sporechid produces nothing a pipeline carries, and the Prehistoric food plants want a pollinator, which is not a flow. What is left is `E4-35c` |
+| E4-35c | P3 | The plants that want a pollinator | Sweatcorn and its neighbours need a Mimika or a Divergent to set fruit, and how often that happens is a fact about your base's critters rather than about the plant. Their water is unpublished too |
 | E4-36 | ✅ | Harvested and grazed are separate processes | offering both on one process let a farm be counted twice |
 | E4-37 | ✅ | The rest of the Aquatic plants | Sodicane and Clampum seeded; the other five are not plants a pipeline has anything to say about, which is written out below |
 | E4-37b | P3 | Pinpoket | its yield is quoted as processed diamond per cycle rather than as a harvest, and "0.25 cycles per unit" contradicts its 16-cycle growth. Wants somebody with the game open |
@@ -783,6 +803,8 @@ _(empty)_
 | E5-6 | ✅ | Corrected recipes are named |
 | E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
+| E5-9 | P2 | Somewhere for a browser to keep things | the `JsonStore` seam was built for this and nothing has filled it. Until it is, a web build keeps the session in memory and forgets it on reload — which is at least said out loud now, rather than throwing at the first autosave |
+| E5-8a | ✅ | Which platforms this really runs on | macOS is built and smoke-tested; web compiles and would forget everything, so it says so and takes a memory store rather than a file store that throws |
 
 ## E6 — App shell & foundations
 
