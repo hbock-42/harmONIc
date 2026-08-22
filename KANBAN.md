@@ -117,6 +117,10 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E8-8` **A rate-plausibility audit** — nothing measured in grams moves less than a gram a
+  second, or more than ten pipes could carry, without a named reason. It is the check that
+  would have caught the Marine Drill, and writing it found Gas Grass asking for liquid
+  chlorine when the gas would do
 - `E4-11a` **The Marine Drill was reporting a thousandth of its sulfur** — 250 kg per
   operation over a 1300 s cycle is 192 g/s, and 0.19 of them had been sitting in a field
   measured in grams since the day it was seeded
@@ -774,6 +778,7 @@ flow, so the solver never had to learn about it.
 | E8-3b | ✅ | Mass-balance audit |
 | E8-6 | ✅ | A guide to using it | `docs/USING.md`: the one idea, the controls in the order you meet them, and a section on what the app deliberately does not know |
 | E8-7 | ✅ | The guide, reachable from inside the app | a ? in the toolbar renders `docs/USING.md` itself, copied into the assets and checked for drift the way the generated data is |
+| E8-8 | ✅ | Rate-plausibility audit | a gram a second at the bottom, ten pipes at the top, and an allowlist that has to say why each exception is real |
 
 ---
 

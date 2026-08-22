@@ -268,6 +268,13 @@ void main() {
         'clampum.fertiliser',
         // 20 kg a cycle of sulfur, solid or liquid.
         'gum_palm.fertiliser',
+        // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
+        'gas_grass.chlorine',
+        'gas_grass.fertiliser',
+        'gas_grass_grazed.chlorine',
+        'gas_grass_grazed.fertiliser',
+        // The wild twins are not here because a wild plant takes nothing at
+        // all — no chlorine, no dirt, nothing to choose between.
       });
     });
 

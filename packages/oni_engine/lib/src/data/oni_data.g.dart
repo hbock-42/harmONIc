@@ -4032,7 +4032,7 @@ const String oniDataJson = r"""
       "id": "gas_grass",
       "name": "Gas Grass",
       "kind": "plant",
-      "description": "Domesticated: 500 g/cycle of chlorine and 25 kg/cycle of dirt, yielding 400 kg of plant husk every 4 cycles. Needs 10,000 lux, which this model does not represent.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -4041,14 +4041,22 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "liquid_chlorine",
+          "item": "chlorine",
           "direction": "input",
-          "rate": 0.833333
+          "rate": 0.833333,
+          "alternatives": [
+            "liquid_chlorine"
+          ],
+          "id": "chlorine"
         },
         {
           "item": "dirt",
           "direction": "input",
-          "rate": 41.666667
+          "rate": 41.666667,
+          "alternatives": [
+            "sand"
+          ],
+          "id": "fertiliser"
         },
         {
           "item": "plant_husk",
@@ -4272,7 +4280,7 @@ const String oniDataJson = r"""
       "id": "gas_grass_grazed",
       "name": "Gas Grass (grazed)",
       "kind": "plant",
-      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 4 cycles, so it offers 25 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing. Grazed rather than harvested: what a critter eats never becomes a crop.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -4281,14 +4289,22 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "liquid_chlorine",
+          "item": "chlorine",
           "direction": "input",
-          "rate": 0.833333
+          "rate": 0.833333,
+          "alternatives": [
+            "liquid_chlorine"
+          ],
+          "id": "chlorine"
         },
         {
           "item": "dirt",
           "direction": "input",
-          "rate": 41.666667
+          "rate": 41.666667,
+          "alternatives": [
+            "sand"
+          ],
+          "id": "fertiliser"
         },
         {
           "item": "gas_grass_growth",
@@ -5981,7 +5997,7 @@ const String oniDataJson = r"""
       "id": "gas_grass_wild",
       "name": "Gas Grass (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, liquid chlorine at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -6165,7 +6181,7 @@ const String oniDataJson = r"""
       "id": "gas_grass_grazed_wild",
       "name": "Gas Grass (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, liquid chlorine at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
