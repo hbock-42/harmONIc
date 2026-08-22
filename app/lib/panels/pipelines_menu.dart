@@ -7,6 +7,7 @@ import '../design/widgets.dart';
 import '../state/library_controller.dart';
 import '../state/pipeline_controller.dart';
 import '../state/workspace_controller.dart';
+import '../storage/exporter.dart';
 
 /// The list of saved pipelines: open one, copy one, throw one away.
 class PipelinesMenu extends StatefulWidget {
@@ -16,6 +17,7 @@ class PipelinesMenu extends StatefulWidget {
     required this.library,
     required this.rateDisplay,
     required this.onClose,
+    this.exporter = const BuildExporter(),
     super.key,
   });
 
@@ -28,6 +30,10 @@ class PipelinesMenu extends StatefulWidget {
   /// Where a build saved as a recipe goes, and where the palette reads from.
   final LibraryController library;
   final RateDisplay rateDisplay;
+
+  /// Where "Export" writes. Injected so a test can be given a temporary
+  /// folder rather than the real downloads one.
+  final BuildExporter exporter;
   final VoidCallback onClose;
 
   static const double width = 280;
@@ -71,6 +77,25 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       text: '${controller.pipeline.name}\n\n$report',
     ));
     if (mounted) setState(() => _message = 'Summary copied.');
+  }
+
+  /// Writes the open build out as a file, for keeping rather than for sending.
+  ///
+  /// The share code is the thing you paste to somebody; it lives until the
+  /// next thing you copy. This is the one you can still open next year.
+  Future<void> _export() async {
+    final id = workspace.currentId;
+    final pipeline = id == null ? null : workspace.pipelineFor(id);
+    if (pipeline == null) return;
+    try {
+      final file = await widget.exporter.export(pipeline);
+      if (mounted) setState(() => _message = 'Saved to ${file.path}');
+    } on Object catch (error) {
+      // A folder that cannot be written to is the whole failure mode here, and
+      // it is worth saying rather than swallowing: an export that silently
+      // does nothing is indistinguishable from one that worked.
+      if (mounted) setState(() => _message = 'It could not be saved: $error');
+    }
   }
 
   /// Saves the open build as a recipe, so it can be one node in a bigger plan.
@@ -262,6 +287,11 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
                   compact: true,
                   onPressed:
                       workspace.currentId == null ? null : _copySummary,
+                ),
+                OniButton(
+                  label: 'Export',
+                  compact: true,
+                  onPressed: workspace.currentId == null ? null : _export,
                 ),
                 OniButton(
                   label: 'Paste build',

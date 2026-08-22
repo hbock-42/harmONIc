@@ -124,6 +124,10 @@ usually too pale to read on near-white.
   snapshot: editing the original later does not change the copy in your plan.
 - **Copy code** puts the build on the clipboard for somebody else's app;
   **copy summary** puts it there as text for a forum post or a note.
+- **Export** writes the build out as a file you can keep. It lands in your
+  downloads folder and the app says the full path; exporting the same build
+  twice keeps both rather than overwriting yesterday's copy. The clipboard is
+  for sending a build to somebody, this is for still having it next year.
 
 ## What this deliberately does not know
 

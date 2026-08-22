@@ -68,17 +68,18 @@ Everything not pulled into **Ready**. Grouped by epic below.
   again on 2026-08-22 — all four are still unpublished
 - `E4-22` The Grooming Station's power draw, if it is ever published
 
-**Saving and sharing**
-
-- `E5-7` Export to a file, for archiving rather than pasting — wants a file-picker
-  dependency nothing else has needed
-
 ### 🚧 In Progress
 
 _(empty)_
 
 ### ✅ Done
 
+- `E5-7` **Export to a file** — the clipboard is how you send a build to somebody, and a
+  share code lives until the next thing you copy. This is the one you can still open next
+  year. No file picker and no dependency for one: it lands in the downloads folder, the way
+  a browser puts a file there without asking, and the app says the full path. Exporting
+  twice keeps both, because overwriting the archive you made yesterday is not what "export"
+  means
 - `E4-32` **A Pip grazes a share, not a plant** — 8.89 % of maturity a cycle, which is four
   fifths of an Arbor Tree or a sixth of a Thimble Reed. That the figure is the same either
   way is what makes it one recipe you pick the crop for. The grazed Thimble Reed has said
@@ -639,7 +640,7 @@ _(empty)_
 | E5-4 | ✅ | Import/export to clipboard |
 | E5-2a | ✅ | Persistence groundwork |
 | E5-6 | ✅ | Corrected recipes are named |
-| E5-7 | P2 | Export to a file | for archiving rather than pasting; wants a file-picker dependency nothing else has needed |
+| E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
 
 ## E6 — App shell & foundations
