@@ -195,4 +195,80 @@ void main() {
     expect(library.customProcesses, isEmpty);
     expect(store.data, isNull);
   });
+
+  Future<void> openExisting(WidgetTester tester, String name) async {
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(PalettePanel),
+        matching: find.byType(OniField),
+      ),
+      name,
+    );
+    await tester.pump();
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+    await gesture.moveTo(tester.getCenter(find.descendant(
+      of: find.byType(PalettePanel),
+      matching: textLabel(name),
+    )));
+    await tester.pump();
+
+    await tester.tap(find.descendant(
+      of: find.byType(PalettePanel),
+      matching: find.text('edit'),
+    ));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('correcting a recipe keeps what it is built from',
+      (tester) async {
+    // The bug this was written for: the form has no field for a build cost, so
+    // saving an override wrote a building made of nothing, and 800 kg of rock
+    // left the shopping list without a word.
+    await pumpEditor(tester);
+    final before = testDatabase.processOrThrow('metal_refinery').buildCost;
+    expect(before, isNotEmpty);
+
+    await openExisting(tester, 'Metal Refinery');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(library.database.processOrThrow('metal_refinery').buildCost, before);
+  });
+
+  testWidgets('and keeps a rating the game gives it', (tester) async {
+    // A Steam Turbine overheats at 1 000 °C whatever it is made of. Editing
+    // its rates has nothing to do with that, so an edit must not lose it.
+    await pumpEditor(tester);
+    expect(testDatabase.processOrThrow('steam_turbine').overheatCelsius, 1000);
+
+    await openExisting(tester, 'Steam Turbine');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(library.database.processOrThrow('steam_turbine').overheatCelsius,
+        1000);
+  });
+
+  testWidgets('and the weight is something you can change', (tester) async {
+    // The other half of the same bug: the inspector tells you to add a cost
+    // with + Recipe, which was a promise the form could not keep. It has a
+    // line per material now, and a button to add one.
+    await pumpEditor(tester);
+    await openExisting(tester, 'Metal Refinery');
+
+    expect(find.text('TO BUILD ONE  (KG)'), findsOneWidget);
+    expect(find.text('+ Built from'), findsOneWidget);
+
+    await tester.enterText(find.byKey(costKilogramsFieldKey(0)), '400');
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProcessEditor), findsNothing);
+    expect(library.database.processOrThrow('metal_refinery').buildCost,
+        {'raw_mineral': 400.0});
+  });
 }

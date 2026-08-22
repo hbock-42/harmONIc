@@ -6,6 +6,9 @@ import '../design/tokens.dart';
 import '../design/widgets.dart';
 import '../state/library_controller.dart';
 
+/// Named so a test can type into the right one of several weights.
+Key costKilogramsFieldKey(int index) => ValueKey('cost-kg-$index');
+
 /// A form for writing down a recipe the app does not know.
 ///
 /// The wiki lags every DLC and never publishes some numbers at all, so this is
@@ -45,6 +48,15 @@ class _PortDraft {
   final TextEditingController rate;
 }
 
+/// One line of "what it takes to put one up": a material and a weight.
+class _CostDraft {
+  _CostDraft({required this.itemId, required String kilograms})
+      : kilograms = TextEditingController(text: kilograms);
+
+  String itemId;
+  final TextEditingController kilograms;
+}
+
 class _ProcessEditorState extends State<ProcessEditor> {
   late final TextEditingController _name =
       TextEditingController(text: widget.spec.name);
@@ -64,6 +76,14 @@ class _ProcessEditorState extends State<ProcessEditor> {
         ),
   ];
 
+  /// What it costs to build, in the same shape as the ports. Carried over from
+  /// whatever is being edited: overriding a Metal Refinery's rates should not
+  /// quietly throw away the 800 kg of rock it is made of.
+  late final List<_CostDraft> _costs = [
+    for (final entry in widget.spec.buildCost.entries)
+      _CostDraft(itemId: entry.key, kilograms: _trim(entry.value)),
+  ];
+
   final List<Item> _newItems = [];
   String? _error;
 
@@ -80,6 +100,9 @@ class _ProcessEditorState extends State<ProcessEditor> {
     _heat.dispose();
     for (final port in _ports) {
       port.rate.dispose();
+    }
+    for (final cost in _costs) {
+      cost.kilograms.dispose();
     }
     super.dispose();
   }
@@ -153,6 +176,20 @@ class _ProcessEditorState extends State<ProcessEditor> {
       return;
     }
 
+    final buildCost = <String, double>{};
+    for (final draft in _costs) {
+      final kilograms = double.tryParse(draft.kilograms.text.trim());
+      if (draft.itemId.isEmpty) {
+        setState(() => _error = 'Every line needs an item.');
+        return;
+      }
+      if (kilograms == null || kilograms <= 0) {
+        setState(() => _error = 'What it is built from needs a weight.');
+        return;
+      }
+      buildCost[draft.itemId] = kilograms;
+    }
+
     await widget.library.save(
       ProcessSpec(
         id: widget.spec.id,
@@ -163,6 +200,11 @@ class _ProcessEditorState extends State<ProcessEditor> {
         dupeLabourSecondsPerCycle: widget.spec.dupeLabourSecondsPerCycle,
         footprintWidth: widget.spec.footprintWidth,
         footprintHeight: widget.spec.footprintHeight,
+        buildCost: buildCost,
+        // No field of its own: a building the game rates itself keeps its
+        // rating through an edit of its rates, since one has nothing to do
+        // with the other.
+        overheatCelsius: widget.spec.overheatCelsius,
         tags: {...widget.spec.tags, 'custom', 'unverified'},
         description: 'UNVERIFIED: entered by hand.',
       ),
@@ -277,6 +319,17 @@ class _ProcessEditorState extends State<ProcessEditor> {
                   ],
                 ),
                 const SizedBox(height: OniSpacing.lg),
+                _label('To build one  (kg)'),
+                for (final (index, draft) in _costs.indexed)
+                  _costRow(draft, index),
+                const SizedBox(height: OniSpacing.sm),
+                OniButton(
+                  label: '+ Built from',
+                  compact: true,
+                  onPressed: () => setState(
+                      () => _costs.add(_CostDraft(itemId: '', kilograms: ''))),
+                ),
+                const SizedBox(height: OniSpacing.lg),
                 Row(
                   children: [
                     Expanded(
@@ -343,6 +396,44 @@ class _ProcessEditorState extends State<ProcessEditor> {
   Widget _label(String text) => Padding(
         padding: const EdgeInsets.only(bottom: 5),
         child: Text(text.toUpperCase(), style: OniType.label),
+      );
+
+  Widget _costRow(_CostDraft draft, int index) => Padding(
+        padding: const EdgeInsets.only(bottom: OniSpacing.sm),
+        child: Row(
+          children: [
+            Expanded(
+              child: _ItemPicker(
+                database: _db,
+                offersItem: widget.offersItem,
+                extraItems: _newItems,
+                selected: _item(draft.itemId),
+                onSelected: (id) => setState(() => draft.itemId = id),
+                onCreate: (created) => setState(() {
+                  _newItems.add(created);
+                  draft.itemId = created.id;
+                }),
+              ),
+            ),
+            const SizedBox(width: OniSpacing.sm),
+            SizedBox(
+              width: 84,
+              child: OniField(
+                key: costKilogramsFieldKey(index),
+                controller: draft.kilograms,
+                hint: 'kg',
+                textAlign: TextAlign.right,
+              ),
+            ),
+            const SizedBox(width: OniSpacing.xs),
+            OniButton(
+              label: '×',
+              compact: true,
+              tone: OniButtonTone.danger,
+              onPressed: () => setState(() => _costs.remove(draft)),
+            ),
+          ],
+        ),
       );
 
   Widget _portRow(_PortDraft draft) {

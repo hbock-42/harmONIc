@@ -145,6 +145,11 @@ class LibraryController extends ChangeNotifier {
       );
 
   /// A copy of an existing process, ready to be edited into an override.
+  ///
+  /// Everything comes across, including the parts the form has no field for.
+  /// It dropped the build cost and the overheat rating for a while, so
+  /// correcting a Metal Refinery's rates made a refinery built out of nothing
+  /// and the shopping list quietly lost 800 kg of rock.
   ProcessSpec editable(ProcessSpec spec) => ProcessSpec(
         id: spec.id,
         name: spec.name,
@@ -155,6 +160,8 @@ class LibraryController extends ChangeNotifier {
         dupeLabourSecondsPerCycle: spec.dupeLabourSecondsPerCycle,
         footprintWidth: spec.footprintWidth,
         footprintHeight: spec.footprintHeight,
+        buildCost: spec.buildCost,
+        overheatCelsius: spec.overheatCelsius,
         tags: {...spec.tags, 'custom'},
       );
 }

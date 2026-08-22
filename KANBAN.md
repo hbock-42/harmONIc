@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-6a` **Correcting a recipe stopped erasing what it is built from** — found by writing
+  the message that told people to fix an unpriced building with + Recipe, and then looking
+  at whether + Recipe could. It could not, and worse: `editable` did not carry the build
+  cost across, so correcting a Metal Refinery's rates made a refinery built out of nothing
+  and the shopping list lost 800 kg of rock without a word. It lost a Steam Turbine's
+  1 000 °C rating the same way. Both come across now, and the form has a line per material
+  with a button to add one, so the message is a promise it can keep
 - `E3-0a` **The design doc caught up with the design** — `SOLVER.md` is what somebody reads
   first, and it had been describing Gauss–Jordan since the day that was replaced, along with
   a claim of "microseconds" for something measured at 14 ms. Both corrected, with the reason
@@ -836,6 +843,7 @@ _(empty)_
 | E5-4 | ✅ | Import/export to clipboard |
 | E5-2a | ✅ | Persistence groundwork |
 | E5-6 | ✅ | Corrected recipes are named |
+| E5-6a | ✅ | Correcting a recipe stopped erasing what it is built from | `editable` dropped the build cost and the overheat rating, and the form had no field for either. Both carried through now, and the cost has a line per material |
 | E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
 | E5-9 | ✅ | Somewhere for a browser to keep things | `localStorage`, behind the same `JsonStore` the file store is behind. Checked in a real Chrome rather than assumed: `flutter test --platform chrome` |
