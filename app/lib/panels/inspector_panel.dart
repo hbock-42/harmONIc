@@ -1034,19 +1034,23 @@ class _EdgeInspector extends StatelessWidget {
             const SizedBox(height: OniSpacing.md),
             OniStat(label: 'carried by', value: carried),
           ],
-        if (port?.temperatureC case final double celsius) ...[
+        // The temperature the recipe states, or failing that the one the build
+        // works out for this wire — which is usually the only one there is.
+        if (port?.temperatureC ??
+            controller.temperatures.at(PortRef(edge.fromNodeId, edge.fromPortId))
+            case final double celsius) ...[
           const SizedBox(height: OniSpacing.md),
           OniStat(
             label: 'arrives at',
-            value: '${celsius.toStringAsFixed(0)} °C',
-            valueColour: port!.runsHot ? OniColors.warning : null,
+            value: '${port?.temperatureC == null ? '~' : ''}'
+                '${celsius.toStringAsFixed(0)} °C',
+            valueColour:
+                Overheating.isTrouble(celsius) ? OniColors.warning : null,
           ),
-          if (port.runsHot) ...[
+          if (Overheating.isTrouble(celsius)) ...[
             const SizedBox(height: OniSpacing.sm),
             Text(
-              'Hotter than the 75 °C most buildings overheat at. Whether it '
-              'actually cooks anything depends on what it runs past, which this '
-              'model cannot see — but it is worth looking at.',
+              _overheatAdvice(controller, celsius),
               style: OniType.body
                   .copyWith(fontSize: 11.5, color: OniColors.warning),
             ),
@@ -1098,4 +1102,25 @@ class _EdgeInspector extends StatelessWidget {
       ],
     );
   }
+}
+
+/// What to build a pipe out of, for something this hot.
+///
+/// Everything starts at 75 °C and its material moves that up. Naming the
+/// coolest-tolerating material that still holds is the useful answer: it is the
+/// cheapest thing that will do, and the reader can go up the list from there.
+String _overheatAdvice(PipelineController controller, double celsius) {
+  final survivors = Overheating.survivors(celsius);
+  String named(String id) => '${controller.database.item(id)?.name ?? id} '
+      '(${Overheating.toleranceOf(id).toStringAsFixed(0)} °C)';
+
+  if (survivors.isEmpty) {
+    return 'At ${celsius.toStringAsFixed(0)} °C nothing this app knows about '
+        'will hold it — every material here gives up first. Whatever carries '
+        'this is a problem to solve before the rest of the build matters.';
+  }
+  return 'Hotter than the 75 °C a plain building tolerates, so what this is '
+      'made of stops being a detail: ${named(survivors.first)} is the coolest '
+      'that holds, up to ${named(survivors.last)}. Whether it actually cooks '
+      'anything also depends on what it runs past, which this model cannot see.';
 }

@@ -19,6 +19,7 @@ export 'src/graph/validation.dart';
 export 'src/model/conduits.dart';
 export 'src/model/game_database.dart';
 export 'src/model/item.dart';
+export 'src/model/overheating.dart';
 export 'src/model/port.dart';
 export 'src/model/process_spec.dart';
 export 'src/model/build_material.dart';

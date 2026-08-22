@@ -131,7 +131,38 @@ void main() {
     controller.select(EdgeSelection(water.id));
     await tester.pump();
 
-    expect(textContaining('75 °C most buildings overheat at'), findsOneWidget);
+    // It used to say only that 95 °C is hot. It now says what to do about it:
+    // the coolest material that holds, and the range above it.
+    expect(textContaining('75 °C a plain building tolerates'), findsOneWidget);
+    expect(textContaining('Copper (125 °C)'), findsOneWidget);
+    expect(textContaining('Iridium (575 °C)'), findsOneWidget);
+  });
+
+  testWidgets('something nothing can hold is said as plainly as that',
+      (tester) async {
+    await useDesktopSurface(tester);
+    // A Glass Forge sends molten glass out at 1 942 °C. No material in this
+    // app survives it, and naming the best of a hopeless list would be worse
+    // than saying so.
+    final controller = testController(
+      pipeline: (PipelineBuilder(testDatabase, name: 'Glass')
+            ..add('glass_forge', nodeId: 'forge', x: 0, y: 0)
+            ..addSink('molten_glass', x: 340, y: 0)
+            ..connectItem('forge', 'sink_molten_glass', 'molten_glass')
+            ..pinCount('forge', 1))
+          .build(),
+    );
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+    controller.select(EdgeSelection(controller.pipeline.edges.first.id));
+    await tester.pump();
+
+    expect(textContaining('nothing this app knows about will hold it'),
+        findsOneWidget);
   });
 
   testWidgets('a cool flow is not called out', (tester) async {

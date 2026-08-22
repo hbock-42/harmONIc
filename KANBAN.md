@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E11-2` **What a flow's heat rules out** — a wire carrying 95 °C water now names the
+  coolest material that holds it and the range above, instead of only saying "hot". And
+  molten glass at 1 942 °C is told plainly that nothing here will do
 - `E11-4` **Filters** — one generated per fluid, the way pumps are. The separation itself
   cannot be modelled without a notion of mixtures, and what can be modelled is what it
   costs: a building, 120 W, and a pipe's worth of throughput
