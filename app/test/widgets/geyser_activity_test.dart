@@ -91,6 +91,10 @@ void main() {
     final before = controller.solution.nodes['elec']!.count;
 
     expect(find.text('ALL GEYSERS'), findsOneWidget);
+    // The toolbar scrolls and has grown; the presets sit at its far end.
+    await tester.ensureVisible(
+        find.widgetWithText(GestureDetector, '40%').first);
+    await tester.pump();
     await tester.tap(find.widgetWithText(GestureDetector, '40%').first);
     await tester.pump();
 

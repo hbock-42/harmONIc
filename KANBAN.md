@@ -116,6 +116,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E8-7` **The guide is in the app** — a ? in the toolbar renders the same file, not a
+  second copy of the words for a screen; two explanations of one thing disagree within a
+  fortnight
 - `E8-6` **A guide to using it** — `docs/USING.md`, written because every control in this
   app is obvious to whoever added it and to nobody else. Its last section is what the app
   does not know, which is where it is most misleading
@@ -759,7 +762,7 @@ flow, so the solver never had to learn about it.
 | E8-5 | ✅ | Benchmarks in CI |
 | E8-3b | ✅ | Mass-balance audit |
 | E8-6 | ✅ | A guide to using it | `docs/USING.md`: the one idea, the controls in the order you meet them, and a section on what the app deliberately does not know |
-| E8-7 | P3 | The guide, reachable from inside the app | it is a file in the repo; somebody using the built app has no way to it |
+| E8-7 | ✅ | The guide, reachable from inside the app | a ? in the toolbar renders `docs/USING.md` itself, copied into the assets and checked for drift the way the generated data is |
 
 ---
 

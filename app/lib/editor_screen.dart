@@ -6,6 +6,7 @@ import 'canvas/auto_layout.dart';
 import 'canvas/graph_canvas.dart';
 import 'design/tokens.dart';
 import 'design/widgets.dart';
+import 'panels/guide_panel.dart';
 import 'panels/inspector_panel.dart';
 
 import 'panels/palette_panel.dart';
@@ -26,6 +27,7 @@ class EditorScreen extends StatefulWidget {
     required this.library,
     required this.workspace,
     required this.displaySettings,
+    this.loadGuide,
     super.key,
   });
 
@@ -33,6 +35,9 @@ class EditorScreen extends StatefulWidget {
   final LibraryController library;
   final WorkspaceController workspace;
   final DisplayController displaySettings;
+
+  /// Where the guide's text comes from; the asset unless a test says otherwise.
+  final Future<String> Function()? loadGuide;
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
@@ -51,6 +56,7 @@ class _EditorScreenState extends State<EditorScreen> {
   /// The recipe being edited, shown over the whole editor.
   ProcessSpec? _editing;
   bool _pipelinesOpen = false;
+  bool _guideOpen = false;
 
   @override
   void initState() {
@@ -171,6 +177,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       displaySettings: widget.displaySettings,
                       onTogglePipelines: () =>
                           setState(() => _pipelinesOpen = !_pipelinesOpen),
+                      onOpenGuide: () => setState(() => _guideOpen = true),
                     ),
                     _Tabs(workspace: widget.workspace),
                     _RepairNotice(workspace: widget.workspace),
@@ -226,6 +233,13 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
               ),
               ?_pipelinesMenu(),
+              if (_guideOpen)
+                Positioned.fill(
+                  child: GuidePanel(
+                    onClose: () => setState(() => _guideOpen = false),
+                    load: widget.loadGuide,
+                  ),
+                ),
               ?_recipeEditor(),
                 ],
               ),
@@ -583,6 +597,7 @@ class _TopBar extends StatefulWidget {
     required this.canvasKey,
     required this.displaySettings,
     required this.onTogglePipelines,
+    required this.onOpenGuide,
   });
 
   final PipelineController controller;
@@ -590,6 +605,7 @@ class _TopBar extends StatefulWidget {
   final GlobalKey<GraphCanvasState> canvasKey;
   final DisplayController displaySettings;
   final VoidCallback onTogglePipelines;
+  final VoidCallback onOpenGuide;
 
   @override
   State<_TopBar> createState() => _TopBarState();
@@ -740,6 +756,12 @@ class _TopBarState extends State<_TopBar> {
               compact: true,
               tone: OniButtonTone.accent,
               onPressed: widget.displaySettings.toggle,
+            ),
+            const _ToolbarDivider(),
+            OniButton(
+              label: '?',
+              compact: true,
+              onPressed: widget.onOpenGuide,
             ),
                 ]),
               ),
