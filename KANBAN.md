@@ -71,6 +71,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E11-8` **Mixtures, decided against** — and the useful part is the experiment. A mixture
+  cannot be an item, because its identity would depend on the answer and the answer on its
+  identity; the honest version is a flow variable per edge *per item*, which is where a
+  500-node build stops being 14 ms. Of the three things the row wanted it for, two are about
+  layout, which this app does not model on purpose. The third looked real — two gases share
+  one pipe in game and the app counts two — so I built it, then measured how often two lines
+  of the same kind run between the same pair of nodes. On the four shipped templates: never,
+  and structurally so, since an output node carries one item and the validator refuses the
+  rest. A hundred lines that fire on no build anybody has drawn went in the bin
 - `E3-7e` **LEAST, beside the figure it is about** — the last of the objectives, and the
   question was never the maths: least power, least heat and least floor are one coefficient
   per node. It was where to put them. A build-wide total has no node to hang a button on,
@@ -821,7 +830,7 @@ does not see.
 | E11-2 | ✅ | Pipe materials | a hot wire names the coolest material that holds it and the range above |
 | E11-3 | ✅ | Pumps | generated per fluid the way sources and sinks are, since a pump is the same machine whatever it moves |
 | E11-4 | ✅ | Filters | generated per fluid; what a separation *costs*, since the separation itself needs mixtures the model does not have |
-| E11-8 | P2 | Mixtures | a port carries one thing, so a pipe of mixed gas cannot be drawn. Wanted by filters, by pressure, and by anything that sorts |
+| E11-8 | ❌ | Mixtures | decided against for now in `docs/MIXTURES.md`, with the conditions that would change it. Of the three things it was wanted for, two are about layout and the third — two gases sharing a pipe — was built, measured against every template, and found to occur on none of them |
 | E11-9 | P3 | Valves | a valve caps a flow, and a cap is an inequality the solver has no way to hold. Pinning the rate says the same thing today |
 | E11-5 | ✅ | Conduit heat | how much heat a line carries against a 25 °C base, which is the cooling it would cost. Where that heat lands needs the pipe's material and what it runs past — geometry this model does not have — so the size is said and the destination is not |
 | E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
