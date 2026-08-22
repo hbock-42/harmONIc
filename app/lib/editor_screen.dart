@@ -228,6 +228,11 @@ class _EditorScreenState extends State<EditorScreen> {
                       database: controller.database,
                       rateDisplay: widget.displaySettings.display,
                       onToggleRates: widget.displaySettings.toggle,
+                      // Only where something in the build is divided: with
+                      // nothing to choose, the offer would be to do nothing.
+                      onMinimise: controller.hasASplitToChoose
+                          ? controller.optimiseTotal
+                          : null,
                     ),
                   ],
                 ),

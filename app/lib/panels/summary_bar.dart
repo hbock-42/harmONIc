@@ -13,8 +13,17 @@ class SummaryBar extends StatelessWidget {
     required this.database,
     required this.rateDisplay,
     required this.onToggleRates,
+    this.onMinimise,
     super.key,
   });
+
+  /// Chooses the splits that make one of these totals as small as it can be.
+  ///
+  /// Null when there is nothing divided in the build, and then no figure
+  /// offers it: without a choice there is nothing to choose. The offer belongs
+  /// beside the number it is about, which is the only place somebody looking
+  /// at a power figure they dislike would think to look.
+  final void Function(BuildTotal total)? onMinimise;
 
   final PipelineSolution solution;
 
@@ -57,6 +66,7 @@ class SummaryBar extends StatelessWidget {
                 .formatRate(net, rateDisplay),
             valueColour: net < -1e-6 ? OniColors.danger : OniColors.ok,
             onToggle: onToggleRates,
+            trailing: _Minimise(total: BuildTotal.power, onMinimise: onMinimise),
           ),
           const _Divider(),
           OniStat(
@@ -67,12 +77,15 @@ class SummaryBar extends StatelessWidget {
             valueColour: solution.totalHeatKdtu > 0
                 ? OniColors.text
                 : OniColors.ok,
+            trailing: _Minimise(total: BuildTotal.heat, onMinimise: onMinimise),
           ),
           if (solution.totalFootprintTiles > 0) ...[
             const _Divider(),
             OniStat(
               label: 'floor',
               value: '${solution.totalFootprintTiles} tiles',
+              trailing:
+                  _Minimise(total: BuildTotal.floor, onMinimise: onMinimise),
             ),
           ],
           if (_materials.isNotEmpty) ...[
@@ -208,6 +221,37 @@ class _Flows extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+
+/// The "make this smaller" affordance beside a total.
+///
+/// One word, in the accent colour, because it sits in a bar that is already
+/// full and it is an offer rather than a headline. There is no tooltip in this
+/// app to explain it, so it has to read as what it does on its own: LEAST,
+/// next to NET POWER.
+///
+/// It disappears entirely when there is nothing divided in the build. A
+/// control that cannot change anything is worse than no control.
+class _Minimise extends StatelessWidget {
+  const _Minimise({required this.total, required this.onMinimise});
+
+  final BuildTotal total;
+  final void Function(BuildTotal total)? onMinimise;
+
+  @override
+  Widget build(BuildContext context) {
+    final onMinimise = this.onMinimise;
+    if (onMinimise == null) return const SizedBox.shrink();
+    return GestureDetector(
+      onTap: () => onMinimise(total),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Text('LEAST',
+            style: OniType.label.copyWith(color: OniColors.accent)),
+      ),
     );
   }
 }

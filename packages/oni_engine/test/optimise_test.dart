@@ -144,6 +144,57 @@ void main() {
     });
   });
 
+  group('the totals that are not a port', () {
+    Pipeline wanting() => twoWays().copyWith(pins: [
+          const PortRatePin(
+              nodeId: 'sink_iron', portId: 'in', ratePerSecond: 5000),
+        ]);
+
+    test('the cheapest way to run it is not the cheapest way to build it', () {
+      // The whole reason these are three questions and not one. A Metal
+      // Refinery draws 1.2 kW and a Rock Crusher 240 W, so the least power is
+      // the crusher — at the cost of twice the ore, more heat and more floor.
+      final power = leastTotal(wanting(), db, BuildTotal.power);
+      expect(power.status, LpStatus.optimal);
+      expect(power.nodeCounts['refinery'], closeTo(0, 1e-9));
+      expect(power.nodeCounts['crusher'], greaterThan(0));
+
+      // Heat and floor both say the opposite.
+      for (final total in [BuildTotal.heat, BuildTotal.floor]) {
+        final best = leastTotal(wanting(), db, total);
+        expect(best.status, LpStatus.optimal, reason: '$total');
+        expect(best.nodeCounts['crusher'], closeTo(0, 1e-9), reason: '$total');
+      }
+    });
+
+    test('and the ordinary solver reproduces each of them', () {
+      for (final total in BuildTotal.values) {
+        final best = leastTotal(wanting(), db, total);
+        final solved = solver.solve(withShares(wanting(), db, best));
+        expect(solved.status, SolveStatus.solved, reason: '$total');
+        for (final entry in best.nodeCounts.entries) {
+          expect(solved.nodes[entry.key]!.count, closeTo(entry.value, 1e-6),
+              reason: '$total: ${entry.key}');
+        }
+        // And you still get what you asked for, whichever total was chased.
+        expect(solved.nodes['sink_iron']!.count, closeTo(5000, 1e-6),
+            reason: '$total');
+      }
+    });
+
+    test('a build of nothing but boundaries has no total to shrink', () {
+      // Supplies and outputs draw nothing, emit nothing and stand on nothing,
+      // so there is no objective to write.
+      final bare = (PipelineBuilder(db, name: 'bare')
+            ..addSource('water')
+            ..addSink('water')
+            ..connectItem('src_water', 'sink_water', 'water'))
+          .build();
+      expect(leastTotal(bare, db, BuildTotal.power).status,
+          LpStatus.infeasible);
+    });
+  });
+
   group('what it will not argue with', () {
     test('a share you set yourself', () {
       // An explicit share is a decision. The optimiser works around it rather

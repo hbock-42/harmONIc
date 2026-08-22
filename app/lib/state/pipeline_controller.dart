@@ -558,7 +558,7 @@ class PipelineController extends ChangeNotifier {
   /// shape of the graph rather than about the shares, because a build already
   /// divided by hand can still be asked the question: it will simply answer
   /// that your own splits are what they are.
-  bool hasSplitToChoose(String sinkNodeId) {
+  bool get hasASplitToChoose {
     for (final node in _pipeline.nodes) {
       final spec = database.process(node.specId);
       if (spec == null) continue;
@@ -606,6 +606,19 @@ class PipelineController extends ChangeNotifier {
         return null;
     }
 
+    if (!best.isAnswer) return null;
+    _apply(withShares(_pipeline, database, best));
+    return best.ratePerSecond;
+  }
+
+  /// Divides everything that is divided to make one of the build's own totals
+  /// as small as it can be — what it draws, what it emits, what it stands on.
+  ///
+  /// The same machinery as [optimiseFor] with a different objective: one
+  /// coefficient per node instead of one per boundary node. Returns what the
+  /// total came to, or null when there is no answer.
+  double? optimiseTotal(BuildTotal total) {
+    final best = leastTotal(_pipeline, database, total);
     if (!best.isAnswer) return null;
     _apply(withShares(_pipeline, database, best));
     return best.ratePerSecond;

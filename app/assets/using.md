@@ -86,7 +86,11 @@ On a node:
   a supply node offers **Use as little as possible**. Both work out the division
   that answers the question and write it onto the wires as ordinary shares you
   can then change. Both say when there is no answer — nothing limits the build,
-  or nothing has been asked of it, or two amounts you set contradict each other.
+  or nothing has been asked of it, or two amounts you set contradict each other. **LEAST** beside net power, heat or floor in the bottom bar asks the
+  same thing of the build as a whole: the splits that draw the least, emit the
+  least or stand on the least, while still delivering what you asked for. The
+  three rarely agree — a Rock Crusher is a fifth of a Metal Refinery's power and
+  twice its ore.
 - **Vent** on a port — this output goes nowhere on purpose. Without it, a port
   making more than anything takes reads as a contradiction rather than as spare.
 

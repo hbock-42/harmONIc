@@ -329,7 +329,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
             onPinned: () => setState(() => _amount.text = _currentPinText()),
           ),
         ],
-        if (_isBoundary && controller.hasSplitToChoose(node.id)) ...[
+        if (_isBoundary && controller.hasASplitToChoose) ...[
           const SizedBox(height: OniSpacing.sm),
           _TheMostOfIt(controller: controller, node: node, spec: spec),
         ],

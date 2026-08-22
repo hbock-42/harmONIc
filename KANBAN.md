@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-7e` **LEAST, beside the figure it is about** — the last of the objectives, and the
+  question was never the maths: least power, least heat and least floor are one coefficient
+  per node. It was where to put them. A build-wide total has no node to hang a button on,
+  and a total you dislike is the only place you would think to look for a way to shrink it,
+  so the offer sits next to it in the bottom bar and appears only when something is divided.
+  The three rarely agree — a Rock Crusher draws a fifth of a Metal Refinery and eats twice
+  the ore — which is why they are three questions and not one. `E3-7` is finished
 - `E3-7d` **"Use as little as possible"** — the mirror of the last one, and the question you
   ask once you know what you want: five kilograms of iron a second costs 7.5 of ore split
   evenly and 5 through the refinery alone. Which question a boundary node asks is a fact
@@ -640,11 +647,11 @@ _(empty)_
 | E3-4 | ✅ | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
 | E3-5 | ✅ | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
-| E3-7 | spike | Simplex / LP upgrade | decided in `docs/CHOOSING-SHARES.md`: the shares cannot be variables (`share·x` is not linear) — the *flows* have to be, with output balances becoming inequalities. Do it in three steps, and never as the only path |
+| E3-7 | ✅ | Simplex / LP upgrade | decided in `docs/CHOOSING-SHARES.md`: the shares cannot be variables (`share·x` is not linear) — the *flows* have to be, with output balances becoming inequalities. Do it in three steps, and never as the only path |
 | E3-7a | ✅ | The simplex itself | two-phase, Bland's rule throughout because every graph with a loop is degenerate; tested against textbook problems and against brute force on a hundred random ones |
 | E3-7c | ✅ | One question, end to end | "Get as much as possible" on an output node. The simplex chooses the splits and they are written back as ordinary shares, so there is still one solver and one set of numbers |
 | E3-7d | ✅ | Minimise a raw input | the same machinery from the other end: a supply node asks what the build could get away with using, and still delivers what was asked of it |
-| E3-7e | P2 | The objectives that are not a port | least heat, least power, least floor — one coefficient per node in the engine, and no obvious home in the app, which is the part to work out first |
+| E3-7e | ✅ | The objectives that are not a port | least heat, least power, least floor, offered beside the figure itself in the bottom bar — the only place somebody looking at a total they dislike would think to look |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | ✅ | Sensitivity | "going from 3 to 4": what the next one buys and costs, worked out by solving the build again rather than by estimating |
 | E3-9 | ✅ | Solver perf test | 500-node chain and 500-node fan, both under 50 ms; writing it found the elimination doing eight times the work it needed to |

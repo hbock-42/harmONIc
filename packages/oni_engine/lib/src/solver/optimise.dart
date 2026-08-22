@@ -47,7 +47,39 @@ class BestCase {
 ///
 /// What it leaves free is the rest: the shares nobody chose.
 BestCase mostOf(Pipeline pipeline, GameDatabase database, String itemId) =>
-    _optimise(pipeline, database, itemId, ProcessKind.sink);
+    _optimise(
+      pipeline,
+      database,
+      boundary: ProcessKind.sink,
+      itemId: itemId,
+    );
+
+/// A total to make as small as the build allows.
+///
+/// Unlike an item, these are properties of the whole build rather than of a
+/// boundary node, and every one of them is a single number per node: what it
+/// draws, what it emits, what it stands on.
+enum BuildTotal {
+  /// Watts, net: generation counts against consumption, so the answer is the
+  /// splits that leave the grid best off.
+  power,
+
+  /// kDTU/s, net, in the same sense — a build that deletes heat counts.
+  heat,
+
+  /// Tiles, before any rounding up. The app builds whole buildings and this
+  /// does not know that, so it is the shape of the answer rather than a
+  /// promise about the floor plan.
+  floor,
+}
+
+/// The splits that make [total] as small as this build can.
+BestCase leastTotal(
+  Pipeline pipeline,
+  GameDatabase database,
+  BuildTotal total,
+) =>
+    _optimise(pipeline, database, boundary: null, buildTotal: total);
 
 /// The least of [itemId] this build could get away with using.
 ///
@@ -58,14 +90,20 @@ BestCase mostOf(Pipeline pipeline, GameDatabase database, String itemId) =>
 /// with no pin at all the answer is a build of nothing, and that is what it
 /// will honestly report.
 BestCase leastOf(Pipeline pipeline, GameDatabase database, String itemId) =>
-    _optimise(pipeline, database, itemId, ProcessKind.source);
+    _optimise(
+      pipeline,
+      database,
+      boundary: ProcessKind.source,
+      itemId: itemId,
+    );
 
 BestCase _optimise(
   Pipeline pipeline,
-  GameDatabase database,
-  String itemId,
-  ProcessKind boundary,
-) {
+  GameDatabase database, {
+  required ProcessKind? boundary,
+  String? itemId,
+  BuildTotal? buildTotal,
+}) {
   final nodes = pipeline.nodes;
   if (nodes.isEmpty) return const BestCase(status: LpStatus.infeasible);
 
@@ -146,17 +184,34 @@ BestCase _optimise(
     }
   }
 
-  // What we are asking about: every boundary node that carries this item, in
-  // or out. A boundary node is defined as one unit per g/s, so its count *is*
-  // the rate, and the objective is simply their sum.
+  // What we are asking about. For an item it is every boundary node that
+  // carries it, in or out: a boundary node is defined as one unit per g/s, so
+  // its count *is* the rate and the objective is their sum. For a whole-build
+  // total it is one coefficient per node — what each one draws, emits or
+  // stands on.
   final objective = row();
   var asked = false;
   for (final node in nodes) {
     final spec = database.processOrThrow(node.specId);
-    if (spec.kind != boundary) continue;
-    final ports = boundary == ProcessKind.sink ? spec.inputs : spec.outputs;
-    if (!ports.any((p) => p.itemId == itemId)) continue;
-    objective[nodeColumn[node.id]!] = 1;
+    final double coefficient;
+    if (buildTotal != null) {
+      if (spec.kind == ProcessKind.source ||
+          spec.kind == ProcessKind.sink) {
+        continue;
+      }
+      coefficient = switch (buildTotal) {
+        BuildTotal.power => spec.netPowerWatts,
+        BuildTotal.heat => spec.netHeatKdtu,
+        BuildTotal.floor => spec.footprintTiles.toDouble(),
+      };
+      if (coefficient == 0) continue;
+    } else {
+      if (spec.kind != boundary) continue;
+      final ports = boundary == ProcessKind.sink ? spec.inputs : spec.outputs;
+      if (!ports.any((p) => p.itemId == itemId)) continue;
+      coefficient = 1;
+    }
+    objective[nodeColumn[node.id]!] = coefficient;
     asked = true;
   }
   if (!asked) return const BestCase(status: LpStatus.infeasible);

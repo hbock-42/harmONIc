@@ -311,12 +311,18 @@ class OniStat extends StatelessWidget {
     required this.value,
     this.valueColour,
     this.onToggle,
+    this.trailing,
     super.key,
   });
 
   final String label;
   final String value;
   final Color? valueColour;
+
+  /// A small control belonging to this figure, shown beside its label. The
+  /// value keeps its own gesture — a rate still toggles when you click it —
+  /// so an action about the figure needs somewhere of its own to live.
+  final Widget? trailing;
 
   /// When given, the value is a rate and clicking it switches the units.
   final VoidCallback? onToggle;
@@ -326,7 +332,16 @@ class OniStat extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label.toUpperCase(), style: OniType.label),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(label.toUpperCase(), style: OniType.label),
+              if (trailing case final Widget trailing) ...[
+                const SizedBox(width: 6),
+                trailing,
+              ],
+            ],
+          ),
           const SizedBox(height: 2),
           if (onToggle == null)
             Text(value, style: OniType.number.copyWith(color: valueColour))

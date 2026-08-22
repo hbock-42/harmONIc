@@ -141,4 +141,29 @@ void main() {
     expect(find.text('Use as little as possible'), findsNothing);
     expect(find.text('Get as much as possible'), findsOneWidget);
   });
+
+  testWidgets('a total in the bar can be asked to be smaller', (tester) async {
+    final pipeline = twoWays().copyWith(pins: [
+      const PortRatePin(
+          nodeId: 'sink_iron', portId: 'in', ratePerSecond: 5000),
+    ]);
+    final controller = await pumpEditor(tester, pipeline);
+
+    // Three figures offer it: net power, heat and floor.
+    expect(find.text('LEAST'), findsNWidgets(3));
+    final before = controller.focusedSolution.totalFootprintTiles;
+
+    // The floor one is the last of the three, in the order the bar lists them.
+    await tester.tap(find.text('LEAST').at(2));
+    await tester.pumpAndSettle();
+
+    expect(controller.focusedSolution.totalFootprintTiles, lessThan(before));
+    // And it still delivers what was asked of it.
+    expect(controller.solution.nodes['sink_iron']!.count, closeTo(5000, 1e-6));
+  });
+
+  testWidgets('and with nothing divided, no figure offers it', (tester) async {
+    await pumpEditor(tester, oneWay());
+    expect(find.text('LEAST'), findsNothing);
+  });
 }

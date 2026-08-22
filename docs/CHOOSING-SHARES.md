@@ -91,12 +91,14 @@ Do it, in this order, and never with the LP as the only path.
    from the other end: an output node maximises what it collects, a supply node
    minimises what it brings. Which question a node asks is a fact about the
    node, not a setting.
-4. **`E3-7e` — the objectives that are not a port.** Least heat, least power,
-   least floor. The engine could take any of them tomorrow — they are one
-   coefficient per node — and none of them has an obvious home in the app,
-   which is the part to work out first. Building them before that would be
-   building something nobody can reach, which this repository has spent a
-   fortnight undoing.
+4. **`E3-7e` — the objectives that are not a port. Done.** Least heat, least
+   power, least floor: one coefficient per node, and the home they needed was
+   the figure itself. A total you dislike is the only place you would think to
+   look for a way to make it smaller, so the offer sits beside it in the bottom
+   bar and appears only when something in the build is divided.
+
+That is `E3-7` finished. What it does not do is still what §"What it will not
+do" says: integers, pins and your own shares are yours.
 
 Nothing here changes the default path. A build with every share set has no
 freedom, the LP would return exactly what the elimination returns, and running
