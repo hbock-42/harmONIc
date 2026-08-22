@@ -254,8 +254,8 @@ void main() {
     });
   });
 
-  group('a Sage Hatch eats six things at one rate', () {
-    test('one recipe with alternatives, not six recipes', () {
+  group('a Sage Hatch eats seven things at one rate', () {
+    test('one recipe with alternatives, not seven recipes', () {
       for (final id in ['sage_hatch', 'sage_hatch_wild']) {
         final spec = db.processOrThrow(id);
         final feed = spec.ports.firstWhere((p) => p.isInput && p.itemId != 'grooming');
@@ -270,6 +270,7 @@ void main() {
           'fertilizer',
           'polluted_dirt',
           'corallium',
+          'polluted_mud',
         ], reason: id);
         final coal = spec.ports.firstWhere((p) => p.itemId == 'coal');
         expect(coal.ratePerSecond, feed.ratePerSecond, reason: id);

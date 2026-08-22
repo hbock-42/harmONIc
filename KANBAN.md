@@ -47,10 +47,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Data still to gather**
 
-- `E13-8` Spaced Out as a fourth pack. Liquid Sulfur belongs to it, and so does a great
-  deal else that is not tagged — a filter that hides some of a pack and not the rest would
-  be worse than none, so this wants a full audit before it is offered
-
 
 - `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
 - `E4-26` The rest of both packs: Jawbo (yields unpublished), Rhex (eats other critters,
@@ -78,6 +74,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E13-8` **Spaced Out is a pack you can turn off** — the fourth, and the one the other
+  three sit on top of, so having a planet pack implies it and not the other way round. It
+  waited a long time on "a filter that hides some of a pack is worse than none", and the
+  audit that fear deserved turned out to be small: nothing here models rockets or radiation,
+  which is most of what the DLC is, so its whole surface in this database is liquid sulfur,
+  sucrose, the Plug Slug and the Liquid Sulfur geyser. The geyser was found by the audit
+  rather than by me — a base-game spec asking for a pack-only material is exactly what that
+  check is for. Reading the Polluted Mud page for it also turned up a seventh food for the
+  Sage Hatch
 - `E13-8a` **Five pack tags were wrong** — read against the packs' own published lists
   rather than against what this app happened to meet where. Ice was Frosty because an Alveo
   Vera eats it and Abyssalite was Prehistoric although a Glo Squid is what excretes it here,
@@ -816,7 +821,7 @@ flow, so the solver never had to learn about it.
 | E13-5 | ✅ | Sage Hatch's organics | six foods at one rate, so it is a port with alternatives rather than an invented "organic" class. Prepared food is 700 kcal a cycle rather than a weight, which is a different recipe and stays unmodelled |
 | E13-6 | ✅ | Alternative diets | a Plug Slug eats ore or refined metal at the same 60 kg a cycle, so it is one port with alternatives rather than two specs |
 | E13-7 | ✅ | Rot Pile | the Pokeshell's second food and the Compost's third input; what makes it is food spoiling, which this app does not model, so it arrives as a supply |
-| E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so do Sucrose, Mud and the Sweetle/Grubgrub line; wants a full audit before it is offered. `E13-8a` did the other half of that audit — the tags that were simply wrong |
+| E13-8 | ✅ | Spaced Out as a fourth pack | the audit it was waiting on found the surface to be tiny: liquid sulfur, sucrose, the Plug Slug and the sulfur geyser, because nothing here models rockets or radiation. Offered like the other three |
 | E13-8a | ✅ | The pack tags, read against the packs' own lists | five wrong: Ice and Abyssalite are base game, Sucrose is Spaced Out, and Amber and Resin are named on the Prehistoric pack's own list while carrying the Aquatic tag |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
 | E13-10 | ✅ | The Smoker's fuel | one recipe per fuel, the Beakon pattern. A class is for a category the *game* groups; "either of these two" is not one |

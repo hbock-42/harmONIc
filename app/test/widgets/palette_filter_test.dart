@@ -164,4 +164,27 @@ void main() {
     expect(find.text('FILTERING'), findsOneWidget);
     expect(textLabel('Oxygen filter'), findsWidgets);
   });
+
+  testWidgets('Spaced Out is a pack you can turn off like the others',
+      (tester) async {
+    final display = await pumpEditor(tester);
+    await openFilters(tester);
+    expect(find.text('Spaced Out'), findsOneWidget);
+
+    // A Plug Slug belongs to the DLC the three planet packs sit on, and
+    // somebody playing the base game cannot have one.
+    expect(display.includes(testDatabase.processOrThrow('plug_slug')),
+        isTrue);
+
+    await tester.tap(find.text('Spaced Out'));
+    await tester.pump();
+
+    expect(display.includes(testDatabase.processOrThrow('plug_slug')),
+        isFalse);
+    expect(display.includesItem(testDatabase.itemOrThrow('sucrose')), isFalse);
+    // And nothing base-game goes with it.
+    expect(display.includesItem(testDatabase.itemOrThrow('water')), isTrue);
+    expect(display.includes(testDatabase.processOrThrow('electrolyzer')),
+        isTrue);
+  });
 }

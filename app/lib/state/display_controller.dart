@@ -12,6 +12,7 @@ const Map<String, String> kContentPacks = <String, String>{
   'aquatic': 'Aquatic',
   'frosty': 'Frosty',
   'prehistoric': 'Prehistoric',
+  'spacedout': 'Spaced Out',
 };
 
 /// The engine holds the same set, because a synthesised supply node has to

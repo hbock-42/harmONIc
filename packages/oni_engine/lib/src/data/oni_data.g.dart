@@ -420,7 +420,9 @@ const String oniDataJson = r"""
       "id": "liquid_sulfur",
       "name": "Liquid Sulfur",
       "category": "liquid",
-      "tags": [],
+      "tags": [
+        "spacedout"
+      ],
       "specificHeat": 0.7
     },
     {
@@ -605,7 +607,9 @@ const String oniDataJson = r"""
       "id": "sucrose",
       "name": "Sucrose",
       "category": "solid",
-      "tags": []
+      "tags": [
+        "spacedout"
+      ]
     },
     {
       "id": "tallow",
@@ -2238,6 +2242,7 @@ const String oniDataJson = r"""
       "footprintHeight": 3,
       "tags": [
         "geyser",
+        "spacedout",
         "verified"
       ],
       "ports": [
@@ -2518,7 +2523,7 @@ const String oniDataJson = r"""
       "id": "sage_hatch",
       "name": "Sage Hatch",
       "kind": "critter",
-      "description": "The efficient one: 100 % of what it eats comes back as coal, and it eats six things at the same rate — dirt, slime, algae, fertiliser, polluted dirt or corallium — so this is one recipe you pick the feed for rather than six. It will also eat prepared food, at 700 kcal a cycle rather than by weight, which is a different recipe and not modelled. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "The efficient one: 100 % of what it eats comes back as coal, and it eats seven things at the same rate — dirt, slime, algae, fertiliser, polluted dirt, corallium or polluted mud — so this is one recipe you pick the feed for rather than six. It will also eat prepared food, at 700 kcal a cycle rather than by weight, which is a different recipe and not modelled. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2538,7 +2543,8 @@ const String oniDataJson = r"""
             "algae",
             "fertilizer",
             "polluted_dirt",
-            "corallium"
+            "corallium",
+            "polluted_mud"
           ]
         },
         {
@@ -3225,6 +3231,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
+        "spacedout",
         "power",
         "unverified"
       ],
@@ -4936,7 +4943,7 @@ const String oniDataJson = r"""
       "id": "sage_hatch_wild",
       "name": "Sage Hatch (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. It eats any of its six foods at the same rate, as the groomed one does.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. It eats any of its seven foods at the same rate, as the groomed one does.",
       "tags": [
         "ranching",
         "wild",
@@ -4952,7 +4959,8 @@ const String oniDataJson = r"""
             "algae",
             "fertilizer",
             "polluted_dirt",
-            "corallium"
+            "corallium",
+            "polluted_mud"
           ]
         },
         {
@@ -5490,6 +5498,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
+        "spacedout",
         "power",
         "unverified",
         "wild"

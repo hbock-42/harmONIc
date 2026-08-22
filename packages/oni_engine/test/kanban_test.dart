@@ -61,9 +61,17 @@ void main() {
   });
 
   test('nothing in Ready is already done', () {
-    // The drift this file exists for.
+    // The drift this file exists for. Only the id a bullet *leads* with counts:
+    // an entry may name another id in its text — "this waits on E13-8 now" —
+    // and that one being finished is the note doing its job, not drift.
+    final owned = {
+      for (final match
+          in RegExp(r'^- `(E\d+-\d+[a-z]?)`', multiLine: true)
+              .allMatches(ready))
+        match.group(1)!,
+    };
     final finished = [
-      for (final id in idsIn(ready))
+      for (final id in owned)
         if (status[id] == '✅' || status[id] == '❌') '$id (${status[id]})',
     ];
     expect(finished, isEmpty,

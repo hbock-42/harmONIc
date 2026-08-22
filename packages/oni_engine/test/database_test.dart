@@ -203,7 +203,7 @@ void main() {
   });
 
   group('pack tags', () {
-    const packs = {'aquatic', 'frosty', 'prehistoric'};
+    const packs = {'aquatic', 'frosty', 'prehistoric', 'spacedout'};
     Set<String> packsOf(Iterable<String> tags) => packs.intersection(tags.toSet());
 
     test('nothing base-game is built out of pack-only materials', () {
@@ -237,7 +237,6 @@ void main() {
       // a player is shown, so the mistake hides materials somebody owns.
       for (final id in [
         'phosphorite',
-        'liquid_sulfur',
         'dirt',
         'sand',
         // Egg shells, Pokeshell molts and fossil all make lime with no pack at
@@ -250,14 +249,18 @@ void main() {
         // met in.
         'ice',
         'abyssalite',
-        // Spaced Out, which this app does not offer as a pack and so does not
-        // tag. A Spigot Seal drinking it is why it was marked Frosty; a
-        // Sweetle makes it without any pack at all.
-        'sucrose',
       ]) {
         expect(packsOf(db.itemOrThrow(id).tags), isEmpty, reason: id);
       }
       expect(db.itemOrThrow('coquina').tags, contains('aquatic'));
+      // Spaced Out is a pack of its own now. Sucrose was tagged Frosty because
+      // a Spigot Seal drinks it, and a Sweetle makes it with no planet pack at
+      // all. This is all of the DLC that this database has: nothing here models rockets or radiation, which is most
+      // of what the DLC is.
+      expect(db.itemOrThrow('liquid_sulfur').tags, contains('spacedout'));
+      expect(db.itemOrThrow('sucrose').tags, contains('spacedout'));
+      expect(db.processOrThrow('plug_slug').tags, contains('spacedout'));
+      expect(db.processOrThrow('plug_slug_wild').tags, contains('spacedout'));
       expect(db.itemOrThrow('tallow').tags, contains('frosty'));
       // Both are on the Prehistoric pack's own list of what it adds, and both
       // were marked Aquatic.

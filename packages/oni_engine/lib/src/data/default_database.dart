@@ -311,7 +311,20 @@ ProcessSpec? _coolerFor(Item item) {
 /// Kept here rather than in the app because it is a fact about the data: a
 /// synthesised supply node has to inherit its item's pack, and that decision
 /// cannot wait for a widget to be built.
-const Set<String> contentPackTags = {'aquatic', 'frosty', 'prehistoric'};
+const Set<String> contentPackTags = {
+  'aquatic',
+  'frosty',
+  'prehistoric',
+  // Spaced Out is the DLC the three planet packs sit on top of, so anybody who
+  // has one of them has this too. It is offered separately because the reverse
+  // is not true: plenty of people play Spaced Out and no pack at all.
+  //
+  // The tag was held back until somebody had read the pack lists and worked
+  // out what in this database actually belongs to it. The answer is small —
+  // liquid sulfur, sucrose and the Plug Slug — because nothing here models
+  // rockets or radiation, which is most of what Spaced Out is.
+  'spacedout',
+};
 
 String filterSpecId(String itemId) => 'filter:$itemId';
 
