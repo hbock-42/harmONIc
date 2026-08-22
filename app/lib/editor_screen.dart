@@ -172,6 +172,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTogglePipelines: () =>
                           setState(() => _pipelinesOpen = !_pipelinesOpen),
                     ),
+                    _Tabs(workspace: widget.workspace),
                     _RepairNotice(workspace: widget.workspace),
                     ProblemsBanner(controller: controller),
                     Expanded(
@@ -416,6 +417,120 @@ class _CopyIntent extends Intent {
 
 class _PasteIntent extends Intent {
   const _PasteIntent();
+}
+
+/// The builds you have open, as a row of tabs.
+///
+/// Switching used to mean opening the menu, finding the name and clicking it —
+/// three moves for the thing you do most while comparing two builds. The menu
+/// is still where everything you have ever drawn lives; this is the handful in
+/// front of you.
+///
+/// It hides itself when there is only one, since a single tab is a label for
+/// something already on screen.
+class _Tabs extends StatelessWidget {
+  const _Tabs({required this.workspace});
+
+  final WorkspaceController workspace;
+
+  @override
+  Widget build(BuildContext context) {
+    final tabs = workspace.openTabs;
+    if (tabs.length < 2) return const SizedBox.shrink();
+
+    return Container(
+      height: 30,
+      decoration: const BoxDecoration(
+        color: OniColors.surface,
+        border: Border(bottom: BorderSide(color: OniColors.border)),
+      ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: tabs.length,
+        itemBuilder: (context, i) => _Tab(
+          summary: tabs[i],
+          current: tabs[i].id == workspace.currentId,
+          onOpen: () => workspace.open(tabs[i].id),
+          onClose: () => workspace.closeTab(tabs[i].id),
+        ),
+      ),
+    );
+  }
+}
+
+class _Tab extends StatefulWidget {
+  const _Tab({
+    required this.summary,
+    required this.current,
+    required this.onOpen,
+    required this.onClose,
+  });
+
+  final PipelineSummary summary;
+  final bool current;
+  final VoidCallback onOpen;
+  final VoidCallback onClose;
+
+  @override
+  State<_Tab> createState() => _TabState();
+}
+
+class _TabState extends State<_Tab> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onOpen,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: OniSpacing.md),
+            decoration: BoxDecoration(
+              color: widget.current
+                  ? OniColors.surfaceRaised
+                  : (_hover ? OniColors.surfaceHover : null),
+              border: Border(
+                right: const BorderSide(color: OniColors.border),
+                bottom: BorderSide(
+                  width: 2,
+                  color: widget.current
+                      ? OniColors.accent
+                      : const Color(0x00000000),
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  widget.summary.name,
+                  style: OniType.body.copyWith(
+                    fontSize: 12,
+                    color: widget.current
+                        ? OniColors.text
+                        : OniColors.textMuted,
+                  ),
+                ),
+                // The close cross appears on the tab you are pointing at or
+                // working in, so a row of tabs is a row of names rather than a
+                // row of names and crosses.
+                if (_hover || widget.current) ...[
+                  const SizedBox(width: OniSpacing.sm),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: widget.onClose,
+                    child: Text('×',
+                        style: OniType.body
+                            .copyWith(color: OniColors.textMuted)),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
 class _NudgeIntent extends Intent {

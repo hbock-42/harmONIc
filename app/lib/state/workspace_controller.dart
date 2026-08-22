@@ -45,12 +45,30 @@ class WorkspaceController extends ChangeNotifier {
   final Map<String, Pipeline> _pipelines = {};
   final List<String> _repairNotes = [];
   String? _currentId;
+
+  /// The builds with a tab, oldest first.
+  ///
+  /// Separate from what is saved: everything you have ever drawn is in the
+  /// menu, and the tabs are the handful you are working on now. Closing a tab
+  /// puts a build away rather than throwing it out, which is the distinction
+  /// the menu could not make.
+  final List<String> _openIds = [];
   Timer? _timer;
   Pipeline? _lastSeen;
   bool _saving = false;
   bool _loaded = false;
 
   String? get currentId => _currentId;
+
+  /// The open tabs, in the order they were opened.
+  List<PipelineSummary> get openTabs => [
+        for (final id in _openIds)
+          if (_pipelines[id] case final Pipeline pipeline)
+            PipelineSummary(
+                id: pipeline.id,
+                name: pipeline.name,
+                nodeCount: pipeline.nodes.length),
+      ];
   bool get isSaving => _saving;
 
   /// What had to change to bring saved builds back into line with the recipes.
@@ -116,6 +134,13 @@ class WorkspaceController extends ChangeNotifier {
     // again on every start and the note never stops appearing.
     if (_repairNotes.isNotEmpty) unawaited(_persist());
 
+    _openIds
+      ..clear()
+      ..addAll([
+        for (final id in (raw['openIds'] as List<dynamic>? ?? const []))
+          if (_pipelines.containsKey(id as String)) id,
+      ]);
+
     restoredId ??= _pipelines.keys.first;
     final pipeline = _pipelines[restoredId] ?? _pipelines.values.first;
     _openWithoutSaving(pipeline);
@@ -127,6 +152,7 @@ class WorkspaceController extends ChangeNotifier {
   /// on a first run, so it is saved like anything else.
   Future<void> adopt(Pipeline pipeline) async {
     _pipelines[pipeline.id] = pipeline;
+    if (!_openIds.contains(pipeline.id)) _openIds.add(pipeline.id);
     _currentId = pipeline.id;
     _lastSeen = pipeline;
     await _persist();
@@ -138,6 +164,25 @@ class WorkspaceController extends ChangeNotifier {
     if (pipeline == null) return;
     await saveNow();
     _openWithoutSaving(pipeline);
+    await _persist();
+    notifyListeners();
+  }
+
+  /// Puts a build away without deleting it. It stays in the menu.
+  Future<void> closeTab(String id) async {
+    if (!_openIds.remove(id)) return;
+    if (_currentId == id) {
+      // Move to the neighbour rather than to nothing: an editor with no
+      // document is a state with nothing useful in it.
+      final next = _openIds.isNotEmpty ? _openIds.last : null;
+      if (next != null && _pipelines[next] != null) {
+        await saveNow();
+        _openWithoutSaving(_pipelines[next]!);
+      } else if (_pipelines.isNotEmpty) {
+        await saveNow();
+        _openWithoutSaving(_pipelines.values.first);
+      }
+    }
     await _persist();
     notifyListeners();
   }
@@ -278,6 +323,7 @@ class WorkspaceController extends ChangeNotifier {
   }
 
   void _openWithoutSaving(Pipeline pipeline) {
+    if (!_openIds.contains(pipeline.id)) _openIds.add(pipeline.id);
     _currentId = pipeline.id;
     _lastSeen = pipeline;
     _controller.load(pipeline);
@@ -307,6 +353,7 @@ class WorkspaceController extends ChangeNotifier {
     await _store.write(<String, dynamic>{
       'schemaVersion': 1,
       if (_currentId != null) 'lastOpenedId': _currentId,
+      'openIds': [..._openIds],
       'pipelines': [for (final p in _pipelines.values) p.toJson()],
     });
     _saving = false;

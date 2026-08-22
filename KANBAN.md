@@ -36,8 +36,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Canvas and interaction**
 
-- `E10-19` Clearing every amount at once. `clearAllPins` is on the controller and nothing
-  calls it
+- `E10-19` ~~Clearing every amount at once~~ — not wanted. `clearAllPins` looked unreachable
+  because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is
+  a fair reason for a method to exist. Nobody needs a button for it
 
 - `E7-13` Marquee needs ⇧ because a plain drag pans. Space-drag-to-pan would free the
   plain drag for selection, which is what most editors do
@@ -115,6 +116,8 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E6-6` **Tabs** — the builds you have open, in a row, one click apart. Closing one puts it
+  away rather than throwing it out; the menu still has everything you have ever drawn
 - `E7-20` **Arrow keys nudge the selection** — one grid cell, eight with shift, and a run of
   presses is one undo rather than twelve
 - `E10-18` **"I have this much in store"** — the third kind of pin could be shown and never
@@ -616,7 +619,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E6-3 | ✅ | Re-solve on every edit | any mutation re-runs the solver and repaints; target < 16 ms for a 100-node graph |
 | E6-4 | ✅ | Undo/redo | trivial: `Pipeline` is immutable, so the stack is a `List<Pipeline>` |
 | E6-5 | ✅ | Desktop-first window chrome, keyboard shortcuts (⌘Z, ⌫, ⌘F) |
-| E6-6 | P2 | Multi-document: open several pipelines in tabs |
+| E6-6 | ✅ | Multi-document: open several pipelines in tabs |
 
 ## E9 — Design system (`lib/design/`)
 
