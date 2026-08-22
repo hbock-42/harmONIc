@@ -71,6 +71,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-7c` **"Get as much as possible"** — 10 kg/s of ore feeding a refinery and a crusher
+  gives 6.7 kg/s of metal split evenly, and 10 through the refinery alone. The app has
+  always split what nobody divided evenly, which is a fair guess and rarely the best one;
+  now an output node can be asked for the most the build can give. The part the plan had not
+  foreseen is what makes it safe: the answer is written back as *shares*, the same ones
+  somebody could have typed, so the numbers on screen still come from the solver that has
+  always produced them and undo puts the whole thing back. It says "there is no most" for
+  the two cases where that is the truth — an unpinned supply is infinite, and contradictory
+  amounts are impossible
 - `E3-7a` **A simplex, decided in writing first** — `E3-7` has read "let the solver choose the
   shares" since the solver was designed, and the first job was to say what that means. It
   cannot mean making the shares variables: `share·x` is a product of two unknowns and no
@@ -627,7 +636,7 @@ _(empty)_
 | E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
 | E3-7 | spike | Simplex / LP upgrade | decided in `docs/CHOOSING-SHARES.md`: the shares cannot be variables (`share·x` is not linear) — the *flows* have to be, with output balances becoming inequalities. Do it in three steps, and never as the only path |
 | E3-7a | ✅ | The simplex itself | two-phase, Bland's rule throughout because every graph with a loop is degenerate; tested against textbook problems and against brute force on a hundred random ones |
-| E3-7c | P2 | One question, end to end | "maximise this output" on a build with a choice in it, with the two solvers compared on every build that has no freedom |
+| E3-7c | ✅ | One question, end to end | "Get as much as possible" on an output node. The simplex chooses the splits and they are written back as ordinary shares, so there is still one solver and one set of numbers |
 | E3-7d | P2 | The rest of the questions | minimise a raw input; then least heat, least power, least floor |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | ✅ | Sensitivity | "going from 3 to 4": what the next one buys and costs, worked out by solving the build again rather than by estimating |

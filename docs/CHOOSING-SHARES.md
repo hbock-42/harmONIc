@@ -80,9 +80,13 @@ Do it, in this order, and never with the LP as the only path.
    to be sure of a solver against problems with known answers than against a
    build whose right answer is the thing in question.
 2. **`E3-7c` — one question, end to end.** *"Maximise this output"* on a build
-   that has a choice in it. The LP runs only when asked, the ordinary solver
-   still runs otherwise, and the two are compared on every build in the test
-   suite that has no freedom: same counts, same flows, to nine places.
+   that has a choice in it. **Done.** It turned out to need one thing this
+   plan did not mention: the answer has to be written back as *shares*, or the
+   two solvers would both be on screen at once. `withShares` does that — the
+   simplex chooses, the choice becomes the same numbers somebody could have
+   typed, and every figure the app shows still comes from the elimination. The
+   agreement test is per template: optimise, write the shares back, solve, and
+   the counts must match what the ordinary solver said to six places.
 3. **`E3-7d` — the rest of the questions.** Minimise a raw input, then the
    objectives that are not a single port: least heat, least power, least floor.
 

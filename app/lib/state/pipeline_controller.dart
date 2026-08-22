@@ -551,6 +551,49 @@ class PipelineController extends ChangeNotifier {
         ],
       ));
 
+  /// Whether anything in this build is divided between two lines.
+  ///
+  /// Where nothing is, there is nothing to choose and the answer is the one
+  /// already on screen — so the offer is not made at all. Asked about the
+  /// shape of the graph rather than about the shares, because a build already
+  /// divided by hand can still be asked the question: it will simply answer
+  /// that your own splits are what they are.
+  bool hasSplitToChoose(String sinkNodeId) {
+    for (final node in _pipeline.nodes) {
+      final spec = database.process(node.specId);
+      if (spec == null) continue;
+      for (final port in spec.ports) {
+        final ref = PortRef(node.id, port.id);
+        final attached =
+            port.isInput ? _pipeline.edgesInto(ref) : _pipeline.edgesOutOf(ref);
+        if (attached.length > 1) return true;
+      }
+    }
+    return false;
+  }
+
+  /// Divides everything that is divided so this output gets as much as it can.
+  ///
+  /// The simplex chooses; what it chose is written back as ordinary shares, so
+  /// every number on screen still comes from the solver that has always
+  /// produced them. See `docs/CHOOSING-SHARES.md`.
+  ///
+  /// Returns what the answer came to, or null when there is not one: an
+  /// unpinned supply makes "as much as possible" unbounded, and contradictory
+  /// pins make it impossible.
+  double? optimiseFor(String sinkNodeId) {
+    final node = _pipeline.node(sinkNodeId);
+    if (node == null) return null;
+    final spec = database.process(node.specId);
+    final wanted = spec?.inputs.firstOrNull?.itemId;
+    if (wanted == null) return null;
+
+    final best = mostOf(_pipeline, database, wanted);
+    if (!best.isAnswer) return null;
+    _apply(withShares(_pipeline, database, best));
+    return best.ratePerSecond;
+  }
+
   /// How active this geyser is assumed to be, as a fraction of its dormancy
   /// cycle. The shipped rates assume the typical roll, so this scales away
   /// from that.

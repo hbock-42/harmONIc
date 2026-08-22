@@ -1,0 +1,210 @@
+import '../graph/pipeline.dart';
+import '../graph/pin.dart';
+import '../model/game_database.dart';
+import '../model/port.dart';
+import '../model/process_spec.dart';
+import 'simplex.dart';
+
+/// The best a build could do, and what it would be doing to get there.
+class BestCase {
+  const BestCase({
+    required this.status,
+    this.ratePerSecond = 0,
+    this.nodeCounts = const {},
+    this.edgeFlows = const {},
+  });
+
+  final LpStatus status;
+
+  /// What the objective came to: g/s of the item asked about.
+  final double ratePerSecond;
+
+  /// The build that achieves it, in the same units the ordinary solver uses,
+  /// so the two can be compared and so the answer can be shown.
+  final Map<String, double> nodeCounts;
+  final Map<String, double> edgeFlows;
+
+  bool get isAnswer => status == LpStatus.optimal;
+}
+
+/// The most of [itemId] this build could put out, and the splits that do it.
+///
+/// The question the ordinary solver cannot answer, because it needs the flows
+/// to be free — see `docs/CHOOSING-SHARES.md`. Where one port feeds two things
+/// and nobody has said how it divides, the ordinary solver splits it equally,
+/// which is a fair guess and rarely the best one. This works out the division
+/// that gets the most out of the build.
+///
+/// It answers, it does not act: the caller takes the rate and pins it, and the
+/// ordinary solver produces the numbers as usual. Two solvers whose answers
+/// are both on screen would be worse than one that cannot optimise.
+///
+/// What it respects:
+///
+/// - every pin, exactly as the ordinary solver does;
+/// - a share somebody set by hand, which is a decision and not a gap;
+/// - a vented port, which constrains nothing, being spare on purpose.
+///
+/// What it leaves free is the rest: the shares nobody chose.
+BestCase mostOf(Pipeline pipeline, GameDatabase database, String itemId) {
+  final nodes = pipeline.nodes;
+  if (nodes.isEmpty) return const BestCase(status: LpStatus.infeasible);
+
+  // Columns: one per node, then one per edge.
+  final nodeColumn = <String, int>{
+    for (var i = 0; i < nodes.length; i++) nodes[i].id: i,
+  };
+  final edgeColumn = <String, int>{
+    for (var i = 0; i < pipeline.edges.length; i++)
+      pipeline.edges[i].id: nodes.length + i,
+  };
+  final columns = nodes.length + pipeline.edges.length;
+
+  List<double> row() => List<double>.filled(columns, 0);
+  final constraints = <Constraint>[];
+
+  double rateOf(PipelineNode node, Port port) =>
+      port.isOutput ? port.ratePerSecond * node.outputScale : port.ratePerSecond;
+
+  for (final node in nodes) {
+    final spec = database.processOrThrow(node.specId);
+    for (final port in spec.ports) {
+      final ref = PortRef(node.id, port.id);
+      final attached =
+          port.isInput ? pipeline.edgesInto(ref) : pipeline.edgesOutOf(ref);
+      if (attached.isEmpty) continue;
+
+      final coefficients = row();
+      for (final edge in attached) {
+        coefficients[edgeColumn[edge.id]!] += 1;
+      }
+      coefficients[nodeColumn[node.id]!] -= rateOf(node, port);
+
+      if (port.isInput) {
+        // What arrives is what it eats. A node cannot be fed more than it can
+        // take, and one that is fed less is a smaller node, not a hungry one:
+        // that is what makes the count a variable rather than a wish.
+        constraints.add(Constraint.exactly(coefficients, 0));
+      } else if (!node.ventsPort(port.id)) {
+        // What leaves is at most what is made. The slack is the surplus the
+        // app already reports — and it is the freedom the whole thing needs.
+        constraints.add(Constraint.atMost(coefficients, 0));
+      }
+    }
+  }
+
+  // A share somebody set by hand is a decision, so the optimiser works around
+  // it rather than over it. Left alone, an unshared edge is free.
+  for (final edge in pipeline.edges) {
+    final share = edge.share;
+    if (share == null) continue;
+    final source = pipeline.nodeOrThrow(edge.fromNodeId);
+    final port = database
+        .processOrThrow(source.specId)
+        .portByIdOrThrow(edge.fromPortId);
+    final coefficients = row()
+      ..[edgeColumn[edge.id]!] = 1
+      ..[nodeColumn[source.id]!] = -share * rateOf(source, port);
+    constraints.add(Constraint.exactly(coefficients, 0));
+  }
+
+  for (final pin in pipeline.pins) {
+    final node = pipeline.nodeOrThrow(pin.nodeId);
+    final spec = database.processOrThrow(node.specId);
+    final coefficients = row();
+    switch (pin) {
+      case BuildingCountPin(:final count):
+        coefficients[nodeColumn[node.id]!] = 1;
+        constraints.add(Constraint.exactly(coefficients, count));
+      case PortRatePin(:final portId, :final ratePerSecond):
+        coefficients[nodeColumn[node.id]!] =
+            rateOf(node, spec.portByIdOrThrow(portId));
+        constraints.add(Constraint.exactly(coefficients, ratePerSecond));
+      case StockPin(:final portId):
+        coefficients[nodeColumn[node.id]!] =
+            rateOf(node, spec.portByIdOrThrow(portId));
+        constraints.add(Constraint.exactly(coefficients, pin.ratePerSecond));
+    }
+  }
+
+  // What we are asking for: everything this item delivers to an output node.
+  // An output node is defined as one unit per g/s, so its count *is* the rate.
+  final objective = row();
+  var asked = false;
+  for (final node in nodes) {
+    final spec = database.processOrThrow(node.specId);
+    if (spec.kind != ProcessKind.sink) continue;
+    if (!spec.inputs.any((p) => p.itemId == itemId)) continue;
+    objective[nodeColumn[node.id]!] = 1;
+    asked = true;
+  }
+  if (!asked) return const BestCase(status: LpStatus.infeasible);
+
+  final result = solveLp(objective: objective, constraints: constraints);
+  if (result.status != LpStatus.optimal) {
+    return BestCase(status: result.status);
+  }
+  return BestCase(
+    status: result.status,
+    ratePerSecond: result.objective,
+    nodeCounts: {
+      for (final entry in nodeColumn.entries) entry.key: result.values[entry.value],
+    },
+    edgeFlows: {
+      for (final entry in edgeColumn.entries) entry.key: result.values[entry.value],
+    },
+  );
+}
+
+
+/// The optimiser's answer, written back as shares the ordinary solver reads.
+///
+/// This is what keeps there being one solver. The simplex says which way the
+/// water should go; that is turned into the same shares somebody could have
+/// typed, and every number on screen still comes from the elimination that has
+/// always produced them. Nothing here is a second opinion about a build.
+///
+/// A port with one edge is left exactly as it was: there was nothing to
+/// choose, and rewriting it would fill the inspector with shares nobody
+/// decided.
+Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
+  if (!best.isAnswer) return pipeline;
+
+  double flowOn(String edgeId) => best.edgeFlows[edgeId] ?? 0;
+
+  final edges = <PipelineEdge>[];
+  for (final edge in pipeline.edges) {
+    final siblingsOut =
+        pipeline.edgesOutOf(PortRef(edge.fromNodeId, edge.fromPortId));
+    final siblingsIn =
+        pipeline.edgesInto(PortRef(edge.toNodeId, edge.toPortId));
+
+    if (siblingsOut.length > 1) {
+      // A producer divided between several lines: each takes a fraction of
+      // what is *made*, which is push, and the rest of the production is the
+      // surplus the port already reports.
+      final node = pipeline.nodeOrThrow(edge.fromNodeId);
+      final port = database
+          .processOrThrow(node.specId)
+          .portByIdOrThrow(edge.fromPortId);
+      final made = port.ratePerSecond *
+          node.outputScale *
+          (best.nodeCounts[node.id] ?? 0);
+      edges.add(edge.copyWith(
+        mode: EdgeMode.push,
+        share: made <= 1e-9 ? 0 : flowOn(edge.id) / made,
+      ));
+    } else if (siblingsIn.length > 1) {
+      // Several lines feeding one port: each brings a fraction of what that
+      // port *needs*, which is pull, and the fractions add to one.
+      final total = siblingsIn.fold<double>(0, (sum, e) => sum + flowOn(e.id));
+      edges.add(edge.copyWith(
+        mode: EdgeMode.pull,
+        share: total <= 1e-9 ? 0 : flowOn(edge.id) / total,
+      ));
+    } else {
+      edges.add(edge);
+    }
+  }
+  return pipeline.copyWith(edges: edges);
+}

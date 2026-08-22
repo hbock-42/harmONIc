@@ -329,6 +329,11 @@ class _NodeInspectorState extends State<_NodeInspector> {
             onPinned: () => setState(() => _amount.text = _currentPinText()),
           ),
         ],
+        if (spec.kind == ProcessKind.sink &&
+            controller.hasSplitToChoose(node.id)) ...[
+          const SizedBox(height: OniSpacing.sm),
+          _TheMostOfIt(controller: controller, node: node, spec: spec),
+        ],
         const SizedBox(height: OniSpacing.md),
 
         if (result != null) ...[
@@ -1507,6 +1512,70 @@ class _EdgeShare extends StatelessWidget {
 
 /// What to build a pipe out of, for something this hot.
 ///
+/// "Get as much of this as the build can give."
+///
+/// Shown on an output node, and only where something in the build is divided
+/// and nobody has said how: without a choice there is nothing to choose, and
+/// the button would be offering to do nothing.
+///
+/// What it does is set shares — the same ones somebody could have typed — so
+/// afterwards the build is an ordinary build, the numbers come from the
+/// ordinary solver, and undo puts it back.
+class _TheMostOfIt extends StatefulWidget {
+  const _TheMostOfIt({
+    required this.controller,
+    required this.node,
+    required this.spec,
+  });
+
+  final PipelineController controller;
+  final PipelineNode node;
+  final ProcessSpec spec;
+
+  @override
+  State<_TheMostOfIt> createState() => _TheMostOfItState();
+}
+
+class _TheMostOfItState extends State<_TheMostOfIt> {
+  String? _said;
+
+  @override
+  Widget build(BuildContext context) {
+    final item =
+        widget.controller.database.item(widget.spec.inputs.first.itemId);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        OniButton(
+          label: 'Get as much as possible',
+          compact: true,
+          onPressed: () {
+            final most = widget.controller.optimiseFor(widget.node.id);
+            setState(() {
+              _said = most == null
+                  // The two ways there is no answer, said as what to do about
+                  // them rather than as a status.
+                  ? 'There is no most: nothing in this build limits it, or two '
+                      'amounts you have set contradict each other.'
+                  : 'Divided to give ${item?.formatRate(most, RateDisplay.perSecond) ?? most.toStringAsFixed(1)}. '
+                      'The splits it chose are on the wires, and undo puts '
+                      'them back.';
+            });
+          },
+        ),
+        if (_said case final String said) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Text(
+            said,
+            style: OniType.body
+                .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 /// The cooling this line brings with it, in the words of what it costs.
 ///
 /// Deliberately not a warning colour. It is not a problem — a hot line is
