@@ -71,6 +71,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-0a` **The design doc caught up with the design** — `SOLVER.md` is what somebody reads
+  first, and it had been describing Gauss–Jordan since the day that was replaced, along with
+  a claim of "microseconds" for something measured at 14 ms. Both corrected, with the reason
+  the elimination changed written where the algorithm is named. Four things that grew up
+  beside the solve — temperature, valves, the simplex, as-built — now have a section saying
+  why none of them is in the matrix. Prose cannot be tested, but vocabulary can: every
+  outcome the solver can report and every kind of pin has to appear in the document, and
+  that found `invalid` undocumented on the first run
 - `E3-7f` **What the optimiser costs, and a theory disproved** — it shipped without a perf
   test, and `docs/CHOOSING-SHARES.md` had worried in advance that it would be slow. It is:
   about cubic, 24 ms at 200 nodes, 188 at 400, and 940 ms on a 500-node chain — a second of
@@ -739,6 +747,7 @@ _(empty)_
 | id | P | Task | Notes |
 |---|---|---|---|
 | E3-0 | ✅ | Write `docs/SOLVER.md` | the maths, decided before code |
+| E3-0a | ✅ | Keeping `SOLVER.md` true | it claimed Gauss–Jordan for a fortnight after the elimination was rewritten and "microseconds" after it was measured at 14 ms. Corrected, and its vocabulary is checked: every outcome and every pin kind has to appear in the document that describes them |
 | E3-1 | ✅ | Linear system build | Variables = node counts `x_n`. One equation per **fed** input port: `Σ_e share_e · x_src · outRate(src,item) = x_n · inRate(n,item)`. Plus one equation per pin |
 | E3-2 | ✅ | Gauss-Jordan w/ partial pivoting | dense is fine (graphs are ≤ a few hundred nodes); detect rank, report `underdetermined` (needs another pin) / `inconsistent` (contradictory pins) |
 | E3-3 | ✅ | Result object | per-node `count`, per-edge `flow` (g/s), per-item global balance, list of `Shortage` and `Surplus` |

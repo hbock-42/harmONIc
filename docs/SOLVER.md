@@ -2,7 +2,9 @@
 
 ## 1. What the user does
 
-They draw a graph, then **pin exactly one thing**:
+They draw a graph, then **pin one thing per build**. (One *per build*: two
+builds sharing a canvas each need their own, and the solver names the ones that
+still have none.)
 
 - "I have **3 Electrolyzers**" → `Pin.buildingCount`
 - "I have **10 kg/s of Water**" → `Pin.portRate` on the water source's output port
@@ -87,8 +89,21 @@ rather than treated as an error.
 
 ## 5. Solving
 
-`A x = b`, dense Gauss–Jordan with partial pivoting and per-row normalisation
-(graphs are small — hundreds of nodes at most; this is microseconds).
+`A x = b`, dense Gaussian elimination with partial pivoting, then back
+substitution.
+
+It was Gauss–Jordan when this was written — clear the pivot column out of every
+row, above and below, and read the answers off the right-hand column with no
+further work. That is tidier and it fills the rows in: a chain's equations touch
+two columns each, and clearing upwards gives the top row an entry at every step
+until the matrix is dense. Eliminating downwards only never writes above a
+pivot, so the rows stay as sparse as they arrived, and a 500-node build went
+from 139 ms to 14. The rows are `Float64List` for the same sort of reason.
+`docs/PERFORMANCE.md` is the whole story, including how much of the win was
+which.
+
+Not microseconds, as this used to claim: 14 ms at 500 nodes, and
+`test/solver_perf_test.dart` holds it there.
 
 Outcomes:
 
@@ -97,6 +112,7 @@ Outcomes:
 | `solved` | rank = #nodes, consistent | show the numbers |
 | `underdetermined` | free columns remain | "pin one of: *free nodes*" — the free variables are set to 0 and a partial solution is still returned |
 | `inconsistent` | a `0 = k` row | "these pins contradict each other" |
+| `invalid` | the graph itself is wrong — a wire between ports that cannot carry the same thing, an unknown process, an uptime outside ]0, 1] — so no system is built at all | the issues, named against the node or wire that has them |
 
 Cycles (SPOM hydrogen return, petroleum boiler) need no special handling: they are simply
 a matrix with entries above and below the diagonal.
@@ -113,7 +129,34 @@ genuine contradiction between pins.
 - **external inputs** (unfed input ports) and **external outputs** (unshipped output ports)
 - **power** and **heat** are ordinary items (`power` in W, `heat` in kDTU/s), so the net power of
   the build falls out of the same balance sheet with no special case
-- **integer rounding** (`E3-4`): ceil every count, recompute, report the resulting idle % per node
+- **integer rounding** (`E3-4`): `build` is the count rounded up — you cannot
+  place two thirds of an Electrolyzer — and `busy` is what that leaves idle. A
+  node that only runs part of the time needs more of them standing there, so the
+  rounding is of `count ÷ uptime` rather than of `count`
+- **what that rounding costs** (`asBuilt`): a machine idles and a critter does
+  not, so the thirteenth Hatch eats like a Hatch. The exact ratio is what the
+  equations gave; this is what you would actually have to supply
+
+## 6b. What sits beside the solve
+
+The equations above are still the whole of the solver. Four things have grown
+around it since, and each is somewhere else on purpose — none of them changes
+what a build needs, so none of them belongs in the matrix:
+
+- **Temperature** rides along afterwards (`temperaturesOf`): a declared figure
+  wins, and everything else is the mixture of what arrives, by mass times
+  specific heat. It cannot change a rate, so it cannot change the answer.
+- **Valves** are a cap, and a cap is an inequality this solver cannot hold. The
+  flow it works out is what a line *has* to carry, and a valve below that is
+  reported rather than obeyed.
+- **Choosing the shares** — "the most oxygen this build can give" — is a
+  different problem with the flows as free variables, and it is a simplex rather
+  than an elimination. It hands its answer back as ordinary shares so that every
+  number on screen still comes from the elimination. `docs/CHOOSING-SHARES.md`.
+- **As built** (`asBuilt`) re-reports a solved build with whole critters, plants
+  and Duplicants. It does not re-solve: rounding a count up cannot ripple back
+  through a graph that has already been balanced, and pretending otherwise would
+  invent a second set of numbers.
 
 ## 7. Invariants the tests enforce
 
@@ -123,3 +166,7 @@ genuine contradiction between pins.
    from the pin row).
 4. On a single-edge link, `push` and `pull` give identical answers.
 5. Two consumers pulling from one producer size it to their **sum**, and each needs its own pin.
+6. Matter balances per process, unless a process is on the list of the ones that
+   deliberately do not — a Hatch eats more than it excretes, and every entry on
+   that list carries the published reason.
+7. The optimiser and the solver agree on every build that has no freedom in it.
