@@ -6999,6 +6999,56 @@ const String oniDataJson = r"""
       "build": {
         "metal_ore": 400
       }
+    },
+    {
+      "id": "sodicane",
+      "name": "Sodicane",
+      "kind": "plant",
+      "description": "UNVERIFIED: four cycles to ripen on 10 kg of salt a cycle, for one Salty Stick worth 600 kcal. The page says nothing about irrigation, so none is modelled — which is the assumption to check first if a salt farm here looks too cheap.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "salt",
+          "direction": "input",
+          "rate": 16.666666666666668
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 0.25
+        }
+      ]
+    },
+    {
+      "id": "clampum",
+      "name": "Clampum",
+      "kind": "plant",
+      "description": "UNVERIFIED: eight cycles on 35 kg a cycle of sand — molten glass does just as well, in the same amount — for 50 kg of pearl. It also gives off carbon dioxide at a rate nobody has published, so that is missing here rather than guessed. Needs a Wide Hydroponic Farm with all nine tiles under water, which no flow model can tell you about.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "sand",
+          "direction": "input",
+          "rate": 58.333333333333336,
+          "alternatives": [
+            "molten_glass"
+          ],
+          "id": "fertiliser"
+        },
+        {
+          "item": "pearl",
+          "direction": "output",
+          "rate": 10.416666666666666
+        }
+      ]
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"

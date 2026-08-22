@@ -264,6 +264,8 @@ void main() {
         // 60 kg a cycle of any ore or any refined metal, the same either way.
         'plug_slug.feed',
         'plug_slug_wild.feed',
+        // 35 kg a cycle of sand, or of molten glass, in the same amount.
+        'clampum.fertiliser',
       });
     });
 

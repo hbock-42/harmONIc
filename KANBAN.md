@@ -116,6 +116,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E4-37` **Two more Aquatic plants, and five that are not plants** — Sodicane and Clampum
+  seeded. Bulbloom, Petta Pouf and Husha Cups are decorative, Mussel Sprout is wild-only and
+  non-renewable, and Pinpoket's yield is quoted in a unit that does not match its growth
 - `E11-6b` **Every fluid knows what it holds** — the last thirteen specific heats, read off
   their own pages. A fluid without one is dropped from any mixture it joins, so the test
   that used to list the gaps now asserts there are none
@@ -595,7 +598,8 @@ _(empty)_
 | E4-35 | ✅ | Three more crops | Pincha Pepperplant, Thimble Reed, Nosh Sprout, each with a grazed twin |
 | E4-35b | P3 | Sporechid, and the Prehistoric and Aquatic food plants |  |
 | E4-36 | ✅ | Harvested and grazed are separate processes | offering both on one process let a farm be counted twice |
-| E4-37 | P2 | The rest of the Aquatic plants | 5 of 12 seeded; Sodicane, Bulbloom, Mussel Sprout, Clampum, Pinpoket, Petta Pouf and Husha Cups have no usable numbers |
+| E4-37 | ✅ | The rest of the Aquatic plants | Sodicane and Clampum seeded; the other five are not plants a pipeline has anything to say about, which is written out below |
+| E4-37b | P3 | Pinpoket | its yield is quoted as processed diamond per cycle rather than as a harvest, and "0.25 cycles per unit" contradicts its 16-cycle growth. Wants somebody with the game open |
 
 ## E5 — Persistence & interop
 
