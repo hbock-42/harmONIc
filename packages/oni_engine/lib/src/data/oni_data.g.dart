@@ -6444,6 +6444,7 @@ const String oniDataJson = r"""
       "name": "Steam Turbine",
       "kind": "building",
       "buildingId": "steam_turbine",
+      "overheat": 1000,
       "powerWatts": -850,
       "footprintWidth": 5,
       "footprintHeight": 3,

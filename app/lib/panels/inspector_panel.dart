@@ -570,6 +570,17 @@ class _NodeInspectorState extends State<_NodeInspector> {
                     '${controller.database.item(entry.key)?.name ?? entry.key}',
                     style: OniType.body,
                   ),
+                // Which member of that class, when the building runs hot
+                // enough for the choice to stop being free.
+                if (_materialAdvice(controller, spec, result.nodeId)
+                    case final String advice) ...[
+                  const SizedBox(height: OniSpacing.sm),
+                  Text(
+                    advice,
+                    style: OniType.body
+                        .copyWith(fontSize: 11.5, color: OniColors.warning),
+                  ),
+                ],
               ],
             ),
           ),
@@ -1486,6 +1497,44 @@ class _EdgeShare extends StatelessWidget {
 
 /// What to build a pipe out of, for something this hot.
 ///
+/// What to build *this* out of, when what runs through it makes it matter.
+///
+/// The wire's advice names the whole table; a building cannot use the whole
+/// table. It is put up out of the class the game asks for — 400 kg of refined
+/// metal — so the useful sentence names which refined metals hold and which do
+/// not, and says plainly when none of them do.
+///
+/// Null below the bare 75 °C, where the choice is free and a line about it
+/// would be noise on every node in a cool build.
+String? _materialAdvice(
+    PipelineController controller, ProcessSpec spec, String nodeId) {
+  final celsius = controller.temperatures.hottestAt(nodeId);
+  if (celsius == null || !Overheating.isTrouble(celsius)) return null;
+
+  final verdicts = materialVerdicts(spec, controller.database, celsius);
+  final hot = '${celsius.toStringAsFixed(0)} °C';
+
+  String named(String id) => controller.database.item(id)?.name ?? id;
+  String list(List<String> ids) {
+    final names = ids.map(named).toList();
+    if (names.length == 1) return names.single;
+    return '${names.take(names.length - 1).join(', ')} or ${names.last}';
+  }
+
+  final lines = <String>[];
+  for (final verdict in verdicts) {
+    if (verdict.isFree) continue;
+    final material = named(verdict.materialId).toLowerCase();
+    lines.add(verdict.isImpossible
+        // The one verdict here that means *do not build this*.
+        ? '$hot: no $material holds that, so this overheats whatever you '
+            'put it up with.'
+        : '$hot: ${list(verdict.holds)}. '
+            'The other $material gives up first.');
+  }
+  return lines.isEmpty ? null : lines.join('\n');
+}
+
 /// Everything starts at 75 °C and its material moves that up. Naming the
 /// coolest-tolerating material that still holds is the useful answer: it is the
 /// cheapest thing that will do, and the reader can go up the list from there.

@@ -56,6 +56,12 @@ On a node:
   what the spare one costs you.
 - **going from 3 to 4** is what one more would buy and cost, worked out by
   solving the build again rather than estimating.
+- **to build** is the shopping list for the ones you place. When what runs
+  through a building is hotter than the 75 °C a bare one tolerates, it also says
+  which of the materials you may build it from survive that — an Electrolyzer is
+  200 kg of any metal ore, and at 95 °C only Gold Amalgam holds. A building the
+  game rates itself, like a Steam Turbine at 1 000 °C, is not asked the question,
+  because no choice of metal changes it.
 
 ## Things you can tell it
 

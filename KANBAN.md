@@ -46,8 +46,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Things the model cannot yet say**
 
-- `E11-2` Pipe materials: 500 °C steam needs a pipe built of something that survives it,
-  which depends on the material's limits rather than the flow's temperature alone
 - `E11-5` Conduit heat: a pipe full of 95 °C water heats whatever it runs past
 - `E11-4` Filters and valves: a Gas Filter separates one gas from a mixed stream, and this
   model has no notion of a mixture
@@ -115,6 +113,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E11-2b` **What to build a hot building out of** — an Electrolyzer is 200 kg of any metal
+  ore, and at 95 °C only Gold Amalgam holds. Naming the whole overheat table was no use in
+  front of a building that cannot choose from it. Two rows of that table were also wrong:
+  nickel and zinc had been given +50 on the reasoning that a refined metal gets what the
+  other refined metals get, and the game's table names five metals and stops
 - `E9-6` **A light theme** — ☀/☾ on the toolbar, remembered between sessions. Not the dark
   palette inverted: every colour is chosen for the background it sits on, because a hue
   that reads on near-black is usually too pale to read on near-white
@@ -721,7 +724,7 @@ does not see.
 | id | P | Task | Notes |
 |---|---|---|---|
 | E11-1 | ✅ | Conduit capacity | how many pipes, wires and rails a flow needs; a ratio that balances on paper is unbuildable at 40 kg/s down one pipe |
-| E11-2 | P2 | Pipe materials | 500 °C steam needs a pipe built of something that survives it, which depends on the material's limits rather than the flow alone |
+| E11-2 | ✅ | Pipe materials | a hot wire names the coolest material that holds it and the range above |
 | E11-3 | ✅ | Pumps | generated per fluid the way sources and sinks are, since a pump is the same machine whatever it moves |
 | E11-4 | ✅ | Filters | generated per fluid; what a separation *costs*, since the separation itself needs mixtures the model does not have |
 | E11-8 | P2 | Mixtures | a port carries one thing, so a pipe of mixed gas cannot be drawn. Wanted by filters, by pressure, and by anything that sorts |
@@ -731,6 +734,7 @@ does not see.
 | E11-6b | ✅ | The specific heats not yet measured | all thirty fluids have one now, so no mixture drops a term and every coolant has an Aquatuner |
 | E11-7 | ✅ | Construction materials | what it takes to put a building up, counted per building placed and totalled as a shopping list |
 | E11-7b | P3 | What a Gasket costs | 50 kg of plastic or rubber makes some unstated number of them |
+| E11-2b | ✅ | What to build *this* out of | the wire's advice names the whole table, and a building cannot use the whole table: it narrows to the class the build cost asks for, and says plainly when nothing in that class holds. Buildings the game rates itself (Steam Turbine, 1 000 °C) are not asked |
 | E11-7c | ✅ | Build costs in their own unit | gaskets are counted, everything else weighed; the headline total sums only what has a weight |
 
 ## E12 — What using it turned up

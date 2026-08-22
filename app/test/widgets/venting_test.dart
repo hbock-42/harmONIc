@@ -55,6 +55,10 @@ void main() {
 
     controller.select(const NodeSelection('elec'));
     await tester.pump();
+    // Its water arrives at 95 °C, which puts a line about what to build it out
+    // of above PORTS — same reason as the geyser below.
+    await tester.drag(find.byType(InspectorPanel), const Offset(0, -200));
+    await tester.pump();
     // Oxygen and hydrogen are both pulled, so both can vent; water is an input.
     expect(find.descendant(
       of: find.byType(InspectorPanel),

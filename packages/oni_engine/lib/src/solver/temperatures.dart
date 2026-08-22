@@ -25,6 +25,22 @@ class Temperatures {
 
   Iterable<PortRef> get known => _ports.keys;
 
+  /// The hottest thing this node handles, in °C, or null when nothing in the
+  /// build says.
+  ///
+  /// Both sides count. A building's own temperature comes from what is inside
+  /// it, and what is inside it is whatever it took in *and* whatever it has
+  /// just made — a Metal Refinery is not saved by the fact that its 40 °C water
+  /// went in cool.
+  double? hottestAt(String nodeId) {
+    double? hottest;
+    for (final entry in _ports.entries) {
+      if (entry.key.nodeId != nodeId) continue;
+      if (hottest == null || entry.value > hottest) hottest = entry.value;
+    }
+    return hottest;
+  }
+
   bool get isEmpty => _ports.isEmpty;
 }
 

@@ -41,6 +41,7 @@ class ProcessSpec {
     this.footprintWidth = 0,
     this.footprintHeight = 0,
     this.buildCost = const {},
+    this.overheatCelsius,
     this.tags = const {},
   }) : ports = List.unmodifiable(ports) {
     final seen = <String>{};
@@ -105,6 +106,7 @@ class ProcessSpec {
             in (json['build'] as Map<String, dynamic>? ?? const {}).entries)
           entry.key: (entry.value as num).toDouble(),
       },
+      overheatCelsius: (json['overheat'] as num?)?.toDouble(),
       tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
     );
   }
@@ -127,6 +129,18 @@ class ProcessSpec {
   /// and empty, too, for a building whose cost has not been checked yet, which
   /// is why the total says how many buildings it could not price.
   final Map<String, double> buildCost;
+
+  /// The temperature this building overheats at, when the game states one of
+  /// its own.
+  ///
+  /// Null is the usual case and means the ordinary rule: 75 °C plus whatever
+  /// the material you built it from adds. A few buildings are rated instead —
+  /// a Steam Turbine sits in steam and overheats at 1 000 °C, which no choice
+  /// of metal changes — and for those the material question does not arise,
+  /// which is worth being able to say rather than warning about a choice that
+  /// does not exist.
+  final double? overheatCelsius;
+
   final Set<String> tags;
 
   Iterable<Port> get inputs => ports.where((p) => p.isInput);
@@ -178,6 +192,7 @@ class ProcessSpec {
         if (footprintWidth != 0) 'footprintWidth': footprintWidth,
         if (footprintHeight != 0) 'footprintHeight': footprintHeight,
         if (buildCost.isNotEmpty) 'build': buildCost,
+        if (overheatCelsius != null) 'overheat': overheatCelsius,
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 
