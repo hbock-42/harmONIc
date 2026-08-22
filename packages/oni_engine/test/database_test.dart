@@ -1099,4 +1099,33 @@ void main() {
       expect(spec.portByIdOrThrow('coolant_out').ratePerSecond, 10000);
     });
   });
+
+  group('the Shine Bug eats the one food its page weighs', () {
+    test('200 g of phosphorite a cycle, not a placeholder kilogram', () {
+      for (final id in ['shine_bug', 'shine_bug_wild']) {
+        final feed = db.processOrThrow(id).inputs
+            .firstWhere((p) => p.itemId == 'phosphorite');
+        expect(feed.ratePerSecond * secondsPerCycle, closeTo(200, 0.01),
+            reason: id);
+        // The figure is published, so the doubt tag comes off and the
+        // mass-balance audit starts checking it.
+        expect(db.processOrThrow(id).tags, isNot(contains('unverified')),
+            reason: id);
+      }
+    });
+
+    test('and a bug farm is a fifth of the phosphorite it used to want', () {
+      // Eight bugs is 1.6 kg a cycle. It was 8, which is the difference
+      // between a Pokeshell's worth of phosphorite and a rounding error.
+      final pipeline = (PipelineBuilder(db, name: 'bugs')
+            ..addSource('phosphorite')
+            ..add('shine_bug', nodeId: 'bugs')
+            ..connectItem('src_phosphorite', 'bugs', 'phosphorite')
+            ..pinCount('bugs', 8))
+          .build();
+      final solution = PipelineSolver(db).solve(pipeline);
+      expect(solution.nodes['src_phosphorite']!.count * secondsPerCycle,
+          closeTo(1600, 1));
+    });
+  });
 }

@@ -58,14 +58,16 @@ Everything not pulled into **Ready**. Grouped by epic below.
   regular Lumb (its peat rate is stated nowhere)
 - `E4-23` Beeta, Sweetle and Grubgrub: rates unpublished, and a Beeta's 5-cycle life would
   be misrepresented by a per-cycle average
-- `E4-28` Seaquine's ovolene rate
-- `E4-25` Firm up the inferred 50 % conversion on the Pip, and the Shine Bug's feed in
-  kilograms. The Pokeshell's is published and now verified; the Pip's page says what it
-  eats and what it excretes without ever putting the two in one sentence
+- `E4-28` Seaquine's ovolene rate. Checked again on 2026-08-22: the page says who may be
+  milked and never how much
+- `E4-25` Firm up the inferred 50 % conversion on the Pip: its page says what it eats and
+  what it excretes without ever putting the two in one sentence. The other two are done —
+  the Pokeshell's 50 % and the Shine Bug's 200 g of phosphorite a cycle are both published
 - `E4-11` Nail down the unverified DLC rates: the Vulcanizer's latex and rubber rates, the
   Plant Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2. Checked
   again on 2026-08-22 — all four are still unpublished
-- `E4-22` The Grooming Station's power draw, if it is ever published
+- `E4-22` The Grooming Station's power draw, if it is ever published. Checked again on
+  2026-08-22: 400 kg of ore and a 2×3 footprint, and no watts anywhere on the page
 
 ### 🚧 In Progress
 
@@ -73,6 +75,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-25a` **A Shine Bug eats a fifth of what it was being fed** — 200 g of phosphorite a
+  cycle, published, against the 1 kg placeholder that had been sitting there saying it was
+  a placeholder. Its page weighs exactly one of its foods and counts the rest in calories,
+  which is why the figure was missed. Eight bugs now want 1.6 kg a cycle rather than 8, and
+  the doubt tag comes off both twins so the mass-balance audit checks them
 - `E11-5` **What a hot line costs to cool** — 10 kg/s of 95 °C water carries 2 925 kDTU/s
   more heat than the same flow at 25 °C, which is five Aquatuners. The question as written
   — does this pipe heat the room it runs through — needs to know what the pipe is made of
@@ -614,13 +621,14 @@ _(empty)_
 | E4-20b | P3 | Eggs per critter | a Bammoth's egg is four times a Hatch's, and this app has one Egg item; the cracker uses Hatch figures |
 | E4-21 | ✅ | Wild versus groomed | a `(wild)` twin per ranched critter: no grooming, no Duplicant time, a tenth of the eggs |
 | E4-21b | P3 | Glo Squid and Seaquine wild twins | wants somebody to check in game which outputs the milking station takes |
-| E4-22 | P3 | The Grooming Station's power draw | if it is ever published |
+| E4-22 | P3 | The Grooming Station's power draw | checked again 2026-08-22: the page gives its 400 kg of ore and its 2×3 footprint and no watts at all, nor a heat figure |
 | E4-23 | P3 | Beeta, Sweetle and Grubgrub | rates unpublished, and a Beeta's 5-cycle life would be misrepresented by a per-cycle average |
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
-| E4-25 | P3 | Firm up the inferred 50 % conversions | the Pokeshell's is published now and is checked by the mass-balance audit. The Pip's is not: its page says what it eats and what it excretes, and never puts the two in one sentence. The Shine Bug's feed in kilograms is likewise absent |
+| E4-25 | P3 | Firm up the inferred 50 % conversions | two of the three answered: the Pokeshell's 50 % is published, and the Shine Bug's feed is 200 g of phosphorite a cycle — the one food of its several the page weighs rather than counts in calories. The Pip's is not: its page says what it eats and what it excretes and never puts the two in one sentence |
+| E4-25a | ✅ | The Shine Bug's feed | 200 g of phosphorite a cycle, which its page weighs while counting its other foods in calories |
 | E4-26 | P3 | The rest of both packs | Bammoth, Jawbo, Rhex, Gnit, Mimika, Lumb — yields unpublished or inexpressible |
 | E4-27 | ✅ | Mercury and cinnabar processing | the generic refinery and crusher already covered the rates — 1:1 and 50 % with sand — but the ore refined to the wrong element: a refinery hands its metal back at 40 °C and mercury freezes at −38.85 °C, so what you get is a liquid |
-| E4-28 | P3 | Seaquine's ovolene rate |  |
+| E4-28 | P3 | Seaquine's ovolene rate | checked again 2026-08-22: the page says who may be milked and never how much. Its diet and its carbon dioxide are published and are already here |
 | E4-29 | ✅ | The remaining grazers, properly | Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real growth links |
 | E4-30 | ✅ | Plant growth as a capacity link | a grazing critter eats a fraction of a living plant, not kilograms off a pile |
 | E4-31 | ✅ | Wild plants | a wild twin per crop: no water, no fertiliser, a quarter of the speed |

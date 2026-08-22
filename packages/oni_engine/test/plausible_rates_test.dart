@@ -21,6 +21,8 @@ const Map<String, String> tinyOnPurpose = {
   'carbon_dioxide':
       'an Algae Terrarium is a famously poor scrubber: 0.33 g/s, which is the '
       'figure and not a slip',
+  'phosphorite': 'a Shine Bug eats 200 g of it a cycle, which is the one food '
+      'of its several the page puts in kilograms rather than calories',
   'reed_fiber': 'a quarter of a kilogram a cycle off one plant',
   'sleet_wheat_grain': 'a quarter of a kilogram a cycle off one plant',
   'chlorine': 'half a kilogram a cycle keeps a Gas Grass alive; the liquid '

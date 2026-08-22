@@ -3308,11 +3308,11 @@ const String oniDataJson = r"""
       "id": "shine_bug",
       "name": "Shine Bug",
       "kind": "critter",
-      "description": "UNVERIFIED INPUT: a Shine Bug eats only 40 kcal/cycle and the wiki does not put that in kilograms, so the 1 kg/cycle here is a placeholder. It produces no material directly — the point is the eggs, which give 5 kg of resin each at an Egg Cracker, about 2.4 kg/cycle from a happy bug. Light and decor are not modelled. It drops no meat.",
+      "description": "Eats 200 g/cycle of phosphorite — the one food of its several that the page puts in kilograms rather than calories, and the reason a phosphorite supply is worth keeping beside a bug farm. It produces no material directly: the point is the eggs, which give 5 kg of resin each at an Egg Cracker, about 2.4 kg/cycle from a happy bug. This app has one Egg item and prices every egg as a Hatch's, so that resin is not modelled. Light and decor are not modelled either. It drops no meat.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
@@ -3323,7 +3323,7 @@ const String oniDataJson = r"""
         {
           "item": "phosphorite",
           "direction": "input",
-          "rate": 1.666667
+          "rate": 0.3333333333
         },
         {
           "item": "egg",
@@ -5483,18 +5483,18 @@ const String oniDataJson = r"""
       "id": "shine_bug_wild",
       "name": "Shine Bug (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
-        "unverified",
-        "wild"
+        "wild",
+        "verified"
       ],
       "ports": [
         {
           "item": "phosphorite",
           "direction": "input",
-          "rate": 1.666667
+          "rate": 0.3333333333
         },
         {
           "item": "egg",
