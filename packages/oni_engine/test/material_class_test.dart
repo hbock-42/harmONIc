@@ -266,6 +266,8 @@ void main() {
         'plug_slug_wild.feed',
         // 35 kg a cycle of sand, or of molten glass, in the same amount.
         'clampum.fertiliser',
+        // 20 kg a cycle of sulfur, solid or liquid.
+        'gum_palm.fertiliser',
       });
     });
 

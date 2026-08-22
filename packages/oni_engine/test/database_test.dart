@@ -700,6 +700,25 @@ void main() {
       }
     });
 
+    test('the Marine Drill reports sulfur in the same unit as everything else',
+        () {
+      // It shipped at 0.19 g/s for a year: 250 kg per operation divided by the
+      // 1300 s cycle gives 0.19 *kilograms* a second, and somebody wrote that
+      // into a field measured in grams. The diamond beside it was worked out
+      // the same way and was right, which is how the wrong one went unnoticed.
+      final drill = db.processOrThrow('marine_drill');
+      expect(
+        drill.outputs.firstWhere((p) => p.itemId == 'sulfur').ratePerSecond,
+        closeTo(250000 / 1300, 1e-6),
+      );
+      // Half a tonne of sulfur a cycle, not half a kilogram.
+      expect(
+        drill.outputs.firstWhere((p) => p.itemId == 'sulfur').ratePerSecond *
+            secondsPerCycle / 1000,
+        closeTo(115, 1),
+      );
+    });
+
     test('a Plug Slug is a generator that eats metal', () {
       final slug = db.processOrThrow('plug_slug');
       // 1 600 W for the 75 s of each cycle it is awake: 200 W averaged, which

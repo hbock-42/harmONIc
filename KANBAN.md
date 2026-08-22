@@ -99,8 +99,9 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-28` Seaquine's ovolene rate
 - `E4-25` Firm up the inferred 50 % conversions on Pip and Pokeshell, and the Shine Bug's
   feed in kilograms
-- `E4-11` Nail down the unverified DLC rates: the Vulcanizer's recipe, the Plant
-  Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2
+- `E4-11` Nail down the unverified DLC rates: the Vulcanizer's latex and rubber rates, the
+  Plant Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2. Checked
+  again on 2026-08-22 — all four are still unpublished
 - `E4-22` The Grooming Station's power draw, if it is ever published
 
 **Saving and sharing**
@@ -116,6 +117,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E4-11a` **The Marine Drill was reporting a thousandth of its sulfur** — 250 kg per
+  operation over a 1300 s cycle is 192 g/s, and 0.19 of them had been sitting in a field
+  measured in grams since the day it was seeded
 - `E4-37` **Two more Aquatic plants, and five that are not plants** — Sodicane and Clampum
   seeded. Bulbloom, Petta Pouf and Husha Cups are decorative, Mussel Sprout is wild-only and
   non-renewable, and Pinpoket's yield is quoted in a unit that does not match its growth
@@ -562,7 +566,7 @@ _(empty)_
 | E4-7 | ✅ | Seed set — duplicants | O₂ consumption, CO₂ / dirt / polluted-water output, calories, so "20 dupes" is a pinnable node |
 | E4-8 | ✅ | Ranching | critters: food in, meat/eggs/coal out, per-critter |
 | E4-9 | P2 | Spaced Out variants | rockets and radiation. The base-game filter half of this shipped as E4-12 |
-| E4-11 | P1 | Confirm the unverified DLC rates once the wiki fills them in |
+| E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
 | E4-12 | ✅ | Palette filter by DLC |
 | E4-13 | ✅ | User-defined / overridable processes, edited in the app |
 | E4-17 | P2 | Share a custom recipe pack, so a wiki gap gets filled once for everyone |

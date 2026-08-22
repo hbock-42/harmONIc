@@ -1923,7 +1923,7 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 2,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: built on a Thermal Gas Fissure. Duty-cycled — 100 s drilling in every 1300 s — so the power and diamond figures here are averages over the whole cycle, not the 960 W and 1 kg/s it draws while running. It also emits natural gas at a rate the wiki does not state.",
+      "description": "UNVERIFIED: built on a Thermal Gas Fissure, and duty-cycled — 100 s of drilling in every 1300 s — so every figure here is the average over the whole cycle, the way the wiki quotes its 74 W. It drops 250 kg of sulfur at 100 C per operation, which is 192 g/s averaged, and eats diamond at 1 kg/s while it runs, which is 77 g/s averaged. It also gives off natural gas at a rate nobody has published, so that is missing rather than guessed.",
       "tags": [
         "refining",
         "aquatic",
@@ -1938,7 +1938,7 @@ const String oniDataJson = r"""
         {
           "item": "sulfur",
           "direction": "output",
-          "rate": 0.19,
+          "rate": 192.30769230769232,
           "temperatureC": 100
         }
       ],
@@ -1953,7 +1953,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 3,
       "footprintHeight": 4,
-      "description": "Domesticated in a Wide Hydroponic Farm: 20 kg/cycle of sulfur, 700 kg of gum wood every 10 cycles. UNVERIFIED: it also emits carbon dioxide at an unstated rate, which is not modelled here.",
+      "description": "UNVERIFIED: domesticated in a Wide Hydroponic Farm it takes 20 kg/cycle of sulfur — or liquid sulfur, in the same amount — and gives 700 kg of gum wood every 10 cycles, all of which the page states. What it does not state is the carbon dioxide the plant also takes, which is why this is still marked doubtful: a build around it will under-count its CO2 draw by however much that is.",
       "tags": [
         "farming",
         "aquatic",
@@ -1963,7 +1963,11 @@ const String oniDataJson = r"""
         {
           "item": "sulfur",
           "direction": "input",
-          "rate": 33.333
+          "rate": 33.333,
+          "alternatives": [
+            "liquid_sulfur"
+          ],
+          "id": "fertiliser"
         },
         {
           "item": "gum_wood",
