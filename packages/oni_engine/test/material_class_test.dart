@@ -306,6 +306,54 @@ void main() {
     });
   });
 
+  group('the ore that comes out as a liquid', () {
+    test('cinnabar refines to mercury, and mercury is a liquid', () {
+      // A Metal Refinery hands its metal back at 40 °C, and mercury freezes at
+      // −38.85 °C: what you get is a puddle, not an ingot. The app had it
+      // refining to Solid Mercury, which exists only on a Frosty asteroid.
+      expect(db.itemOrThrow('cinnabar_ore').refinesTo, 'mercury');
+      expect(db.itemOrThrow('mercury').category, ItemCategory.liquid);
+    });
+
+    test('so a refinery set to cinnabar needs pipes, not rails', () {
+      final pipeline = (PipelineBuilder(db, name: 'mercury')
+            ..addSource('cinnabar_ore')
+            ..add('metal_refinery', nodeId: 'refinery')
+            ..connectItem('src_cinnabar_ore', 'refinery', 'cinnabar_ore')
+            ..pinCount('refinery', 1))
+          .build();
+      final node = pipeline.nodeOrThrow('refinery');
+      final spec = db.processOrThrow('metal_refinery');
+      final out = spec.ports.firstWhere((p) => p.id == 'refined_metal');
+
+      // Unset it is generic; set to cinnabar it is mercury, and what carries
+      // 2.5 kg/s of it follows from that and not from the class it came from.
+      expect(itemFlowingIn(db, node, spec, out), 'refined_metal');
+
+      final chosen = pipeline.copyWith(nodes: [
+        for (final n in pipeline.nodes)
+          if (n.id == 'refinery')
+            n.copyWith(materials: {'metal_ore': 'cinnabar_ore'})
+          else
+            n,
+      ]);
+      expect(itemFlowingIn(db, chosen.nodeOrThrow('refinery'), spec, out),
+          'mercury');
+      expect(Conduits.describe(2500, ItemCategory.liquid), 'liquid pipe');
+    });
+
+    test('and you cannot build anything out of it', () {
+      // The refined metal class is what a build cost asks for, and a liquid is
+      // not something you put a wall up with. Mercury is refined and is not a
+      // member; solid mercury is not what a refinery makes.
+      final metals = db.itemOrThrow('refined_metal').members;
+      expect(metals, isNot(contains('mercury')));
+      expect(metals, isNot(contains('solid_mercury')));
+      expect(metals, unorderedEquals(
+          ['iron', 'copper', 'gold', 'nickel', 'zinc', 'lead']));
+    });
+  });
+
   group('rot, and the two things that eat it', () {
     test('a rot pile is compostable, alongside the other two', () {
       expect(db.itemOrThrow('compostable').members,

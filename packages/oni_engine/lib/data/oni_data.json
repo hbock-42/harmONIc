@@ -552,7 +552,7 @@
       "tags": [
         "frosty"
       ],
-      "refinesTo": "solid_mercury"
+      "refinesTo": "mercury"
     },
     {
       "id": "solid_mercury",
@@ -910,7 +910,6 @@
         "gold",
         "nickel",
         "zinc",
-        "solid_mercury",
         "lead"
       ],
       "tags": [

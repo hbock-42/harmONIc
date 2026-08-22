@@ -556,7 +556,7 @@ const String oniDataJson = r"""
       "tags": [
         "frosty"
       ],
-      "refinesTo": "solid_mercury"
+      "refinesTo": "mercury"
     },
     {
       "id": "solid_mercury",
@@ -914,7 +914,6 @@ const String oniDataJson = r"""
         "gold",
         "nickel",
         "zinc",
-        "solid_mercury",
         "lead"
       ],
       "tags": [

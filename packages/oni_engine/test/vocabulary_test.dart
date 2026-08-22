@@ -24,9 +24,10 @@ const Map<String, String> unusedOnPurpose = {
   'bog_jelly': 'a Frosty crop with no numbers',
   'lumen_quartz': 'a decorative mineral',
   'iridium': 'a Prehistoric metal nothing here refines',
-  'mercury': 'and its gas: a Frosty liquid metal, cooled and pumped rather '
-      'than made',
-  'mercury_gas': 'the same, in its usual state underground',
+  'mercury_gas': 'mercury above 356.75 °C, which is a state a build can reach '
+      'but not one anything here asks for',
+  'solid_mercury': 'and below −38.85 °C: the frozen form, which is how a Frosty '
+      'asteroid keeps it and not what a refinery hands you',
   'molten_zinc': 'and its gas: an Aquatic volcano product',
   'zinc_gas': 'the same, above its condensation point',
   'nectar': 'gathered from Aquatic flora this app does not model',

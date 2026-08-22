@@ -60,7 +60,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
   in the plastic behind them
 
 - `E4-35b` Sporechid, and the Prehistoric and Aquatic food plants
-- `E4-27` Mercury and cinnabar processing
 - `E4-26` The rest of both packs: Bammoth and Jawbo (yields unpublished), Rhex (eats other
   critters, which a flow model cannot express), Gnit and Mimika (produce nothing), and the
   regular Lumb (its peat rate is stated nowhere)
@@ -87,6 +86,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-27` **Cinnabar comes out of the refinery as a puddle** — 100 kg of ore is 100 kg of
+  mercury, and mercury freezes at −38.85 °C while a refinery hands its metal back at 40 °C.
+  The app had it making Solid Mercury, which is what a Frosty asteroid keeps in the ground
+  and not what anybody's refinery produces. The rates were already right, because the
+  generic recipes cover them; the element was not, and a build that thought it was moving
+  ore on a rail was moving mercury down a pipe. Refined Metal is what a build cost asks for,
+  so a liquid does not belong in it either way
 - `E13-7` **Rot Pile** — what food becomes when it spoils, which is a Pokeshell's other
   food at the same 70 kg a cycle and a third thing the Compost turns into dirt. Spoilage
   itself stays unmodelled, so a rot pile arrives the way a geyser's water does: from
@@ -602,7 +608,7 @@ _(empty)_
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |
 | E4-25 | P3 | Firm up the inferred 50 % conversions | the Pokeshell's is published now and is checked by the mass-balance audit. The Pip's is not: its page says what it eats and what it excretes, and never puts the two in one sentence. The Shine Bug's feed in kilograms is likewise absent |
 | E4-26 | P3 | The rest of both packs | Bammoth, Jawbo, Rhex, Gnit, Mimika, Lumb — yields unpublished or inexpressible |
-| E4-27 | P3 | Mercury and cinnabar processing |  |
+| E4-27 | ✅ | Mercury and cinnabar processing | the generic refinery and crusher already covered the rates — 1:1 and 50 % with sand — but the ore refined to the wrong element: a refinery hands its metal back at 40 °C and mercury freezes at −38.85 °C, so what you get is a liquid |
 | E4-28 | P3 | Seaquine's ovolene rate |  |
 | E4-29 | ✅ | The remaining grazers, properly | Drecko, Glossy Drecko, Pip and Flox switched from kilogram stand-ins to real growth links |
 | E4-30 | ✅ | Plant growth as a capacity link | a grazing critter eats a fraction of a living plant, not kilograms off a pile |
