@@ -2511,7 +2511,7 @@ const String oniDataJson = r"""
       "id": "sage_hatch",
       "name": "Sage Hatch",
       "kind": "critter",
-      "description": "The efficient one: 100 % of what it eats comes back as coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "The efficient one: 100 % of what it eats comes back as coal, and it eats six things at the same rate — dirt, slime, algae, fertiliser, polluted dirt or corallium — so this is one recipe you pick the feed for rather than six. It will also eat prepared food, at 700 kcal a cycle rather than by weight, which is a different recipe and not modelled. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2525,7 +2525,14 @@ const String oniDataJson = r"""
         {
           "item": "dirt",
           "direction": "input",
-          "rate": 233.3333
+          "rate": 233.3333,
+          "alternatives": [
+            "slime",
+            "algae",
+            "fertilizer",
+            "polluted_dirt",
+            "corallium"
+          ]
         },
         {
           "item": "coal",
@@ -2549,7 +2556,7 @@ const String oniDataJson = r"""
       "id": "smooth_hatch",
       "name": "Smooth Hatch",
       "kind": "critter",
-      "description": "Refines metal ore without a Metal Refinery, at 75 % conversion. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Refines metal ore without a Metal Refinery, at 75 % conversion — galena excepted, which is two metals and not one and which nobody has published a Hatch figure for. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -2563,7 +2570,10 @@ const String oniDataJson = r"""
         {
           "item": "metal_ore",
           "direction": "input",
-          "rate": 166.6667
+          "rate": 166.6667,
+          "excludes": [
+            "galena"
+          ]
         },
         {
           "item": "refined_metal",
@@ -4830,7 +4840,7 @@ const String oniDataJson = r"""
       "id": "sage_hatch_wild",
       "name": "Sage Hatch (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. It eats any of its six foods at the same rate, as the groomed one does.",
       "tags": [
         "ranching",
         "wild",
@@ -4840,7 +4850,14 @@ const String oniDataJson = r"""
         {
           "item": "dirt",
           "direction": "input",
-          "rate": 233.3333
+          "rate": 233.3333,
+          "alternatives": [
+            "slime",
+            "algae",
+            "fertilizer",
+            "polluted_dirt",
+            "corallium"
+          ]
         },
         {
           "item": "coal",
@@ -4874,7 +4891,10 @@ const String oniDataJson = r"""
         {
           "item": "metal_ore",
           "direction": "input",
-          "rate": 166.6667
+          "rate": 166.6667,
+          "excludes": [
+            "galena"
+          ]
         },
         {
           "item": "refined_metal",

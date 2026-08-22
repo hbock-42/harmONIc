@@ -52,9 +52,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
   deal else that is not tagged — a filter that hides some of a pack and not the rest would
   be worse than none, so this wants a full audit before it is offered
 
-- `E13-5` Sage Hatch eats organics broadly — polluted dirt, slime, algae, dirt, fertiliser
-  and most Duplicant food. That is a class this app does not have, and inventing one
-  called "organic" without checking what the game really groups would be a guess
 - `E13-7` Rot Pile, so a Pokeshell's second food and the Compost's second input exist
 - `E13-3` The Crafting Station: every recipe is known except how many gaskets 50 kg of
   plastic makes, which is the one figure a build actually needs
@@ -90,6 +87,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E13-5` **A Sage Hatch eats six things at one rate** — dirt, slime, algae, fertiliser,
+  polluted dirt or corallium, 140 kg a cycle whichever it is and all of it back as coal. The
+  same rate is what makes it one recipe you pick the feed for, rather than six recipes or an
+  invented "organic" class nobody could point at in the game. Prepared food is priced in
+  calories instead, so it is a different recipe and is left out and said so
 - `E13-4` **Galena is the one ore that is two things** — 87 kg of lead and 13 kg of sulfur
   out of 100, where every other ore comes back as one metal kilogram for kilogram. So it
   has a refinery and a crusher recipe of its own, and the generic pair now say out loud
@@ -761,7 +763,7 @@ flow, so the solver never had to learn about it.
 | E13-2e | P3 | The Supermaterial Refinery | the wiki has no page for it under that name |
 | E13-3 | P2 | The Crafting Station | every recipe is known except how many gaskets 50 kg of plastic makes |
 | E13-4 | ✅ | Lead, and the metals behind galena | galena is the one ore that is two things — 87 % lead, 13 % sulfur — so it has its own refinery and crusher recipes and the generic ones exclude it, which is what `excludes` on a port is for |
-| E13-5 | P3 | Sage Hatch's organics | polluted dirt, slime, algae, dirt, fertiliser and most Duplicant food: a class this app does not have |
+| E13-5 | ✅ | Sage Hatch's organics | six foods at one rate, so it is a port with alternatives rather than an invented "organic" class. Prepared food is 700 kcal a cycle rather than a weight, which is a different recipe and stays unmodelled |
 | E13-6 | ✅ | Alternative diets | a Plug Slug eats ore or refined metal at the same 60 kg a cycle, so it is one port with alternatives rather than two specs |
 | E13-7 | P3 | Rot Pile | a Pokeshell's second food and the Compost's second input |
 | E13-8 | P2 | Spaced Out as a fourth pack | Liquid Sulfur belongs to it and so does much that carries no tag; wants a full audit before it is offered |

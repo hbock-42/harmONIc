@@ -226,6 +226,24 @@ void main() {
       expect(portAccepts(db, node, spec, ore, 'iron_ore'), isTrue);
     });
 
+    test('anything that turns ore into one metal excludes it', () {
+      // The rule rather than the two cases: a port that says "what comes out
+      // of here is what went in, refined" cannot be fed the ore that comes
+      // out as two things. This is the audit that will catch the next recipe
+      // somebody writes without thinking about galena.
+      final claiming = <String>[];
+      for (final spec in db.processes) {
+        for (final port in spec.ports) {
+          final follows = port.followsPortId;
+          if (follows == null) continue;
+          final source = spec.portByIdOrThrow(follows);
+          if (source.itemId != 'metal_ore') continue;
+          if (!source.excludes.contains('galena')) claiming.add(spec.id);
+        }
+      }
+      expect(claiming, isEmpty);
+    });
+
     test('lead is a refined metal, and a poor one to build with', () {
       expect(db.itemOrThrow('refined_metal').members, contains('lead'));
       // The game's table gives lead −20, so a lead building gives up before a
@@ -233,6 +251,58 @@ void main() {
       expect(Overheating.toleranceOf('lead'), commonOverheatCelsius - 20);
       expect(Overheating.survivorsAmong(
           db.itemOrThrow('refined_metal').members, 70), isNot(contains('lead')));
+    });
+  });
+
+  group('a Sage Hatch eats six things at one rate', () {
+    test('one recipe with alternatives, not six recipes', () {
+      for (final id in ['sage_hatch', 'sage_hatch_wild']) {
+        final spec = db.processOrThrow(id);
+        final feed = spec.ports.firstWhere((p) => p.isInput && p.itemId != 'grooming');
+        // Dirt, slime, algae, fertiliser, polluted dirt or corallium: 140 kg a
+        // cycle whichever it is, and 100 % of it back as coal. Identical rates
+        // are what makes this alternatives rather than six specs, and what
+        // keeps "organic" — a class the game does not have — uninvented.
+        expect(feed.accepted, [
+          'dirt',
+          'slime',
+          'algae',
+          'fertilizer',
+          'polluted_dirt',
+          'corallium',
+        ], reason: id);
+        final coal = spec.ports.firstWhere((p) => p.itemId == 'coal');
+        expect(coal.ratePerSecond, feed.ratePerSecond, reason: id);
+      }
+    });
+
+    test('every food is a thing the app has', () {
+      final feed = db
+          .processOrThrow('sage_hatch')
+          .ports
+          .firstWhere((p) => p.itemId == 'dirt');
+      for (final food in feed.accepted) {
+        expect(db.item(food), isNotNull, reason: food);
+      }
+    });
+
+    test('a slime supply feeds one, and so does a corallium supply', () {
+      for (final food in ['slime', 'corallium']) {
+        final pipeline = (PipelineBuilder(db, name: 'ranch')
+              ..addSource(food)
+              ..add('sage_hatch', nodeId: 'hatch')
+              ..connectItem('src_$food', 'hatch', food)
+              ..pinCount('hatch', 8))
+            .build();
+        final solution = PipelineSolver(db).solve(pipeline);
+        expect(solution.status, SolveStatus.solved, reason: food);
+        // Eight Sage Hatches eat 8 × 233.3 g/s of whichever it is and give all
+        // of it back as coal, which is the 100 % conversion in one number.
+        expect(solution.externalOutputs['coal'], closeTo(233.3333 * 8, 1e-3),
+            reason: food);
+        expect(solution.nodes['src_$food']!.count,
+            closeTo(233.3333 * 8, 1e-3), reason: food);
+      }
     });
   });
 
@@ -336,6 +406,10 @@ void main() {
         'clampum.fertiliser',
         // 20 kg a cycle of sulfur, solid or liquid.
         'gum_palm.fertiliser',
+        // 140 kg a cycle of dirt, slime, algae, fertiliser, polluted dirt or
+        // corallium, all back as coal, whichever it was.
+        'sage_hatch.dirt',
+        'sage_hatch_wild.dirt',
         // 500 g a cycle of chlorine in any state, and 25 kg of dirt or sand.
         'gas_grass.chlorine',
         'gas_grass.fertiliser',
