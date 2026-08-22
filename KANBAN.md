@@ -117,6 +117,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E8-9` **Two more audits** — every building takes up floor (the Grooming Station and the
+  Aquatic Milking Station took none, so a ranch under-counted its room), and every item is
+  used or says why it is not
 - `E8-8` **A rate-plausibility audit** — nothing measured in grams moves less than a gram a
   second, or more than ten pipes could carry, without a named reason. It is the check that
   would have caught the Marine Drill, and writing it found Gas Grass asking for liquid
@@ -779,6 +782,7 @@ flow, so the solver never had to learn about it.
 | E8-6 | ✅ | A guide to using it | `docs/USING.md`: the one idea, the controls in the order you meet them, and a section on what the app deliberately does not know |
 | E8-7 | ✅ | The guide, reachable from inside the app | a ? in the toolbar renders `docs/USING.md` itself, copied into the assets and checked for drift the way the generated data is |
 | E8-8 | ✅ | Rate-plausibility audit | a gram a second at the bottom, ten pipes at the top, and an allowlist that has to say why each exception is real |
+| E8-9 | ✅ | Footprint and vocabulary audits | no building with no floor; no item nothing uses without a sentence saying what it is for |
 
 ---
 

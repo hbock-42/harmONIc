@@ -17,6 +17,18 @@ void main() {
               'no list — price it, or teach the total to say it could not');
     });
 
+    test('every building takes up floor', () {
+      // A building with no footprint contributes nothing to the floor total
+      // and says so silently — a ranch that reported no room for its Grooming
+      // Stations was under-counting by six tiles apiece.
+      final flat = [
+        for (final spec in db.processes)
+          if (spec.kind == ProcessKind.building && spec.footprintTiles == 0)
+            spec.id,
+      ];
+      expect(flat, isEmpty);
+    });
+
     test('nothing that is not a building has a construction cost', () {
       for (final spec in db.processes) {
         if (spec.kind == ProcessKind.building) continue;

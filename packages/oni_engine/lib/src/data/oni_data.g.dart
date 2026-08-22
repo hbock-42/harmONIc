@@ -838,22 +838,6 @@ const String oniDataJson = r"""
       ]
     },
     {
-      "id": "dusk_cap_growth",
-      "name": "Dusk Cap growth",
-      "category": "other",
-      "tags": [
-        "growth"
-      ]
-    },
-    {
-      "id": "sleet_wheat_growth",
-      "name": "Sleet Wheat growth",
-      "category": "other",
-      "tags": [
-        "growth"
-      ]
-    },
-    {
       "id": "sleet_wheat_grain",
       "name": "Sleet Wheat Grain",
       "category": "solid",
@@ -981,12 +965,6 @@ const String oniDataJson = r"""
       "id": "gasket",
       "name": "Gaskets",
       "category": "other",
-      "tags": []
-    },
-    {
-      "id": "mush_bar",
-      "name": "Mush Bar",
-      "category": "solid",
       "tags": []
     },
     {
@@ -3037,7 +3015,9 @@ const String oniDataJson = r"""
       ],
       "build": {
         "metal_ore": 400
-      }
+      },
+      "footprintWidth": 2,
+      "footprintHeight": 3
     },
     {
       "id": "aquatic_grooming_station",
@@ -3987,7 +3967,9 @@ const String oniDataJson = r"""
       "build": {
         "refined_metal": 400,
         "gasket": 4
-      }
+      },
+      "footprintWidth": 3,
+      "footprintHeight": 3
     },
     {
       "id": "beakon_grazing",
