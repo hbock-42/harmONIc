@@ -21,6 +21,13 @@ and pick from the list: it shows everything that could plug in there, places it
 beside the node and connects it in one move. That list obeys your pack filters,
 so nothing is offered that you cannot build.
 
+**Showing** at the top of the palette is what you own. Turn off a pack you do
+not have — Frosty, Prehistoric, Aquatic, or Spaced Out, which the other three
+sit on top of — and everything from it leaves the list, including the supplies
+for its materials. **Wild** is the other switch: a wild critter or plant is the
+same thing left untended, laying a tenth as often and taking nothing, and the
+list hides those until you ask for them.
+
 **Draw N supplies** on the toolbar appears whenever something is unfed. One
 press puts a supply or output node on every loose port, so the edges of the
 build become things you can click, price and give a temperature to, instead of
@@ -58,12 +65,13 @@ On a node:
   solving the build again rather than estimating.
 - **to build** is the shopping list for the ones you place. A part counted in
   ones rather than kilograms says what one costs beside it — four gaskets, and
-  the 200 kg of plastic behind them. When what runs
-  through a building is hotter than the 75 °C a bare one tolerates, it also says
-  which of the materials you may build it from survive that — an Electrolyzer is
-  200 kg of any metal ore, and at 95 °C only Gold Amalgam holds. A building the
-  game rates itself, like a Steam Turbine at 1 000 °C, is not asked the question,
-  because no choice of metal changes it.
+  the 200 kg of plastic behind them.
+- **What to build it out of**, when what runs through a building is hotter than
+  the 75 °C a bare one tolerates: it names which of the materials the recipe
+  allows survive that. An Electrolyzer is 200 kg of any metal ore, and at 95 °C
+  only Gold Amalgam holds. A building the game rates itself, like a Steam
+  Turbine at 1 000 °C, is not asked the question, because no choice of metal
+  changes it.
 
 ## Things you can tell it
 
@@ -81,16 +89,8 @@ On a node:
   cares.
 - **Takes** on a wire — how much of a producer's output that line gets, when one
   output feeds two things. "An even split" is a real answer, not a default
-  nobody chose. Or let it choose: where a build divides
-  and nobody has said how, an output node offers **Get as much as possible** and
-  a supply node offers **Use as little as possible**. Both work out the division
-  that answers the question and write it onto the wires as ordinary shares you
-  can then change. Both say when there is no answer — nothing limits the build,
-  or nothing has been asked of it, or two amounts you set contradict each other. **LEAST** beside net power, heat or floor in the bottom bar asks the
-  same thing of the build as a whole: the splits that draw the least, emit the
-  least or stand on the least, while still delivering what you asked for. The
-  three rarely agree — a Rock Crusher is a fifth of a Metal Refinery's power and
-  twice its ore.
+  nobody chose. Or you can leave the splits alone and let the app work them out:
+  see *Letting it choose* below.
 - **Valve** on a wire — a cap on what that line may carry. It does not change
   what the build needs, because the solver works out what it needs: it tells you
   when the build has outgrown what you allowed. Asking an output node for as
@@ -98,6 +98,29 @@ On a node:
   cap where the solver cannot.
 - **Vent** on a port — this output goes nowhere on purpose. Without it, a port
   making more than anything takes reads as a contradiction rather than as spare.
+
+## Letting it choose
+
+Where a build divides and nobody has said how, the app splits evenly. That is a
+fair guess and rarely the best one, so you can ask for the best instead.
+
+Select an **output** node and press **Get as much as possible**: it works out
+the division that delivers the most of that item. Select a **supply** node and
+press **Use as little as possible**: the division that spends the least of it
+while still delivering everything you asked for. Ten kilograms a second of ore
+through a refinery and a crusher gives 6.7 kg/s of metal split evenly, and 10
+through the refinery alone.
+
+**LEAST**, beside net power, heat or floor in the bottom bar, asks the same of
+the build as a whole: the splits that draw the least, emit the least, or stand
+on the least. The three rarely agree — a Rock Crusher draws a fifth of a Metal
+Refinery's power and eats twice the ore for the same metal.
+
+All of them write what they chose onto the wires as ordinary shares, so
+afterwards it is a build like any other: you can see the splits, change them,
+and undo the whole thing. And all of them say when there is no answer rather
+than inventing one — nothing limits the build, or nothing has been asked of it,
+or two amounts you set contradict each other.
 
 ## Wires
 

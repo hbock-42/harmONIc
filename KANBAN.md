@@ -69,6 +69,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-11` **The guide, read as a reader would** — fifteen features in a fortnight were each
+  appended to whatever bullet was nearest, and one bullet had quietly become three features
+  and a broken line. Letting the app choose the splits now has a section of its own, the
+  pack filters are explained where they are first mentioned rather than assumed, and the
+  build-material advice is its own point. Two tests hold it: every section still reaches the
+  screen, and nothing is written in Markdown the app's thirty-line renderer would hand the
+  reader as a row of pipes. Adding a table and a link proves both bite
 - `E11-9` **Valves** — the row said a cap is an inequality and this solver holds equations,
   which was true and stopped being the whole story when the simplex arrived. Two jobs from
   one number: the ordinary solver works out what the line *has* to carry and says when that
@@ -911,9 +918,9 @@ flow, so the solver never had to learn about it.
 | E13-1c | ✅ | Classes applied where verified | Deodorizer and Water Sieve on Filtration Medium, a Hatch on rock, a Smooth Hatch on any ore, the Ethanol Distiller on wood |
 | E13-2 | ✅ | The cooling loop | Aquatuner and Thermo Regulator move heat, the Steam Turbine deletes it; heat ports at both ends so a build must say where it went |
 | E13-2b | ✅ | The rest of the roster | the Smoker and the Dehydrator seeded; the other three cannot be, each for its own reason, written out below |
-| E13-2c | P3 | The Molecular Forge | its recipes are niobium, tungsten, isosap, abyssalite, brackwax and thermium, five of which this app has no item for, and the page publishes no cycle time |
+| E13-2c | P3 | The Molecular Forge | checked again 2026-08-23: the five recipes' *ratios* are published — thermium is 5 kg of niobium and 95 of tungsten, and so on — and the cycle time still is not, nor the power per recipe. It also wants ten items nothing else here uses |
 | E13-2d | P3 | The Spice Grinder | every recipe is 0.1 of a *seed*, and seeds are not items here; no power or cycle time published either |
-| E13-2e | P3 | The Supermaterial Refinery | the wiki has no page for it under that name |
+| E13-2e | ❌ | The Supermaterial Refinery | it is the Molecular Forge under an older name. The page 404s, and the Forge makes exactly its recipes — thermium, insulite, plastium. `E13-2c` is the row |
 | E13-3 | ✅ | The Crafting Station | the gasket recipe seeded — 50 kg of plastic or rubber, one gasket, 30 s, 60 W. Its other recipes make equipment rather than materials: oxygen masks, power banks and boosters, none of which is a flow |
 | E13-4 | ✅ | Lead, and the metals behind galena | galena is the one ore that is two things — 87 % lead, 13 % sulfur — so it has its own refinery and crusher recipes and the generic ones exclude it, which is what `excludes` on a port is for |
 | E13-5 | ✅ | Sage Hatch's organics | six foods at one rate, so it is a port with alternatives rather than an invented "organic" class. Prepared food is 700 kcal a cycle rather than a weight, which is a different recipe and stays unmodelled |
@@ -940,6 +947,7 @@ flow, so the solver never had to learn about it.
 | E8-8 | ✅ | Rate-plausibility audit | a gram a second at the bottom, ten pipes at the top, and an allowlist that has to say why each exception is real |
 | E8-9 | ✅ | Footprint and vocabulary audits | no building with no floor; no item nothing uses without a sentence saying what it is for |
 | E8-10 | ✅ | The kanban audit | the board has to agree with itself: one row per id, a row behind every board entry, nothing offered in Ready that its own row calls finished, and no status the legend does not explain |
+| E8-11 | ✅ | The guide is checked as a rendered thing | every heading reaches the screen, and nothing is written in Markdown the thirty-line renderer would hand the reader as punctuation |
 
 ---
 
