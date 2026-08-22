@@ -84,7 +84,11 @@ class _PalettePanelState extends State<PalettePanel> {
         // A build saved as a recipe goes in a group of its own, named after
         // where it came from rather than after the fact that it is custom.
         _ when spec.tags.contains('build') => 'My builds',
+        // Pumps and filters are one building per fluid apiece, so they get
+        // groups of their own rather than swamping the list they would
+        // otherwise be sorted into.
         _ when spec.tags.contains('pumping') => 'Pumping',
+        _ when spec.tags.contains('filtering') => 'Filtering',
         _ => _capitalise(
             spec.tags.firstWhere((t) => t != 'verified', orElse: () => 'other')),
       };
@@ -178,6 +182,7 @@ class _PalettePanelState extends State<PalettePanel> {
         int rank(String g) => switch (g) {
               'My builds' => 0,
               'Pumping' => 2,
+              'Filtering' => 2,
               'Supply' => 3,
               'Output' => 4,
               _ => 1,

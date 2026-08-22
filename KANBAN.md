@@ -112,6 +112,9 @@ _(empty)_
 
 - `E9-7` **A cross to empty a search** — three search boxes, and getting back to the whole
   list meant holding backspace down
+- `E11-4` **Filters** — one generated per fluid, the way pumps are. The separation itself
+  cannot be modelled without a notion of mixtures, and what can be modelled is what it
+  costs: a building, 120 W, and a pipe's worth of throughput
 - `E7-19` **A passing wire keeps its lane** — the dummy vertices reserved a lane while the
   columns were sorted and it was forgotten the moment anything moved, so a node could
   straighten itself into the middle of a wire that was passing it. Lanes now survive to the
@@ -639,7 +642,9 @@ does not see.
 | E11-1 | ✅ | Conduit capacity | how many pipes, wires and rails a flow needs; a ratio that balances on paper is unbuildable at 40 kg/s down one pipe |
 | E11-2 | P2 | Pipe materials | 500 °C steam needs a pipe built of something that survives it, which depends on the material's limits rather than the flow alone |
 | E11-3 | ✅ | Pumps | generated per fluid the way sources and sinks are, since a pump is the same machine whatever it moves |
-| E11-4 | P2 | Filters and valves | a Gas Filter separates one gas from a mixed stream, and this model has no notion of a mixture |
+| E11-4 | ✅ | Filters | generated per fluid; what a separation *costs*, since the separation itself needs mixtures the model does not have |
+| E11-8 | P2 | Mixtures | a port carries one thing, so a pipe of mixed gas cannot be drawn. Wanted by filters, by pressure, and by anything that sorts |
+| E11-9 | P3 | Valves | a valve caps a flow, and a cap is an inequality the solver has no way to hold. Pinning the rate says the same thing today |
 | E11-5 | P2 | Conduit heat | a pipe full of 95 °C water heats whatever it runs past |
 | E11-6 | ✅ | Temperature mixing | carried downstream after the solve; published figures win, the rest is the weighted mixture of what arrives |
 | E11-6b | P2 | The specific heats not yet measured | molten metals and DLC exotica; a fluid without one is silently left out of any mixture it joins |

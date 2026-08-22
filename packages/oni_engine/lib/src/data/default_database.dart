@@ -61,6 +61,12 @@ GameDatabase loadDefaultDatabase() {
     // one gas pipe is 480 W before anything has been done with the gas.
     final pump = _pumpFor(item);
     if (pump != null) extra.add(pump);
+
+    // And a filter, for the same reason: separating a gas out of a shared pipe
+    // costs a building and 120 W, and neither shows up anywhere in a graph
+    // where every port already carries one thing.
+    final filter = _filterFor(item);
+    if (filter != null) extra.add(filter);
   }
   return GameDatabase(
     dataVersion: base.dataVersion,
@@ -134,12 +140,90 @@ ProcessSpec? _pumpFor(Item item) {
   );
 }
 
+/// Pulls one gas or liquid out of a pipe carrying several.
+///
+/// This app has no notion of a mixture: every port carries one thing, and an
+/// Electrolyzer's oxygen and hydrogen leave by different ports because that is
+/// the only way the model can say it. So a filter cannot be modelled as the
+/// separation it performs — there is nothing here for it to separate.
+///
+/// What it *can* say is what the separation costs, which is the part a plan
+/// gets wrong: a building, 120 W while it runs, and a pipe's worth of
+/// throughput. Put one on the wire you would have to filter in game and the
+/// power turns up in the total. The gas it does not want goes on down the pipe,
+/// which this does not track.
+ProcessSpec? _filterFor(Item item) {
+  // A filter handles whatever the pipe delivers, and the pipe is the limit:
+  // 1 kg/s of gas, 10 kg/s of liquid. Neither page publishes a throughput.
+  final (double rate, double heat) = switch (item.category) {
+    ItemCategory.liquid => (10000, 4),
+    ItemCategory.gas => (1000, 0),
+    _ => (0, 0),
+  };
+  if (rate == 0) return null;
+  final liquid = item.category == ItemCategory.liquid;
+
+  return ProcessSpec(
+    id: filterSpecId(item.id),
+    name: '${item.name} filter',
+    kind: ProcessKind.building,
+    description: liquid
+        ? 'Separates ${item.name} from a pipe carrying more than one liquid, '
+            'for 120 W and 4 kDTU/s. The throughput here is a full pipe, '
+            '10 kg/s, because the page does not publish one and a filter can '
+            'only take what the pipe brings it.'
+        : 'UNVERIFIED: separates ${item.name} from a pipe carrying more than '
+            'one gas, for 120 W. The throughput here is a full pipe, 1 kg/s, '
+            'because the page does not publish one; nor does it publish the '
+            'heat, which is modelled as none.',
+    tags: {
+      'filtering',
+      if (liquid) 'verified' else 'unverified',
+      // As optional as the fluid it filters, the same as a supply node.
+      for (final tag in item.tags)
+        if (contentPackTags.contains(tag)) tag,
+    },
+    footprintWidth: 1,
+    footprintHeight: 2,
+    buildCost: {BuildMaterials.metalOre: liquid ? 200 : 50},
+    ports: [
+      Port(
+        id: 'in',
+        itemId: item.id,
+        direction: PortDirection.input,
+        ratePerSecond: rate,
+      ),
+      Port(
+        id: 'out',
+        itemId: item.id,
+        direction: PortDirection.output,
+        ratePerSecond: rate,
+      ),
+      const Port(
+        id: 'power_in',
+        itemId: WellKnownItems.power,
+        direction: PortDirection.input,
+        ratePerSecond: 120,
+      ),
+      if (heat > 0)
+        Port(
+          id: 'heat_out',
+          itemId: WellKnownItems.heat,
+          direction: PortDirection.output,
+          ratePerSecond: heat,
+        ),
+    ],
+  );
+}
+
 /// The packs whose content is optional, named by the tag the data uses.
 ///
 /// Kept here rather than in the app because it is a fact about the data: a
 /// synthesised supply node has to inherit its item's pack, and that decision
 /// cannot wait for a widget to be built.
 const Set<String> contentPackTags = {'aquatic', 'frosty', 'prehistoric'};
+
+String filterSpecId(String itemId) => 'filter:$itemId';
 
 String sourceSpecId(String itemId) => 'source:$itemId';
 String sinkSpecId(String itemId) => 'sink:$itemId';

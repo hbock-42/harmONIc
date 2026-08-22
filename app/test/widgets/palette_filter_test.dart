@@ -154,4 +154,14 @@ void main() {
     await tester.pump();
     expect(textLabel('Water supply'), findsWidgets);
   });
+
+  testWidgets('filters get a group of their own, like pumps', (tester) async {
+    await pumpEditor(tester);
+
+    await tester.enterText(paletteSearch(), 'Oxygen filter');
+    await tester.pump();
+
+    expect(find.text('FILTERING'), findsOneWidget);
+    expect(textLabel('Oxygen filter'), findsWidgets);
+  });
 }
