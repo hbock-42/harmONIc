@@ -71,6 +71,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-7f` **What the optimiser costs, and a theory disproved** — it shipped without a perf
+  test, and `docs/CHOOSING-SHARES.md` had worried in advance that it would be slow. It is:
+  about cubic, 24 ms at 200 nodes, 188 at 400, and 940 ms on a 500-node chain — a second of
+  frozen window. The simplex's own comment said the fix would be the greedy pivot rule with
+  Bland's as a fallback. That was tried and made *no difference*, within noise on every
+  shape and a hair slower on some, so it was reverted and the comment now says so. The cost
+  is not choosing the column; it is that every pivot walks a dense tableau. The next lever
+  is the one that fixed the elimination — stop touching the zeros — and a guard now says
+  when it is needed
 - `E8-12` **Two more things the engine knew and nobody could read** — the sweep that found
   uptime, edge shares, the stockpile pin and the arrow keys, run again now that a fortnight
   of features has landed. `AsBuiltReport.drifts` has been computing what rounding costs the
@@ -741,6 +750,7 @@ _(empty)_
 | E3-7c | ✅ | One question, end to end | "Get as much as possible" on an output node. The simplex chooses the splits and they are written back as ordinary shares, so there is still one solver and one set of numbers |
 | E3-7d | ✅ | Minimise a raw input | the same machinery from the other end: a supply node asks what the build could get away with using, and still delivers what was asked of it |
 | E3-7e | ✅ | The objectives that are not a port | least heat, least power, least floor, offered beside the figure itself in the bottom bar — the only place somebody looking at a total they dislike would think to look |
+| E3-7f | ✅ | What the optimiser costs | measured, guarded, and one theory disproved: about cubic, 24 ms at 200 nodes, and the greedy pivot rule the first comment recommended makes no difference at all |
 | E3-7b | ✅ | Vented output ports | a pulled port normally balances exactly; venting drops that equation and reports the excess |
 | E3-8 | ✅ | Sensitivity | "going from 3 to 4": what the next one buys and costs, worked out by solving the build again rather than by estimating |
 | E3-9 | ✅ | Solver perf test | 500-node chain and 500-node fan, both under 50 ms; writing it found the elimination doing eight times the work it needed to |

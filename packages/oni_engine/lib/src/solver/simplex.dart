@@ -62,10 +62,16 @@ class LpSolution {
 /// you rather than leaving every caller to remember it.
 ///
 /// **Bland's rule throughout.** The textbook choice — the most promising column
-/// — is faster and can cycle for ever on a degenerate problem, and every
-/// production graph with a loop in it is degenerate. The lowest-index rule
-/// cannot cycle. If this is ever too slow, the fix is to use the greedy rule
-/// and fall back to Bland's after a few hundred pivots, not to hope.
+/// — can cycle for ever on a degenerate problem, and every production graph
+/// with a loop in it is degenerate. The lowest-index rule cannot cycle.
+///
+/// It is usually described as the slow one, and an earlier version of this
+/// comment said that if the solver were ever too slow the fix would be to take
+/// the greedy rule and fall back to Bland's after a few hundred pivots. It was
+/// too slow, that was tried, and it made no difference at all — within noise on
+/// every shape measured, and a hair slower on some. The cost is not in choosing
+/// the column; it is that every pivot walks a dense tableau. See
+/// `docs/CHOOSING-SHARES.md` for the figures and for what would actually help.
 LpSolution solveLp({
   required List<double> objective,
   required List<Constraint> constraints,

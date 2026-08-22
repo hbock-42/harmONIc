@@ -100,6 +100,38 @@ Do it, in this order, and never with the LP as the only path.
 That is `E3-7` finished. What it does not do is still what §"What it will not
 do" says: integers, pins and your own shares are yours.
 
+## What it costs, measured
+
+The estimate above — "three times the variables, and that is where a 500-node
+build stops being 14 ms" — was right to be worried. Best of three, after a
+warm-up, on a build with a choice at every step:
+
+| nodes | optimiser |
+|---|---|
+| 100 | 3.5 ms |
+| 200 | 24.5 ms |
+| 400 | 188 ms |
+
+Each doubling is about seven times the work: cubic, which is what a dense
+tableau costs. A chain with no choice in it is worse still — 500 nodes took
+940 ms — but the app never asks that question, because the offer only appears
+where something is divided.
+
+**The greedy pivot rule does not help.** The first version of this solver said
+in a comment that if it were ever too slow, the fix would be to take the
+steepest column and fall back to Bland's rule after a few hundred pivots. It
+was too slow; that was tried; it made no difference at all — within noise on
+every shape measured, and a hair slower on some. The cost is not in choosing
+the column. It is that every pivot walks a dense tableau, and the tableau for
+a build is mostly zeros.
+
+So the next lever, if this is ever too slow again, is the one that fixed the
+elimination in `PERFORMANCE.md`: stop touching the zeros. A row that remembered
+its first and last non-zero column would cut most of the work out of a chain,
+and a proper sparse representation would cut the rest. Neither is worth writing
+until somebody draws a build that needs it — `test/optimise_perf_test.dart` is
+there to say when.
+
 Nothing here changes the default path. A build with every share set has no
 freedom, the LP would return exactly what the elimination returns, and running
 it would be a slower way to get the same numbers. The optimiser is a question
