@@ -30,6 +30,7 @@ class Port {
     required this.ratePerSecond,
     this.temperatureC,
     this.followsPortId,
+    this.alternatives = const [],
   });
 
   factory Port.fromJson(Map<String, dynamic> json) {
@@ -41,6 +42,9 @@ class Port {
       ratePerSecond: (json['rate'] as num).toDouble(),
       temperatureC: (json['temperatureC'] as num?)?.toDouble(),
       followsPortId: json['follows'] as String?,
+      alternatives: [
+        ...(json['alternatives'] as List<dynamic>? ?? const []).cast<String>(),
+      ],
     );
   }
 
@@ -55,6 +59,21 @@ class Port {
 
   /// Output temperature in °C, when the game fixes it (Electrolyzer O2 = 70 °C).
   final double? temperatureC;
+
+  /// Other materials this port will take, at the same rate.
+  ///
+  /// A Smoker burns "either Peat or Wood", 100 kg of it whichever you use. That
+  /// is not a class — the game has no "peat or wood" material, and inventing
+  /// one puts a supply node in the palette that nobody could ever own — and it
+  /// is not two recipes either, since the recipe is the same recipe.
+  ///
+  /// The rate has to be identical for every option. Where it is not, the
+  /// alternatives are genuinely different recipes: a Plug Slug eats 60 kg of
+  /// ore a cycle or 30 kg of refined metal, and that is two specs.
+  final List<String> alternatives;
+
+  /// Every material this port would accept, the declared one first.
+  List<String> get accepted => [itemId, ...alternatives];
 
   /// The input port whose material decides this one's.
   ///
@@ -77,6 +96,7 @@ class Port {
         'rate': ratePerSecond,
         if (temperatureC != null) 'temperatureC': temperatureC,
         if (followsPortId != null) 'follows': followsPortId,
+        if (alternatives.isNotEmpty) 'alternatives': alternatives,
       };
 
   @override

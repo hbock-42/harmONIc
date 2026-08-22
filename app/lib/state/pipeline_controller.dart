@@ -341,11 +341,12 @@ class PipelineController extends ChangeNotifier {
     if (fromPort == null || toPort == null) return false;
     if (!fromPort.isOutput || !toPort.isInput) return false;
     // Against what each end is set to: a refinery on copper cannot be wired
-    // into an iron port, but a generic one can be wired into either.
-    if (!_database.accepts(
-      itemFlowingIn(_database, toNode, specOf(toNode), toPort),
-      itemFlowingIn(_database, fromNode, specOf(fromNode), fromPort),
-    )) {
+    // into an iron port, but a generic one can be wired into either. A port
+    // that lists alternatives takes any of them until somebody picks.
+    final carried =
+        itemFlowingIn(_database, fromNode, specOf(fromNode), fromPort);
+    if (!portAccepts(
+        _database, toNode, specOf(toNode), toPort, carried)) {
       return false;
     }
     return !_pipeline.edges.any((e) =>
@@ -385,12 +386,14 @@ class PipelineController extends ChangeNotifier {
     // What this port really wants, which is not always what the recipe says:
     // a refinery set to copper wants copper ore, and a port asking for the
     // class takes any member.
-    final wanted = itemFlowingIn(database, node, spec, port);
+    final wanted = acceptedAt(node, spec, port);
     final matches = <ProcessSpec>[];
     for (final candidate in database.processes) {
       if (candidate.id == node.specId) continue;
       final hasPort = candidate.ports.any((p) =>
-          p.isOutput == wantOutput && database.accepts(wanted, p.itemId));
+          p.isOutput == wantOutput &&
+          p.accepted.any((offered) =>
+              wanted.any((w) => database.accepts(w, offered))));
       if (hasPort) matches.add(candidate);
     }
 

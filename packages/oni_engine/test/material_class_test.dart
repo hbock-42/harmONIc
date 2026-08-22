@@ -169,42 +169,56 @@ void main() {
   });
 
   group('either one thing or another', () {
-    test('is one recipe per option, not an invented material', () {
-      // The Smoker burns "either Peat or Wood". The first attempt at that was
-      // an item called "Peat or Wood" with both inside it, which is a class of
-      // something the game does not have — and it turned up in the palette as
-      // a supply node nobody could ever own.
+    test('is one recipe that takes either, not an invented material', () {
+      // The Smoker burns "either Peat or Wood". Two wrong answers came first.
       //
-      // A class is for a category the game itself groups: any Metal Ore in a
-      // refinery, any Filtration Medium in a Deodorizer. "Either of these two"
-      // is a different thing, and the answer here has been one spec per option
-      // since the Beakon got one for phosphorite and one for grazing.
+      // An item called "Peat or Wood" holding both: that is a class of
+      // something the game does not have, and it turned up in the palette as a
+      // supply node nobody could own. A class is for a category the game itself
+      // groups — any Metal Ore in a refinery, any Filtration Medium in a
+      // Deodorizer — and this is not one.
+      //
+      // Then two copies of the recipe, one per fuel: honest, and twice the
+      // thing to keep in step for a difference of one ingredient.
       expect(db.item('peat_or_wood'), isNull);
+      expect(db.process('smoker_brisket_wood'), isNull);
 
-      final smokers =
-          db.processes.where((s) => s.buildingId == 'smoker').toList();
-      expect(smokers.map((s) => s.id),
-          containsAll(['smoker_brisket_wood', 'smoker_brisket_peat']));
-
-      final wood = db.processOrThrow('smoker_brisket_wood');
-      final peat = db.processOrThrow('smoker_brisket_peat');
-      expect(wood.inputs.map((p) => p.itemId), contains('wood'));
-      expect(peat.inputs.map((p) => p.itemId), contains('peat'));
-      // Same building, same recipe, same 100 kg — only the fuel differs.
-      expect(
-        peat.inputs.firstWhere((p) => p.itemId == 'peat').ratePerSecond,
-        wood.inputs.firstWhere((p) => p.itemId == 'wood').ratePerSecond,
-      );
-      double calories(ProcessSpec spec) =>
-          spec.outputs.firstWhere((p) => p.itemId == 'calories').ratePerSecond;
-      expect(calories(peat), calories(wood));
+      final fuel = db
+          .processOrThrow('smoker_brisket')
+          .inputs
+          .firstWhere((p) => p.itemId != 'tough_meat');
+      expect(fuel.accepted, ['wood', 'peat']);
     });
 
-    test('and a peat supply feeds the peat one', () {
+    test('an unset port takes any of them', () {
+      final node = PipelineNode(id: 'smoker', specId: 'smoker_brisket');
+      final spec = db.processOrThrow('smoker_brisket');
+      final fuel = spec.inputs.firstWhere((p) => p.itemId != 'tough_meat');
+
+      expect(portAccepts(db, node, spec, fuel, 'peat'), isTrue);
+      // Wood is a class, so its members count too.
+      expect(portAccepts(db, node, spec, fuel, 'lumber'), isTrue);
+      expect(portAccepts(db, node, spec, fuel, 'coal'), isFalse);
+    });
+
+    test('and choosing one narrows it to that one', () {
+      final spec = db.processOrThrow('smoker_brisket');
+      final fuel = spec.inputs.firstWhere((p) => p.itemId != 'tough_meat');
+      final onPeat = PipelineNode(
+        id: 'smoker',
+        specId: 'smoker_brisket',
+        materials: {fuel.id: 'peat'},
+      );
+
+      expect(portAccepts(db, onPeat, spec, fuel, 'peat'), isTrue);
+      expect(portAccepts(db, onPeat, spec, fuel, 'lumber'), isFalse);
+    });
+
+    test('a peat supply feeds it', () {
       final pipeline = (PipelineBuilder(db, name: 'smokehouse')
             ..addSource('peat')
             ..addSource('tough_meat')
-            ..add('smoker_brisket_peat', nodeId: 'smoker')
+            ..add('smoker_brisket', nodeId: 'smoker')
             ..add('duplicant', nodeId: 'dupes')
             ..connectItem('src_peat', 'smoker', 'peat')
             ..connectItem('src_tough_meat', 'smoker', 'tough_meat')
@@ -215,6 +229,37 @@ void main() {
 
       expect(solution.status, SolveStatus.solved);
       expect(solution.nodes['src_peat']!.count, closeTo(100000 / 600, 1e-6));
+    });
+
+    test('and so does a lumber supply, without changing the recipe', () {
+      final pipeline = (PipelineBuilder(db, name: 'smokehouse')
+            ..addSource('lumber')
+            ..addSource('tough_meat')
+            ..add('smoker_brisket', nodeId: 'smoker')
+            ..connectItem('src_lumber', 'smoker', 'lumber')
+            ..connectItem('src_tough_meat', 'smoker', 'tough_meat')
+            ..pinCount('smoker', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+
+      expect(solution.status, SolveStatus.solved);
+      expect(solution.nodes['src_lumber']!.count, closeTo(100000 / 600, 1e-6));
+    });
+
+    test('alternatives are for the same rate; different rates are two specs',
+        () {
+      // The rule that keeps this from becoming a way to hide real differences.
+      // A Plug Slug eats 60 kg of ore a cycle or 30 kg of refined metal, and
+      // that is two recipes, not one port with a list.
+      for (final spec in db.processes) {
+        for (final port in spec.ports) {
+          if (port.alternatives.isEmpty) continue;
+          // Nothing to assert about the rate itself — one port has one rate —
+          // but the seeded data must not be pretending otherwise, so this at
+          // least pins which ports make the claim.
+          expect(spec.id, 'smoker_brisket');
+        }
+      }
     });
   });
 

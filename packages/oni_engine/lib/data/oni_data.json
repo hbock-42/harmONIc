@@ -6923,8 +6923,8 @@
       }
     },
     {
-      "id": "smoker_brisket_wood",
-      "name": "Smoker (Tender Brisket, Wood)",
+      "id": "smoker_brisket",
+      "name": "Smoker (Tender Brisket)",
       "kind": "building",
       "buildingId": "smoker",
       "powerWatts": 0,
@@ -6932,7 +6932,7 @@
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of wood to do it. The page gives the fuel as \"either Peat or Wood\" in a note under the recipes, so there is one of these per fuel rather than an invented \"peat or wood\" material — the game has no such thing. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
+      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of wood or peat to do it — the page gives the fuel as \"either Peat or Wood\" in a note under the recipes. Either works in the same amount, so the port takes either and the node says which. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
       "tags": [
         "food",
         "prehistoric",
@@ -6948,45 +6948,10 @@
           "item": "wood",
           "direction": "input",
           "rate": 166.66666666666666,
-          "id": "fuel"
-        },
-        {
-          "item": "calories",
-          "direction": "output",
-          "rate": 26.666666666666668
-        }
-      ],
-      "build": {
-        "metal_ore": 400
-      }
-    },
-    {
-      "id": "smoker_brisket_peat",
-      "name": "Smoker (Tender Brisket, Peat)",
-      "kind": "building",
-      "buildingId": "smoker",
-      "powerWatts": 0,
-      "heatKdtuPerSecond": 9,
-      "dupeLabourSecondsPerCycle": 0,
-      "footprintWidth": 4,
-      "footprintHeight": 3,
-      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of peat to do it. The page gives the fuel as \"either Peat or Wood\" in a note under the recipes, so there is one of these per fuel rather than an invented \"peat or wood\" material — the game has no such thing. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
-      "tags": [
-        "food",
-        "prehistoric",
-        "unverified"
-      ],
-      "ports": [
-        {
-          "item": "tough_meat",
-          "direction": "input",
-          "rate": 10.0
-        },
-        {
-          "item": "peat",
-          "direction": "input",
-          "rate": 166.66666666666666,
-          "id": "fuel"
+          "id": "fuel",
+          "alternatives": [
+            "peat"
+          ]
         },
         {
           "item": "calories",

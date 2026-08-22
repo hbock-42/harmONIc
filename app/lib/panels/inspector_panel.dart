@@ -871,10 +871,24 @@ class _MaterialChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final db = controller.database;
-    final klass = db.itemOrThrow(port.itemId);
     final chosen = node.materials[port.id];
-    final members = klass.members.toList()
+
+    // Two shapes end up here. A port asking for a class the game groups, whose
+    // options are that class's members; and a port listing alternatives
+    // outright, whose options are what it listed — with a class among them
+    // expanded, since "wood" means any wood.
+    final klass = db.item(port.itemId);
+    final options = <String>{
+      for (final accepted in port.accepted)
+        ...(db.item(accepted)?.members.isNotEmpty ?? false
+            ? db.item(accepted)!.members
+            : {accepted}),
+    }.toList()
       ..sort((a, b) => (db.item(a)?.name ?? a).compareTo(db.item(b)?.name ?? b));
+    final members = options;
+    final heading = port.alternatives.isEmpty && (klass?.isClass ?? false)
+        ? '${klass!.name.toUpperCase()} USED'
+        : 'TAKES';
 
     // What the choice does downstream, said only where it does something.
     final follower = spec.ports
@@ -887,7 +901,7 @@ class _MaterialChoice extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${klass.name.toUpperCase()} USED', style: OniType.label),
+        Text(heading, style: OniType.label),
         const SizedBox(height: OniSpacing.sm),
         Wrap(
           spacing: OniSpacing.sm,
