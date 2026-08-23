@@ -71,6 +71,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-1b` **Copying a build copies all of it** — importing one and duplicating one both
+  rebuilt the pipeline by listing its fields, which is the same shape as the recipe editor
+  bug from Tuesday: it works until somebody adds a field, and one had been added. Both had
+  been dropping the recipe snapshot, so a copy lost the baseline that tells you a recipe
+  moved underneath it. `copyWith` takes an id now and both use it
 - `E5-1a` **A build from a newer app is refused** — the schema version has been written into
   every file since `E5-1` and never read. A build saved by a later version opened as though
   it were this format, and the round trip kept the version, so an older app would
@@ -936,6 +941,7 @@ _(empty)_
 |---|---|---|
 | E5-1 | ✅ | `Pipeline` ⇄ JSON (`toJson`/`fromJson`) with a schema version + migrations hook |
 | E5-1a | ✅ | A build from a newer app is refused | it used to be read as though it were this format, and written back still claiming the newer one |
+| E5-1b | ✅ | Copying a build copies all of it | importing and duplicating rebuilt it field by field and had already forgotten one |
 | E5-2 | ✅ | Local save/load of user pipelines (`path_provider` + file, or `hive`/`isar` — decide in a spike) |
 | E5-3 | ✅ | Share a pipeline as a base64 code |
 | E5-4 | ✅ | Import/export to clipboard |

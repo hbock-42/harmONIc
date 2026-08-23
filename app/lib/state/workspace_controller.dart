@@ -251,14 +251,10 @@ class WorkspaceController extends ChangeNotifier {
       id = 'imported_${DateTime.now().microsecondsSinceEpoch}';
       name = '$name (imported)';
     }
-    final pipeline = Pipeline(
-      id: id,
-      name: name,
-      nodes: incoming.nodes,
-      edges: incoming.edges,
-      pins: incoming.pins,
-      dataVersion: incoming.dataVersion,
-    );
+    // Copied rather than rebuilt field by field: listing the fields here
+    // means forgetting the next one somebody adds, and this method has been
+    // quietly dropping the recipe snapshot since that was introduced.
+    final pipeline = incoming.copyWith(id: id, name: name);
     _pipelines[id] = pipeline;
     _openWithoutSaving(pipeline);
     await _persist();
@@ -271,13 +267,9 @@ class WorkspaceController extends ChangeNotifier {
     final source = _pipelines[id];
     if (source == null) return id;
     await saveNow();
-    final copy = Pipeline(
+    final copy = source.copyWith(
       id: 'pipeline_copy_${DateTime.now().microsecondsSinceEpoch}',
       name: '${source.name} copy',
-      nodes: source.nodes,
-      edges: source.edges,
-      pins: source.pins,
-      dataVersion: source.dataVersion,
     );
     _pipelines[copy.id] = copy;
     _openWithoutSaving(copy);

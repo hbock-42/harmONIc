@@ -370,6 +370,7 @@ class Pipeline {
       db.processOrThrow(nodeOrThrow(ref.nodeId).specId).portByIdOrThrow(ref.portId);
 
   Pipeline copyWith({
+    String? id,
     String? name,
     List<PipelineNode>? nodes,
     List<PipelineEdge>? edges,
@@ -378,7 +379,7 @@ class Pipeline {
     Map<String, Map<String, double>>? recipeSnapshot,
   }) =>
       Pipeline(
-        id: id,
+        id: id ?? this.id,
         name: name ?? this.name,
         nodes: nodes ?? this.nodes,
         edges: edges ?? this.edges,
