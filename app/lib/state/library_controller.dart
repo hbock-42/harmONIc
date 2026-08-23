@@ -69,6 +69,8 @@ class LibraryController extends ChangeNotifier {
       _customItems[item.id] = item;
     }
     _customProcesses[spec.id] = spec;
+    // Editing a recipe can orphan a material as surely as deleting one.
+    _forgetUnusedItems();
     _rebuild();
     await _persist();
   }
@@ -77,8 +79,33 @@ class LibraryController extends ChangeNotifier {
   /// back, rather than disappearing.
   Future<void> revert(String specId) async {
     _customProcesses.remove(specId);
+    _forgetUnusedItems();
     _rebuild();
     await _persist();
+  }
+
+  /// An invented material lives as long as a recipe of yours uses it.
+  ///
+  /// Inventing one is a keystroke — type a name nobody has heard of and press
+  /// Create — and it used to be for ever: nothing removed it, and since it now
+  /// gets a supply, an output and a pump of its own, one typo left five
+  /// entries in the palette with no way to be rid of them.
+  ///
+  /// Only *your* items are ever forgotten, and only when nothing written by
+  /// you mentions them any more.
+  void _forgetUnusedItems() {
+    final used = <String>{
+      for (final spec in _customProcesses.values) ...[
+        for (final port in spec.ports) port.itemId,
+        for (final port in spec.ports) ...port.alternatives,
+        ...spec.buildCost.keys,
+      ],
+    };
+    // A class somebody invented counts as using its members.
+    for (final item in _customItems.values) {
+      if (used.contains(item.id)) used.addAll(item.members);
+    }
+    _customItems.removeWhere((id, _) => !used.contains(id));
   }
 
   /// Everything the player has written, packed up to hand to somebody else.

@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-6d` **An invented material can be got rid of** — inventing one is a keystroke and
+  there was no way back: nothing ever removed it, and since it now brings a supply, an
+  output and a pump with it, a typo left five entries in the palette permanently. It lives
+  as long as a recipe of yours mentions it — deleting the recipe forgets it, editing it out
+  forgets it, another of your recipes wanting it keeps it, and the app's own catalogue is
+  never touched. A canvas drawn with one is repaired rather than broken, and the repair says
+  what it removed
 - `E5-6c` **An invented material says what kind it is** — the picker created everything as a
   solid without asking, which was invisible until the last fix gave custom materials the
   generated nodes every other material gets: a liquid you invented then got a conveyor rail,
@@ -903,6 +910,7 @@ _(empty)_
 | E5-6a | ✅ | Correcting a recipe stopped erasing what it is built from | `editable` dropped the build cost and the overheat rating, and the form had no field for either. Both carried through now, and the cost has a line per material |
 | E5-6b | ✅ | A material you invent is a material you have | a custom item got no supply or output node, so nothing could feed the recipe that asked for it |
 | E5-6c | ✅ | An invented material says what kind it is | everything invented was silently a solid, which decides its pipe, its pump and whether it has a temperature at all |
+| E5-6d | ✅ | An invented material can be got rid of | it lives as long as a recipe of yours uses it, and one typo used to leave five palette entries for ever |
 | E5-7 | ✅ | Export to a file | to the downloads folder, with the path said out loud, and no picker dependency. Reading one back still wants a picker, and the clipboard covers it meanwhile |
 | E5-8 | ✅ | Copy the build as text | the plain-text summary, for a forum post or a note rather than another copy of this app |
 | E5-9 | ✅ | Somewhere for a browser to keep things | `localStorage`, behind the same `JsonStore` the file store is behind. Checked in a real Chrome rather than assumed: `flutter test --platform chrome` |

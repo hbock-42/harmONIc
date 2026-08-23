@@ -94,4 +94,98 @@ void main() {
     await second.load();
     expect(second.database.process(sourceSpecId('unobtanium')), isNotNull);
   });
+
+  group('and it lives as long as something uses it', () {
+    test('deleting the recipe forgets the material', () async {
+      final library = await withTheRecipe();
+      expect(library.database.item('unobtanium'), isNotNull);
+      expect(library.database.process(sourceSpecId('unobtanium')), isNotNull);
+
+      await library.revert('my_forge');
+
+      // One typo used to leave five entries in the palette for ever: the
+      // material, its supply, its output, and a pump and filter if it flowed.
+      expect(library.database.item('unobtanium'), isNull);
+      expect(library.database.process(sourceSpecId('unobtanium')), isNull);
+    });
+
+    test('but not while another recipe of yours still wants it', () async {
+      final library = await withTheRecipe();
+      await library.save(ProcessSpec(
+        id: 'my_other_forge',
+        name: 'My Other Forge',
+        kind: ProcessKind.building,
+        tags: const {'custom', 'unverified'},
+        description: 'UNVERIFIED: measured by hand.',
+        ports: const [
+          Port(
+            id: 'unobtanium',
+            itemId: 'unobtanium',
+            direction: PortDirection.input,
+            ratePerSecond: 50,
+          ),
+        ],
+      ));
+
+      await library.revert('my_forge');
+      expect(library.database.item('unobtanium'), isNotNull,
+          reason: 'the other one still asks for it');
+
+      await library.revert('my_other_forge');
+      expect(library.database.item('unobtanium'), isNull);
+    });
+
+    test('and editing a recipe out of it forgets it too', () async {
+      final library = await withTheRecipe();
+
+      // The same recipe, no longer mentioning the invented material.
+      await library.save(ProcessSpec(
+        id: 'my_forge',
+        name: 'My Forge',
+        kind: ProcessKind.building,
+        tags: const {'custom', 'unverified'},
+        description: 'UNVERIFIED: measured by hand.',
+        ports: const [
+          Port(
+            id: 'iron_ore',
+            itemId: 'iron_ore',
+            direction: PortDirection.input,
+            ratePerSecond: 100,
+          ),
+        ],
+      ));
+
+      expect(library.database.item('unobtanium'), isNull,
+          reason: 'editing can orphan a material as surely as deleting');
+    });
+
+    test('and a build that used it is repaired rather than broken', () async {
+      // Forgetting a material takes its supply node with it, so a canvas
+      // drawn with one has to be told. It is: the repair that runs when a
+      // build is opened names everything it removed.
+      final library = await withTheRecipe();
+      final pipeline = (PipelineBuilder(library.database, name: 'mine')
+            ..addSource('unobtanium')
+            ..add('my_forge', nodeId: 'forge')
+            ..connectItem('src_unobtanium', 'forge', 'unobtanium')
+            ..pinCount('forge', 1))
+          .build();
+
+      await library.revert('my_forge');
+      final repair = repairPipeline(pipeline, library.database);
+
+      expect(repair.pipeline.nodes, isEmpty);
+      expect(repair.notes, hasLength(3));
+      expect(repair.notes.join(' '), contains('no longer in the database'));
+    });
+
+    test('and a bundled material is never forgotten', () async {
+      // Only what you invented is ever dropped: the app's own catalogue is not
+      // yours to lose.
+      final library = await withTheRecipe();
+      await library.revert('my_forge');
+      expect(library.database.item('water'), isNotNull);
+      expect(library.database.process(sourceSpecId('water')), isNotNull);
+    });
+  });
 }
