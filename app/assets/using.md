@@ -176,8 +176,9 @@ usually too pale to read on near-white.
 
 ## Reusing work
 
-- **Start from a build** in the pipelines menu opens one of four worked
-  examples: oxygen for a crew, petroleum power, a Hatch ranch, a cooling loop.
+- **Start from a build** opens one of four worked examples: oxygen for a crew,
+  petroleum power, a Hatch ranch, a cooling loop. They are offered on an empty
+  canvas, and live in the pipelines menu after that.
 - **Use this build in another** turns the open build into a single node in the
   palette. Its edges become its ports and its totals become its figures, so a
   SPOM becomes "water and food in, carbon dioxide and spare power out". It is a

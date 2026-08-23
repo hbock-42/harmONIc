@@ -196,7 +196,10 @@ class _EditorScreenState extends State<EditorScreen> {
                           ),
                           Expanded(
                             child: controller.pipeline.nodes.isEmpty
-                                ? const _EmptyCanvas()
+                                ? _EmptyCanvas(
+                                    onStartFrom: widget.workspace
+                                        .createFromTemplate,
+                                  )
                                 : GraphCanvas(
                                     key: _canvasKey,
                                     controller: controller,
@@ -787,15 +790,22 @@ class _TopBarState extends State<_TopBar> {
   }
 }
 
+/// What a blank canvas says, and what it offers.
+///
+/// It said what to do and gave nothing to press, while four worked builds sat
+/// behind two clicks in a menu — the wrong way round for the one screen
+/// somebody sees before they know the app has any.
 class _EmptyCanvas extends StatelessWidget {
-  const _EmptyCanvas();
+  const _EmptyCanvas({required this.onStartFrom});
+
+  final ValueChanged<PipelineTemplate> onStartFrom;
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(color: OniColors.background),
         child: Center(
           child: SizedBox(
-            width: 320,
+            width: 340,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -807,6 +817,22 @@ class _EmptyCanvas extends StatelessWidget {
                   'how many you have — the rest follows.',
                   textAlign: TextAlign.center,
                   style: OniType.body.copyWith(color: OniColors.textFaint),
+                ),
+                const SizedBox(height: OniSpacing.lg),
+                Text('OR START FROM ONE OF THESE', style: OniType.label),
+                const SizedBox(height: OniSpacing.sm),
+                Wrap(
+                  spacing: OniSpacing.sm,
+                  runSpacing: OniSpacing.sm,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    for (final template in pipelineTemplates)
+                      OniButton(
+                        label: template.name,
+                        compact: true,
+                        onPressed: () => onStartFrom(template),
+                      ),
+                  ],
                 ),
               ],
             ),

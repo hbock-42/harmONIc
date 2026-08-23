@@ -71,6 +71,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-9` **The empty canvas offers the worked builds** — it explained what to do and gave
+  nothing to press, while the four examples sat behind two clicks in a menu you would only
+  open if you already knew they were there. That is the wrong way round for the one screen
+  somebody sees before they know the app has any. Four buttons under the instructions, and
+  pressing one opens it as a build of its own rather than writing over the blank one you had
 - `E8-18` **Golden builds for the new data** — about fifteen recipes went in this week, each
   checked against the page it came from and none of them checked as a *chain*, which is what
   the golden builds are for: "a wrong rate three recipes upstream shows up here as a ratio
@@ -955,6 +960,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-6 | ✅ | Light theme | `OniPalette.dark` / `.light` behind `OniTheme.current`; ☀/☾ on the toolbar, remembered. Not an inversion — each colour picked for its own background; tests hold every pair apart and hold text ≥7:1 against the page |
 | E9-7 | ✅ | A cross to empty a search | on every search field, since getting back to the whole list should not mean holding backspace |
 | E9-8 | ✅ | Searching the palette by material | "what makes oxygen?" is the first question anybody asks a production planner, and the list matched names only |
+| E9-9 | ✅ | The empty canvas offers the worked builds | it said what to do and gave nothing to press, while four examples sat two clicks away in a menu |
 
 ## E7 — The canvas
 
