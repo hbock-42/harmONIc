@@ -71,6 +71,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E5-1a` **A build from a newer app is refused** — the schema version has been written into
+  every file since `E5-1` and never read. A build saved by a later version opened as though
+  it were this format, and the round trip kept the version, so an older app would
+  reinterpret a newer file and then save it still claiming to be newer. Refused now, with a
+  message that says to update rather than that the build is corrupt — and one unreadable
+  build costs you only that build, since the loader already skips what it cannot read
 - `E3-6a` **An amount below nothing** — typing −5 into "I have this many" produced two
   errors, on the node and on its supply, both saying "check the edge shares". That is sound
   advice for the *other* way a count goes negative and no help at all when somebody typed a
@@ -929,6 +935,7 @@ _(empty)_
 | id | P | Task |
 |---|---|---|
 | E5-1 | ✅ | `Pipeline` ⇄ JSON (`toJson`/`fromJson`) with a schema version + migrations hook |
+| E5-1a | ✅ | A build from a newer app is refused | it used to be read as though it were this format, and written back still claiming the newer one |
 | E5-2 | ✅ | Local save/load of user pipelines (`path_provider` + file, or `hive`/`isar` — decide in a spike) |
 | E5-3 | ✅ | Share a pipeline as a base64 code |
 | E5-4 | ✅ | Import/export to clipboard |

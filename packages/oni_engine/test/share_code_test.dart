@@ -86,4 +86,46 @@ void main() {
           isTrue);
     });
   });
+
+  group('a build from a newer app', () {
+    Map<String, dynamic> fromTheFuture() {
+      final pipeline = (PipelineBuilder(db, name: 'later')
+            ..addSource('water')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..connectItem('src_water', 'elec', 'water')
+            ..pinCount('elec', 2))
+          .build();
+      return pipeline.toJson()..['schemaVersion'] = 99;
+    }
+
+    test('is refused, rather than read as though it were this one', () {
+      // It used to open: the version was recorded, ignored, and written back
+      // unchanged — so an older app would quietly reinterpret a newer file and
+      // then save it still claiming to be the newer format.
+      expect(
+        () => Pipeline.fromJson(fromTheFuture()),
+        throwsA(isA<FormatException>().having(
+          (e) => e.message,
+          'says what to do',
+          allOf(contains('newer version'), contains('Update')),
+        )),
+      );
+    });
+
+    test('and a share code carrying one says the same', () {
+      final code = base64Url.encode(utf8.encode(jsonEncode(fromTheFuture())));
+      expect(() => PipelineShareCode.decode(code),
+          throwsA(isA<FormatException>()));
+      expect(PipelineShareCode.looksValid(code), isFalse);
+    });
+
+    test('and this app writes the version it actually understands', () {
+      final pipeline = (PipelineBuilder(db, name: 'now')..addSource('water'))
+          .build();
+      expect(pipeline.toJson()['schemaVersion'], Pipeline.currentSchemaVersion);
+      // Round-tripping must not invent a version either.
+      expect(Pipeline.fromJson(pipeline.toJson()).schemaVersion,
+          Pipeline.currentSchemaVersion);
+    });
+  });
 }

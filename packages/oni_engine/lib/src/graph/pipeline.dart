@@ -265,7 +265,27 @@ class Pipeline {
         edges = List.unmodifiable(edges),
         pins = List.unmodifiable(pins);
 
-  factory Pipeline.fromJson(Map<String, dynamic> json) => Pipeline(
+  /// The shape of the file this app writes and understands.
+  ///
+  /// Bumped when a field changes meaning rather than when one is added: a
+  /// reader that meets an unknown key ignores it, and that has always been
+  /// safe. What is not safe is reading a file from a *newer* app as though it
+  /// were this one — the numbers would come out confidently wrong, which is
+  /// the one thing this app is not for.
+  static const int currentSchemaVersion = 1;
+
+  factory Pipeline.fromJson(Map<String, dynamic> json) {
+    final version = (json['schemaVersion'] as num?)?.toInt() ?? 1;
+    if (version > currentSchemaVersion) {
+      throw FormatException(
+        'This build was saved by a newer version of the app (format $version, '
+        'this one reads $currentSchemaVersion). Update, and it will open.',
+      );
+    }
+    return Pipeline._fromJson(json);
+  }
+
+  factory Pipeline._fromJson(Map<String, dynamic> json) => Pipeline(
         id: json['id'] as String,
         name: json['name'] as String,
         schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 1,
