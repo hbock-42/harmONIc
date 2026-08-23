@@ -171,4 +171,85 @@ void main() {
       expect(solution.nodes['src_water']!.count, closeTo(1000 * 1200 / 888, 1e-6));
     });
   });
+
+  group('sulfur into dirt and water', () {
+    /// Twelve Sweetles, the Grubgrubs their sugar feeds, and the press that
+    /// turns what the Grubgrubs leave into something a farm can use.
+    Pipeline sugarChain() => (PipelineBuilder(db, name: 'sugar')
+          ..addSource('sulfur')
+          ..add('sweetle', nodeId: 'sweetles')
+          ..add('grubgrub_sucrose', nodeId: 'grubs')
+          ..add('sludge_press_mud', nodeId: 'press')
+          ..addSink('dirt')
+          ..addSink('water')
+          ..connectItem('src_sulfur', 'sweetles', 'sulfur')
+          ..connectItem('sweetles', 'grubs', 'sucrose')
+          ..connectItem('grubs', 'press', 'mud')
+          ..connectItem('press', 'sink_dirt', 'dirt')
+          ..connectItem('press', 'sink_water', 'water')
+          ..pinCount('sweetles', 12))
+        .build();
+
+    test('twelve Sweetles keep four Grubgrubs', () {
+      final solution = solver.solve(sugarChain());
+      expect(solution.status, SolveStatus.solved);
+
+      // 20 kg/cycle each is 33.33 g/s, so twelve eat 400 g/s — 240 kg a cycle
+      // of sulfur, which is a Sulfur Geyser's worth and then some.
+      expect(solution.nodes['src_sulfur']!.count, closeTo(400, 1e-3));
+      // Half of it comes back as sucrose: 200 g/s, and a Grubgrub eats 50.
+      expect(solution.nodes['grubs']!.count, closeTo(4, 1e-6));
+    });
+
+    test('and the press gives back 80 g/s of dirt and 120 of water', () {
+      final solution = solver.solve(sugarChain());
+
+      // Four Grubgrubs turn all 200 g/s of sugar into mud. 150 kg of mud is
+      // 60 of dirt and 90 of water, so 200 g/s is 80 and 120 — and nothing is
+      // lost, which is the arithmetic worth checking three recipes deep.
+      expect(solution.nodes['sink_dirt']!.count, closeTo(80, 1e-3));
+      expect(solution.nodes['sink_water']!.count, closeTo(120, 1e-3));
+      expect(solution.nodes['sink_dirt']!.count +
+          solution.nodes['sink_water']!.count, closeTo(200, 1e-3));
+
+      // The press is a twelfth of a building doing it, so it costs 3.2 W.
+      expect(solution.netPowerWatts, closeTo(-3.2, 0.01));
+      // Sixteen critters at twelve seconds each, and ten for the press.
+      expect(solution.dupeLabourSecondsPerCycle, closeTo(16 * 12 + 16, 0.5));
+    });
+  });
+
+  group('a Bammoth herd feeding a bug farm', () {
+    test('one Bammoth is forty Shine Bugs', () {
+      // The chain the phosphorite exists for: squash in, patty out, crushed
+      // into clay and phosphorite, and the phosphorite fed to Shine Bugs.
+      final pipeline = (PipelineBuilder(db, name: 'herd')
+            ..addSource('plume_squash')
+            ..add('bammoth', nodeId: 'bammoth')
+            ..add('rock_crusher_bammoth_patty', nodeId: 'crusher')
+            ..add('shine_bug', nodeId: 'bugs')
+            ..addSink('clay')
+            ..connectItem('src_plume_squash', 'bammoth', 'plume_squash')
+            ..connectItem('bammoth', 'crusher', 'bammoth_patty')
+            ..connectItem('crusher', 'bugs', 'phosphorite')
+            ..connectItem('crusher', 'sink_clay', 'clay')
+            ..pinCount('bammoth', 1))
+          .build();
+      final solution = solver.solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+
+      // 30 kg/cycle in and the same back as patty: 50 g/s. Of that, 32/120 is
+      // phosphorite — 13.33 g/s — and a Shine Bug eats 200 g a cycle, which
+      // is a third of a gram a second.
+      expect(solution.nodes['bugs']!.count, closeTo(40, 0.01));
+      // And 88/120 of it is clay: 36.67 g/s, or 22 kg a cycle.
+      expect(solution.nodes['sink_clay']!.count, closeTo(50 * 88 / 120, 1e-3));
+      // Nothing is lost in the crusher, which is the published split.
+      expect(
+        solution.nodes['sink_clay']!.count +
+            solution.nodes['bugs']!.count * (200 / secondsPerCycle),
+        closeTo(50, 1e-3),
+      );
+    });
+  });
 }

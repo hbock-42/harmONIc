@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-18` **Golden builds for the new data** — about fifteen recipes went in this week, each
+  checked against the page it came from and none of them checked as a *chain*, which is what
+  the golden builds are for: "a wrong rate three recipes upstream shows up here as a ratio
+  somebody would notice in game". Two now. Twelve Sweetles eat 240 kg of sulfur a cycle,
+  keep four Grubgrubs, and the press turns what they leave into 80 g/s of dirt and 120 of
+  water with nothing lost. One Bammoth feeds forty Shine Bugs, which is the whole reason the
+  patty is worth crushing. Halving the Sweetle's sucrose by one digit fails both
 - `E5-6d` **An invented material can be got rid of** — inventing one is a keystroke and
   there was no way back: nothing ever removed it, and since it now brings a supply, an
   output and a pump with it, a typo left five entries in the palette permanently. It lives
@@ -1087,6 +1094,7 @@ flow, so the solver never had to learn about it.
 | E8-15 | ✅ | The rest of the per-frame work | connected components and the scoped totals were recomputed on every frame; measured at 300 nodes, cached, and the dropping is what the tests check |
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
+| E8-18 | ✅ | Golden builds for this week's data | fifteen recipes seeded in a week, each unit-tested against its own page and none of them checked as a chain |
 
 ---
 
