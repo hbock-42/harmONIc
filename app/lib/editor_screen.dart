@@ -43,6 +43,67 @@ class EditorScreen extends StatefulWidget {
   State<EditorScreen> createState() => _EditorScreenState();
 }
 
+/// Every key the editor answers to.
+///
+/// Lifted out of the widget so that the guide can be checked against it: the
+/// app grew sixteen shortcuts and the guide mentioned three, and copy and
+/// paste — which is how you move part of a build into another one — was
+/// written down nowhere at all.
+const Map<ShortcutActivator, Intent> kEditorShortcuts =
+    <ShortcutActivator, Intent>{
+  SingleActivator(LogicalKeyboardKey.keyZ, meta: true):
+      _UndoIntent(),
+  SingleActivator(LogicalKeyboardKey.keyZ, meta: true, shift: true):
+      _RedoIntent(),
+  SingleActivator(LogicalKeyboardKey.delete): _DeleteIntent(),
+  SingleActivator(LogicalKeyboardKey.backspace): _DeleteIntent(),
+  SingleActivator(LogicalKeyboardKey.escape): _DeselectIntent(),
+  SingleActivator(LogicalKeyboardKey.equal, meta: true):
+      _ZoomInIntent(),
+  SingleActivator(LogicalKeyboardKey.add, meta: true): _ZoomInIntent(),
+  SingleActivator(LogicalKeyboardKey.minus, meta: true):
+      _ZoomOutIntent(),
+  SingleActivator(LogicalKeyboardKey.digit0, meta: true):
+      _ZoomResetIntent(),
+  SingleActivator(LogicalKeyboardKey.keyC, meta: true): _CopyIntent(),
+  SingleActivator(LogicalKeyboardKey.keyV, meta: true): _PasteIntent(),
+  // One grid cell per press — the grid is 8 — and eight cells with
+  // shift. Written out rather than referred to, because the map is
+  // const. Dragging was the only way to move a node, and dragging
+  // something four pixels is a thing hands are bad at.
+  SingleActivator(LogicalKeyboardKey.arrowLeft):
+      _NudgeIntent(Offset(-8, 0)),
+  SingleActivator(LogicalKeyboardKey.arrowRight):
+      _NudgeIntent(Offset(8, 0)),
+  SingleActivator(LogicalKeyboardKey.arrowUp):
+      _NudgeIntent(Offset(0, -8)),
+  SingleActivator(LogicalKeyboardKey.arrowDown):
+      _NudgeIntent(Offset(0, 8)),
+  SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true):
+      _NudgeIntent(Offset(-64, 0)),
+  SingleActivator(LogicalKeyboardKey.arrowRight, shift: true):
+      _NudgeIntent(Offset(64, 0)),
+  SingleActivator(LogicalKeyboardKey.arrowUp, shift: true):
+      _NudgeIntent(Offset(0, -64)),
+  SingleActivator(LogicalKeyboardKey.arrowDown, shift: true):
+      _NudgeIntent(Offset(0, 64)),
+};
+
+/// What each of them is called, in the words the guide uses.
+const Map<String, String> kShortcutNames = <String, String>{
+  '⌘Z': 'undo',
+  '⇧⌘Z': 'redo',
+  '⌫': 'delete what is selected',
+  'esc': 'select nothing',
+  '⌘=': 'zoom in',
+  '⌘−': 'zoom out',
+  '⌘0': 'zoom back to life size',
+  '⌘C': 'copy the selected nodes',
+  '⌘V': 'paste them',
+  'arrow keys': 'nudge by a grid cell, eight with shift',
+  'space': 'drag to pan',
+};
+
 class _EditorScreenState extends State<EditorScreen> {
   final GlobalKey<GraphCanvasState> _canvasKey = GlobalKey<GraphCanvasState>();
 
@@ -106,44 +167,7 @@ class _EditorScreenState extends State<EditorScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
         listenable: Listenable.merge([controller, widget.displaySettings]),
         builder: (context, _) => Shortcuts(
-          shortcuts: const <ShortcutActivator, Intent>{
-            SingleActivator(LogicalKeyboardKey.keyZ, meta: true):
-                _UndoIntent(),
-            SingleActivator(LogicalKeyboardKey.keyZ, meta: true, shift: true):
-                _RedoIntent(),
-            SingleActivator(LogicalKeyboardKey.delete): _DeleteIntent(),
-            SingleActivator(LogicalKeyboardKey.backspace): _DeleteIntent(),
-            SingleActivator(LogicalKeyboardKey.escape): _DeselectIntent(),
-            SingleActivator(LogicalKeyboardKey.equal, meta: true):
-                _ZoomInIntent(),
-            SingleActivator(LogicalKeyboardKey.add, meta: true): _ZoomInIntent(),
-            SingleActivator(LogicalKeyboardKey.minus, meta: true):
-                _ZoomOutIntent(),
-            SingleActivator(LogicalKeyboardKey.digit0, meta: true):
-                _ZoomResetIntent(),
-            SingleActivator(LogicalKeyboardKey.keyC, meta: true): _CopyIntent(),
-            SingleActivator(LogicalKeyboardKey.keyV, meta: true): _PasteIntent(),
-            // One grid cell per press — the grid is 8 — and eight cells with
-            // shift. Written out rather than referred to, because the map is
-            // const. Dragging was the only way to move a node, and dragging
-            // something four pixels is a thing hands are bad at.
-            SingleActivator(LogicalKeyboardKey.arrowLeft):
-                _NudgeIntent(Offset(-8, 0)),
-            SingleActivator(LogicalKeyboardKey.arrowRight):
-                _NudgeIntent(Offset(8, 0)),
-            SingleActivator(LogicalKeyboardKey.arrowUp):
-                _NudgeIntent(Offset(0, -8)),
-            SingleActivator(LogicalKeyboardKey.arrowDown):
-                _NudgeIntent(Offset(0, 8)),
-            SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true):
-                _NudgeIntent(Offset(-64, 0)),
-            SingleActivator(LogicalKeyboardKey.arrowRight, shift: true):
-                _NudgeIntent(Offset(64, 0)),
-            SingleActivator(LogicalKeyboardKey.arrowUp, shift: true):
-                _NudgeIntent(Offset(0, -64)),
-            SingleActivator(LogicalKeyboardKey.arrowDown, shift: true):
-                _NudgeIntent(Offset(0, 64)),
-          },
+          shortcuts: kEditorShortcuts,
           child: Actions(
             actions: <Type, Action<Intent>>{
               _UndoIntent: _CanvasAction<_UndoIntent>(controller.undo),
@@ -704,13 +728,15 @@ class _TopBarState extends State<_TopBar> {
             // buttons says they are all the same kind of thing and these are
             // three kinds: the past, the arrangement, and the units.
             OniButton(
-              label: 'Undo',
+              // The key is on the button, the way the inspector's delete says
+              // ⌫. A shortcut nobody can find is a shortcut nobody has.
+              label: 'Undo  ⌘Z',
               compact: true,
               onPressed: controller.canUndo ? controller.undo : null,
             ),
             const SizedBox(width: OniSpacing.xs),
             OniButton(
-              label: 'Redo',
+              label: 'Redo  ⇧⌘Z',
               compact: true,
               onPressed: controller.canRedo ? controller.redo : null,
             ),

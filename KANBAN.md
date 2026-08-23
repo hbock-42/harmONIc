@@ -71,6 +71,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-10` **The keys are written down** — the editor answers to nineteen shortcuts and the
+  guide named three. Copy and paste of nodes, which is how part of one build gets into
+  another, appeared nowhere at all: a shortcut nobody can find is a shortcut nobody has.
+  The guide has a Keys section, the toolbar's Undo and Redo carry theirs the way the
+  inspector's delete carries ⌫, and a test holds the guide to the map — removing a line
+  from one fails against the other. Lifting the map out of the widget to make that possible
+  dropped two bindings on the way, and the nudge test caught it; the honest fix was to put
+  them back rather than to change the number the new test expected
 - `E9-9` **The empty canvas offers the worked builds** — it explained what to do and gave
   nothing to press, while the four examples sat behind two clicks in a menu you would only
   open if you already knew they were there. That is the wrong way round for the one screen
@@ -961,6 +969,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-7 | ✅ | A cross to empty a search | on every search field, since getting back to the whole list should not mean holding backspace |
 | E9-8 | ✅ | Searching the palette by material | "what makes oxygen?" is the first question anybody asks a production planner, and the list matched names only |
 | E9-9 | ✅ | The empty canvas offers the worked builds | it said what to do and gave nothing to press, while four examples sat two clicks away in a menu |
+| E9-10 | ✅ | The keys are written down | nineteen bindings, three of them documented; copy and paste of nodes was written down nowhere, and the guide is checked against the map now |
 
 ## E7 — The canvas
 

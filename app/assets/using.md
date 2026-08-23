@@ -174,6 +174,18 @@ remembered. The light palette is not the dark one inverted — every colour is
 picked for the background it sits on, because a hue that reads on near-black is
 usually too pale to read on near-white.
 
+## Keys
+
+- **⌘Z** undo, **⇧⌘Z** redo. A whole drag is one step.
+- **⌫** delete what is selected — a node, several, or a wire.
+- **esc** select nothing, which is also how you get the totals back to
+  describing the whole canvas.
+- **⌘C** copy the selected nodes and **⌘V** paste them, into this build or
+  another one. The wires between what you copied come with them.
+- **⌘=** zoom in, **⌘−** out, **⌘0** back to life size.
+- **arrow keys** nudge by a grid cell, eight with shift.
+- **space** and drag to pan, as above.
+
 ## Reusing work
 
 - **Start from a build** opens one of four worked examples: oxygen for a crew,
