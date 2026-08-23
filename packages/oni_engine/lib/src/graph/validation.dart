@@ -146,6 +146,22 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
           'Stock pin on "${pin.nodeId}" needs a positive duration',
           nodeId: pin.nodeId));
     }
+    // An amount below nothing. Left to the solver this came back as two
+    // errors about negative node counts, both advising a look at the edge
+    // shares — which is sound advice for the *other* way a count goes
+    // negative and no help at all here, where somebody typed a minus.
+    final amount = switch (pin) {
+      BuildingCountPin(:final count) => count,
+      PortRatePin(:final ratePerSecond) => ratePerSecond,
+      StockPin(:final amount) => amount,
+    };
+    if (amount < 0) {
+      issues.add(PipelineIssue(
+        IssueSeverity.error,
+        'The amount on this node is below nothing. There is no such build.',
+        nodeId: pin.nodeId,
+      ));
+    }
   }
 
   if (pipeline.pins.isEmpty && pipeline.nodes.isNotEmpty) {

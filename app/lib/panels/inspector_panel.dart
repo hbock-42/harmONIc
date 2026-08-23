@@ -300,6 +300,7 @@ class _NodeInspectorState extends State<_NodeInspector> {
           children: [
             Expanded(
               child: OniField(
+                key: amountFieldKey,
                 controller: _amount,
                 hint: _isBoundary ? 'rate' : 'count',
                 focusNode: _amountFocus,
@@ -1526,6 +1527,7 @@ class _ValveState extends State<_Valve> {
 const Key valveFieldKey = ValueKey('edge-valve');
 
 /// Named so tests can drive them directly.
+const Key amountFieldKey = ValueKey('amount');
 const Key stockAmountFieldKey = ValueKey('stock-amount');
 const Key stockCyclesFieldKey = ValueKey('stock-cycles');
 

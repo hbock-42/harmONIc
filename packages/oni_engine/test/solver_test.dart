@@ -721,4 +721,50 @@ void main() {
       expect(eggs(wild), closeTo(eggs(tame) / 10, 1e-9));
     });
   });
+
+  group('an amount below nothing', () {
+    Pipeline pinnedTo(double count) => (PipelineBuilder(db, name: 'minus')
+          ..addSource('water')
+          ..add('electrolyzer', nodeId: 'elec')
+          ..connectItem('src_water', 'elec', 'water')
+          ..pinCount('elec', count))
+        .build();
+
+    test('is refused where it was typed, not where it lands', () {
+      final solution = PipelineSolver(db).solve(pinnedTo(-5));
+      expect(solution.status, SolveStatus.invalid);
+
+      final issue = solution.issues.singleWhere((i) => i.isError);
+      expect(issue.nodeId, 'elec', reason: 'the node somebody typed it on');
+      expect(issue.message, contains('below nothing'));
+      // What it used to say: two errors, about the node and its supply, both
+      // advising a look at the edge shares — which is the right advice for
+      // the other way a count goes negative, and no help at all for a minus
+      // sign.
+      expect(solution.issues.where((i) => i.message.contains('edge shares')),
+          isEmpty);
+    });
+
+    test('and nothing is still a build', () {
+      // Zero is a real answer: a build of no Electrolyzers eats no water, and
+      // saying so beats refusing to draw it while somebody clears the field.
+      final solution = PipelineSolver(db).solve(pinnedTo(0));
+      expect(solution.status, SolveStatus.solved);
+      expect(solution.nodes['src_water']!.count, 0);
+    });
+
+    test('and a rate below nothing goes the same way', () {
+      final pipeline = (PipelineBuilder(db, name: 'minus')
+            ..addSource('water')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..connectItem('src_water', 'elec', 'water')
+            ..pinRate('src_water', sourcePortId, -1000))
+          .build();
+      final solution = PipelineSolver(db).solve(pipeline);
+
+      expect(solution.status, SolveStatus.invalid);
+      expect(solution.issues.singleWhere((i) => i.isError).message,
+          contains('below nothing'));
+    });
+  });
 }

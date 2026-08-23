@@ -71,6 +71,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E3-6a` **An amount below nothing** — typing −5 into "I have this many" produced two
+  errors, on the node and on its supply, both saying "check the edge shares". That is sound
+  advice for the *other* way a count goes negative and no help at all when somebody typed a
+  minus. It is refused where it was typed now, named on that node, in words about the
+  amount. Zero is left alone: a build of no Electrolyzers eats no water, and saying so beats
+  refusing to draw anything while a field is being cleared
 - `E9-10` **The keys are written down** — the editor answers to nineteen shortcuts and the
   guide named three. Copy and paste of nodes, which is how part of one build gets into
   another, appeared nowhere at all: a shortcut nobody can find is a shortcut nobody has.
@@ -845,6 +851,7 @@ _(empty)_
 | E3-4 | ✅ | Rounding modes | `exact` (fractional buildings, the true ratio) vs `whole` (ceil to integers, then re-report the resulting surplus/idle %) — both shown |
 | E3-5 | ✅ | Derived totals | total power draw / generation, net power, total heat kDTU/s, dupe labour, footprint tiles, raw inputs list, net outputs list |
 | E3-6 | ✅ | Bottleneck detection | which node caps the pipeline when a raw input is capped |
+| E3-6a | ✅ | An amount below nothing | refused where it was typed, instead of arriving as two errors about negative node counts that blamed the edge shares |
 | E3-7 | ✅ | Simplex / LP upgrade | decided in `docs/CHOOSING-SHARES.md`: the shares cannot be variables (`share·x` is not linear) — the *flows* have to be, with output balances becoming inequalities. Do it in three steps, and never as the only path |
 | E3-7a | ✅ | The simplex itself | two-phase, Bland's rule throughout because every graph with a loop is degenerate; tested against textbook problems and against brute force on a hundred random ones |
 | E3-7c | ✅ | One question, end to end | "Get as much as possible" on an output node. The simplex chooses the splits and they are written back as ordinary shares, so there is still one solver and one set of numbers |
