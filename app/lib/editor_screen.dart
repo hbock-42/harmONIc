@@ -183,15 +183,17 @@ class _EditorScreenState extends State<EditorScreen> {
         event.logicalKey != LogicalKeyboardKey.question) {
       return KeyEventResult.ignored;
     }
-    if (event is KeyDownEvent) {
-      if (!_keysHeld) setState(() => _keysHeld = true);
-      return KeyEventResult.handled;
+    if (event is KeyDownEvent && !_keysHeld) {
+      setState(() => _keysHeld = true);
+    } else if (event is KeyUpEvent && _keysHeld) {
+      setState(() => _keysHeld = false);
     }
-    if (event is KeyUpEvent) {
-      if (_keysHeld) setState(() => _keysHeld = false);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
+    // Every event for this key is claimed, repeats included. Holding a key
+    // sends one down and then a repeat every few dozen milliseconds, and an
+    // unclaimed key event goes on to the system — which on macOS answers each
+    // one with a beep. Saying "handled" once and ignoring the rest sounded
+    // exactly like the app was refusing the key.
+    return KeyEventResult.handled;
   }
 
   @override

@@ -72,6 +72,26 @@ void main() {
     expect(find.byType(KeysPanel), findsNothing);
   });
 
+  testWidgets('and holding it makes no noise', (tester) async {
+    // macOS beeps at every key event nothing claims, and holding a key sends
+    // a repeat every few dozen milliseconds. Claiming the down and the up and
+    // ignoring the repeats sounded exactly like the app refusing the key.
+    await pumpEditor(tester);
+
+    expect(await tester.sendKeyDownEvent(LogicalKeyboardKey.slash), isTrue);
+    for (var i = 0; i < 5; i++) {
+      expect(await tester.sendKeyRepeatEvent(LogicalKeyboardKey.slash), isTrue,
+          reason: 'repeat $i');
+    }
+    await tester.pump();
+    expect(find.byType(KeysPanel), findsOneWidget,
+        reason: 'and the repeats change nothing');
+
+    expect(await tester.sendKeyUpEvent(LogicalKeyboardKey.slash), isTrue);
+    await tester.pump();
+    expect(find.byType(KeysPanel), findsNothing);
+  });
+
   testWidgets('and shift does not confuse it', (tester) async {
     // ? is shift and / on most keyboards. Letting go of shift first must not
     // leave the card on screen, which is why the physical key is watched.

@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-12a` **Holding ? makes no noise** — reported by Hugo within a minute of it shipping.
+  macOS answers every key event nothing claims with a beep, and holding a key sends one
+  press and then a repeat every few dozen milliseconds. The handler claimed the press and
+  the release and let the repeats through, so the app sounded like it was refusing the key
+  the whole time it was doing what was asked. Every event for that key is claimed now, and
+  the test asserts what the framework reports rather than what the panel shows — the sound
+  and the picture were never the same question
 - `E9-12` **A card of the keys** — asked for by Hugo. Pairs rather than prose, three groups,
   eleven lines, in a column narrow enough to run your eye down. Two ways in and they behave
   differently on purpose: the toolbar button pins it open until dismissed, and holding **?**
@@ -1018,6 +1025,7 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-10 | ✅ | The keys are written down | nineteen bindings, three of them documented; copy and paste of nodes was written down nowhere, and the guide is checked against the map now |
 | E9-11 | ✅ | Change the recipe on a node | a building with several recipes can be swapped in place, keeping its position and the wires that still fit |
 | E9-12 | ✅ | A card of the keys | a button that pins it open, and ? that shows it only while held |
+| E9-12a | ✅ | Holding the key makes no noise | macOS beeps at every key event nothing claims, and a held key repeats a dozen times a second |
 
 ## E7 — The canvas
 
