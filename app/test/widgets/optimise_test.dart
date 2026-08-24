@@ -131,6 +131,33 @@ void main() {
     expect(textContaining('Divided to need only'), findsOneWidget);
   });
 
+  testWidgets('a supply pinned to itself is told what is missing',
+      (tester) async {
+    // Reported: pin the ore supply, press the button, and the build emptied
+    // out — every share zero, and a banner saying nothing sets its size. The
+    // cheapest way to use no ore is to make no metal, and that was the answer
+    // it applied.
+    final pipeline = twoWays().copyWith(pins: [
+      const PortRatePin(
+          nodeId: 'src_iron_ore', portId: 'out', ratePerSecond: 200),
+    ]);
+    final controller = await pumpEditor(tester, pipeline);
+    final before = controller.solution.nodes['sink_iron']!.count;
+    expect(before, greaterThan(0));
+
+    controller.select(const NodeSelection('src_iron_ore'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Use as little as possible'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Use as little as possible'));
+    await tester.pumpAndSettle();
+
+    expect(controller.solution.nodes['sink_iron']!.count, closeTo(before, 1e-6),
+        reason: 'the build is left exactly as it was');
+    expect(textContaining('There is no least until you say what you want'),
+        findsOneWidget);
+  });
+
   testWidgets('and an output node is not asked to use less of itself',
       (tester) async {
     // The two ends ask different questions, and each node asks only its own.

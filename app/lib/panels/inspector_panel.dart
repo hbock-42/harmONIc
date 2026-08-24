@@ -1823,9 +1823,13 @@ class _TheMostOfItState extends State<_TheMostOfIt> {
                   ? (wanting
                       ? 'There is no most: nothing in this build limits it, or '
                           'two amounts you have set contradict each other.'
-                      : 'There is no least: say what you want out of the build '
-                          'first, or two amounts you have set contradict each '
-                          'other.')
+                      // Naming the amount to set, because an amount on this
+                      // node is not it: the cheapest way to use no ore is to
+                      // make no metal, and that is the answer you get.
+                      : 'There is no least until you say what you want: put an '
+                          'amount on what comes out of the build, not on this. '
+                          'With nothing asked for, the least of anything is '
+                          'none of it.')
                   : wanting
                       ? 'Divided to give $rate. The splits it chose are on the '
                           'wires, and undo puts them back.'

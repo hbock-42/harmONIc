@@ -12,6 +12,7 @@ class BestCase {
     this.ratePerSecond = 0,
     this.nodeCounts = const {},
     this.edgeFlows = const {},
+    this.runsNothing = false,
   });
 
   final LpStatus status;
@@ -24,7 +25,14 @@ class BestCase {
   final Map<String, double> nodeCounts;
   final Map<String, double> edgeFlows;
 
-  bool get isAnswer => status == LpStatus.optimal;
+  /// The minimum was "run nothing", which is a true answer and a useless one.
+  ///
+  /// Kept apart from [status] because the simplex did its job: the build
+  /// really can use no ore at all, by making no metal at all. It is the
+  /// question that was wrong, not the arithmetic.
+  final bool runsNothing;
+
+  bool get isAnswer => status == LpStatus.optimal && !runsNothing;
 }
 
 /// The most of [itemId] this build could put out, and the splits that do it.
@@ -229,8 +237,18 @@ BestCase _optimise(
   if (result.status != LpStatus.optimal) {
     return BestCase(status: result.status);
   }
+  // Minimising has a trivial winner whenever nothing says what the build is
+  // for: use none, make none. Applying that sets every share to zero and
+  // leaves a build that reads as unsized — which is what it did, on a pinned
+  // supply, which is the first thing anybody tries.
+  final minimising = boundary != ProcessKind.sink;
+  final stopped = pipeline.edges.isNotEmpty &&
+      pipeline.edges.every(
+          (edge) => result.values[edgeColumn[edge.id]!].abs() < 1e-9);
+
   return BestCase(
     status: result.status,
+    runsNothing: minimising && stopped,
     ratePerSecond: result.objective,
     nodeCounts: {
       for (final entry in nodeColumn.entries) entry.key: result.values[entry.value],

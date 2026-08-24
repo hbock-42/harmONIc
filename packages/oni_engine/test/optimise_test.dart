@@ -255,4 +255,55 @@ void main() {
       expect(mostOf(twoWays(), db, 'oxygen').status, LpStatus.infeasible);
     });
   });
+  group('the least of nothing', () {
+    /// Reported: press "Use as little as possible" on a pinned ore supply and
+    /// the build empties out — every share zero, every count zero, and a
+    /// banner saying nothing sets its size. The minimum was real and useless:
+    /// the cheapest way to use no ore is to make no metal.
+    Pipeline fork(GameDatabase db, {double? supply, double? output}) {
+      final b = PipelineBuilder(db, name: 'fork')
+        ..addSource('iron_ore')
+        ..add('metal_refinery', nodeId: 'ref')
+        ..add('rock_crusher_metal', nodeId: 'crush')
+        ..addSink('iron', nodeId: 'out')
+        ..connect('src_iron_ore', sourcePortId, 'ref', 'metal_ore')
+        ..connect('src_iron_ore', sourcePortId, 'crush', 'metal_ore')
+        ..connect('ref', 'refined_metal', 'out', sinkPortId)
+        ..connect('crush', 'refined_metal', 'out', sinkPortId);
+      if (supply != null) b.pinCount('src_iron_ore', supply);
+      if (output != null) b.pinCount('out', output);
+      return b.build();
+    }
+
+    test('a build asked for nothing has no least', () {
+      final best = leastOf(fork(db, supply: 200), db, 'iron_ore');
+
+      expect(best.status, LpStatus.optimal, reason: 'the simplex did its job');
+      expect(best.runsNothing, isTrue);
+      expect(best.isAnswer, isFalse, reason: 'so nothing is applied');
+    });
+
+    test('and neither has one with no amounts at all', () {
+      expect(leastOf(fork(db), db, 'iron_ore').isAnswer, isFalse);
+    });
+
+    test('but ask it for iron and it answers', () {
+      final best = leastOf(fork(db, output: 200), db, 'iron_ore');
+
+      expect(best.isAnswer, isTrue);
+      expect(best.ratePerSecond, closeTo(200, 1e-6),
+          reason: 'the refinery is one for one; the crusher would need more');
+      final applied = withShares(fork(db, output: 200), db, best);
+      expect(PipelineSolver(db).solve(applied).status, SolveStatus.solved);
+    });
+
+    test('the same guard covers the totals in the bottom bar', () {
+      // Least power, with nothing asked for, is also "build nothing".
+      expect(leastTotal(fork(db, supply: 200), db, BuildTotal.power).isAnswer,
+          isFalse);
+      expect(leastTotal(fork(db, output: 200), db, BuildTotal.power).isAnswer,
+          isTrue);
+    });
+  });
+
 }

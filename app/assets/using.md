@@ -131,6 +131,14 @@ while still delivering everything you asked for. Ten kilograms a second of ore
 through a refinery and a crusher gives 6.7 kg/s of metal split evenly, and 10
 through the refinery alone.
 
+The two are asked in opposite orders, which is worth knowing before you try the
+second one. *As much as possible* needs an amount on the **supply** — you have
+ten kilograms of ore, what is the most metal that makes. *As little as
+possible* needs one on the **output** — you want five kilograms of iron, what
+is the least ore that does it. An amount on the node you are asking about is
+not an answer to either: with nothing wanted, the least ore is no ore, and the
+app says so rather than emptying the build to prove it.
+
 **LEAST**, beside net power, heat or floor in the bottom bar, asks the same of
 the build as a whole: the splits that draw the least, emit the least, or stand
 on the least. The three rarely agree — a Rock Crusher draws a fifth of a Metal

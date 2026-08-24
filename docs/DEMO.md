@@ -91,9 +91,22 @@ half, so of course everything should go to the refinery — but the app worked
 that out from the recipes rather than being told, and it will do the same on a
 build with thirty nodes where nobody could see it.*
 
-**3. The other end.** Select the **ore supply** and press **Use as little as
-possible** on a build with the output pinned instead: it answers the reverse
-question — what does it *cost* me to get what I asked for.
+**3. The other end.** This one has an order to it, and getting it wrong is the
+one thing in the demo that will not work:
+
+1. Select the **ore supply** and press **Clear**. The amount moves off the
+   thing you are about to ask about.
+2. Select the **Iron output** and set it to **5 kg/s**. That is the *asking*:
+   what you want out of the build.
+3. Select the ore supply again and press **Use as little as possible**.
+
+**7.5 kg/s → 5 kg/s** of ore, for the same five kilograms of iron. It answers
+the reverse question: what does it *cost* me to get what I asked for.
+
+Say why the order matters, because somebody will try it the other way round: if
+the only amount set is on the ore itself, the cheapest way to use no ore is to
+make no metal, and that is a real answer to a question nobody meant. The app
+says so rather than doing it.
 
 **4. If somebody asks about power.** Press **LEAST** beside NET POWER in the
 bottom bar. It picks the *crusher* — a fifth of a Metal Refinery's draw — and
