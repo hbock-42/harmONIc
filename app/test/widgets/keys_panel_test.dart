@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:oni_pipeline/design/widgets.dart';
 import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/panels/keys_panel.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
@@ -128,5 +129,43 @@ void main() {
       // the card pairs up on one line.
       expect(onCard.join(' '), contains(key.split(' ').first), reason: key);
     }
+  });
+
+  testWidgets('the key and what it does sit on one line', (tester) async {
+    // They are set in different faces at different sizes, so aligning the
+    // boxes leaves the keys riding high above the words. The letters have to
+    // sit on the same baseline, which is a different thing.
+    await pumpEditor(tester);
+    await tester.ensureVisible(find.text('⌘'));
+    await tester.pump();
+    await tester.tap(find.text('⌘'));
+    await tester.pumpAndSettle();
+
+    final key = tester.getRect(find.text('⌘Z'));
+    final does = tester.getRect(find.text('undo'));
+    expect((key.center.dy - does.center.dy).abs(), lessThan(1.5),
+        reason: 'the two columns of one row are level');
+  });
+
+  testWidgets('and both panels open against the right edge', (tester) async {
+    // The canvas is what somebody is reading these *about*; a centred slab
+    // covers the build being explained.
+    await pumpEditor(tester);
+    await tester.ensureVisible(find.text('⌘'));
+    await tester.pump();
+    await tester.tap(find.text('⌘'));
+    await tester.pumpAndSettle();
+
+    // The palette and the inspector are OniPanels too; this is the one
+    // inside the card.
+    final panel = tester.getRect(find.descendant(
+      of: find.byType(KeysPanel),
+      matching: find.byType(OniPanel),
+    ));
+    final screen = tester.getRect(find.byType(KeysPanel));
+    expect(screen.right - panel.right, lessThan(40),
+        reason: 'tucked against the right edge');
+    expect(panel.left, greaterThan(screen.width / 2),
+        reason: 'and out of the way of the canvas');
   });
 }

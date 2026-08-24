@@ -50,7 +50,11 @@ class KeysPanel extends StatelessWidget {
         onTap: onDismiss,
         child: Container(
           color: const Color(0xCC000000),
-          alignment: Alignment.center,
+        // Against the right edge, beside the inspector, for the same reason
+        // the guide is: what you are pressing these keys at is the canvas, and
+        // it should stay visible while you look them up.
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: OniSpacing.lg),
           child: GestureDetector(
             onTap: () {},
             child: OniPanel(
@@ -76,7 +80,13 @@ class KeysPanel extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 6),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // On the baseline, not the top of the box: the
+                            // keys are set in a monospace face at a different
+                            // size from the words beside them, so the two
+                            // columns only look like one line if the letters
+                            // sit on the same line rather than the boxes.
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
                             children: [
                               // A fixed column, so the keys line up and the
                               // eye can run down them without reading.
@@ -84,8 +94,11 @@ class KeysPanel extends StatelessWidget {
                                 width: 116,
                                 child: Text(
                                   keys,
-                                  style: OniType.numberSmall
-                                      .copyWith(color: OniColors.accent),
+                                  style: OniType.numberSmall.copyWith(
+                                    fontSize: 12,
+                                    height: 1.35,
+                                    color: OniColors.accent,
+                                  ),
                                 ),
                               ),
                               Expanded(

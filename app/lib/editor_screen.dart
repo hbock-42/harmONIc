@@ -851,6 +851,7 @@ class _TopBarState extends State<_TopBar> {
               onPressed: () => widget.displaySettings
                   .setLight(light: !widget.displaySettings.isLight),
             ),
+            const SizedBox(width: OniSpacing.xs),
             OniButton(
               // Beside the guide, because they answer the same kind of
               // question: one is how it works, the other is what to press.
@@ -858,6 +859,7 @@ class _TopBarState extends State<_TopBar> {
               compact: true,
               onPressed: widget.onOpenKeys,
             ),
+            const SizedBox(width: OniSpacing.xs),
             OniButton(
               label: '?',
               compact: true,

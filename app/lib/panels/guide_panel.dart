@@ -57,7 +57,11 @@ class _GuidePanelState extends State<GuidePanel> {
         onTap: widget.onClose,
         child: Container(
           color: const Color(0xCC000000),
-          alignment: Alignment.center,
+        // Against the right edge rather than the middle: the canvas is what
+        // somebody is reading this *about*, and covering the palette and the
+        // build with a centred slab hides the thing being explained.
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: OniSpacing.lg),
           // Swallowed, so that reading the thing does not shut it.
           child: GestureDetector(
             onTap: () {},
