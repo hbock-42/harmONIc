@@ -51,6 +51,45 @@ void main() {
     return controller;
   }
 
+  group('a class port', () {
+    /// Reported: an Iron Ore supply, click its output, pick Metal Refinery,
+    /// and nothing happened at all. The refinery asks for the class "metal
+    /// ore" and the supply offers iron ore, so the menu offered it and the
+    /// click quietly declined.
+    Pipeline oreSupply() => (PipelineBuilder(testDatabase, name: 'ore')
+          ..addSource('iron_ore', nodeId: 'ore', x: 200, y: 200))
+        .build();
+
+    test('takes a member of the class it asks for', () {
+      final c = testController(pipeline: oreSupply());
+      final ref = PortRef('ore', c.specOf(c.pipeline.nodeOrThrow('ore')).outputs.first.id);
+
+      expect(c.candidatesFor(ref).map((s) => s.id), contains('metal_refinery'),
+          reason: 'the menu offers it');
+      final added = c.addNodeFor(ref, 'metal_refinery');
+
+      expect(added, isNotNull, reason: 'so clicking it has to do something');
+      expect(c.pipeline.edges, hasLength(1));
+      expect(c.pipeline.edges.single.toNodeId, added);
+      expect(c.pipeline.edges.single.toPortId, 'metal_ore');
+      // And the wire it drew is one the solver is happy with: a class port
+      // takes the member, and nothing has to be chosen first.
+      expect(c.solution.issues.where((i) => i.isError), isEmpty);
+    });
+
+    test('and the wire runs the other way too', () {
+      final c = testController(
+          pipeline: (PipelineBuilder(testDatabase, name: 'refine')
+                ..add('metal_refinery', nodeId: 'ref', x: 400, y: 200))
+              .build());
+      final added =
+          c.addNodeFor(const PortRef('ref', 'metal_ore'), 'source:iron_ore');
+
+      expect(added, isNotNull);
+      expect(c.pipeline.edges.single.fromNodeId, added);
+    });
+  });
+
   group('candidates', () {
     test('an input port offers producers of that item', () {
       final c = testController(pipeline: loneElectrolyzer());

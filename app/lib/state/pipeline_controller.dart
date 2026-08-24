@@ -469,8 +469,15 @@ class PipelineController extends ChangeNotifier {
     if (anchorPort == null) return null;
 
     final spec = database.processOrThrow(specId);
+    // The same question the menu asked before it offered this, rather than a
+    // stricter one. Exact equality was the bug: a Metal Refinery asks for
+    // "metal ore", an Iron Ore supply offers iron ore, so the menu listed the
+    // refinery and clicking it did nothing whatsoever.
+    final wanted = acceptedAt(anchorNode, anchorSpec, anchorPort);
     final matching = spec.ports.where((p) =>
-        p.itemId == anchorPort.itemId && p.isOutput == anchorPort.isInput);
+        p.isOutput == anchorPort.isInput &&
+        p.accepted.any(
+            (offered) => wanted.any((w) => database.accepts(w, offered))));
     if (matching.isEmpty) return null;
     final newPort = matching.first;
 
