@@ -163,8 +163,8 @@ void main() {
       matching: find.byType(OniPanel),
     ));
     final screen = tester.getRect(find.byType(KeysPanel));
-    expect(screen.right - panel.right, lessThan(40),
-        reason: 'tucked against the right edge');
+    expect(screen.right - panel.right, lessThan(1),
+        reason: 'flush against the right edge, no margin');
     expect(panel.left, greaterThan(screen.width / 2),
         reason: 'and out of the way of the canvas');
   });

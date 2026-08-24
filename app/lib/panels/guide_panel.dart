@@ -61,7 +61,6 @@ class _GuidePanelState extends State<GuidePanel> {
         // somebody is reading this *about*, and covering the palette and the
         // build with a centred slab hides the thing being explained.
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: OniSpacing.lg),
           // Swallowed, so that reading the thing does not shut it.
           child: GestureDetector(
             onTap: () {},

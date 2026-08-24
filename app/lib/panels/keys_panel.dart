@@ -54,7 +54,6 @@ class KeysPanel extends StatelessWidget {
         // the guide is: what you are pressing these keys at is the canvas, and
         // it should stay visible while you look them up.
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: OniSpacing.lg),
           child: GestureDetector(
             onTap: () {},
             child: OniPanel(
