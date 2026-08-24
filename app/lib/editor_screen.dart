@@ -7,6 +7,7 @@ import 'canvas/graph_canvas.dart';
 import 'design/tokens.dart';
 import 'design/widgets.dart';
 import 'panels/guide_panel.dart';
+import 'panels/keys_panel.dart';
 import 'panels/inspector_panel.dart';
 
 import 'panels/palette_panel.dart';
@@ -119,6 +120,13 @@ class _EditorScreenState extends State<EditorScreen> {
   bool _pipelinesOpen = false;
   bool _guideOpen = false;
 
+  /// The keys card. Two ways in, and they behave differently on purpose: the
+  /// button pins it open until dismissed, and holding ? shows it only for as
+  /// long as the key is down — which is what you want mid-drag, when letting
+  /// go of the mouse to close a panel is the thing you were trying to avoid.
+  bool _keysPinned = false;
+  bool _keysHeld = false;
+
   @override
   void initState() {
     super.initState();
@@ -163,6 +171,29 @@ class _EditorScreenState extends State<EditorScreen> {
     controller.addNode(specId, centre);
   }
 
+
+  /// Hold **?** to see the keys, let go to put them away.
+  ///
+  /// Handled here rather than through `Shortcuts`, which reports a key going
+  /// down and never coming up. The physical key is watched rather than the
+  /// character, because ? is shift and / on most keyboards and letting go of
+  /// shift first would otherwise leave the card on screen.
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event.logicalKey != LogicalKeyboardKey.slash &&
+        event.logicalKey != LogicalKeyboardKey.question) {
+      return KeyEventResult.ignored;
+    }
+    if (event is KeyDownEvent) {
+      if (!_keysHeld) setState(() => _keysHeld = true);
+      return KeyEventResult.handled;
+    }
+    if (event is KeyUpEvent) {
+      if (_keysHeld) setState(() => _keysHeld = false);
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
   @override
   Widget build(BuildContext context) => ListenableBuilder(
         listenable: Listenable.merge([controller, widget.displaySettings]),
@@ -188,6 +219,7 @@ class _EditorScreenState extends State<EditorScreen> {
             },
             child: Focus(
               autofocus: true,
+              onKeyEvent: _onKey,
               child: Stack(
                 children: [
               DecoratedBox(
@@ -202,6 +234,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTogglePipelines: () =>
                           setState(() => _pipelinesOpen = !_pipelinesOpen),
                       onOpenGuide: () => setState(() => _guideOpen = true),
+                      onOpenKeys: () => setState(() => _keysPinned = true),
                     ),
                     _Tabs(workspace: widget.workspace),
                     _RepairNotice(workspace: widget.workspace),
@@ -271,6 +304,14 @@ class _EditorScreenState extends State<EditorScreen> {
                   child: GuidePanel(
                     onClose: () => setState(() => _guideOpen = false),
                     load: widget.loadGuide,
+                  ),
+                ),
+              if (_keysPinned || _keysHeld)
+                Positioned.fill(
+                  child: KeysPanel(
+                    onDismiss: _keysHeld
+                        ? null
+                        : () => setState(() => _keysPinned = false),
                   ),
                 ),
               ?_recipeEditor(),
@@ -379,6 +420,7 @@ class _RepairNotice extends StatelessWidget {
   const _RepairNotice({required this.workspace});
 
   final WorkspaceController workspace;
+
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
@@ -631,6 +673,7 @@ class _TopBar extends StatefulWidget {
     required this.displaySettings,
     required this.onTogglePipelines,
     required this.onOpenGuide,
+    required this.onOpenKeys,
   });
 
   final PipelineController controller;
@@ -639,6 +682,10 @@ class _TopBar extends StatefulWidget {
   final DisplayController displaySettings;
   final VoidCallback onTogglePipelines;
   final VoidCallback onOpenGuide;
+
+  /// The keys card, for anybody who would rather press a button than know to
+  /// hold a key — which is everybody, the first time.
+  final VoidCallback onOpenKeys;
 
   @override
   State<_TopBar> createState() => _TopBarState();
@@ -801,6 +848,13 @@ class _TopBarState extends State<_TopBar> {
               compact: true,
               onPressed: () => widget.displaySettings
                   .setLight(light: !widget.displaySettings.isLight),
+            ),
+            OniButton(
+              // Beside the guide, because they answer the same kind of
+              // question: one is how it works, the other is what to press.
+              label: '⌘',
+              compact: true,
+              onPressed: widget.onOpenKeys,
             ),
             OniButton(
               label: '?',

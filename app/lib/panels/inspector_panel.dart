@@ -427,8 +427,13 @@ class _NodeInspectorState extends State<_NodeInspector> {
           const SizedBox(height: OniSpacing.lg),
         ],
 
+        if (controller.database.variantsOf(spec).length > 1) ...[
+          _Variants(controller: controller, node: node, spec: spec),
+          const SizedBox(height: OniSpacing.lg),
+        ],
+
         for (final port in choosablePorts(controller.database, spec)) ...[
-          _MaterialChoice(
+          MaterialChoiceRow(
             controller: controller,
             node: node,
             spec: spec,
@@ -903,12 +908,13 @@ class _GeyserActivityState extends State<_GeyserActivity> {
 /// what it is: generic, and able to feed anything that wants a metal. Say
 /// copper and it becomes a copper refinery — it will no longer feed an iron
 /// port, and the build will say so rather than quietly agree.
-class _MaterialChoice extends StatelessWidget {
-  const _MaterialChoice({
+class MaterialChoiceRow extends StatelessWidget {
+  const MaterialChoiceRow({
     required this.controller,
     required this.node,
     required this.spec,
     required this.port,
+    super.key,
   });
 
   final PipelineController controller;
@@ -1451,6 +1457,96 @@ class _StockpileState extends State<_Stockpile> {
     );
   }
 }
+
+/// The other recipes this same building runs.
+///
+/// A Rock Crusher makes sand or lime or metal; an Aquatuner is one machine per
+/// coolant. They are separate recipes because their rates differ — that is
+/// what a recipe is — but they are one building, and changing your mind should
+/// not mean deleting what you placed and wiring it up again.
+class _Variants extends StatefulWidget {
+  const _Variants({
+    required this.controller,
+    required this.node,
+    required this.spec,
+  });
+
+  final PipelineController controller;
+  final PipelineNode node;
+  final ProcessSpec spec;
+
+  @override
+  State<_Variants> createState() => _VariantsState();
+}
+
+class _VariantsState extends State<_Variants> {
+  String? _said;
+
+  @override
+  Widget build(BuildContext context) {
+    final variants = widget.controller.database.variantsOf(widget.spec);
+    // "Aquatuner (Petroleum)" twenty-two times is a wall of the same word, so
+    // where every name shares a beginning, only the part that differs is
+    // shown. The heading carries the rest.
+    final prefix = _sharedPrefix(variants.map((s) => s.name));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          prefix.isEmpty ? 'THIS BUILDING ALSO RUNS' : '${prefix.toUpperCase()} —',
+          style: OniType.label,
+        ),
+        const SizedBox(height: OniSpacing.sm),
+        Wrap(
+          spacing: OniSpacing.sm,
+          runSpacing: OniSpacing.sm,
+          children: [
+            for (final variant in variants)
+              OniButton(
+                label: _shorten(variant.name, prefix),
+                compact: true,
+                tone: variant.id == widget.spec.id
+                    ? OniButtonTone.accent
+                    : OniButtonTone.neutral,
+                onPressed: variant.id == widget.spec.id
+                    ? null
+                    : () {
+                        final dropped = widget.controller
+                            .swapSpec(widget.node.id, variant.id);
+                        setState(() => _said = dropped == 0
+                            ? null
+                            : '$dropped ${dropped == 1 ? 'wire' : 'wires'} did '
+                                'not fit the new recipe and came off. Undo '
+                                'puts everything back.');
+                      },
+              ),
+          ],
+        ),
+        if (_said case final String said) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Text(
+            said,
+            style: OniType.body
+                .copyWith(fontSize: 11.5, color: OniColors.warning),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// The words every one of these names begins with, if any.
+String _sharedPrefix(Iterable<String> names) {
+  final bracket = names.first.indexOf(' (');
+  if (bracket <= 0) return '';
+  final prefix = names.first.substring(0, bracket);
+  return names.every((n) => n.startsWith('$prefix (')) ? prefix : '';
+}
+
+String _shorten(String name, String prefix) => prefix.isEmpty
+    ? name
+    : name.substring(prefix.length + 2, name.length - 1);
 
 /// A cap on this line, which is a valve.
 ///

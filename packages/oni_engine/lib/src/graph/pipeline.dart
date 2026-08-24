@@ -94,6 +94,7 @@ class PipelineNode {
   bool ventsPort(String portId) => ventedPorts.contains(portId);
 
   PipelineNode copyWith({
+    String? specId,
     String? label,
     double? x,
     double? y,
@@ -106,7 +107,7 @@ class PipelineNode {
   }) =>
       PipelineNode(
         id: id,
-        specId: specId,
+        specId: specId ?? this.specId,
         label: label ?? this.label,
         x: x ?? this.x,
         y: y ?? this.y,

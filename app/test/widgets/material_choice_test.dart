@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/editor_screen.dart';
+import 'package:oni_pipeline/panels/inspector_panel.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 
 import '../support/harness.dart';
@@ -30,6 +31,11 @@ void main() {
       (tester) async {
     await pumpEditor(tester);
 
+    // Below the variants of the building itself, which arrived when a node
+    // learned it could be swapped for another recipe of the same machine. The
+    // panel builds lazily, so scroll to it as a person would.
+    await tester.drag(find.byType(InspectorPanel), const Offset(0, -240));
+    await tester.pumpAndSettle();
     expect(find.text('METAL ORE USED'), findsOneWidget);
     expect(find.text('Any'), findsOneWidget);
     expect(find.text('Copper Ore'), findsWidgets);
@@ -42,13 +48,18 @@ void main() {
 
     // The ore buttons sit near the bottom of a panel that has grown, so reach
     // them the way a person would.
+    await tester.drag(find.byType(InspectorPanel), const Offset(0, -240));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Copper Ore').first);
     await tester.pump();
     await tester.tap(find.text('Copper Ore').first);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(controller.pipeline.nodeOrThrow('refinery').materials,
         {'metal_ore': 'copper_ore'});
+    // The note sits under the buttons, which the choice has just shifted.
+    await tester.drag(find.byType(InspectorPanel), const Offset(0, -120));
+    await tester.pumpAndSettle();
     expect(textContaining('Makes Copper'), findsOneWidget);
   });
 
@@ -83,13 +94,21 @@ void main() {
   testWidgets('the one ore the recipe cannot describe is not offered',
       (tester) async {
     await pumpEditor(tester);
-    await tester.ensureVisible(find.text('Copper Ore').first);
-    await tester.pump();
+    await tester.drag(find.byType(InspectorPanel), const Offset(0, -240));
+    await tester.pumpAndSettle();
 
     // Galena is 87 % lead and 13 % sulfur, so "kilogram for kilogram" does not
-    // describe it and it has recipes of its own. Offering it here would be the
-    // app quietly agreeing to figures it does not hold.
-    expect(find.text('Galena'), findsNothing);
+    // describe it and it has recipes of its own. Offering it *as an ore* here
+    // would be the app quietly agreeing to figures it does not hold — while
+    // offering it as another recipe of the same building, which the row above
+    // now does, is exactly right.
+    expect(
+      find.descendant(
+        of: find.byType(MaterialChoiceRow),
+        matching: find.text('Galena'),
+      ),
+      findsNothing,
+    );
     expect(find.text('Cinnabar Ore'), findsWidgets);
   });
 }

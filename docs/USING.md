@@ -176,6 +176,10 @@ usually too pale to read on near-white.
 
 ## Keys
 
+**⌘** on the toolbar shows them all on a card. Or hold **?** — the card is up
+while the key is down and gone when you let go, which is what you want in the
+middle of dragging something.
+
 - **⌘Z** undo, **⇧⌘Z** redo. A whole drag is one step.
 - **⌫** delete what is selected — a node, several, or a wire.
 - **esc** select nothing, which is also how you get the totals back to
@@ -184,6 +188,9 @@ usually too pale to read on near-white.
   another one. The wires between what you copied come with them.
 - **⌘=** zoom in, **⌘−** out, **⌘0** back to life size.
 - **arrow keys** nudge by a grid cell, eight with shift.
+- **Change the recipe** on a node: a Rock Crusher that makes lime rather than
+  sand, an Aquatuner on petroleum rather than water. It keeps the node where it
+  is and every wire that still fits, and says how many did not.
 - **space** and drag to pan, as above.
 
 ## Reusing work

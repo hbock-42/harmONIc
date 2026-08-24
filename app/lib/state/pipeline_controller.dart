@@ -684,6 +684,84 @@ class PipelineController extends ChangeNotifier {
     return best.ratePerSecond;
   }
 
+  /// Sets this node to another recipe of the same building.
+  ///
+  /// A Rock Crusher makes sand or lime or metal; an Aquatuner is one machine
+  /// per coolant. Each is its own spec because their rates differ, and until
+  /// now changing your mind meant deleting the node and placing another —
+  /// losing its position, its wires and its amount with it.
+  ///
+  /// The wires that still fit are kept: a port with the same id carrying
+  /// something the other end still accepts survives. The rest are removed,
+  /// and the count comes back so somebody can be told rather than left to
+  /// notice. Undo puts the lot back.
+  int swapSpec(String nodeId, String specId) {
+    final node = _pipeline.node(nodeId);
+    final spec = database.process(specId);
+    if (node == null || spec == null || node.specId == specId) return 0;
+
+    final swapped = node.copyWith(
+      specId: specId,
+      // Both refer to the old spec's ports by id, and a port that survives by
+      // name may well carry something else now.
+      materials: const {},
+      ventedPorts: const {},
+    );
+    final nodes = [
+      for (final n in _pipeline.nodes) if (n.id == nodeId) swapped else n,
+    ];
+    final next = _pipeline.copyWith(nodes: nodes);
+
+    final kept = <PipelineEdge>[];
+    var dropped = 0;
+    for (final edge in _pipeline.edges) {
+      if (_survives(edge, next)) {
+        kept.add(edge);
+      } else {
+        dropped++;
+      }
+    }
+
+    _apply(next.copyWith(
+      edges: kept,
+      // A pin naming a port that has gone would be a pin on nothing.
+      pins: [
+        for (final pin in _pipeline.pins)
+          if (_pinStillFits(pin, next)) pin,
+      ],
+    ));
+    return dropped;
+  }
+
+  bool _survives(PipelineEdge edge, Pipeline next) {
+    final from = next.node(edge.fromNodeId);
+    final to = next.node(edge.toNodeId);
+    if (from == null || to == null) return false;
+    final fromSpec = database.process(from.specId);
+    final toSpec = database.process(to.specId);
+    if (fromSpec == null || toSpec == null) return false;
+    final fromPort = fromSpec.portById(edge.fromPortId);
+    final toPort = toSpec.portById(edge.toPortId);
+    if (fromPort == null || toPort == null) return false;
+    if (!fromPort.isOutput || !toPort.isInput) return false;
+    final carried = itemFlowingIn(database, from, fromSpec, fromPort);
+    return portAccepts(database, to, toSpec, toPort, carried) ||
+        portAccepts(database, from, fromSpec, fromPort,
+            itemFlowingIn(database, to, toSpec, toPort));
+  }
+
+  bool _pinStillFits(Pin pin, Pipeline next) {
+    final node = next.node(pin.nodeId);
+    final spec = node == null ? null : database.process(node.specId);
+    if (spec == null) return false;
+    final portId = switch (pin) {
+      PortRatePin(:final portId) => portId,
+      StockPin(:final portId) => portId,
+      BuildingCountPin() => null,
+    };
+    return portId == null || spec.portById(portId) != null;
+  }
+
   /// A valve on this line, in the item's own unit per second.
   ///
   /// The solver holds equations, so this does not change what the build needs

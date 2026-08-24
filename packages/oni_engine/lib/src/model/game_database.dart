@@ -51,6 +51,26 @@ class GameDatabase {
 
   /// Can something offering [offered] be wired into a port asking for [wanted]?
   ///
+  /// The other things this same building can be set to run.
+  ///
+  /// One building often has several recipes — a Rock Crusher makes sand or
+  /// lime or metal, an Aquatuner is one machine per coolant — and each is its
+  /// own spec, because their rates differ and a rate is what a spec is. They
+  /// are the same *building* though, which is why they share a `buildingId`,
+  /// and swapping between them should not mean deleting what you placed.
+  ///
+  /// Includes the one asked about, and is empty for anything that stands
+  /// alone.
+  List<ProcessSpec> variantsOf(ProcessSpec spec) {
+    final building = spec.buildingId;
+    if (building == null) return const [];
+    final found = [
+      for (final other in processes)
+        if (other.buildingId == building) other,
+    ]..sort((a, b) => a.name.compareTo(b.name));
+    return found.length > 1 ? found : const [];
+  }
+
   /// The same item always can. Beyond that, a class accepts any of its members
   /// — a Metal Refinery asking for Metal Ore takes the Iron Ore an Orehull
   /// sheds — and, going the other way, a port offering the class satisfies a

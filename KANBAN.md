@@ -71,6 +71,21 @@ _(empty)_
 
 ### ✅ Done
 
+- `E9-12` **A card of the keys** — asked for by Hugo. Pairs rather than prose, three groups,
+  eleven lines, in a column narrow enough to run your eye down. Two ways in and they behave
+  differently on purpose: the toolbar button pins it open until dismissed, and holding **?**
+  shows it only while the key is down — which is what you want mid-drag, when letting go of
+  the mouse to close a panel is the thing you were avoiding. Held open it has no Close
+  button, since there is already a key under your finger doing that job. The physical key is
+  watched rather than the character, because ? is shift-and-slash and letting go of shift
+  first would otherwise leave the card up
+- `E9-11` **Change the recipe on a node** — asked for by Hugo, after finding it took 3.56
+  petroleum Aquatuners to feed one turbine and wanting to try water. Each coolant is its own
+  recipe because the rates differ — that is what a recipe is, and a port that offered them
+  as a choice would be claiming they run at the same rate — but they are one *building*, so
+  a node can be set to any of them in place. It keeps its position, its amount and every
+  wire that still fits, and says how many did not: swapping an Aquatuner to petroleum drops
+  the water line and nothing else. One swap is one undo
 - `E13-9a` **Super Coolant** — asked for by Hugo, and missing for a plain reason: the
   Aquatuners are generated per fluid the database knows, and it did not know this one. It
   does now, at 8.44 DTU per gram per degree — twice water — which puts a single Aquatuner of
@@ -1001,6 +1016,8 @@ Visual direction: **technical planner** — dark, dense, colour used as data.
 | E9-8 | ✅ | Searching the palette by material | "what makes oxygen?" is the first question anybody asks a production planner, and the list matched names only |
 | E9-9 | ✅ | The empty canvas offers the worked builds | it said what to do and gave nothing to press, while four examples sat two clicks away in a menu |
 | E9-10 | ✅ | The keys are written down | nineteen bindings, three of them documented; copy and paste of nodes was written down nowhere, and the guide is checked against the map now |
+| E9-11 | ✅ | Change the recipe on a node | a building with several recipes can be swapped in place, keeping its position and the wires that still fit |
+| E9-12 | ✅ | A card of the keys | a button that pins it open, and ? that shows it only while held |
 
 ## E7 — The canvas
 
