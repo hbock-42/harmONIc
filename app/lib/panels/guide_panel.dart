@@ -49,32 +49,44 @@ class _GuidePanelState extends State<GuidePanel> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-        color: const Color(0xCC000000),
-        alignment: Alignment.center,
-        child: OniPanel(
-          title: 'How this works',
-          width: 640,
-          trailing: OniButton(
-            label: 'Close',
-            compact: true,
-            onPressed: widget.onClose,
+  Widget build(BuildContext context) => GestureDetector(
+        // Clicking away closes it, the way the pipelines menu and the recipe
+        // form already do. A panel that can only be dismissed by finding its
+        // one button is a panel people leave open.
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onClose,
+        child: Container(
+          color: const Color(0xCC000000),
+          alignment: Alignment.center,
+          // Swallowed, so that reading the thing does not shut it.
+          child: GestureDetector(
+            onTap: () {},
+            child: OniPanel(
+              title: 'How this works',
+              width: 640,
+              trailing: OniButton(
+                label: 'Close',
+                compact: true,
+                onPressed: widget.onClose,
+              ),
+              child: _failed != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(OniSpacing.lg),
+                      child: Text(
+                        'The guide did not load: $_failed\n\n'
+                        'It also lives at docs/USING.md in the repository.',
+                        style:
+                            OniType.body.copyWith(color: OniColors.warning),
+                      ),
+                    )
+                  : _markdown == null
+                      ? const SizedBox.shrink()
+                      : ListView(
+                          padding: const EdgeInsets.all(OniSpacing.lg),
+                          children: _render(_markdown!),
+                        ),
+            ),
           ),
-          child: _failed != null
-              ? Padding(
-                  padding: const EdgeInsets.all(OniSpacing.lg),
-                  child: Text(
-                    'The guide did not load: $_failed\n\n'
-                    'It also lives at docs/USING.md in the repository.',
-                    style: OniType.body.copyWith(color: OniColors.warning),
-                  ),
-                )
-              : _markdown == null
-              ? const SizedBox.shrink()
-              : ListView(
-                  padding: const EdgeInsets.all(OniSpacing.lg),
-                  children: _render(_markdown!),
-                ),
         ),
       );
 }

@@ -87,4 +87,35 @@ void main() {
     expect(shipped, canonical,
         reason: 'run tool/copy_docs.sh — the app ships a stale guide');
   });
+
+  testWidgets('and clicking away closes it too', (tester) async {
+    await pumpEditor(tester);
+    await openGuide(tester);
+    expect(find.byType(GuidePanel), findsOneWidget);
+
+    // The dimmed area around the panel. The pipelines menu and the recipe
+    // form have always closed this way; the guide was the odd one out, and a
+    // panel you can only dismiss by finding its one button is a panel people
+    // leave open.
+    await tester.tapAt(const Offset(40, 500));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GuidePanel), findsNothing);
+  });
+
+  testWidgets('but reading it does not', (tester) async {
+    await pumpEditor(tester);
+    await openGuide(tester);
+
+    // A click on the panel itself — on its own text — must not shut it.
+    await tester.tap(find.textContaining('The whole app is one idea'));
+    await tester.pumpAndSettle();
+    expect(find.byType(GuidePanel), findsOneWidget);
+
+    // Nor does dragging inside it, which is how somebody scrolls.
+    await tester.drag(
+        find.textContaining('The whole app is one idea'), const Offset(0, -80));
+    await tester.pumpAndSettle();
+    expect(find.byType(GuidePanel), findsOneWidget);
+  });
 }

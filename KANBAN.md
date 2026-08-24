@@ -71,6 +71,10 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-7a` **The guide closes when you click away** — asked for by Hugo, and the right ask:
+  every other overlay in the app already does it, so the guide was the one that made you
+  find its button. Clicking the dimmed area closes it; clicking or dragging the panel itself
+  does not, which is the half worth a test since that is how somebody reads and scrolls
 - `E5-1b` **Copying a build copies all of it** — importing one and duplicating one both
   rebuilt the pipeline by listing its fields, which is the same shape as the recipe editor
   bug from Tuesday: it works until somebody adds a field, and one had been added. Both had
@@ -1119,6 +1123,7 @@ flow, so the solver never had to learn about it.
 | E8-3b | ✅ | Mass-balance audit |
 | E8-6 | ✅ | A guide to using it | `docs/USING.md`: the one idea, the controls in the order you meet them, and a section on what the app deliberately does not know |
 | E8-7 | ✅ | The guide, reachable from inside the app | a ? in the toolbar renders `docs/USING.md` itself, copied into the assets and checked for drift the way the generated data is |
+| E8-7a | ✅ | The guide closes when you click away | the pipelines menu and the recipe form always have; it was the one overlay that did not |
 | E8-8 | ✅ | Rate-plausibility audit | a gram a second at the bottom, ten pipes at the top, and an allowlist that has to say why each exception is real |
 | E8-9 | ✅ | Footprint and vocabulary audits | no building with no floor; no item nothing uses without a sentence saying what it is for |
 | E8-10 | ✅ | The kanban audit | the board has to agree with itself: one row per id, a row behind every board entry, nothing offered in Ready that its own row calls finished, and no status the legend does not explain |
