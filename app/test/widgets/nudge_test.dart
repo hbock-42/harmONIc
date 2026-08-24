@@ -1,7 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_pipeline/canvas/geometry.dart';
 import 'package:oni_pipeline/editor_screen.dart';
+import 'package:oni_pipeline/panels/inspector_panel.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 
 import '../support/harness.dart';
@@ -107,5 +109,48 @@ void main() {
 
     expect(at(controller, 'elec'), before);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('and the arrows move the caret, not the node, while typing',
+      (tester) async {
+    // The bug: a node stays selected while you type into its fields, so an
+    // arrow key meant for the caret moved the thing on the canvas instead —
+    // and the field never saw the press, because a shortcut that reports a
+    // key as handled stops the platform delivering it to the text input.
+    final controller = await pumpEditor(tester);
+    controller.selectNode('elec');
+    await tester.pump();
+    final before = at(controller, 'elec');
+
+    await tester.tap(find.byKey(amountFieldKey));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(amountFieldKey), '12');
+    await tester.pumpAndSettle();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+
+    expect(at(controller, 'elec'), before, reason: 'the node did not move');
+  });
+
+  testWidgets('and they move it again once the field is let go',
+      (tester) async {
+    final controller = await pumpEditor(tester);
+    controller.selectNode('elec');
+    await tester.pump();
+
+    await tester.tap(find.byKey(amountFieldKey));
+    await tester.pumpAndSettle();
+    final parked = at(controller, 'elec');
+
+    // Clicking the node hands the keyboard back to the canvas, which is what
+    // anybody would do next.
+    await tester.tap(find.text('Electrolyzer').first);
+    await tester.pumpAndSettle();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(at(controller, 'elec'), isNot(parked));
   });
 }

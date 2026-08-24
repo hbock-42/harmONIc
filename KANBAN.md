@@ -71,6 +71,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-21` **The arrows move the caret while you type** — reported by Hugo, typing into a
+  geyser's rate. A node stays selected while its fields are being edited, so an arrow key
+  meant for the caret moved the node instead, and the field never saw the press at all. The
+  guard for this has existed since ⌫ was swallowing backspaces: every canvas shortcut stands
+  down while a text field has the keyboard. The nudge was the one action that did not use
+  it, because it is the one action with a class of its own
 - `E10-20` **What your geyser actually gives** — spotted by Hugo. A geyser rolls two numbers
   when the world is made: how often it is awake, and how much it emits while it is. The
   shipped rate folds both into a lifetime average at a middling roll, and the only control
@@ -1082,6 +1088,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-15 | ✅ | Draw the supplies | a supply or output node for every unfed port, in one press and one undo; the button appears only while there is something to draw |
 | E10-16 | ✅ | Part-time buildings | an uptime control, distinct from the "busy" figure: one is a choice you make, the other is what rounding leaves you |
 | E10-20 | ✅ | What your geyser actually gives | the activity control covered how often it is awake and not how much it emits, which is the other number the world rolls |
+| E10-21 | ✅ | The arrows move the caret while you type | every other canvas shortcut stood down for a text field and the nudge did not |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 | E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |

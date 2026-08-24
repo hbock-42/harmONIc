@@ -641,12 +641,15 @@ class _NudgeAction extends Action<_NudgeIntent> {
 
   final PipelineController controller;
 
+  /// Every other canvas shortcut stands down while a text field has the
+  /// keyboard, and this one did not — so an arrow key moved the node instead
+  /// of the caret, and the field you were typing in never saw the press.
   @override
-  bool get isActionEnabled => controller.selectedNodeIds.isNotEmpty;
+  bool get isActionEnabled =>
+      controller.selectedNodeIds.isNotEmpty && !_isEditingText();
 
   @override
-  bool consumesKey(_NudgeIntent intent) =>
-      controller.selectedNodeIds.isNotEmpty;
+  bool consumesKey(_NudgeIntent intent) => isActionEnabled;
 
   /// When the last press was, so a run of them collapses into one edit.
   ///
