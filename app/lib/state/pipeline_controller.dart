@@ -393,11 +393,12 @@ class PipelineController extends ChangeNotifier {
     if (!fromPort.isOutput || !toPort.isInput) return false;
     // Against what each end is set to: a refinery on copper cannot be wired
     // into an iron port, but a generic one can be wired into either. A port
-    // that lists alternatives takes any of them until somebody picks.
-    final carried =
-        itemFlowingIn(_database, fromNode, specOf(fromNode), fromPort);
-    if (!portAccepts(
-        _database, toNode, specOf(toNode), toPort, carried)) {
+    // that lists alternatives takes any of them until somebody picks — and a
+    // refinery already fed iron ore counts as having picked.
+    final carried = itemFlowingThrough(
+        _database, _pipeline, fromNode, specOf(fromNode), fromPort);
+    if (!portAcceptsThrough(
+        _database, _pipeline, toNode, specOf(toNode), toPort, carried)) {
       return false;
     }
     return !_pipeline.edges.any((e) =>
@@ -437,7 +438,7 @@ class PipelineController extends ChangeNotifier {
     // What this port really wants, which is not always what the recipe says:
     // a refinery set to copper wants copper ore, and a port asking for the
     // class takes any member.
-    final wanted = acceptedAt(node, spec, port);
+    final wanted = acceptedThrough(database, _pipeline, node, spec, port);
     final matches = <ProcessSpec>[];
     for (final candidate in database.processes) {
       if (candidate.id == node.specId) continue;
@@ -473,7 +474,8 @@ class PipelineController extends ChangeNotifier {
     // stricter one. Exact equality was the bug: a Metal Refinery asks for
     // "metal ore", an Iron Ore supply offers iron ore, so the menu listed the
     // refinery and clicking it did nothing whatsoever.
-    final wanted = acceptedAt(anchorNode, anchorSpec, anchorPort);
+    final wanted =
+        acceptedThrough(database, _pipeline, anchorNode, anchorSpec, anchorPort);
     final matching = spec.ports.where((p) =>
         p.isOutput == anchorPort.isInput &&
         p.accepted.any(
@@ -751,10 +753,10 @@ class PipelineController extends ChangeNotifier {
     final toPort = toSpec.portById(edge.toPortId);
     if (fromPort == null || toPort == null) return false;
     if (!fromPort.isOutput || !toPort.isInput) return false;
-    final carried = itemFlowingIn(database, from, fromSpec, fromPort);
-    return portAccepts(database, to, toSpec, toPort, carried) ||
-        portAccepts(database, from, fromSpec, fromPort,
-            itemFlowingIn(database, to, toSpec, toPort));
+    final carried = itemFlowingThrough(database, next, from, fromSpec, fromPort);
+    return portAcceptsThrough(database, next, to, toSpec, toPort, carried) ||
+        portAcceptsThrough(database, next, from, fromSpec, fromPort,
+            itemFlowingThrough(database, next, to, toSpec, toPort));
   }
 
   bool _pinStillFits(Pin pin, Pipeline next) {
@@ -913,9 +915,12 @@ class PipelineController extends ChangeNotifier {
       final spec = node == null ? null : specFor(node);
       final port = spec?.portById(ref.portId);
       if (node == null || spec == null || port == null) continue;
-      final specId = port.isInput
-          ? sourceSpecId(itemFlowingIn(database, node, spec, port))
-          : sinkSpecId(itemFlowingIn(database, node, spec, port));
+      // The wires get a say: a refinery already fed iron ore wants an Iron
+      // output on the other side, not a Refined Metal one.
+      final flowing =
+          itemFlowingThrough(database, _pipeline, node, spec, port);
+      final specId =
+          port.isInput ? sourceSpecId(flowing) : sinkSpecId(flowing);
       if (database.process(specId) == null) continue;
       if (addNodeFor(ref, specId, recordUndo: first) != null) {
         added++;

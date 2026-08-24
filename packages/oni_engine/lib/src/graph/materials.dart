@@ -100,3 +100,97 @@ bool portAccepts(
   return acceptedAt(node, spec, port)
       .any((wanted) => database.accepts(wanted, offered));
 }
+
+/// The one material this port must carry once the wires are taken into
+/// account, or null when it is genuinely still open.
+///
+/// A class port with no choice made is not always undecided. An Iron Ore
+/// supply wired into a Metal Refinery has decided — whatever the recipe's word
+/// "metal ore" says — and the refinery's output is then iron rather than some
+/// unnamed refined metal. Without this the app let iron ore be refined into
+/// copper, which is the one thing a refinery cannot do.
+///
+/// Only four recipes tie an output's identity to an input: the Metal Refinery,
+/// the metal Rock Crusher, and the Smooth Hatch tame and wild. Everything else
+/// leaves this at the first line.
+String? settledItem(
+  GameDatabase db,
+  Pipeline pipeline,
+  PipelineNode node,
+  ProcessSpec spec,
+  Port port, {
+  int depth = 4,
+}) {
+  final chosen = node.materials[port.id];
+  if (chosen != null) return chosen;
+
+  if (port.followsPortId case final String follows when depth > 0) {
+    final source = spec.portById(follows);
+    if (source == null) return null;
+    final settled =
+        settledItem(db, pipeline, node, spec, source, depth: depth - 1);
+    if (settled == null) return null;
+    return db.item(settled)?.refinesTo ?? settled;
+  }
+
+  // The cheap exit, and the one almost every port takes: a recipe naming one
+  // real thing is settled by the recipe, and no wire can argue with it.
+  if (!(db.item(port.itemId)?.isClass ?? false)) {
+    return port.alternatives.isEmpty ? port.itemId : null;
+  }
+  if (port.isOutput || depth <= 0) return null;
+
+  final arriving = <String>{};
+  for (final edge in pipeline.edgesInto(PortRef(node.id, port.id))) {
+    final from = pipeline.node(edge.fromNodeId);
+    final fromSpec = from == null ? null : db.process(from.specId);
+    final fromPort = fromSpec?.portById(edge.fromPortId);
+    if (from == null || fromSpec == null || fromPort == null) return null;
+    final item =
+        settledItem(db, pipeline, from, fromSpec, fromPort, depth: depth - 1);
+    if (item == null || (db.item(item)?.isClass ?? false)) return null;
+    // Something arriving that this port would never take is a wire somebody
+    // has to fix, and validation says so. It does not get to decide what the
+    // port is made of on the way past.
+    if (!portAccepts(db, node, spec, port, item)) continue;
+    arriving.add(item);
+  }
+  return arriving.length == 1 ? arriving.single : null;
+}
+
+/// [itemFlowingIn], with the wires consulted wherever the recipe left a choice.
+String itemFlowingThrough(
+  GameDatabase db,
+  Pipeline pipeline,
+  PipelineNode node,
+  ProcessSpec spec,
+  Port port,
+) =>
+    settledItem(db, pipeline, node, spec, port) ??
+    itemFlowingIn(db, node, spec, port);
+
+/// [acceptedAt], narrowed by anything the wires have already settled.
+List<String> acceptedThrough(
+  GameDatabase db,
+  Pipeline pipeline,
+  PipelineNode node,
+  ProcessSpec spec,
+  Port port,
+) {
+  final settled = settledItem(db, pipeline, node, spec, port);
+  return settled == null ? acceptedAt(node, spec, port) : [settled];
+}
+
+/// [portAccepts], on the same terms.
+bool portAcceptsThrough(
+  GameDatabase db,
+  Pipeline pipeline,
+  PipelineNode node,
+  ProcessSpec spec,
+  Port port,
+  String offered,
+) {
+  if (port.excludes.contains(offered)) return false;
+  return acceptedThrough(db, pipeline, node, spec, port)
+      .any((wanted) => db.accepts(wanted, offered));
+}

@@ -1006,7 +1006,7 @@ class MaterialChoiceRow extends StatelessWidget {
         .firstOrNull;
     final produced = follower == null
         ? ''
-        : itemFlowingIn(db, node, spec, follower);
+        : itemFlowingThrough(db, controller.pipeline, node, spec, follower);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

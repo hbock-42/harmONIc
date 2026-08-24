@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-25` **An ore refines into its own metal, not any metal** — reported by Hugo: an Iron Ore
+  supply into a Metal Refinery into a **Copper** output, and nothing objected. The output port
+  says "refined metal" and copper is one of those. What was missing is that a class port with
+  no choice made is not always undecided — the wire feeding it has decided. `settledItem` asks
+  the wires, and the checked audit is that `follows` is the only thing in the data tying an
+  output's identity to an input's: Metal Refinery, metal Rock Crusher, Smooth Hatch tame and
+  wild, and a test that fails if a fifth appears untested
 - `E10-24` **Picking a class-port building from the port menu works** — reported by Hugo: an
   Iron Ore supply, click the output, pick Metal Refinery, nothing happens. The menu asks
   whether a port *accepts* what is offered, which is class-aware; the click asked whether the
@@ -1109,6 +1116,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-22 | ✅ | The flow label sits in the middle of its wire | it was a third along, which reads as belonging to one end |
 | E10-23 | ✅ | The build that cannot balance says which port to fix | it named every port that pulls, and most of them were innocent |
 | E10-24 | ✅ | Picking a class-port building from the port menu works | the menu offered on one rule and the click accepted on a stricter one |
+| E10-25 | ✅ | An ore refines into its own metal, not any metal | the wires settle a class port, and four recipes tie an output to an input |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 | E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |

@@ -65,14 +65,27 @@ void main() {
 
   testWidgets('the node itself is renamed by the choice', (tester) async {
     final controller = await pumpEditor(tester);
-    // Generic to begin with, so the ports read as the class.
-    expect(find.text('Refined Metal'), findsWidgets);
+    // Nobody has chosen, but an Iron Ore supply is wired in, so the ports say
+    // what is actually going through them rather than the class the recipe
+    // names. The refinery cannot smelt iron ore into anything but iron.
+    expect(find.text('Refined Metal'), findsNothing);
+    expect(find.text('Iron'), findsWidgets);
 
     controller.setMaterial('refinery', 'metal_ore', 'gold_amalgam');
     await tester.pump();
 
     expect(find.text('Gold'), findsWidgets);
-    expect(find.text('Refined Metal'), findsNothing);
+    expect(find.text('Iron'), findsNothing);
+  });
+
+  testWidgets('and an unfed one keeps the class it was written with',
+      (tester) async {
+    final controller = await pumpEditor(tester);
+    controller.select(const NodeSelection('src_iron_ore'));
+    controller.deleteSelection();
+    await tester.pump();
+
+    expect(find.text('Refined Metal'), findsWidgets);
   });
 
   testWidgets('a choice that contradicts the wiring is reported', (tester) async {

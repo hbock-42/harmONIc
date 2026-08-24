@@ -91,11 +91,13 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
           edgeId: edge.id));
     }
     // Against what each end is actually set to, not what the recipe says in
-    // general: a refinery set to copper no longer feeds an iron port.
-    final carried = itemFlowingIn(db, from, fromSpec, fromPort);
-    final wanted = itemFlowingIn(db, to, toSpec, toPort);
-    if (!portAccepts(db, to, toSpec, toPort, carried) &&
-        !portAccepts(db, from, fromSpec, fromPort, wanted)) {
+    // general: a refinery set to copper no longer feeds an iron port. And
+    // "set to" includes what the wires have already decided — a refinery fed
+    // iron ore is refining iron whether or not anybody said so.
+    final carried = itemFlowingThrough(db, pipeline, from, fromSpec, fromPort);
+    final wanted = itemFlowingThrough(db, pipeline, to, toSpec, toPort);
+    if (!portAcceptsThrough(db, pipeline, to, toSpec, toPort, carried) &&
+        !portAcceptsThrough(db, pipeline, from, fromSpec, fromPort, wanted)) {
       issues.add(PipelineIssue(
           IssueSeverity.error,
           'Edge "${edge.id}" carries $carried into a '

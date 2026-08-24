@@ -103,7 +103,10 @@ On a node:
 - **Metal ore used** / **takes** — which material a recipe that accepts several
   is using. A Metal Refinery takes any ore; a Smoker burns wood or peat. Left
   unset it stays generic, which is the right answer until something downstream
-  cares.
+  cares — and if you wire an Iron Ore supply into it, that *is* something
+  downstream caring: the ports rename themselves to Iron Ore and Iron, and a
+  Copper output will no longer connect. Iron ore refines into iron and nothing
+  else, whether or not anybody said so out loud.
 - **Takes** on a wire — how much of a producer's output that line gets, when one
   output feeds two things. "An even split" is a real answer, not a default
   nobody chose. Or you can leave the splits alone and let the app work them out:

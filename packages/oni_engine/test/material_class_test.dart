@@ -595,4 +595,75 @@ void main() {
     });
   });
 
+  group('what the wires decide', () {
+    /// Reported: an Iron Ore supply into a Metal Refinery into a Copper
+    /// output, and the app was happy with it. The refinery's output port says
+    /// "refined metal" and copper is one of those, so nothing objected — but
+    /// the ore going in was iron, and iron ore does not refine into copper.
+    Pipeline oreInto(String sinkItem, {String spec = 'metal_refinery'}) {
+      final b = PipelineBuilder(db, name: 'refining')
+        ..addSource('iron_ore')
+        ..add(spec, nodeId: 'plant')
+        ..addSink(sinkItem, nodeId: 'out');
+      final process = db.processOrThrow(spec);
+      final ore = process.inputs.firstWhere((p) => p.itemId == 'metal_ore');
+      final metal =
+          process.outputs.firstWhere((p) => p.itemId == 'refined_metal');
+      b.connect('src_iron_ore', sourcePortId, 'plant', ore.id);
+      b.connect('plant', metal.id, 'out', sinkPortId);
+      return b.build();
+    }
+
+    test('iron ore in means iron out, whatever the recipe calls it', () {
+      final solution = solver.solve(oreInto('copper'));
+
+      expect(solution.status, SolveStatus.invalid);
+      expect(solution.issues.map((i) => i.message).join(),
+          contains('carries iron into a copper port'));
+    });
+
+    test('and the iron it does make is still welcome', () {
+      expect(solver.solve(oreInto('iron')).status,
+          isNot(SolveStatus.invalid));
+    });
+
+    test('every recipe that ties an output to its input is covered', () {
+      // The audit behind the fix: `follows` is the only thing in the data that
+      // makes an output's identity depend on an input's, so it is the only
+      // place this mistake can be made. If a new recipe grows one, it is
+      // covered by the same rule — and this test says which ones there are.
+      final tied = [
+        for (final spec in db.processes)
+          if (spec.ports.any((p) => p.followsPortId != null)) spec.id,
+      ]..sort();
+      expect(tied, [
+        'metal_refinery',
+        'rock_crusher_metal',
+        'smooth_hatch',
+        'smooth_hatch_wild',
+      ]);
+
+      for (final id in tied) {
+        expect(solver.solve(oreInto('copper', spec: id)).status,
+            SolveStatus.invalid,
+            reason: '$id refined iron ore into copper');
+      }
+    });
+
+    test('an unfed refinery is still free to be any of them', () {
+      // Nothing has decided yet, so nothing should be refused: the choice is
+      // still yours, in the inspector or by wiring an ore in.
+      final b = PipelineBuilder(db, name: 'open')
+        ..add('metal_refinery', nodeId: 'plant')
+        ..addSink('copper', nodeId: 'out');
+      final metal = db
+          .processOrThrow('metal_refinery')
+          .outputs
+          .firstWhere((p) => p.itemId == 'refined_metal');
+      b.connect('plant', metal.id, 'out', sinkPortId);
+
+      expect(solver.solve(b.build()).status, isNot(SolveStatus.invalid));
+    });
+  });
+
 }
