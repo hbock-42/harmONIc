@@ -241,4 +241,46 @@ void main() {
     expect(textContaining('$worst–$best %'), findsOneWidget);
     expect(textContaining('assumes $typical %'), findsOneWidget);
   });
+
+  group('the other number a geyser rolls', () {
+    testWidgets('you can type what yours actually gives', (tester) async {
+      // A geyser rolls how often it is awake *and* how much it emits while it
+      // is. The percentage covers the first; somebody who has measured theirs
+      // with Field Research has a rate for the second, not a multiplier.
+      final controller = await pumpEditor(tester);
+      controller.select(const NodeSelection('geyser'));
+      await tester.pump();
+
+      // The shipped figure is a lifetime average at a typical roll.
+      expect(controller.solution.nodes['geyser']!.count, closeTo(1, 1e-9));
+      final shipped = testDatabase
+          .processOrThrow('water_geyser')
+          .outputs
+          .single
+          .ratePerSecond;
+      expect(shipped, 1800);
+
+      await tester.enterText(find.byKey(geyserRateFieldKey), '2400');
+      await tester.pumpAndSettle();
+
+      // Two-thirds again as much water, and everything downstream with it.
+      final node = controller.pipeline.nodeOrThrow('geyser');
+      expect(node.outputScale, closeTo(2400 / 1800, 1e-9));
+    });
+
+    test('and the two fields are one number', () {
+      // Saying 80 % active and saying 2.4 kg/s are the same statement about
+      // the same geyser, so setting either must move the other.
+      final controller = testController(pipeline: geyserPipeline());
+      controller.setNodeActivity('geyser', 0.8);
+      final node = controller.pipeline.nodeOrThrow('geyser');
+      expect(node.outputScale, closeTo(0.8 / 0.6, 1e-9));
+      expect(controller.activityOf(node), closeTo(0.8, 1e-9));
+
+      controller.setNodeOutputScale('geyser', 2400 / 1800);
+      final measured = controller.pipeline.nodeOrThrow('geyser');
+      expect(controller.activityOf(measured), closeTo(0.8, 1e-9),
+          reason: '2.4 kg/s from an 1.8 kg/s geyser is an 80 % one');
+    });
+  });
 }

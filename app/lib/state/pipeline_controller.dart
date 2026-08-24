@@ -794,6 +794,20 @@ class PipelineController extends ChangeNotifier {
         ],
       ));
 
+  /// The same scale, said the other way round: what this one actually gives.
+  ///
+  /// A geyser rolls two numbers when the world is made — how often it is awake
+  /// and how much it emits while it is — and the app carries one figure that
+  /// folds both into a lifetime average. Somebody who has measured theirs has
+  /// a rate, not a percentage, so they can type the rate.
+  void setNodeOutputScale(String nodeId, double scale) =>
+      _apply(_pipeline.copyWith(
+        nodes: [
+          for (final n in _pipeline.nodes)
+            if (n.id == nodeId) n.copyWith(outputScale: scale) else n,
+        ],
+      ));
+
   /// The same assumption applied to every geyser at once — "what if I was
   /// unlucky with all of them" — as a single undo step.
   void setAllGeyserActivity(double activeFraction) {

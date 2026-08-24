@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-20` **What your geyser actually gives** — spotted by Hugo. A geyser rolls two numbers
+  when the world is made: how often it is awake, and how much it emits while it is. The
+  shipped rate folds both into a lifetime average at a middling roll, and the only control
+  was the active share — so somebody who had measured 2.4 kg/s with Field Research had to
+  work backwards into a percentage to say so. There is a field for the rate now, in the unit
+  the game reports it in. It is the same number as the percentage wearing a different hat,
+  and setting either shows the other
 - `E9-12a` **Holding ? makes no noise** — reported by Hugo within a minute of it shipping.
   macOS answers every key event nothing claims with a beep, and holding a key sends one
   press and then a repeat every few dozen milliseconds. The handler claimed the press and
@@ -1074,6 +1081,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-14 | ✅ | The pipelines menu reads as sections | pressable headers with a turning chevron, a heading over the saved builds, and a rule between each |
 | E10-15 | ✅ | Draw the supplies | a supply or output node for every unfed port, in one press and one undo; the button appears only while there is something to draw |
 | E10-16 | ✅ | Part-time buildings | an uptime control, distinct from the "busy" figure: one is a choice you make, the other is what rounding leaves you |
+| E10-20 | ✅ | What your geyser actually gives | the activity control covered how often it is awake and not how much it emits, which is the other number the world rolls |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 | E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |

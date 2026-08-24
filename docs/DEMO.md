@@ -56,9 +56,11 @@ looked up.
 | 60 % (shipped) | 16.0 | 1 397 W |
 | 80 % | 21.3 | 1 862 W |
 
-Say what this is: a geyser's activity is rolled when the world is made, the
-shipped rate assumes a middling one, and Field Research tells you yours. Nobody
-has to rebuild anything to see what a bad roll costs.
+Say what this is: a geyser rolls both its output *and* its active share when
+the world is made, and the shipped rate is a lifetime average at a middling
+roll. If somebody in the room knows their own geyser's figure, type it into the
+second field — **what yours averages** — and the whole build moves to their
+base. That usually gets the room.
 
 **6. One wire.** Click the wire out of the geyser. It says what carries it, that
 it **arrives at 95 °C**, what that costs to cool, and what a pipe would have to

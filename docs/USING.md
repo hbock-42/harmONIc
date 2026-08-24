@@ -92,7 +92,12 @@ On a node:
   plants or geysers, none of which have a switch.
 - **Assume active** — a geyser's activity, which is rolled when the world is
   made. Presets cover the band, and the field takes the exact figure Field
-  Research gives you.
+  Research gives you. A geyser rolls *two* numbers though — how often it is
+  awake, and how much it emits while it is — and the shipped rate folds both
+  into a lifetime average at a middling roll. So there is a second field: **what
+  yours averages**, in g/s, for when you have measured it rather than guessed
+  the percentage. They are one number wearing two hats; setting either shows the
+  other.
 - **Arrives at** — what temperature a supply brings its material in at. A
   build's temperatures have to start somewhere and the game cannot know yours.
 - **Metal ore used** / **takes** — which material a recipe that accepts several

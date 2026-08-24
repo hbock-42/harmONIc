@@ -772,12 +772,36 @@ class _GeyserActivityState extends State<_GeyserActivity> {
   double? _shown;
   bool _invalid = false;
 
+  /// The other half of what a geyser rolls: what it puts out, in the unit the
+  /// game reports. Kept as its own field because a percentage and a rate are
+  /// two ways of saying the same thing and somebody has one or the other.
+  final TextEditingController _rate = TextEditingController();
+  bool _rateInvalid = false;
+
+
+
   PipelineController get controller => widget.controller;
 
   @override
   void dispose() {
     _percent.dispose();
+    _rate.dispose();
     super.dispose();
+  }
+
+  /// Typing what yours gives sets the same scale the percentage does — they
+  /// are one number wearing two hats, so setting either shows the other.
+  void _applyRate(String raw) {
+    final spec = controller.specOf(widget.node);
+    if (spec.outputs.length != 1) return;
+    final shipped = spec.outputs.first.ratePerSecond;
+    final typed = double.tryParse(raw.trim());
+    if (typed == null || typed <= 0 || shipped <= 0) {
+      setState(() => _rateInvalid = raw.trim().isNotEmpty);
+      return;
+    }
+    setState(() => _rateInvalid = false);
+    controller.setNodeOutputScale(widget.node.id, typed / shipped);
   }
 
   static String _format(double fraction) {
@@ -857,6 +881,44 @@ class _GeyserActivityState extends State<_GeyserActivity> {
           ],
         ),
         const SizedBox(height: OniSpacing.sm),
+        // A geyser rolls two numbers when the world is made, not one: how
+        // often it is awake, and how much it emits while it is. The percentage
+        // above covers the first. This covers the second, and covers it in the
+        // unit Field Research reports rather than as a multiplier nobody
+        // measures.
+        if (spec.outputs.length == 1) ...[
+          Row(
+            children: [
+              SizedBox(
+                width: 84,
+                child: OniField(
+                  key: geyserRateFieldKey,
+                  controller: _rate,
+                  hint: spec.outputs.first.ratePerSecond
+                      .toStringAsFixed(0),
+                  textAlign: TextAlign.right,
+                  onChanged: _applyRate,
+                ),
+              ),
+              const SizedBox(width: OniSpacing.sm),
+              Expanded(
+                child: Text(
+                  _rateInvalid
+                      ? 'A rate above nothing.'
+                      : 'or ${controller.database.item(spec.outputs.first.itemId)?.unit.symbol ?? 'g/s'} '
+                          'yours averages',
+                  style: OniType.body.copyWith(
+                    fontSize: 11.5,
+                    color: _rateInvalid
+                        ? OniColors.danger
+                        : OniColors.textMuted,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: OniSpacing.sm),
+        ],
         // What that assumption actually buys, so the number is not abstract.
         for (final port in spec.outputs)
           Padding(
@@ -1072,6 +1134,7 @@ const Key supplyTemperatureFieldKey = ValueKey('supply-temperature');
 
 /// The measured-percentage field, named so tests can drive it directly.
 const Key geyserActivityFieldKey = ValueKey('geyser-activity-percent');
+const Key geyserRateFieldKey = ValueKey('geyser-rate');
 
 class _PortRow extends StatelessWidget {
   const _PortRow({
