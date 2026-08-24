@@ -14,7 +14,14 @@ import 'geometry.dart';
 class EdgePainter extends CustomPainter {
   /// How far along a wire its flow label sits. Shared so that a click can ask
   /// where the label is without the painter having to remember.
-  static const double labelPosition = 0.32;
+  ///
+  /// The middle, because that is where the eye looks for a wire's own label —
+  /// anywhere else and it reads as belonging to whichever end it sits nearer.
+  static const double labelPosition = 0.5;
+
+  /// The arrowhead keeps out of the label's way: far enough along that the two
+  /// never touch, near enough the far end to still say which way it flows.
+  static const double arrowPosition = 0.8;
 
   EdgePainter({
     required this.pipeline,
@@ -123,7 +130,7 @@ class EdgePainter extends CustomPainter {
     final metrics = path.computeMetrics().toList();
     if (metrics.isEmpty) return;
     final metric = metrics.first;
-    final tangent = metric.getTangentForOffset(metric.length * 0.62);
+    final tangent = metric.getTangentForOffset(metric.length * arrowPosition);
     if (tangent == null) return;
     final angle = tangent.angle;
     final tip = tangent.position;

@@ -98,7 +98,7 @@ void main() {
     await pumpEditor(tester);
     final state = tester.state<GraphCanvasState>(find.byType(GraphCanvas));
 
-    // The label sits a third of the way along the wire.
+    // The label sits at the middle of the wire.
     final edge = controller.pipeline.edges
         .firstWhere((e) => e.toNodeId == 'dupes');
     final anchor = state.labelAnchorFor(edge.id)!;
@@ -111,6 +111,19 @@ void main() {
     expect(display.display, RateDisplay.perCycle);
   });
 
+  testWidgets('the number sits at the middle of its wire', (tester) async {
+    await pumpEditor(tester);
+    final state = tester.state<GraphCanvasState>(find.byType(GraphCanvas));
+    final edge = controller.pipeline.edges
+        .firstWhere((e) => e.toNodeId == 'dupes');
+
+    // Reported off centre: the label was a third of the way along, which reads
+    // as belonging to the node it sits nearer rather than to the wire.
+    final anchor = state.labelAnchorFor(edge.id)!;
+    final middle = state.pointAlongEdge(edge.id, 0.5)!;
+    expect(anchor, middle);
+  });
+
   testWidgets('clicking the wire away from its number still selects it',
       (tester) async {
     await pumpEditor(tester);
@@ -118,8 +131,8 @@ void main() {
     final edge = controller.pipeline.edges
         .firstWhere((e) => e.toNodeId == 'dupes');
 
-    // Two thirds along, well clear of the label.
-    final away = state.pointAlongEdge(edge.id, 0.7)!;
+    // Near the far end, well clear of the label in the middle.
+    final away = state.pointAlongEdge(edge.id, 0.85)!;
     final origin = tester.getTopLeft(find.byType(GraphCanvas));
     await tester.tapAt(origin + state.localFromWorld(away));
     await tester.pumpAndSettle();

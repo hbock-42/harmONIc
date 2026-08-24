@@ -203,11 +203,12 @@ void main() {
       final to = NodeLayout.worldPortOffset(
           toNode, controller.specOf(toNode), edge.toPortId);
 
-      // Midpoint of the curve, converted to screen space.
+      // A point on the curve clear of the flow label, which sits at its
+      // middle and answers a click of its own by switching the units.
       final metrics = edgePath(from, to).computeMetrics().first;
-      final midpoint =
-          metrics.getTangentForOffset(metrics.length / 2)!.position;
-      await tester.tapAt(canvasKey.currentState!.localFromWorld(midpoint));
+      final onTheWire =
+          metrics.getTangentForOffset(metrics.length * 0.15)!.position;
+      await tester.tapAt(canvasKey.currentState!.localFromWorld(onTheWire));
       await tester.pump();
 
       expect(controller.selection, isA<EdgeSelection>());
