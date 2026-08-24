@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E13-9a` **Super Coolant** — asked for by Hugo, and missing for a plain reason: the
+  Aquatuners are generated per fluid the database knows, and it did not know this one. It
+  does now, at 8.44 DTU per gram per degree — twice water — which puts a single Aquatuner of
+  it at 1 181 kDTU/s, more than a Steam Turbine can delete. One machine wants 1.35 turbines
+  over it. The Emulsifier that makes it (1 kg of fullerene, 49.5 of gold, 49.5 of petroleum,
+  for 100 kg) has no published cycle time, so the material is here to be had and cooled with
+  and the recipe is not, which is written where somebody will look for it
 - `E8-7a` **The guide closes when you click away** — asked for by Hugo, and the right ask:
   every other overlay in the app already does it, so the guide was the one that made you
   find its button. Clicking the dimmed area closes it; clicking or dragging the panel itself
@@ -1108,6 +1115,7 @@ flow, so the solver never had to learn about it.
 | E13-8 | ✅ | Spaced Out as a fourth pack | the audit it was waiting on found the surface to be tiny: liquid sulfur, sucrose, the Plug Slug and the sulfur geyser, because nothing here models rockets or radiation. Offered like the other three |
 | E13-8a | ✅ | The pack tags, read against the packs' own lists | five wrong: Ice and Abyssalite are base game, Sucrose is Spaced Out, and Amber and Resin are named on the Prehistoric pack's own list while carrying the Aquatic tag |
 | E13-9 | ✅ | Aquatuner and Thermo Regulator for every coolant | generated per fluid from its specific heat, the way pumps and filters are, since a class would be wrong — every member behaves differently |
+| E13-9a | ✅ | Super Coolant | 8.44 DTU/g°C, so one Aquatuner of it moves more heat than a Steam Turbine can take away. The Emulsifier that makes it has no published cycle time, so the material is here and the recipe is not |
 | E13-10 | ✅ | The Smoker's fuel | one recipe per fuel, the Beakon pattern. A class is for a category the *game* groups; "either of these two" is not one |
 | E13-11 | ✅ | A port that names its alternatives | a port lists what it will take and the node picks, the way a refinery picks its ore. Only where the rate is the same for each; different rates are different recipes |
 

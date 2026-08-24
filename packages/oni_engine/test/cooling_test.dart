@@ -141,4 +141,44 @@ void main() {
       expect(db.process('aquatuner_liquid_sulfur'), isNotNull);
     });
   });
+
+  group('the coolant is the whole choice', () {
+    double moves(String id) => db
+        .processOrThrow('aquatuner_$id')
+        .outputs
+        .firstWhere((p) => p.itemId == WellKnownItems.heat)
+        .ratePerSecond;
+
+    test('a full pipe of each carries what its specific heat says', () {
+      // 10 kg/s out of a liquid pipe, 14 °C off every packet: the energy is
+      // mass times specific heat times degrees, and nothing else.
+      for (final (id, specificHeat) in [
+        ('water', 4.179),
+        ('petroleum', 1.76),
+        ('super_coolant', 8.44),
+      ]) {
+        expect(moves(id), closeTo(10000 * specificHeat * 14 / 1000, 0.01),
+            reason: id);
+      }
+    });
+
+    test('so one turbine covers 1.5 water Aquatuners and 3.6 petroleum ones',
+        () {
+      // The figure everybody knows is the water one. Petroleum holds 2.4
+      // times less heat a kilogram, so the same machine shifts 2.4 times less
+      // of it and you need more of them — which is the trade for a coolant
+      // that does not freeze.
+      const turbine = 877.59;
+      expect(turbine / moves('water'), closeTo(1.50, 0.01));
+      expect(turbine / moves('petroleum'), closeTo(3.56, 0.01));
+    });
+
+    test('and super coolant overwhelms one', () {
+      // 8.44 is twice water, so a single Aquatuner moves more heat than a
+      // turbine can take away: 1.35 turbines to keep up with one machine.
+      const turbine = 877.59;
+      expect(moves('super_coolant'), greaterThan(turbine));
+      expect(moves('super_coolant') / turbine, closeTo(1.35, 0.01));
+    });
+  });
 }

@@ -16,6 +16,10 @@ const Map<String, String> unusedOnPurpose = {
   'duplicant': 'the unit a crew is counted in',
   'liquid_oxygen': 'stored oxygen, and what a rocket runs on',
   'naphtha': 'a liquid you find rather than make',
+  'super_coolant': 'an Emulsifier makes 100 kg of it out of a kilogram of '
+      'fullerene, 49.5 of gold and 49.5 of petroleum, and nobody has published '
+      'how long that takes — so it is here to be had and cooled with, and the '
+      'recipe is not',
   'resin': 'dropped by Prehistoric critters this app does not model yet, and '
       'by a Shine Bug egg, which this app prices as a Hatch egg',
   'amber': 'the same, and the Plant Pulverizer takes it in a recipe nobody has '

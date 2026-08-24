@@ -636,6 +636,13 @@ const String oniDataJson = r"""
       ]
     },
     {
+      "id": "super_coolant",
+      "name": "Super Coolant",
+      "category": "liquid",
+      "tags": [],
+      "specificHeat": 8.44
+    },
+    {
       "id": "liquid_sucrose",
       "name": "Liquid Sucrose",
       "category": "liquid",
