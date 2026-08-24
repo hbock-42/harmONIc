@@ -467,8 +467,11 @@ class GraphCanvasState extends State<GraphCanvas>
   /// The labels sit at a fixed fraction along each wire, so this asks the same
   /// question the painter answered rather than storing what it drew.
   String? _labelAt(Offset world, {double tolerance = 18}) {
+    final fractions = EdgePainter.labelFractions(controller.pipeline);
     for (final edge in controller.pipeline.edges) {
-      final anchor = _labelAnchor(edge);
+      final along = fractions[edge.id];
+      if (along == null) continue;
+      final anchor = _pointAlong(edge, along);
       if (anchor != null && (anchor - world).distance < tolerance) {
         return edge.id;
       }
@@ -478,8 +481,10 @@ class GraphCanvasState extends State<GraphCanvas>
 
   /// Where an edge's flow label sits, for tests and for anything else that
   /// needs to point at it.
-  Offset? labelAnchorFor(String edgeId) =>
-      pointAlongEdge(edgeId, EdgePainter.labelPosition);
+  Offset? labelAnchorFor(String edgeId) => pointAlongEdge(
+      edgeId,
+      EdgePainter.labelFractions(controller.pipeline)[edgeId] ??
+          EdgePainter.labelPosition);
 
   /// A point a given fraction of the way along a wire.
   Offset? pointAlongEdge(String edgeId, double fraction) {
@@ -487,9 +492,6 @@ class GraphCanvasState extends State<GraphCanvas>
     if (edge == null) return null;
     return _pointAlong(edge, fraction);
   }
-
-  Offset? _labelAnchor(PipelineEdge edge) =>
-      _pointAlong(edge, EdgePainter.labelPosition);
 
   Offset? _pointAlong(PipelineEdge edge, double fraction) {
     final fromNode = controller.pipeline.node(edge.fromNodeId);

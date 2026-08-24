@@ -45,20 +45,30 @@ extension UnitFormatting on Unit {
       case Unit.gramsPerSecond:
         final abs = value.abs();
         if (abs >= 1000) {
-          return '${(value / 1000).toStringAsFixed(precision)} kg/s';
+          return '${_fixed(value / 1000, precision)} kg/s';
         }
-        return '${value.toStringAsFixed(precision)} g/s';
+        return '${_fixed(value, precision)} g/s';
       case Unit.watts:
         final abs = value.abs();
         if (abs >= 1000) {
-          return '${(value / 1000).toStringAsFixed(precision)} kW';
+          return '${_fixed(value / 1000, precision)} kW';
         }
-        return '${value.toStringAsFixed(precision)} W';
+        return '${_fixed(value, precision)} W';
       case Unit.kdtuPerSecond:
-        return '${value.toStringAsFixed(precision)} kDTU/s';
+        return '${_fixed(value, precision)} kDTU/s';
       case Unit.count:
-        return value.toStringAsFixed(precision);
+        return _fixed(value, precision);
     }
+  }
+
+  /// Fixed-point, without the minus sign on a number that rounds to nothing.
+  /// A trickle of -0.004 g/s is float noise, and "-0.0 g/s" reads as a flow
+  /// going the wrong way.
+  static String _fixed(double value, int precision) {
+    final text = value.toStringAsFixed(precision);
+    return text.startsWith('-') && double.parse(text) == 0
+        ? text.substring(1)
+        : text;
   }
 
   /// Same value expressed per cycle, for the "per cycle" display toggle.

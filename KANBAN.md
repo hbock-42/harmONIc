@@ -71,6 +71,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-23` **The build that cannot balance says which port to fix** — reported by Hugo, who
+  wired a Hydrogen Generator's power back into its Electrolyzer and got four identical
+  paragraphs naming four ports. Three were innocent. Each candidate is now tried — vent it,
+  solve again — and only the ports that actually rescue the build are named, ranked so that a
+  "fix" which collapses every count to zero loses to one that leaves the build standing.
+  Two smaller things found in the same screenshot: two wires between the same pair of nodes
+  printed their labels on top of each other, and every count read `-0.00 ×`
 - `E10-22` **The flow label sits in the middle of its wire** — reported by Hugo, who saw the
   numbers hugging the left of every wire. They were at 0.32 along, chosen only so the
   arrowhead at 0.62 had room. That is the painter's convenience showing through: a label off
@@ -1095,6 +1102,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-20 | ✅ | What your geyser actually gives | the activity control covered how often it is awake and not how much it emits, which is the other number the world rolls |
 | E10-21 | ✅ | The arrows move the caret while you type | every other canvas shortcut stood down for a text field and the nudge did not |
 | E10-22 | ✅ | The flow label sits in the middle of its wire | it was a third along, which reads as belonging to one end |
+| E10-23 | ✅ | The build that cannot balance says which port to fix | it named every port that pulls, and most of them were innocent |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 | E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |

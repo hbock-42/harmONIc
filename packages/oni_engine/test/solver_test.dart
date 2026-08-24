@@ -249,10 +249,41 @@ void main() {
       final s = solver.solve(b.build());
 
       expect(s.status, SolveStatus.inconsistent);
-      expect(
-        s.issues.map((i) => i.message).join('\n'),
-        contains('connect an output node'),
-      );
+      // And it names the one port at fault rather than every port that pulls:
+      // the water and the power are innocent here.
+      final hints = [
+        for (final issue in s.issues)
+          if (issue.severity == IssueSeverity.info) issue.message,
+      ];
+      expect(hints, hasLength(1));
+      expect(hints.single, contains('Electrolyzer\u2019s hydrogen'));
+      expect(hints.single, contains('output node'));
+    });
+
+    test('and a build with two ways out offers both', () {
+      // The SPOM that powers itself: the generator makes seven times what the
+      // Electrolyzer draws, so either the hydrogen or the power has to have
+      // somewhere to overflow. Both are real answers; the water feeding it is
+      // not, because venting that only shrinks the build to nothing.
+      final b = PipelineBuilder(db, name: 'self-powered')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('hydrogen_generator', nodeId: 'hgen')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'hgen', 'hydrogen')
+        ..connect('hgen', 'power_out', 'elec', 'power_in')
+        ..pinCount('elec', 1);
+      final s = solver.solve(b.build());
+
+      expect(s.status, SolveStatus.inconsistent);
+      final hints = [
+        for (final issue in s.issues)
+          if (issue.severity == IssueSeverity.info) issue.message,
+      ];
+      expect(hints, hasLength(2));
+      expect(hints.join('\n'), contains('Electrolyzer\u2019s hydrogen'));
+      expect(hints.join('\n'), contains('Hydrogen Generator\u2019s power'));
+      expect(hints.join('\n'), isNot(contains('water')));
     });
   });
 
@@ -767,4 +798,35 @@ void main() {
           contains('below nothing'));
     });
   });
+  group('zero has no sign', () {
+    test('an over-constrained build reports nothing, not minus nothing', () {
+      // Elimination lands on -0.0 here, and every screen that prints a count
+      // then said "-0.00 ×" — which reads as a quantity pointing backwards.
+      final b = PipelineBuilder(db, name: 'self-powered')
+        ..addSource('water')
+        ..add('electrolyzer', nodeId: 'elec')
+        ..add('hydrogen_generator', nodeId: 'hgen')
+        ..connectItem('src_water', 'elec', 'water')
+        ..connectItem('elec', 'hgen', 'hydrogen')
+        ..connect('hgen', 'power_out', 'elec', 'power_in');
+      final s = solver.solve(b.build());
+
+      for (final node in s.nodes.values) {
+        expect(node.count.toStringAsFixed(2), isNot(startsWith('-')),
+            reason: node.nodeId);
+      }
+      for (final flow in s.edgeFlows.values) {
+        expect(flow.toStringAsFixed(2), isNot(startsWith('-')));
+      }
+    });
+
+    test('and a trickle too small to see is not a flow going backwards', () {
+      expect(Unit.gramsPerSecond.format(-0.004, precision: 1), '0.0 g/s');
+      expect(Unit.watts.format(-0.0), '0.00 W');
+      // A real negative still says so: surplus and deficit are the whole point
+      // of the power line in the bottom bar.
+      expect(Unit.watts.format(-216), '-216.00 W');
+    });
+  });
+
 }

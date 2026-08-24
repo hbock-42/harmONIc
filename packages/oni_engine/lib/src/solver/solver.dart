@@ -19,7 +19,10 @@ class PipelineSolver {
 
   final GameDatabase database;
 
-  PipelineSolution solve(Pipeline pipeline) {
+  /// [explain] is how the over-committed-port hint avoids chasing its own
+  /// tail: it re-solves the build with one port relaxed, and that inner solve
+  /// must not go looking for a culprit of its own.
+  PipelineSolution solve(Pipeline pipeline, {bool explain = true}) {
     final issues = validatePipeline(pipeline, database);
     if (issues.any((i) => i.isError)) {
       return PipelineSolution.invalid(issues);
@@ -165,7 +168,9 @@ class PipelineSolver {
           IssueSeverity.error,
           'No scale satisfies every constraint at once.',
         ));
-        resolvedIssues.addAll(_overCommittedOutputHints(pipeline));
+        if (explain) {
+          resolvedIssues.addAll(_overCommittedOutputHints(pipeline));
+        }
     }
 
     for (var i = 0; i < counts.length; i++) {
@@ -181,6 +186,10 @@ class PipelineSolver {
       if (counts[i].isNaN || counts[i].isInfinite) {
         counts[i] = 0;
       }
+      // Elimination on an over-constrained build lands on -0.0, and every
+      // screen that prints a count then says "-0.00 ×" — which reads as a
+      // quantity pointing the wrong way rather than as nothing at all.
+      counts[i] = _noMinusZero(counts[i]);
     }
 
     // Node results.
@@ -215,9 +224,9 @@ class PipelineSolver {
       final port = database
           .processOrThrow(drivingNode.specId)
           .portByIdOrThrow(portId);
-      edgeFlows[edge.id] = factor.fraction *
+      edgeFlows[edge.id] = _noMinusZero(factor.fraction *
           rateOf(drivingNode, port) *
-          counts[index[driving]!];
+          counts[index[driving]!]);
     }
 
     // A valve is a cap, and a cap is an inequality this solver cannot hold —
@@ -306,7 +315,108 @@ class PipelineSolver {
       freeNodeIds: freeNodeIds,
     );
   }
+
+  /// An inconsistent system is usually not a contradiction between *pins* — it
+  /// is a by-product with nowhere to go. A port drained only by pull edges has
+  /// to deliver exactly what it makes, so an Electrolyzer whose hydrogen feeds
+  /// a generator that powers it back cannot balance at any size at all: the
+  /// generator makes seven times the power the Electrolyzer draws, and both
+  /// ports insist on being emptied to the gram.
+  ///
+  /// Listing every such port was no help. That build has four and three of
+  /// them are innocent, so the reader got a wall of identical sentences and no
+  /// way to tell which one to act on. Each is tried instead: vent it, solve
+  /// again, and if the build comes right then that is the port with the
+  /// surplus.
+  List<PipelineIssue> _overCommittedOutputHints(Pipeline pipeline) {
+    final candidates = <PortRef>[];
+    for (final node in pipeline.nodes) {
+      final pulled = <String>{};
+      for (final edge in pipeline.edges) {
+        if (edge.fromNodeId != node.id || edge.mode != EdgeMode.pull) continue;
+        pulled.add(edge.fromPortId);
+      }
+      for (final portId in pulled) {
+        if (!node.ventsPort(portId)) candidates.add(PortRef(node.id, portId));
+      }
+    }
+    if (candidates.isEmpty) return const [];
+
+    // Bounded on purpose: this is a whole solve per candidate, and a build
+    // with dozens of them is one where naming a single culprit was never going
+    // to be the answer.
+    var guilty = <PortRef>[];
+    if (candidates.length <= 24) {
+      // Venting a port can rescue the arithmetic by collapsing the build
+      // instead of fixing it: let the geyser throw its water away and every
+      // count sits at zero, which is consistent and useless. So a candidate is
+      // judged by what the relaxed build looks like, and the ones that leave
+      // nothing running lose to the ones that leave it standing.
+      var fewestEmpty = 1 << 30;
+      for (final ref in candidates) {
+        final relaxed = _solveWithout(pipeline, ref);
+        if (relaxed.status == SolveStatus.inconsistent) continue;
+        final empty = relaxed.nodes.values.where((n) => n.count.abs() < 1e-9).length;
+        if (empty < fewestEmpty) {
+          fewestEmpty = empty;
+          guilty = [ref];
+        } else if (empty == fewestEmpty) {
+          guilty.add(ref);
+        }
+      }
+    }
+
+    if (guilty.length == 1) {
+      final ref = guilty.single;
+      return [
+        PipelineIssue(
+          IssueSeverity.info,
+          'Nothing here can take all the ${_portDescription(pipeline, ref)}. '
+          'Everything drawing from that port pulls, so it has to hand over '
+          'exactly what it makes, and no size of this build makes that add up. '
+          'Send the surplus to an output node, or mark the port as venting.',
+          nodeId: ref.nodeId,
+        ),
+      ];
+    }
+
+    return [
+      for (final ref in guilty.isEmpty ? candidates : guilty)
+        PipelineIssue(
+          IssueSeverity.info,
+          'The ${_portDescription(pipeline, ref)} must go somewhere exactly, '
+          'because everything drawing from that port pulls. If the rest should '
+          'go to waste, mark the port as venting; if it should go somewhere, '
+          'connect an output node.',
+          nodeId: ref.nodeId,
+        ),
+    ];
+  }
+
+  /// The build as it would stand if this one port were allowed to overflow.
+  PipelineSolution _solveWithout(Pipeline pipeline, PortRef ref) {
+    final relaxed = pipeline.copyWith(nodes: [
+      for (final node in pipeline.nodes)
+        if (node.id == ref.nodeId)
+          node.copyWith(ventedPorts: {...node.ventedPorts, ref.portId})
+        else
+          node,
+    ]);
+    return solve(relaxed, explain: false);
+  }
+
+  /// "Hydrogen Generator's power", for a sentence about a port. A port has no
+  /// name of its own — what it carries is the name anybody would use for it.
+  String _portDescription(Pipeline pipeline, PortRef ref) {
+    final node = pipeline.node(ref.nodeId);
+    final spec = node == null ? null : database.process(node.specId);
+    final port = spec?.portById(ref.portId);
+    final item = port == null ? null : database.item(port.itemId);
+    final who = node?.label ?? spec?.name ?? ref.nodeId;
+    return "$who\u2019s ${item?.name.toLowerCase() ?? ref.portId}";
+  }
 }
+
 
 /// Convenience: the app's core gesture — "pin this node to this amount and
 /// re-solve everything else".
@@ -315,30 +425,5 @@ extension SolvePinned on PipelineSolver {
       solve(pipeline.withOnlyPin(pin));
 }
 
-/// An inconsistent system is usually not a contradiction between *pins* — it is
-/// a by-product with nowhere to go. A port drained only by pull edges has to
-/// deliver exactly what it makes, so an Electrolyzer whose hydrogen is pulled by
-/// a generator cannot also be free to vent the rest. Naming those ports turns a
-/// baffling failure into a one-click fix.
-List<PipelineIssue> _overCommittedOutputHints(Pipeline pipeline) {
-  final hints = <PipelineIssue>[];
-  for (final node in pipeline.nodes) {
-    final pulled = <String>{};
-    for (final edge in pipeline.edges) {
-      if (edge.fromNodeId != node.id || edge.mode != EdgeMode.pull) continue;
-      pulled.add(edge.fromPortId);
-    }
-    for (final portId in pulled) {
-      if (node.ventsPort(portId)) continue;
-      hints.add(PipelineIssue(
-        IssueSeverity.info,
-        'Port ${node.id}.$portId must deliver exactly what it produces, because '
-        'everything drawing from it pulls. If the rest should go to waste, mark '
-        'the port as venting; if it should go somewhere, connect an output node.',
-        nodeId: node.id,
-      ));
-    }
-  }
-  return hints;
-}
-
+/// Zero with a sign on it is arithmetic showing through, and nothing else.
+double _noMinusZero(double value) => value == 0 ? 0 : value;
