@@ -1,0 +1,38 @@
+name: Something is missing
+description: A recipe it does not know, a question it cannot answer, a thing you wanted it to do.
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Two of these are worth knowing before you write.
+
+        **A missing recipe** you can add yourself, today: `+ Recipe` in the
+        palette, or hover any entry and hit `edit`. It is saved with your
+        work, and it can be handed to somebody else as one code. Worth an
+        issue anyway if it belongs in the app for everybody.
+
+        **Some things are missing on purpose**, and the last section of the
+        guide says which: mixtures, layout, time and morale among them. If
+        yours is on that list, say why the reason no longer holds — that is a
+        better issue than a request.
+
+  - type: textarea
+    id: want
+    attributes:
+      label: What you wanted to do
+      description: The question you were trying to answer, rather than the button you think would answer it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do instead today
+      placeholder: Work it out in a spreadsheet, or guess.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Filled in for you if you came from the app.

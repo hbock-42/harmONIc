@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: The guide
+    url: https://hbock-42.github.io/harmONIc/
+    about: Press Guide in the app — the last section says what it deliberately does not know, which answers a good few reports before they are written.

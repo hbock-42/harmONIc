@@ -44,8 +44,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Being told when it is wrong**
 
-- `E14-1` The app says which build it is
-- `E14-2` An issue form for a bug and one for an idea
 - `E14-3` Report it, from inside the app, with the build that caused it
 
 **Data still to gather**
@@ -76,6 +74,16 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E14-1` **The app says which build it is** — the commit, passed in by CI at build time.
+  "Which version?" is otherwise the first question on every report, and the honest answer from
+  a web app nobody installs was "whatever was on the site that day". A build from a laptop says
+  `dev` rather than inventing a number
+- `E14-2` **An issue form for a bug and one for an idea** — what is needed is asked for rather
+  than hoped for, and the share code is the field that matters: the whole build opens here in
+  one paste. The form says what it does and does not hold, so including it is a choice made
+  knowingly. The idea form says two things first — a missing recipe you can add yourself
+  today, and some things are missing on purpose
 
 - `E10-29` **The shortcuts work on a keyboard without a ⌘ key** — reported by Hugo, from the
   toolbar's `⌘` button. The button was the small half: every *binding* said `meta: true`, so on
@@ -1227,8 +1235,8 @@ build is already one code — so the report should arrive carrying it.
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E14-1 | P2 | The app says which build it is | the commit, passed in at build time and shown where a report can quote it. "Which version?" is otherwise the first question every time |
-| E14-2 | P2 | An issue form for a bug and one for an idea | `.github/ISSUE_TEMPLATE`, so what is needed is asked for rather than hoped for — including the share code of the build it happened on |
+| E14-1 | ✅ | The app says which build it is | the commit, passed in at build time and shown where a report can quote it. "Which version?" is otherwise the first question every time |
+| E14-2 | ✅ | An issue form for a bug and one for an idea | `.github/ISSUE_TEMPLATE`, so what is needed is asked for rather than hoped for — including the share code of the build it happened on |
 | E14-3 | P2 | Report it, from inside the app | a link in the guide's footer that opens the form with the version, the platform and the size of the build already filled in, and the share code when it fits in a URL |
 
 ## E8 — Quality

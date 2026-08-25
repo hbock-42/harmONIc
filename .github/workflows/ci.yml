@@ -103,7 +103,9 @@ jobs:
           BASE: ${{ steps.site.outputs.base_path }}
         run: |
           test -n "$BASE"
-          flutter build web --release --base-href="${BASE%/}/"
+          flutter build web --release \
+            --base-href="${BASE%/}/" \
+            --dart-define=BUILD_COMMIT="$GITHUB_SHA"
 
       - uses: actions/upload-pages-artifact@v3
         with:
