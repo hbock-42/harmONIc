@@ -220,3 +220,19 @@ checked against [the wiki](https://oxygennotincluded.wiki.gg) and must carry eit
 explain what is doubtful, and the app warns you when you select one. Batch buildings
 (Rock Crusher, Metal Refinery) are stated as continuous rates — 100 kg per 40 s
 operation becomes 2500 g/s, with the duplicant's time booked as 600 s/cycle.
+
+## Licence and credits
+
+The code is MIT — see [LICENSE](LICENSE). Use it, fork it, sell it; keep the
+notice.
+
+The game data is **facts about somebody else's game**: recipe rates, power
+draws and temperatures, read from
+[the Oxygen Not Included wiki](https://oxygennotincluded.wiki.gg) and from the
+game itself, and every process says which. Thank you to the people who
+maintain that wiki — this app is a rearrangement of their work and would not
+exist without it.
+
+*Oxygen Not Included* is made by [Klei Entertainment](https://www.klei.com),
+who own the game and its names. This is an unofficial fan tool, not affiliated
+with or endorsed by Klei, and it contains none of the game's code or artwork.
