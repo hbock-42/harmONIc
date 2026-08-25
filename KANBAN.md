@@ -42,6 +42,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
   their outputs the milking station takes and which they give off anyway
 
+**Being told when it is wrong**
+
+- `E14-1` The app says which build it is
+- `E14-2` An issue form for a bug and one for an idea
+- `E14-3` Report it, from inside the app, with the build that caused it
+
 **Data still to gather**
 
 
@@ -1212,6 +1218,18 @@ flow, so the solver never had to learn about it.
 | E13-9a | ✅ | Super Coolant | 8.44 DTU/g°C, so one Aquatuner of it moves more heat than a Steam Turbine can take away. The Emulsifier that makes it has no published cycle time, so the material is here and the recipe is not |
 | E13-10 | ✅ | The Smoker's fuel | one recipe per fuel, the Beakon pattern. A class is for a category the *game* groups; "either of these two" is not one |
 | E13-11 | ✅ | A port that names its alternatives | a port lists what it will take and the node picks, the way a refinery picks its ore. Only where the rate is the same for each; different rates are different recipes |
+
+## E14 — Being told when it is wrong
+
+The app is public now, and the only bugs that get fixed are the ones somebody can report.
+The thing that makes a report about *this* app useful is the build that caused it, and a
+build is already one code — so the report should arrive carrying it.
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E14-1 | P2 | The app says which build it is | the commit, passed in at build time and shown where a report can quote it. "Which version?" is otherwise the first question every time |
+| E14-2 | P2 | An issue form for a bug and one for an idea | `.github/ISSUE_TEMPLATE`, so what is needed is asked for rather than hoped for — including the share code of the build it happened on |
+| E14-3 | P2 | Report it, from inside the app | a link in the guide's footer that opens the form with the version, the platform and the size of the build already filled in, and the share code when it fits in a URL |
 
 ## E8 — Quality
 
