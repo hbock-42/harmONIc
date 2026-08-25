@@ -35,4 +35,6 @@ body:
     id: version
     attributes:
       label: Version
-      description: Filled in for you if you came from the app.
+      description: >-
+        The seven characters beside Suggest something at the foot of the guide.
+        Filled in for you if you came from there.

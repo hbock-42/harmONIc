@@ -5,13 +5,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        The **share code** below is the useful part. With it the whole build
-        opens here in one paste, and most reports are then a two-minute job
-        rather than a conversation. `Share` in the pipelines menu copies it.
+        **Coming from the app?** Use **Report a bug** at the foot of the guide
+        instead of this page — it fills in your build, the version and what you
+        are running it on, and the build is most of the work of a fix.
 
-        It holds your build and nothing else — no name, no account, nothing
-        about your machine. If you would rather not include it, delete it and
-        describe the build instead.
+        The share code holds your build and nothing else: no name, no account,
+        nothing about your machine. It goes in the form where you can see it,
+        so delete it if you would rather describe the build in words.
 
   - type: textarea
     id: what
@@ -22,26 +22,28 @@ body:
       required: true
 
   - type: textarea
+    id: build
+    attributes:
+      label: The build it happened on
+      description: >-
+        Already filled in if you came from Report a bug in the app. Otherwise
+        paste a share code here — Share in the pipelines menu copies one — or
+        describe the build in words if you would rather not send it.
+
+  - type: textarea
     id: expected
     attributes:
       label: What you expected instead
     validations:
       required: true
 
-  - type: textarea
-    id: build
-    attributes:
-      label: The build it happened on
-      description: A share code, or a description if you would rather not send one.
-      render: text
-
   - type: input
     id: version
     attributes:
       label: Version
-      description: The seven characters at the foot of the guide. Filled in for you if you came from the app.
-    validations:
-      required: true
+      description: >-
+        The seven characters beside Report a bug at the foot of the guide.
+        Filled in for you if you came from there.
 
   - type: input
     id: platform
