@@ -94,6 +94,11 @@ _(empty)_
   the card, chosen from the platform and injectable so a test can sit at either keyboard. The
   two buttons are `Keys  ?` and `Guide` now: `?` opened the keys and the `?` button opened the
   guide, which was two answers to one glyph
+- `E10-28a` **The status text stops holding room it has no words for** — the same mistake as
+  `E10-28`, one step on. Tight instead of loose moved the 158 px from a gap at the end of the
+  bar into the status's own box, where it looked like empty bar beside a scrolled-off
+  ALL GEYSERS. A flex child gets a *share*; this one wants its own width, capped at a share so
+  a long status cannot squeeze the buttons out instead. The actions went from 515 px to 674
 - `E10-28` **The toolbar's actions end at the right edge** — reported by Hugo. The node/link
   status text beside them was a *loose* flexible child: a Row gives such a child a share of
   the free space, it uses what it needs, and the remainder is left at the end — after the last
@@ -1158,6 +1163,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-26 | ✅ | "Use as little as possible" no longer empties the build | the cheapest way to use no ore is to make no metal, and it applied that |
 | E10-27 | ✅ | The app is published on every green push | GitHub Pages, gated on the tests |
 | E10-28 | ✅ | The toolbar's actions end at the right edge | a loose flexible child left its unused share as a gap after them |
+| E10-28a | ✅ | The status text stops holding room it has no words for | the same flex mistake, one step on: a share of the bar rather than a gap at its end |
 | E10-29 | ✅ | The shortcuts work on a keyboard without a ⌘ key | every binding said meta, so Windows and Linux had no undo at all |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |

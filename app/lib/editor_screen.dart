@@ -764,7 +764,11 @@ class _TopBarState extends State<_TopBar> {
           color: OniColors.surface,
           border: Border(bottom: BorderSide(color: OniColors.border)),
         ),
-        child: Row(
+        // The bar's own width, so the status can be capped as a share of it.
+        // Measured out here because a LayoutBuilder among the children would
+        // be handed an unbounded width and learn nothing.
+        child: LayoutBuilder(
+          builder: (context, bar) => Row(
           children: [
             OniButton(
               label: 'Pipelines',
@@ -781,12 +785,16 @@ class _TopBarState extends State<_TopBar> {
               ),
             ),
             const SizedBox(width: OniSpacing.lg),
-            // Tight rather than loose, which is the whole of the gap that used
-            // to sit between this and the buttons: a loose flexible child is
-            // given a share of the free space and hands back whatever it does
-            // not use — and a Row puts that remainder at the end, after the
-            // last child. So the actions stopped 158 px short of the edge.
-            Expanded(
+            // Not flexible: it takes the width of its own words and leaves
+            // every remaining pixel to the actions, which are the things that
+            // run out of room. Flexible or Expanded, it was given a *share* of
+            // the free space — half the bar — and stood mostly empty beside a
+            // scrolled-off ALL GEYSERS either way.
+            //
+            // Capped so that the reverse cannot happen on a narrow window: a
+            // long status ellipsises rather than squeezing the buttons out.
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: bar.maxWidth * 0.28),
               child: Text(
                 '${controller.pipeline.nodes.length} nodes · '
                 '${controller.pipeline.edges.length} links · '
@@ -921,6 +929,7 @@ class _TopBarState extends State<_TopBar> {
               ),
             ),
           ],
+          ),
         ),
       );
   }
