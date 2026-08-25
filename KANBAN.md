@@ -51,6 +51,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E15-4` "What a geyser feeds"
 - `E15-5` "Let it choose the split"
 - `E15-6` Where it is offered
+- `E15-8` Offered once, on a first visit
 
 **Data still to gather**
 
@@ -1268,6 +1269,13 @@ geyser to one — and every number on screen comes out of the solver as usual. A
 paints its own figures would be a lie the first time a recipe changed, and this app's whole
 argument is that its numbers are checkable.
 
+On `E15-8`, what "first visit" can honestly mean: this app knows only what is in the browser's
+own storage, so a cleared browser, a private window and a second machine each look like a
+first visit and will each be offered it again. That is the right failure — an offer shown
+twice costs a click, and one never shown costs the visit. Two things it must not do: interrupt
+somebody who arrived on a shared build, since they came to see *that*, and come back once it
+has been dismissed.
+
 | id | P | Task | Notes |
 |---|---|---|---|
 | E15-1 | P2 | The demo engine | a demo is a list of steps; a step is an action on a real `PipelineController` plus a line of narration. No animation framework, no second renderer, and nothing a person could not have typed |
@@ -1275,7 +1283,8 @@ argument is that its numbers are checkable.
 | E15-3 | P2 | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
 | E15-4 | P2 | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
 | E15-5 | P2 | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
-| E15-6 | P2 | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Not on a timer, not on first run, and never in the way |
+| E15-6 | P2 | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
+| E15-8 | P2 | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality
