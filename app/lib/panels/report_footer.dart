@@ -14,12 +14,17 @@ const String kRepository = 'https://github.com/hbock-42/harmONIc';
 
 /// How much of a share code a URL will carry.
 ///
-/// GitHub itself accepts a long one, but browsers and the things between them
-/// do not agree on how long, and a link that silently truncates would send a
-/// share code that decodes to nothing. Past this the code goes to the
-/// clipboard and the form asks for a paste — which is worse by one step and
-/// never wrong.
-const int kUrlBudget = 1500;
+/// Measured against GitHub rather than guessed, because the first guess —
+/// 1500 — was under the size of every build the app ships with, so the link
+/// never carried one and the feature's whole point never happened. Asking
+/// github.com directly: a query of 6500 characters is served, 7000 comes back
+/// 500, and 12000 comes back 414. So 6000 for the whole URL, which is about
+/// twenty nodes.
+///
+/// Past it the code goes to the clipboard and the form asks for a paste, which
+/// is worse by one step and never wrong — a link that silently truncates would
+/// send a share code decoding to nothing.
+const int kUrlBudget = 6000;
 
 /// The link that opens a pre-filled report.
 ///

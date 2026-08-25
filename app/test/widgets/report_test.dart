@@ -78,7 +78,7 @@ void main() {
     // A URL that silently truncates would send a share code decoding to
     // nothing, which is worse than no code at all.
     final big = PipelineBuilder(testDatabase, name: 'A large base');
-    for (var i = 0; i < 60; i++) {
+    for (var i = 0; i < 300; i++) {
       big.add('electrolyzer', nodeId: 'elec$i', x: i * 10, y: i * 10);
     }
     final clipboard = <String>[];
@@ -99,7 +99,7 @@ void main() {
 
     expect(opened.single.queryParameters.containsKey('build'), isFalse);
     expect(clipboard, hasLength(1));
-    expect(PipelineShareCode.decode(clipboard.single).nodes, hasLength(60));
+    expect(PipelineShareCode.decode(clipboard.single).nodes, hasLength(300));
     expect(find.textContaining('on your clipboard'), findsOneWidget);
   });
 
@@ -116,4 +116,15 @@ void main() {
     expect(shareCodeFits('x' * (kUrlBudget + 1)), isFalse);
     expect(shareCodeFits('x' * 200), isTrue);
   });
+  test('and the builds people actually draw travel in it', () {
+    // The regression this is here for: the budget was first set at 1500, and
+    // every build the app ships with is longer than that — so the code never
+    // once travelled in the link, which is the whole feature.
+    for (final template in pipelineTemplates) {
+      final code = PipelineShareCode.encode(template.build(testDatabase));
+      expect(shareCodeFits(code), isTrue,
+          reason: '${template.name} is ${code.length} characters');
+    }
+  });
+
 }
