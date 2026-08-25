@@ -13,7 +13,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-app="app/build/macos/Build/Products/Debug/oni_pipeline.app"
+app="app/build/macos/Build/Products/Debug/harmONIc.app"
 assets="$app/Contents/Frameworks/App.framework/Resources/flutter_assets/assets"
 
 echo "== build =="
@@ -28,9 +28,9 @@ echo "== it opens =="
 # process that is not there a few seconds later.
 open "$app"
 sleep 6
-if pgrep -x oni_pipeline >/dev/null; then
+if pgrep -x harmONIc >/dev/null; then
   echo "it is running"
-  pkill -x oni_pipeline
+  pkill -x harmONIc
   echo "and closed again"
 else
   echo "it did not stay up" >&2

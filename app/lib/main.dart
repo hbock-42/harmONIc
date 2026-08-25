@@ -90,7 +90,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
 
   @override
   Widget build(BuildContext context) => WidgetsApp(
-        title: 'ONI Pipeline Planner',
+        title: 'harmONIc',
         color: OniColors.accent,
         localizationsDelegates: FLocalizations.localizationsDelegates,
         supportedLocales: FLocalizations.supportedLocales,

@@ -1,8 +1,11 @@
-# ONI Pipeline Planner
+# harmONIc
 
 Plan *Oxygen Not Included* production chains: draw the pipeline, **pin one node**
 ("I have 3 Electrolyzers", "my geyser gives 2 kg/s of water", "I want 1 kg/s of
 oxygen"), and every other building, flow, watt and kDTU scales to match.
+
+*A harmonic is a fixed multiple of one fundamental — which is exactly what this
+solver does, and it has ONI in the middle of it.*
 
 **Live at <https://hbock-42.github.io/oni_project/>** — no install, no account,
 and your builds stay in your own browser.

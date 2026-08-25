@@ -1,4 +1,4 @@
-# Using the planner
+# Using harmONIc
 
 The whole app is one idea: **draw what you are building, say how much of one
 thing you have, and everything else follows.** Everything below is a detail

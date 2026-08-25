@@ -1,4 +1,4 @@
-# ONI Pipeline Planner — Kanban
+# harmONIc — Kanban
 
 > **Goal**: a Flutter app where you sketch an *Oxygen Not Included* production pipeline as a graph
 > (resources → buildings → resources), **pin one node** ("I have 3 Electrolyzers", "I have 10 kg/s of
