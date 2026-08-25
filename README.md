@@ -4,6 +4,9 @@ Plan *Oxygen Not Included* production chains: draw the pipeline, **pin one node*
 ("I have 3 Electrolyzers", "my geyser gives 2 kg/s of water", "I want 1 kg/s of
 oxygen"), and every other building, flow, watt and kDTU scales to match.
 
+**Live at <https://hbock-42.github.io/oni_project/>** — no install, no account,
+and your builds stay in your own browser.
+
 ## Layout
 
 ```
@@ -19,6 +22,20 @@ docs/MIXTURES.md       why a pipe of mixed gas is not modelled, and what would c
 docs/DEMO.md           ten minutes of it, for somebody who plays the game.
 KANBAN.md              the plan, epic by epic.
 ```
+
+## Publishing
+
+`.github/workflows/ci.yml` builds the web app and publishes it to GitHub Pages
+on every push to `main` — but only after the tests pass, since the deploy job
+`needs: test`. A red build never reaches the web, and nothing but `main` is
+ever published.
+
+The one thing not in this repository is the switch: **Settings → Pages →
+Source → GitHub Actions**, once. Until that is set, the deploy step fails with
+a permissions error and the tests still pass, which is the right way round.
+
+A project page is served from a subdirectory, so the build passes
+`--base-href=/oni_project/`. Rename the repository and that line moves with it.
 
 ## Toolchain
 

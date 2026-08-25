@@ -71,6 +71,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-27` **The app is published on every green push** — GitHub Pages, from the workflow that
+  already runs the tests, with `needs: test` so a red build never reaches the web. Chosen over
+  Google Cloud because the app is a static site with no backend at all: a bucket is pennies but
+  HTTPS on a domain needs a load balancer at about $18 a month, and Pages is free. A first
+  visit is ~4 MB gzipped, measured
 - `E10-26` **"Use as little as possible" no longer empties the build** — reported by Hugo,
   following `DEMO.md`. Pin the ore supply, press the button, and every share went to zero: the
   minimum was real and useless, because the cheapest way to use no ore is to make no metal.
@@ -1123,6 +1128,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-24 | ✅ | Picking a class-port building from the port menu works | the menu offered on one rule and the click accepted on a stricter one |
 | E10-25 | ✅ | An ore refines into its own metal, not any metal | the wires settle a class port, and four recipes tie an output to an input |
 | E10-26 | ✅ | "Use as little as possible" no longer empties the build | the cheapest way to use no ore is to make no metal, and it applied that |
+| E10-27 | ✅ | The app is published on every green push | GitHub Pages, gated on the tests |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 | E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |
