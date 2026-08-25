@@ -9,6 +9,12 @@ see should be a question they have asked themselves in front of their own base,
 and the answer should be checkable against what they already believe. Trust for
 the numbers they *cannot* check is bought with the ones they can.
 
+This file is for a person driving. `E15` is the same script played by the app
+itself, for the far larger number of people who open the site with nobody in
+the room — and when that exists, the figures below stop being checked by hand:
+the demo runs the real solver, and a test compares every number it narrates
+with what the app says.
+
 ---
 
 ## Act one — "what will this geyser feed?" (four minutes)

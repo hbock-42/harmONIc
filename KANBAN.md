@@ -43,6 +43,15 @@ Everything not pulled into **Ready**. Grouped by epic below.
   their outputs the milking station takes and which they give off anyway
 
 
+**The app demonstrating itself**
+
+- `E15-1` The demo engine: steps that drive the real controller
+- `E15-2` The player: play, pause, step, and leave without losing your build
+- `E15-3` The narration is checked against the solver
+- `E15-4` "What a geyser feeds"
+- `E15-5` "Let it choose the split"
+- `E15-6` Where it is offered
+
 **Data still to gather**
 
 
@@ -1246,6 +1255,28 @@ build is already one code — so the report should arrive carrying it.
 | E14-1 | ✅ | The app says which build it is | the commit, passed in at build time and shown where a report can quote it. "Which version?" is otherwise the first question every time |
 | E14-2 | ✅ | An issue form for a bug and one for an idea | `.github/ISSUE_TEMPLATE`, so what is needed is asked for rather than hoped for — including the share code of the build it happened on |
 | E14-3 | ✅ | Report it, from inside the app | a link in the guide's footer that opens the form with the version, the platform and the size of the build already filled in, and the share code when it fits in a URL |
+
+## E15 — The app demonstrating itself
+
+`docs/DEMO.md` is ten minutes of somebody who knows the app driving it in front of somebody
+who does not. Most people who open the site will have neither person in the room. This is that
+script, played by the app.
+
+The rule that makes it worth building rather than a video: **a demo drives the real
+controller.** Every step is a thing you could have done — place this, wire that, pin the
+geyser to one — and every number on screen comes out of the solver as usual. A demo that
+paints its own figures would be a lie the first time a recipe changed, and this app's whole
+argument is that its numbers are checkable.
+
+| id | P | Task | Notes |
+|---|---|---|---|
+| E15-1 | P2 | The demo engine | a demo is a list of steps; a step is an action on a real `PipelineController` plus a line of narration. No animation framework, no second renderer, and nothing a person could not have typed |
+| E15-2 | P2 | The player | play, pause, step forward, and leave at any point. It runs in a workspace tab of its own, so whatever you were building is exactly where you left it — a demo that eats your work is worse than no demo |
+| E15-3 | P2 | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
+| E15-4 | P2 | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
+| E15-5 | P2 | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
+| E15-6 | P2 | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Not on a timer, not on first run, and never in the way |
+| E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality
 
