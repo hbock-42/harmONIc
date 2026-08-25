@@ -743,7 +743,12 @@ class _TopBarState extends State<_TopBar> {
               ),
             ),
             const SizedBox(width: OniSpacing.lg),
-            Flexible(
+            // Tight rather than loose, which is the whole of the gap that used
+            // to sit between this and the buttons: a loose flexible child is
+            // given a share of the free space and hands back whatever it does
+            // not use — and a Row puts that remainder at the end, after the
+            // last child. So the actions stopped 158 px short of the edge.
+            Expanded(
               child: Text(
                 '${controller.pipeline.nodes.length} nodes · '
                 '${controller.pipeline.edges.length} links · '
@@ -756,6 +761,7 @@ class _TopBarState extends State<_TopBar> {
             const SizedBox(width: OniSpacing.md),
             // The actions scroll rather than overflow, so a narrow window
             // loses nothing — it just needs a nudge sideways to reach Fit.
+            // `reverse` also keeps them against the right edge when they fit.
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

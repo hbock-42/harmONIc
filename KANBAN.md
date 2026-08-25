@@ -71,6 +71,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-28` **The toolbar's actions end at the right edge** — reported by Hugo. The node/link
+  status text beside them was a *loose* flexible child: a Row gives such a child a share of
+  the free space, it uses what it needs, and the remainder is left at the end — after the last
+  button. 158 px of a text field's unused allowance. One word, `Flexible` to `Expanded`, and
+  measured at two widths because the two cases are held right by different mechanisms
 - `E10-27` **The app is published on every green push** — GitHub Pages, from the workflow that
   already runs the tests, with `needs: test` so a red build never reaches the web. Chosen over
   Google Cloud because the app is a static site with no backend at all: a bucket is pennies but
@@ -1129,6 +1134,7 @@ The part no library gives us: `widgets.dart` + `CustomPainter` + raw gestures.
 | E10-25 | ✅ | An ore refines into its own metal, not any metal | the wires settle a class port, and four recipes tie an output to an input |
 | E10-26 | ✅ | "Use as little as possible" no longer empties the build | the cheapest way to use no ore is to make no metal, and it applied that |
 | E10-27 | ✅ | The app is published on every green push | GitHub Pages, gated on the tests |
+| E10-28 | ✅ | The toolbar's actions end at the right edge | a loose flexible child left its unused share as a gap after them |
 | E10-17 | ✅ | An edge's share | settable on a push line, with "an even split" as a real answer rather than a silent default |
 | E10-18 | ✅ | The stockpile pin | "I have 2 t of coal and want it to last 20 cycles"; the third pin kind, modelled since the solver was written and unreachable until now |
 | E10-19 | ❌ | Clearing every amount at once | decided against. `clearAllPins` looked unreachable because the sweep only read `lib/`; four tests use it to build an unpinned graph, which is a fair reason for a method to exist. Nobody needs a button for it |
