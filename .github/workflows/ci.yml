@@ -88,12 +88,22 @@ jobs:
           cache: true
 
       - uses: actions/configure-pages@v5
+        id: site
 
       # A project page is served from a subdirectory, so the app has to be
-      # told where it lives or every asset it asks for is a 404.
+      # told where it lives or every asset it asks for is a 404 and the site
+      # is a blank white page with no error in it.
+      #
+      # Taken from the Pages configuration rather than written here, because a
+      # repository can be renamed and this should not have to be remembered.
+      # Empty is a red build rather than a white page.
       - name: Build the web app
         working-directory: app
-        run: flutter build web --release --base-href=/oni_project/
+        env:
+          BASE: ${{ steps.site.outputs.base_path }}
+        run: |
+          test -n "$BASE"
+          flutter build web --release --base-href="${BASE%/}/"
 
       - uses: actions/upload-pages-artifact@v3
         with:

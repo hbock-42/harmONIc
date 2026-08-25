@@ -7,7 +7,7 @@ oxygen"), and every other building, flow, watt and kDTU scales to match.
 *A harmonic is a fixed multiple of one fundamental — which is exactly what this
 solver does, and it has ONI in the middle of it.*
 
-**Live at <https://hbock-42.github.io/oni_project/>** — no install, no account,
+**Live at <https://hbock-42.github.io/harmONIc/>** — no install, no account,
 and your builds stay in your own browser.
 
 ## Layout
@@ -37,8 +37,11 @@ The one thing not in this repository is the switch: **Settings → Pages →
 Source → GitHub Actions**, once. Until that is set, the deploy step fails with
 a permissions error and the tests still pass, which is the right way round.
 
-A project page is served from a subdirectory, so the build passes
-`--base-href=/oni_project/`. Rename the repository and that line moves with it.
+A project page is served from a subdirectory, so the build has to be told where
+it lives — otherwise every asset it asks for is a 404 and the site is a blank
+white page with no error in it. The path comes from the Pages configuration
+rather than being written down, so renaming the repository does not break it,
+and an empty one fails the build instead of publishing the white page.
 
 ## Toolchain
 
