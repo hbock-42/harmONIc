@@ -42,9 +42,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-21b` Glo Squid and Seaquine wild twins, once somebody checks in game which of
   their outputs the milking station takes and which they give off anyway
 
-**Being told when it is wrong**
-
-- `E14-3` Report it, from inside the app, with the build that caused it
 
 **Data still to gather**
 
@@ -75,6 +72,11 @@ _(empty)_
 
 ### ✅ Done
 
+- `E14-3` **Report it, from inside the app** — at the foot of the guide, because that is where
+  somebody already is when the app has confused them, and the toolbar has been out of room
+  since before any of this. The link carries the version, the platform and the build itself as
+  a share code, so a report opens here in one paste. Too big for a URL and the code goes to the
+  clipboard instead — said out loud, since a clipboard that changes quietly has eaten something
 - `E14-1` **The app says which build it is** — the commit, passed in by CI at build time.
   "Which version?" is otherwise the first question on every report, and the honest answer from
   a web app nobody installs was "whatever was on the site that day". A build from a laptop says
@@ -1237,7 +1239,7 @@ build is already one code — so the report should arrive carrying it.
 |---|---|---|---|
 | E14-1 | ✅ | The app says which build it is | the commit, passed in at build time and shown where a report can quote it. "Which version?" is otherwise the first question every time |
 | E14-2 | ✅ | An issue form for a bug and one for an idea | `.github/ISSUE_TEMPLATE`, so what is needed is asked for rather than hoped for — including the share code of the build it happened on |
-| E14-3 | P2 | Report it, from inside the app | a link in the guide's footer that opens the form with the version, the platform and the size of the build already filled in, and the share code when it fits in a URL |
+| E14-3 | ✅ | Report it, from inside the app | a link in the guide's footer that opens the form with the version, the platform and the size of the build already filled in, and the share code when it fits in a URL |
 
 ## E8 — Quality
 

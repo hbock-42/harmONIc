@@ -41,6 +41,7 @@ dependencies:
   # Only the browser store uses it, and only on a web build. It is here rather
   # than as a transitive dependency because that store imports it by name.
   web: ^1.1.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

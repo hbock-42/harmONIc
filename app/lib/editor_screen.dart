@@ -9,6 +9,7 @@ import 'design/tokens.dart';
 import 'design/widgets.dart';
 import 'panels/guide_panel.dart';
 import 'panels/keys_panel.dart';
+import 'panels/report_footer.dart';
 import 'panels/inspector_panel.dart';
 
 import 'panels/palette_panel.dart';
@@ -31,6 +32,7 @@ class EditorScreen extends StatefulWidget {
     required this.displaySettings,
     this.loadGuide,
     this.apple,
+    this.openLink,
     super.key,
   });
 
@@ -41,6 +43,10 @@ class EditorScreen extends StatefulWidget {
 
   /// Where the guide's text comes from; the asset unless a test says otherwise.
   final Future<String> Function()? loadGuide;
+
+  /// How a link out of the app is opened; the browser unless a test says
+  /// otherwise, since a widget test has no browser to hand one to.
+  final Future<bool> Function(Uri)? openLink;
 
   /// Which keyboard this is; the machine's unless a test says otherwise.
   ///
@@ -327,6 +333,10 @@ class _EditorScreenState extends State<EditorScreen> {
                   child: GuidePanel(
                     onClose: () => setState(() => _guideOpen = false),
                     load: widget.loadGuide,
+                    footer: ReportFooter(
+                      controller: controller,
+                      open: widget.openLink,
+                    ),
                   ),
                 ),
               if (_keysPinned || _keysHeld)

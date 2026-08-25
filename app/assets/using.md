@@ -190,6 +190,22 @@ remembered. The light palette is not the dark one inverted — every colour is
 picked for the background it sits on, because a hue that reads on near-black is
 usually too pale to read on near-white.
 
+## When it is wrong
+
+The foot of this guide has **Report a bug** and **Suggest something**. Both
+open a form with the version, what you are running it on, and — the useful
+part — **your build** already in it, as the same share code the pipelines menu
+copies. One paste at this end and the build that broke opens here.
+
+The code holds your build and nothing else: no name, no account, nothing about
+your machine. It is in the form where you can see it, so delete it if you would
+rather describe the build in words. A build too big to travel in a link goes to
+your clipboard instead, and the app says so rather than changing your clipboard
+quietly.
+
+Beside those buttons is the seven-character build you are on. It is what makes
+"it did that yesterday" answerable.
+
 ## Keys
 
 **Keys** on the toolbar shows them all on a card. Or hold **?** — the card is

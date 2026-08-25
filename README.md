@@ -227,6 +227,17 @@ explain what is doubtful, and the app warns you when you select one. Batch build
 (Rock Crusher, Metal Refinery) are stated as continuous rates — 100 kg per 40 s
 operation becomes 2500 g/s, with the duplicant's time booked as 600 s/cycle.
 
+## Telling it it is wrong
+
+**Report a bug** and **Suggest something** are at the foot of the guide, inside
+the app. They open one of the forms in `.github/ISSUE_TEMPLATE` with the
+version, the platform and your build already filled in — the build being the
+part that matters, since a share code pasted here opens exactly what broke.
+
+Issues need a GitHub account, which plenty of people who play this game do not
+have. There is no way around that without a server, and a server is a bill and
+a spam problem for a thing that otherwise costs nothing to run.
+
 ## Licence and credits
 
 The code is MIT — see [LICENSE](LICENSE). Use it, fork it, sell it; keep the

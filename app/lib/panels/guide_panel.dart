@@ -11,9 +11,15 @@ import '../design/widgets.dart';
 /// rather than a second copy of the same words written for a screen. Two
 /// explanations of one thing disagree within a fortnight.
 class GuidePanel extends StatefulWidget {
-  const GuidePanel({required this.onClose, this.load, super.key});
+  const GuidePanel({required this.onClose, this.load, this.footer, super.key});
 
   final VoidCallback onClose;
+
+  /// What sits under the text — how to report a bug, and which build this is.
+  ///
+  /// Handed in rather than built here, because it needs the pipeline and this
+  /// panel is a renderer for one Markdown file and nothing else.
+  final Widget? footer;
 
   /// Where the text comes from. The asset, unless a test hands it over —
   /// reading an asset is real I/O and a widget test does not run any, so a
@@ -72,22 +78,32 @@ class _GuidePanelState extends State<GuidePanel> {
                 compact: true,
                 onPressed: widget.onClose,
               ),
-              child: _failed != null
-                  ? Padding(
-                      padding: const EdgeInsets.all(OniSpacing.lg),
-                      child: Text(
-                        'The guide did not load: $_failed\n\n'
-                        'It also lives at docs/USING.md in the repository.',
-                        style:
-                            OniType.body.copyWith(color: OniColors.warning),
-                      ),
-                    )
-                  : _markdown == null
-                      ? const SizedBox.shrink()
-                      : ListView(
-                          padding: const EdgeInsets.all(OniSpacing.lg),
-                          children: _render(_markdown!),
-                        ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: _failed != null
+                        ? Padding(
+                            padding: const EdgeInsets.all(OniSpacing.lg),
+                            child: Text(
+                              'The guide did not load: $_failed\n\n'
+                              'It also lives at docs/USING.md in the '
+                              'repository.',
+                              style: OniType.body
+                                  .copyWith(color: OniColors.warning),
+                            ),
+                          )
+                        : _markdown == null
+                            ? const SizedBox.shrink()
+                            : ListView(
+                                padding: const EdgeInsets.all(OniSpacing.lg),
+                                children: _render(_markdown!),
+                              ),
+                  ),
+                  // Under the text even when the text failed to load: a guide
+                  // that will not open is itself worth reporting.
+                  ?widget.footer,
+                ],
+              ),
             ),
           ),
         ),
