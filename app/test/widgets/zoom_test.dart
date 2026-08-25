@@ -13,6 +13,7 @@ void main() {
   final canvasKey = GlobalKey<GraphCanvasState>();
 
   Future<PipelineController> pumpCanvas(WidgetTester tester) async {
+
     await useDesktopSurface(tester);
     final controller = testController();
     await tester.pumpWidget(harness(GraphCanvas(
@@ -25,9 +26,12 @@ void main() {
   }
 
   Future<PipelineController> pumpEditor(WidgetTester tester) async {
+
     await useDesktopSurface(tester);
     final controller = testController();
     await tester.pumpWidget(harness(EditorScreen(
+      // These press ⌘; on Windows the same shortcuts are held with Ctrl.
+      apple: true,
       controller: controller,
       library: testLibrary(),
       workspace: await testWorkspace(controller),

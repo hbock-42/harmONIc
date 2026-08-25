@@ -27,9 +27,9 @@ void main() {
   }
 
   Future<void> openGuide(WidgetTester tester) async {
-    await tester.ensureVisible(find.text('?'));
+    await tester.ensureVisible(find.text('Guide'));
     await tester.pump();
-    await tester.tap(find.text('?'));
+    await tester.tap(find.text('Guide'));
     await tester.pumpAndSettle();
   }
 

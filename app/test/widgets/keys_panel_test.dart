@@ -9,10 +9,12 @@ import '../support/harness.dart';
 
 /// The card of keys: one button, and one key you hold.
 void main() {
-  Future<PipelineController> pumpEditor(WidgetTester tester) async {
+  Future<PipelineController> pumpEditor(WidgetTester tester,
+      {bool apple = true}) async {
     await useDesktopSurface(tester);
     final controller = testController();
     await tester.pumpWidget(harness(EditorScreen(
+      apple: apple,
       controller: controller,
       library: testLibrary(),
       workspace: await testWorkspace(controller),
@@ -25,9 +27,9 @@ void main() {
     await pumpEditor(tester);
     expect(find.byType(KeysPanel), findsNothing);
 
-    await tester.ensureVisible(find.text('⌘'));
+    await tester.ensureVisible(find.text('Keys  ?'));
     await tester.pump();
-    await tester.tap(find.text('⌘'));
+    await tester.tap(find.text('Keys  ?'));
     await tester.pumpAndSettle();
 
     expect(find.byType(KeysPanel), findsOneWidget);
@@ -47,9 +49,9 @@ void main() {
 
   testWidgets('and clicking away closes it', (tester) async {
     await pumpEditor(tester);
-    await tester.ensureVisible(find.text('⌘'));
+    await tester.ensureVisible(find.text('Keys  ?'));
     await tester.pump();
-    await tester.tap(find.text('⌘'));
+    await tester.tap(find.text('Keys  ?'));
     await tester.pumpAndSettle();
 
     await tester.tapAt(const Offset(40, 500));
@@ -136,9 +138,9 @@ void main() {
     // boxes leaves the keys riding high above the words. The letters have to
     // sit on the same baseline, which is a different thing.
     await pumpEditor(tester);
-    await tester.ensureVisible(find.text('⌘'));
+    await tester.ensureVisible(find.text('Keys  ?'));
     await tester.pump();
-    await tester.tap(find.text('⌘'));
+    await tester.tap(find.text('Keys  ?'));
     await tester.pumpAndSettle();
 
     final key = tester.getRect(find.text('⌘Z'));
@@ -151,9 +153,9 @@ void main() {
     // The canvas is what somebody is reading these *about*; a centred slab
     // covers the build being explained.
     await pumpEditor(tester);
-    await tester.ensureVisible(find.text('⌘'));
+    await tester.ensureVisible(find.text('Keys  ?'));
     await tester.pump();
-    await tester.tap(find.text('⌘'));
+    await tester.tap(find.text('Keys  ?'));
     await tester.pumpAndSettle();
 
     // The palette and the inspector are OniPanels too; this is the one
@@ -168,4 +170,21 @@ void main() {
     expect(panel.left, greaterThan(screen.width / 2),
         reason: 'and out of the way of the canvas');
   });
+  testWidgets('and it is spelled for the keyboard in front of you',
+      (tester) async {
+    // The card was written on a Mac and said ⌘ to everybody. Half the people
+    // who can open this in a browser have no such key, and for them the
+    // shortcut is Ctrl — which it now both says and answers to.
+    await pumpEditor(tester, apple: false);
+    await tester.ensureVisible(find.text('Keys  ?'));
+    await tester.tap(find.text('Keys  ?'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ctrl+Z'), findsOneWidget);
+    expect(find.text('Ctrl+Shift+Z'), findsOneWidget);
+    expect(find.text('⌘Z'), findsNothing);
+    // And what is the same everywhere is left alone.
+    expect(find.text('esc'), findsOneWidget);
+  });
+
 }

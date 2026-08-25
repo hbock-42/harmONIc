@@ -192,9 +192,15 @@ usually too pale to read on near-white.
 
 ## Keys
 
-**⌘** on the toolbar shows them all on a card. Or hold **?** — the card is up
-while the key is down and gone when you let go, which is what you want in the
-middle of dragging something.
+**Keys** on the toolbar shows them all on a card. Or hold **?** — the card is
+up while the key is down and gone when you let go, which is what you want in
+the middle of dragging something. The button says the key, because a shortcut
+nobody can find is a shortcut nobody has.
+
+They are written here the way a Mac writes them. **On Windows and Linux, hold
+Ctrl wherever this says ⌘** — Ctrl+Z, Ctrl+Shift+Z, Ctrl+C — and the card
+spells them that way too, because it asks the machine it is running on rather
+than the one this was written on.
 
 - **⌘Z** undo, **⇧⌘Z** redo. A whole drag is one step.
 - **⌫** delete what is selected — a node, several, or a wire.

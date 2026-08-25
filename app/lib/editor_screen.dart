@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'canvas/auto_layout.dart';
 import 'canvas/graph_canvas.dart';
+import 'design/keys.dart';
 import 'design/tokens.dart';
 import 'design/widgets.dart';
 import 'panels/guide_panel.dart';
@@ -29,6 +30,7 @@ class EditorScreen extends StatefulWidget {
     required this.workspace,
     required this.displaySettings,
     this.loadGuide,
+    this.apple,
     super.key,
   });
 
@@ -40,6 +42,14 @@ class EditorScreen extends StatefulWidget {
   /// Where the guide's text comes from; the asset unless a test says otherwise.
   final Future<String> Function()? loadGuide;
 
+  /// Which keyboard this is; the machine's unless a test says otherwise.
+  ///
+  /// Injected rather than read from the platform flag, for the same reason the
+  /// guide's loader is: a test that wants to be at a Mac should say so in the
+  /// test, and `debugDefaultTargetPlatformOverride` is global state the
+  /// framework then complains was left set.
+  final bool? apple;
+
   @override
   State<EditorScreen> createState() => _EditorScreenState();
 }
@@ -50,45 +60,53 @@ class EditorScreen extends StatefulWidget {
 /// app grew sixteen shortcuts and the guide mentioned three, and copy and
 /// paste — which is how you move part of a build into another one — was
 /// written down nowhere at all.
-const Map<ShortcutActivator, Intent> kEditorShortcuts =
-    <ShortcutActivator, Intent>{
-  SingleActivator(LogicalKeyboardKey.keyZ, meta: true):
-      _UndoIntent(),
-  SingleActivator(LogicalKeyboardKey.keyZ, meta: true, shift: true):
-      _RedoIntent(),
-  SingleActivator(LogicalKeyboardKey.delete): _DeleteIntent(),
-  SingleActivator(LogicalKeyboardKey.backspace): _DeleteIntent(),
-  SingleActivator(LogicalKeyboardKey.escape): _DeselectIntent(),
-  SingleActivator(LogicalKeyboardKey.equal, meta: true):
-      _ZoomInIntent(),
-  SingleActivator(LogicalKeyboardKey.add, meta: true): _ZoomInIntent(),
-  SingleActivator(LogicalKeyboardKey.minus, meta: true):
-      _ZoomOutIntent(),
-  SingleActivator(LogicalKeyboardKey.digit0, meta: true):
-      _ZoomResetIntent(),
-  SingleActivator(LogicalKeyboardKey.keyC, meta: true): _CopyIntent(),
-  SingleActivator(LogicalKeyboardKey.keyV, meta: true): _PasteIntent(),
+Map<ShortcutActivator, Intent> editorShortcuts({required bool apple}) {
+  // Held with ⌘ on a Mac and with Ctrl everywhere else. This was `meta: true`
+  // outright, which on Windows and Linux is a key most keyboards do not have.
+  final held = apple
+      ? (LogicalKeyboardKey key, {bool shift = false}) =>
+          SingleActivator(key, meta: true, shift: shift)
+      : (LogicalKeyboardKey key, {bool shift = false}) =>
+          SingleActivator(key, control: true, shift: shift);
+  return <ShortcutActivator, Intent>{
+  held(LogicalKeyboardKey.keyZ):
+      const _UndoIntent(),
+  held(LogicalKeyboardKey.keyZ, shift: true):
+      const _RedoIntent(),
+  const SingleActivator(LogicalKeyboardKey.delete): const _DeleteIntent(),
+  const SingleActivator(LogicalKeyboardKey.backspace): const _DeleteIntent(),
+  const SingleActivator(LogicalKeyboardKey.escape): const _DeselectIntent(),
+  held(LogicalKeyboardKey.equal):
+      const _ZoomInIntent(),
+  held(LogicalKeyboardKey.add): const _ZoomInIntent(),
+  held(LogicalKeyboardKey.minus):
+      const _ZoomOutIntent(),
+  held(LogicalKeyboardKey.digit0):
+      const _ZoomResetIntent(),
+  held(LogicalKeyboardKey.keyC): const _CopyIntent(),
+  held(LogicalKeyboardKey.keyV): const _PasteIntent(),
   // One grid cell per press — the grid is 8 — and eight cells with
   // shift. Written out rather than referred to, because the map is
   // const. Dragging was the only way to move a node, and dragging
   // something four pixels is a thing hands are bad at.
-  SingleActivator(LogicalKeyboardKey.arrowLeft):
-      _NudgeIntent(Offset(-8, 0)),
-  SingleActivator(LogicalKeyboardKey.arrowRight):
-      _NudgeIntent(Offset(8, 0)),
-  SingleActivator(LogicalKeyboardKey.arrowUp):
-      _NudgeIntent(Offset(0, -8)),
-  SingleActivator(LogicalKeyboardKey.arrowDown):
-      _NudgeIntent(Offset(0, 8)),
-  SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true):
-      _NudgeIntent(Offset(-64, 0)),
-  SingleActivator(LogicalKeyboardKey.arrowRight, shift: true):
-      _NudgeIntent(Offset(64, 0)),
-  SingleActivator(LogicalKeyboardKey.arrowUp, shift: true):
-      _NudgeIntent(Offset(0, -64)),
-  SingleActivator(LogicalKeyboardKey.arrowDown, shift: true):
-      _NudgeIntent(Offset(0, 64)),
-};
+  const SingleActivator(LogicalKeyboardKey.arrowLeft):
+      const _NudgeIntent(Offset(-8, 0)),
+  const SingleActivator(LogicalKeyboardKey.arrowRight):
+      const _NudgeIntent(Offset(8, 0)),
+  const SingleActivator(LogicalKeyboardKey.arrowUp):
+      const _NudgeIntent(Offset(0, -8)),
+  const SingleActivator(LogicalKeyboardKey.arrowDown):
+      const _NudgeIntent(Offset(0, 8)),
+  const SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true):
+      const _NudgeIntent(Offset(-64, 0)),
+  const SingleActivator(LogicalKeyboardKey.arrowRight, shift: true):
+      const _NudgeIntent(Offset(64, 0)),
+  const SingleActivator(LogicalKeyboardKey.arrowUp, shift: true):
+      const _NudgeIntent(Offset(0, -64)),
+  const SingleActivator(LogicalKeyboardKey.arrowDown, shift: true):
+      const _NudgeIntent(Offset(0, 64)),
+  };
+}
 
 /// What each of them is called, in the words the guide uses.
 const Map<String, String> kShortcutNames = <String, String>{
@@ -109,6 +127,8 @@ class _EditorScreenState extends State<EditorScreen> {
   final GlobalKey<GraphCanvasState> _canvasKey = GlobalKey<GraphCanvasState>();
 
   PipelineController get controller => widget.controller;
+
+  bool get _apple => widget.apple ?? appleKeys;
 
   /// Kept rather than built with the rest of the actions: it remembers when
   /// the last arrow press was, so a run of them is one edit, and a fresh
@@ -200,7 +220,7 @@ class _EditorScreenState extends State<EditorScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
         listenable: Listenable.merge([controller, widget.displaySettings]),
         builder: (context, _) => Shortcuts(
-          shortcuts: kEditorShortcuts,
+          shortcuts: editorShortcuts(apple: _apple),
           child: Actions(
             actions: <Type, Action<Intent>>{
               _UndoIntent: _CanvasAction<_UndoIntent>(controller.undo),
@@ -229,6 +249,7 @@ class _EditorScreenState extends State<EditorScreen> {
                 child: Column(
                   children: [
                     _TopBar(
+                      apple: _apple,
                       controller: controller,
                       workspace: widget.workspace,
                       canvasKey: _canvasKey,
@@ -311,6 +332,7 @@ class _EditorScreenState extends State<EditorScreen> {
               if (_keysPinned || _keysHeld)
                 Positioned.fill(
                   child: KeysPanel(
+                    apple: _apple,
                     onDismiss: _keysHeld
                         ? null
                         : () => setState(() => _keysPinned = false),
@@ -679,7 +701,11 @@ class _TopBar extends StatefulWidget {
     required this.onTogglePipelines,
     required this.onOpenGuide,
     required this.onOpenKeys,
+    required this.apple,
   });
+
+  /// ⌘ or Ctrl, decided once by whoever built this.
+  final bool apple;
 
   final PipelineController controller;
   final WorkspaceController workspace;
@@ -702,6 +728,7 @@ class _TopBarState extends State<_TopBar> {
   String _lastKnownName = '';
 
   PipelineController get controller => widget.controller;
+
   GlobalKey<GraphCanvasState> get canvasKey => widget.canvasKey;
 
   @override
@@ -718,6 +745,7 @@ class _TopBarState extends State<_TopBar> {
       _name.text = current;
     }
     _lastKnownName = current;
+    final apple = widget.apple;
 
     return Container(
         height: 44,
@@ -788,13 +816,13 @@ class _TopBarState extends State<_TopBar> {
             OniButton(
               // The key is on the button, the way the inspector's delete says
               // ⌫. A shortcut nobody can find is a shortcut nobody has.
-              label: 'Undo  ⌘Z',
+              label: 'Undo  ${chord('⌘Z', apple: apple)}',
               compact: true,
               onPressed: controller.canUndo ? controller.undo : null,
             ),
             const SizedBox(width: OniSpacing.xs),
             OniButton(
-              label: 'Redo  ⇧⌘Z',
+              label: 'Redo  ${chord('⇧⌘Z', apple: apple)}',
               compact: true,
               onPressed: controller.canRedo ? controller.redo : null,
             ),
@@ -864,13 +892,18 @@ class _TopBarState extends State<_TopBar> {
             OniButton(
               // Beside the guide, because they answer the same kind of
               // question: one is how it works, the other is what to press.
-              label: '⌘',
+              //
+              // Named rather than drawn: it was ⌘, which is a key that half
+              // the people who can open this have never had. And it carries
+              // its own shortcut, the way Undo does — the button that opens
+              // the keys should be the one the key opens.
+              label: 'Keys  ?',
               compact: true,
               onPressed: widget.onOpenKeys,
             ),
             const SizedBox(width: OniSpacing.xs),
             OniButton(
-              label: '?',
+              label: 'Guide',
               compact: true,
               onPressed: widget.onOpenGuide,
             ),

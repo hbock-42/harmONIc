@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../design/keys.dart';
 import '../design/tokens.dart';
 import '../design/widgets.dart';
 
@@ -7,6 +8,9 @@ import '../design/widgets.dart';
 typedef KeyLine = (String keys, String does);
 
 /// The keys, in groups, in the order somebody would want them.
+///
+/// Written in the Apple spelling and translated on the way to the screen, so
+/// that there is one list rather than two that can disagree.
 ///
 /// Written here rather than derived from the binding map, because the map is
 /// nineteen entries and this is eleven lines: four arrow keys are one idea,
@@ -38,7 +42,10 @@ const List<(String, List<KeyLine>)> kKeyGroups = [
 /// mid-drag without losing what you were doing — which is also why it is a
 /// card of pairs and not the prose the guide keeps.
 class KeysPanel extends StatelessWidget {
-  const KeysPanel({this.onDismiss, super.key});
+  const KeysPanel({required this.apple, this.onDismiss, super.key});
+
+  /// Whether to spell them ⌘Z or Ctrl+Z.
+  final bool apple;
 
   /// Null while it is being held open: there is nothing to press, and a
   /// dismiss target under a held key would only be in the way.
@@ -92,7 +99,7 @@ class KeysPanel extends StatelessWidget {
                               SizedBox(
                                 width: 116,
                                 child: Text(
-                                  keys,
+                                  chord(keys, apple: apple),
                                   style: OniType.numberSmall.copyWith(
                                     fontSize: 12,
                                     height: 1.35,

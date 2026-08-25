@@ -34,10 +34,13 @@ void main() {
   });
 
   Future<void> pumpEditor(WidgetTester tester) async {
+
     await useDesktopSurface(tester);
     controller = testController();
     workspace = await testWorkspace(controller);
     await tester.pumpWidget(harness(EditorScreen(
+      // These press ⌘; on Windows the same shortcuts are held with Ctrl.
+      apple: true,
       controller: controller,
       library: testLibrary(),
       workspace: workspace,

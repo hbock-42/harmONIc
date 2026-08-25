@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:oni_pipeline/design/keys.dart';
 import 'package:oni_pipeline/editor_screen.dart';
 
 /// Every key the app answers to is written down.
@@ -23,7 +26,7 @@ void main() {
   test('and every key the app binds has a name', () {
     // The other direction: adding a shortcut to the map without naming it
     // here is how the guide would fall behind again.
-    expect(kEditorShortcuts, isNotEmpty);
+    expect(editorShortcuts(apple: true), isNotEmpty);
     expect(kShortcutNames.length, greaterThan(8));
 
     // Every binding is one of the named ones. Arrow keys are named as a
@@ -33,8 +36,41 @@ void main() {
     // first version of this test was written against a map that had lost two
     // of them in an edit — and the honest thing was to put them back, not to
     // change the number.
-    expect(kEditorShortcuts.length, 19,
+    expect(editorShortcuts(apple: true).length, 19,
         reason: 'a new binding wants a line in kShortcutNames and in the '
             'guide, and then this number');
   });
+  test('and the other half of the world gets the same nineteen', () {
+    // Written on a Mac, so every binding said meta and every label said ⌘.
+    // On Windows and Linux that is a key most keyboards do not have: undo,
+    // redo, copy, paste and zoom were not mislabelled, they were missing.
+    final apple = editorShortcuts(apple: true);
+    final rest = editorShortcuts(apple: false);
+
+    expect(rest.length, apple.length);
+    expect(rest.values.map((i) => i.runtimeType).toSet(),
+        apple.values.map((i) => i.runtimeType).toSet());
+
+    final held = [
+      for (final activator in rest.keys)
+        if (activator case SingleActivator(:final control, :final meta))
+          if (control || meta) (control, meta),
+    ];
+    expect(held, isNotEmpty);
+    expect(held.every((h) => h.$1 && !h.$2), isTrue,
+        reason: 'Ctrl, and never a ⌘ key that is not on the keyboard');
+  });
+
+  test('and each is spelled the way that platform spells it', () {
+    expect(chord('⌘Z', apple: true), '⌘Z');
+    expect(chord('⌘Z', apple: false), 'Ctrl+Z');
+    // The order differs as well as the glyphs.
+    expect(chord('⇧⌘Z', apple: false), 'Ctrl+Shift+Z');
+    expect(chord('⌘C  ⌘V', apple: false), 'Ctrl+C  Ctrl+V');
+    // And a key that is the same everywhere is left alone.
+    for (final same in ['esc', 'arrow keys', 'space + drag', '⌫']) {
+      expect(chord(same, apple: false), same);
+    }
+  });
+
 }
