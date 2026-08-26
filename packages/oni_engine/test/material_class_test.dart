@@ -600,6 +600,11 @@ void main() {
         'clampum.fertiliser',
         // 20 kg a cycle of sulfur, solid or liquid.
         'gum_palm.fertiliser',
+        // 30 kg a cycle of brine or polluted brine, which the plant's own
+        // panel lists one under the other at the same figure. Reported by a
+        // player with a screenshot of it.
+        'tublia.polluted_brine',
+        'tublia_grazed.polluted_brine',
         // 140 kg a cycle of dirt, slime, algae, fertiliser, polluted dirt or
         // corallium, all back as coal, whichever it was.
         'sage_hatch.dirt',

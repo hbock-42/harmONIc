@@ -2489,11 +2489,11 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 2,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: built on a Thermal Gas Fissure, and duty-cycled — 100 s of drilling in every 1300 s — so every figure here is the average over the whole cycle, the way the wiki quotes its 74 W. It drops 250 kg of sulfur at 100 C per operation, which is 192 g/s averaged, and eats diamond at 1 kg/s while it runs, which is 77 g/s averaged. It also gives off natural gas at a rate nobody has published, so that is missing rather than guessed.",
+      "description": "Built on a Thermal Gas Fissure, and duty-cycled — 100 s of drilling in every 1300 s — so every figure here is the average over the whole cycle, the way the wiki quotes its 74 W. The fissure emits 83.3 g/s of natural gas for the 1200 s it is unblocked, which is 76.9 averaged, and a drilling drops 250 kg of sulfur on each of four neutronium tiles: 1000 kg, or 769 g/s averaged. Diamond goes in at 1 kg/s while it runs, which is 77 g/s averaged.",
       "tags": [
         "refining",
         "aquatic",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
@@ -2502,9 +2502,15 @@ const String oniDataJson = r"""
           "rate": 76.92
         },
         {
+          "item": "natural_gas",
+          "direction": "output",
+          "rate": 76.9,
+          "temperatureC": 100
+        },
+        {
           "item": "sulfur",
           "direction": "output",
-          "rate": 192.30769230769232,
+          "rate": 769.2307692307693,
           "temperatureC": 100
         }
       ],
@@ -2619,7 +2625,10 @@ const String oniDataJson = r"""
         {
           "item": "polluted_brine",
           "direction": "input",
-          "rate": 50.0
+          "rate": 50.0,
+          "alternatives": [
+            "brine"
+          ]
         },
         {
           "item": "sulfur",
@@ -2715,6 +2724,27 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1800,
           "temperatureC": 30
+        }
+      ]
+    },
+    {
+      "id": "polluted_brine_vent",
+      "name": "Polluted Brine Vent",
+      "kind": "custom",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "tags": [
+        "geyser",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_brine",
+          "direction": "output",
+          "rate": 3000,
+          "temperatureC": 95
         }
       ]
     },
@@ -5180,7 +5210,10 @@ const String oniDataJson = r"""
         {
           "item": "polluted_brine",
           "direction": "input",
-          "rate": 50.0
+          "rate": 50.0,
+          "alternatives": [
+            "brine"
+          ]
         },
         {
           "item": "sulfur",

@@ -23,6 +23,11 @@ const Map<String, String> expectedImbalance = <String, String>{
   'kiln_ceramic': '100 kg of clay and 25 kg of fuel make 100 kg of ceramic; '
       'the fuel is burnt',
   'duplicant': 'a Duplicant breathes 100 g/s and exhales 2 g/s of CO2',
+  // A geyser in all but name. The node is the drill and the fissure it
+  // sits on, and what the diamond buys is not a conversion — it is a
+  // blockage cleared, after which the crust sends up gas and sulfur.
+  'marine_drill': 'the diamond is spent unblocking a fissure; the natural '
+      'gas and the sulfur come up out of the crust',
 
   // Conversion rates the game states outright.
   'hatch': 'half the mineral it eats comes back as coal',

@@ -744,17 +744,56 @@ void main() {
       // 1300 s cycle gives 0.19 *kilograms* a second, and somebody wrote that
       // into a field measured in grams. The diamond beside it was worked out
       // the same way and was right, which is how the wrong one went unnoticed.
+      //
+      // Then the 250 kg turned out to be a quarter of the operation: a
+      // drilling drops that much on each of four neutronium tiles. A player
+      // sent a screenshot of the fissure saying "Sulfur Build-up: 1000 kg",
+      // and the wiki page — empty when this was first written — now says the
+      // same. So the unit was fixed a year before the number was.
       final drill = db.processOrThrow('marine_drill');
       expect(
         drill.outputs.firstWhere((p) => p.itemId == 'sulfur').ratePerSecond,
-        closeTo(250000 / 1300, 1e-6),
+        closeTo(1000000 / 1300, 1e-6),
       );
-      // Half a tonne of sulfur a cycle, not half a kilogram.
+      // Getting on for half a tonne of sulfur a cycle, not half a kilogram.
       expect(
         drill.outputs.firstWhere((p) => p.itemId == 'sulfur').ratePerSecond *
             secondsPerCycle / 1000,
-        closeTo(115, 1),
+        closeTo(461, 1),
       );
+      // And the gas the fissure is there for, which this used to leave out
+      // because nobody had published a figure for it.
+      expect(
+        drill.outputs.firstWhere((p) => p.itemId == 'natural_gas').ratePerSecond,
+        closeTo(76.9, 0.1),
+      );
+
+      // The same page says what those two rates are *enough for*, which is a
+      // second statement of the same figures and so a way to check them.
+      // "1 Natural Gas Generator at 85 % uptime":
+      final gas =
+          drill.outputs.firstWhere((p) => p.itemId == 'natural_gas');
+      final generator = db.processOrThrow('natural_gas_generator');
+      expect(
+        gas.ratePerSecond /
+            generator.inputs
+                .firstWhere((p) => p.itemId == 'natural_gas')
+                .ratePerSecond,
+        closeTo(0.85, 0.01),
+      );
+      // "4 Gildgos, 23 Tublias or 23 Gum Palms", each rounded down, because
+      // you cannot keep three fifths of a Gildgo.
+      final sulfur = drill.outputs.firstWhere((p) => p.itemId == 'sulfur');
+      double howMany(String id) =>
+          sulfur.ratePerSecond /
+          db
+              .processOrThrow(id)
+              .inputs
+              .firstWhere((p) => p.itemId == 'sulfur')
+              .ratePerSecond;
+      expect(howMany('gildgo').floor(), 4);
+      expect(howMany('tublia').floor(), 23);
+      expect(howMany('gum_palm').floor(), 23);
     });
 
     test('a Plug Slug is a generator that eats metal', () {
