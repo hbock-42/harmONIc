@@ -24,7 +24,9 @@ class DemoCursor extends StatelessWidget {
           final box = context.findRenderObject() as RenderBox?;
           if (box == null) return const SizedBox.shrink();
           final local = box.globalToLocal(at);
-          final size = hands.pressed ? 34.0 : 22.0;
+          // Big enough to find without hunting for it: this was 22 px and
+          // read as a dot somebody might have missed.
+          final size = hands.pressed ? 60.0 : 40.0;
 
           return Stack(
             children: [
@@ -46,7 +48,7 @@ class DemoCursor extends StatelessWidget {
                           .withValues(alpha: hands.pressed ? 0.35 : 0.18),
                       border: Border.all(
                         color: OniColors.accent,
-                        width: hands.pressed ? 3 : 2,
+                        width: hands.pressed ? 5 : 3,
                       ),
                     ),
                   ),

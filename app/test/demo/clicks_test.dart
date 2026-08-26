@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,7 +46,6 @@ void main() {
       workspace: workspace,
       controller: controller,
       hands: hands,
-      schedule: (_, _) => Timer(Duration.zero, () {}),
     );
     addTearDown(player.dispose);
     await tester.pumpWidget(harness(EditorScreen(
@@ -74,31 +72,37 @@ void main() {
     await done;
   }
 
-  testWidgets('the cursor goes to the palette row before anything is placed',
-      (tester) async {
+  testWidgets('it says where to look before anything happens', (tester) async {
     await pump(tester);
     await player.start(whatAGeyserFeeds);
     await tester.pumpAndSettle();
 
-    final stepping = player.step();
-    // Mid-step: the row is lit, the cursor is out, and nothing has been
-    // placed yet. Cause before effect is the whole of what was missing.
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 5));
-    expect(hands.litSpec, 'water_geyser');
-    // It searched for it first, because the row is otherwise below the fold
-    // and a cursor cannot point at what is not on screen.
+    // Before a single press: the words are on screen, the palette has been
+    // searched so the row is findable, the row is lit — and nothing has been
+    // built. Cause before effect is the whole of what was missing.
+    expect(find.textContaining('Water Geyser'), findsWidgets);
     expect(hands.search.text, 'Water Geyser');
-    await tester.pump(const Duration(milliseconds: 20));
-    expect(hands.cursor, isNotNull);
-    expect(controller.pipeline.nodes, isEmpty,
-        reason: 'it placed the node before showing where the click was');
+    expect(hands.litSpec, 'water_geyser');
+    expect(controller.pipeline.nodes, isEmpty);
     expect(find.byType(DemoCursor), findsOneWidget);
 
-    await tester.pumpAndSettle();
-    await stepping;
+    await playOne(tester);
     expect(controller.pipeline.nodes, hasLength(1));
     expect(hands.cursor, isNull, reason: 'and it puts the cursor away after');
+  });
+
+  testWidgets('and it points at the dot it is about to click',
+      (tester) async {
+    await pump(tester);
+    await player.start(whatAGeyserFeeds);
+    await tester.pumpAndSettle();
+    await playOne(tester);
+
+    // The step has not run, and the app is already pointing at the port the
+    // next press will use.
+    expect(hands.litPort?.portId, 'water');
+    expect(hands.aim, isNotNull, reason: 'the words have nowhere to sit');
+    expect(controller.pipeline.edges, isEmpty);
   });
 
   testWidgets('and a wire is asked for through the real port menu',
@@ -108,12 +112,13 @@ void main() {
     await tester.pumpAndSettle();
     await playOne(tester);
 
+    // Which dot it is about to click is checked above; this is about what
+    // happens when it does.
     final wiring = player.step();
-    // The dot first.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 5));
-    expect(hands.litPort?.portId, 'water');
-    expect(find.byType(PortMenu), findsNothing);
+    expect(find.byType(PortMenu), findsNothing,
+        reason: 'the menu opened before the cursor had got there');
 
     // Then the menu somebody would have opened, with the recipe about to be
     // chosen lit in it.

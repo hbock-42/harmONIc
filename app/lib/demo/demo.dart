@@ -208,6 +208,10 @@ class DemoRun {
 
   /// Who carries the steps out. A test's hands are the model's.
   final DemoHands hands;
+
+  /// What the steps have made so far, for anything that needs to find the
+  /// thing a step is about to touch before it touches it.
+  DemoStage get stage => _stage;
   final DemoStage _stage;
 
   int _done = 0;
@@ -224,9 +228,12 @@ class DemoRun {
       ? ''
       : demo.steps[_done == 0 ? 0 : _done - 1].says;
 
-  /// The step about to happen, for anybody who needs to know where the next
-  /// click is going.
+  /// The step about to happen: what it will do, and what it says about it.
+  ///
+  /// The line belongs to the step that has *not* happened yet, because the
+  /// point of it is to say where to look before anything moves.
   DemoAction? get next => isDone ? null : demo.steps[_done].does;
+  String? get nextSays => isDone ? null : demo.steps[_done].says;
 
   /// Play one step. Returns false when there was nothing left to play, or
   /// when the last one has not finished — a demo on screen takes its time,

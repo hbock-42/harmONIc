@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import 'canvas/auto_layout.dart';
 import 'demo/demo.dart';
-import 'demo/demo_bar.dart';
+import 'demo/demo_callout.dart';
 import 'demo/demo_cursor.dart';
 import 'demo/demos.dart';
 import 'demo/demo_player.dart';
@@ -231,6 +231,15 @@ class _EditorScreenState extends State<EditorScreen> {
     if (widget.demoPlayer?.run == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _canvasKey.currentState?.fitToContent();
+      // Aim again once everything has a position. A node placed this frame
+      // has none until the next, and the view is still sliding to fit it, so
+      // the answer the player got a moment ago was either null or stale.
+      final player = widget.demoPlayer;
+      // Not while a step is in flight: the thing the step *after* it points
+      // at is usually the thing this one is still making.
+      if (player != null && player.run != null && !player.isStepping) {
+        widget.demoHands?.aimAt(player.run!.next, player.run!.stage);
+      }
     });
   }
 
@@ -345,13 +354,6 @@ class _EditorScreenState extends State<EditorScreen> {
                         onDismiss: () =>
                             setState(() => _offerDeclined = true),
                       ),
-                    // Under the tabs, above everything a demo is about to
-                    // change, and gone entirely when nothing is playing.
-                    if (widget.demoPlayer case final DemoPlayer player)
-                      ListenableBuilder(
-                        listenable: player,
-                        builder: (context, _) => DemoBar(player: player),
-                      ),
                     _RepairNotice(workspace: widget.workspace),
                     ProblemsBanner(controller: controller),
                     Expanded(
@@ -449,9 +451,14 @@ class _EditorScreenState extends State<EditorScreen> {
                   ),
                 ),
               ?_recipeEditor(),
-              // Over everything, because it points at everything.
-              if (widget.demoHands case final WidgetHands hands)
+              // Over everything, because they point at everything.
+              if (widget.demoHands case final WidgetHands hands) ...[
                 Positioned.fill(child: DemoCursor(hands: hands)),
+                if (widget.demoPlayer case final DemoPlayer player)
+                  Positioned.fill(
+                    child: DemoCallout(player: player, hands: hands),
+                  ),
+              ],
                 ],
               ),
             ),

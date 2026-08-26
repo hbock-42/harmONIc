@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
@@ -22,7 +21,6 @@ void main() {
     player = DemoPlayer(
       workspace: workspace,
       controller: controller,
-      schedule: (_, _) => Timer(Duration.zero, () {}),
     );
     addTearDown(player.dispose);
     await tester.pumpWidget(harness(EditorScreen(
@@ -49,9 +47,10 @@ void main() {
 
     expect(player.isRunning, isTrue);
     // In a build of its own, so the blank canvas is still there to come back
-    // to — and the bar is now saying the first line.
+    // to. Nothing has happened in it yet: a press does that.
     expect(controller.pipeline.id, isNot('blank'));
-    expect(find.textContaining('Water Geyser'), findsWidgets);
+    expect(controller.pipeline.nodes, isEmpty);
+    expect(player.run!.nextSays, contains('Water Geyser'));
   });
 
   testWidgets('and the guide offers it too, for a canvas that is not empty',

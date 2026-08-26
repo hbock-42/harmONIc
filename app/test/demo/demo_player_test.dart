@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/demo/demo.dart';
-import 'package:oni_pipeline/demo/demo_bar.dart';
 import 'package:oni_pipeline/demo/demo_player.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
-import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/state/workspace_controller.dart';
 
 import '../support/harness.dart';
@@ -39,34 +35,11 @@ void main() {
   late PipelineController controller;
   late WorkspaceController workspace;
   late DemoPlayer player;
-  late List<void Function(Timer)> ticks;
-
-  /// The clock is a seam, not a wait: a test that slept 2.6 seconds a step is
-  /// a test nobody runs. Same trick as the guide's loader and the link opener.
-  ///
-  /// It has to honour cancel, or a paused demo goes on playing here while it
-  /// stops everywhere else — which is exactly what the first version did.
-  Future<void> tick() async {
-    for (final onTick in [...ticks]) {
-      onTick(_StubTimer());
-    }
-    // A step is a Future now — on screen it moves a cursor and waits — so the
-    // clock ticking is not the same moment as the step being finished.
-    await Future<void>.delayed(Duration.zero);
-  }
 
   setUp(() async {
     controller = testController(pipeline: testPipeline());
     workspace = await testWorkspace(controller);
-    ticks = [];
-    player = DemoPlayer(
-      workspace: workspace,
-      controller: controller,
-      schedule: (_, onTick) {
-        ticks.add(onTick);
-        return _StubTimer(onCancel: () => ticks.remove(onTick));
-      },
-    );
+    player = DemoPlayer(workspace: workspace, controller: controller);
     addTearDown(player.dispose);
   });
 
@@ -77,21 +50,51 @@ void main() {
     expect(controller.pipeline.id, isNot(mine),
         reason: 'the demo did not open on top of what I was building');
     expect(controller.pipeline.nodes, isEmpty);
-    expect(player.run!.says, 'Nothing yet.');
-    expect(player.isPlaying, isTrue, reason: 'it starts playing');
+    // Nothing happens until somebody presses Next: a demo that plays itself
+    // is a video, and you look away to read a number and it has moved on.
+    expect(player.run!.played, 0);
+    expect(player.run!.nextSays, 'Nothing yet.');
   });
 
-  test('and leaving puts your build back and takes the demo away', () async {
+  test('and each press does one thing', () async {
+    await player.start(threeSteps());
+
+    await player.step();
+    expect(player.run!.played, 1);
+    expect(controller.pipeline.nodes, isEmpty, reason: 'the first only talks');
+
+    await player.step();
+    expect(controller.pipeline.nodes, hasLength(1));
+
+    await player.step();
+    expect(controller.pipeline.edges, hasLength(1));
+    expect(player.run!.isDone, isTrue);
+  });
+
+  test('and the words are about what has not happened yet', () async {
+    // The whole reason they moved next to the cursor: they say where to look
+    // before anything moves.
+    await player.start(threeSteps());
+    expect(player.run!.nextSays, 'Nothing yet.');
+
+    await player.step();
+    expect(player.run!.nextSays, 'A water supply.');
+    expect(controller.pipeline.nodes, isEmpty);
+
+    await player.step();
+    expect(player.run!.nextSays, 'An Electrolyzer, fed from it.');
+  });
+
+  test('leaving puts your build back and takes the demo away', () async {
     final mine = controller.pipeline.id;
     await player.start(threeSteps());
-    await tick();
-    await tick();
+    await player.step();
+    await player.step();
     expect(controller.pipeline.nodes, isNotEmpty);
 
     await player.leave();
 
     expect(player.isRunning, isFalse);
-    expect(player.isPlaying, isFalse);
     expect(controller.pipeline.id, mine, reason: 'back where I was');
     expect(controller.pipeline.nodes, hasLength(testPipeline().nodes.length),
         reason: 'and untouched');
@@ -99,73 +102,18 @@ void main() {
     expect(workspace.saved.map((s) => s.name), isNot(contains('Three steps')));
   });
 
-  test('the clock plays it a step at a time', () async {
-    await player.start(threeSteps());
-    expect(player.run!.played, 0);
-
-    await tick();
-    expect(player.run!.played, 1);
-    expect(player.run!.says, 'Nothing yet.');
-
-    await tick();
-    expect(player.run!.played, 2);
-    expect(controller.pipeline.nodes, hasLength(1));
-  });
-
-  test('pause stops it where it is, and play carries on', () async {
-    await player.start(threeSteps());
-    await tick();
-    player.pause();
-    expect(player.isPlaying, isFalse);
-
-    final where = player.run!.played;
-    await tick();
-    expect(player.run!.played, where, reason: 'a paused demo does not move');
-
-    player.play();
-    await tick();
-    expect(player.run!.played, where + 1);
-  });
-
-  test('and you can walk it forward yourself', () async {
-    await player.start(threeSteps());
-    player.pause();
-
-    await player.step();
-    await player.step();
-
-    expect(player.run!.played, 2);
-    expect(controller.pipeline.nodes, hasLength(1));
-  });
-
-  test('the last step stops the clock', () async {
-    // Rather than leaving a timer ticking over a demo with nothing left to
-    // do, which is the sort of thing that keeps a test binding awake.
-    await player.start(threeSteps());
-    await tick();
-    await tick();
-    await tick();
-
-    expect(player.run!.isDone, isTrue);
-    expect(player.isPlaying, isFalse);
-    expect(controller.pipeline.edges, hasLength(1));
-  });
-
   test('opening another build ends the demo rather than building into it',
       () async {
-    // Reported by a probe rather than a person, and it threw: switch tabs
-    // mid-demo and the next step wires a node to something that is not in
-    // this pipeline. A demo owns a tab, and only while that tab is on screen.
+    // It threw, before this: switch tabs mid-demo and the next step wires a
+    // node to something that is not in this pipeline.
     final mine = controller.pipeline.id;
     await player.start(threeSteps());
-    await tick();
-    await tick();
-    expect(controller.pipeline.nodes, isNotEmpty);
+    await player.step();
+    await player.step();
 
     await workspace.open(mine);
 
     expect(player.isRunning, isFalse, reason: 'it let go');
-    expect(player.isPlaying, isFalse);
     expect(controller.pipeline.id, mine);
     expect(controller.pipeline.nodes, hasLength(testPipeline().nodes.length),
         reason: 'and did not build into what I switched to');
@@ -174,70 +122,11 @@ void main() {
 
   test('starting another one does not leave the first behind', () async {
     await player.start(threeSteps());
-    await tick();
+    await player.step();
     await player.start(threeSteps());
 
     expect(player.run!.played, 0);
     expect(
         workspace.saved.where((s) => s.name == 'Three steps'), hasLength(1));
   });
-  testWidgets('the bar says the line and takes the pace off the clock',
-      (tester) async {
-    await useDesktopSurface(tester);
-    await tester.pumpWidget(harness(EditorScreen(
-      controller: controller,
-      library: testLibrary(),
-      workspace: workspace,
-      displaySettings: testDisplay(),
-      demoPlayer: player,
-    )));
-
-    // Nothing playing, nothing in the way.
-    expect(find.byType(DemoBar), findsOneWidget);
-    expect(find.text('Leave'), findsNothing);
-
-    await player.start(threeSteps());
-    await tester.pumpAndSettle();
-    expect(find.text('Nothing yet.'), findsOneWidget);
-    expect(find.text('Pause'), findsOneWidget);
-
-    // Somebody who reads faster than the clock does not have to wait for it.
-    // Twice, because the line on screen is the one that has just happened and
-    // the first step of this demo only talks.
-    await tester.tap(find.text('Next'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Next'));
-    await tester.pumpAndSettle();
-    expect(find.text('A water supply.'), findsOneWidget);
-    expect(controller.pipeline.nodes, hasLength(1));
-
-    await tester.tap(find.text('Pause'));
-    await tester.pumpAndSettle();
-    expect(find.text('Play'), findsOneWidget);
-
-    await tester.tap(find.text('Leave'));
-    await tester.pumpAndSettle();
-    expect(find.text('A water supply.'), findsNothing);
-    expect(controller.pipeline.nodes, hasLength(testPipeline().nodes.length));
-  });
-}
-
-/// A timer that never fires by itself; the test decides when.
-class _StubTimer implements Timer {
-  _StubTimer({this.onCancel});
-
-  final void Function()? onCancel;
-  bool _active = true;
-
-  @override
-  void cancel() {
-    _active = false;
-    onCancel?.call();
-  }
-
-  @override
-  bool get isActive => _active;
-
-  @override
-  int get tick => 0;
 }

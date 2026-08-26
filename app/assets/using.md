@@ -200,10 +200,12 @@ places and every amount it pins is a thing you could have typed, and every
 figure it quotes comes out of the solver as it goes — which is why a test can
 check that what it says matches what it does.
 
-It runs in a tab of its own, so whatever you were building is untouched, and
-**Leave** throws the demo's build away rather than leaving it in your list.
-**Next** works while it is playing, for anybody who reads faster than the
-clock.
+It does not play itself. Each step waits on **Next**, which sits in the card
+beside whatever is about to be clicked — so the words, the button and the thing
+they are about are all in one place, and nothing moves on while you are reading
+a number. It runs in a tab of its own, so whatever you were building is
+untouched, and **Leave** throws the demo's build away rather than leaving it in
+your list.
 
 ## When it is wrong
 

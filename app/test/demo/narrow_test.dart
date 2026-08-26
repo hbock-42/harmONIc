@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
@@ -29,7 +28,6 @@ void main() {
       final player = DemoPlayer(
         workspace: workspace,
         controller: controller,
-        schedule: (_, _) => Timer(Duration.zero, () {}),
       );
       addTearDown(player.dispose);
 

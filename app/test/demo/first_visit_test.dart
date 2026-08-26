@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_pipeline/demo/demo_player.dart';
@@ -22,7 +21,6 @@ void main() {
     player = DemoPlayer(
       workspace: workspace,
       controller: controller,
-      schedule: (_, _) => Timer(Duration.zero, () {}),
     );
     addTearDown(player.dispose);
     await tester.pumpWidget(harness(EditorScreen(

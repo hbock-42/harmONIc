@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui' show Rect;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -27,7 +26,6 @@ void main() {
     player = DemoPlayer(
       workspace: workspace,
       controller: controller,
-      schedule: (_, _) => Timer(Duration.zero, () {}),
     );
     addTearDown(player.dispose);
     await tester.pumpWidget(harness(EditorScreen(

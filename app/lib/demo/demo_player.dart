@@ -5,31 +5,23 @@ import 'package:flutter/foundation.dart';
 import '../state/pipeline_controller.dart';
 import '../state/workspace_controller.dart';
 import 'demo.dart';
+import 'widget_hands.dart';
 
-/// How long a step sits on screen before the next one.
+/// Plays a demo, in a build of its own, one press at a time.
 ///
-/// One number for every step, which is wrong and knowingly so: a line of six
-/// words and a line that asks you to read a figure off a node do not want the
-/// same pause. `E15-7` is that, and it is waiting on somebody actually
-/// watching one, because rules about reading speed invented at a desk are
-/// usually wrong.
-const Duration kDemoStepDelay = Duration(milliseconds: 2600);
-
-/// Plays a demo, in a build of its own.
+/// Nothing advances on a clock. A demo that plays itself is a video with extra
+/// steps: you look away to read a number and it has moved on without you. The
+/// press is the pace.
 ///
-/// The tab is the point. A demo places nodes and pins amounts on a real
+/// The tab is the other half. A demo places nodes and pins amounts on a real
 /// controller — that is what makes its numbers real — so it must not do any of
-/// that to what you were working on. It gets its own pipeline, and leaving
-/// throws that pipeline away: a demo is not your work and should not turn up
-/// in your list of builds afterwards.
+/// that to what you were working on. Leaving throws its build away.
 class DemoPlayer extends ChangeNotifier {
   DemoPlayer({
     required this.workspace,
     required this.controller,
-    this.stepDelay = kDemoStepDelay,
     this.hands = const ModelHands(),
-    Timer Function(Duration, void Function(Timer))? schedule,
-  }) : _schedule = schedule ?? Timer.periodic {
+  }) {
     // A demo owns a tab, and only while that tab is the one on screen. Open
     // another and the next step would build into it — or throw, because the
     // node it meant to wire up is somewhere else.
@@ -38,66 +30,64 @@ class DemoPlayer extends ChangeNotifier {
 
   final WorkspaceController workspace;
   final PipelineController controller;
-  final Duration stepDelay;
 
   /// Who carries the steps out: the model directly in a test, and the real
-  /// widgets — cursor, port menu, the lot — on screen.
+  /// widgets — cursor, palette search, port menu — on screen.
   final DemoHands hands;
 
-  /// How the waiting is done. A real timer, unless a test says otherwise —
-  /// the seam the guide's loader and the link opener already have.
-  final Timer Function(Duration, void Function(Timer)) _schedule;
-
   DemoRun? _run;
-  Timer? _timer;
   String? _tabId;
   bool _leaving = false;
+  bool _stepping = false;
 
   /// The demo being played, if one is.
   DemoRun? get run => _run;
 
-  bool get isPlaying => _timer != null;
-
   /// Started and not yet finished or left.
   bool get isRunning => _run != null;
 
-  /// Opens a build of its own and plays [demo] in it.
+  /// A step is in flight — the cursor is still travelling, so Next should
+  /// wait rather than start a second one over the top.
+  bool get isStepping => _stepping;
+
+  /// Opens a build of its own and gets ready to play [demo] in it.
   Future<void> start(Demo demo) async {
     await leave();
     _tabId = await workspace.createNew(name: demo.name);
-    _run = DemoRun(demo, controller, hands: hands);
-    notifyListeners();
-    play();
-  }
-
-  void play() {
-    if (_run == null || _run!.isDone || isPlaying) return;
-    _timer = _schedule(stepDelay, (_) => unawaited(step()));
+    final run = DemoRun(demo, controller, hands: hands);
+    _run = run;
+    _aim();
     notifyListeners();
   }
 
-  void pause() {
-    if (!isPlaying) return;
-    _timer!.cancel();
-    _timer = null;
-    notifyListeners();
-  }
-
-  /// One step, whether or not it is playing.
-  ///
-  /// Pressing this while it plays does not double up: the timer is left alone
-  /// and simply has less to do, and the last step stops the clock rather than
-  /// letting it tick on over a finished demo.
+  /// Do the next thing, and then point at the one after it.
   Future<void> step() async {
     final run = _run;
-    if (run == null) return;
-    // Said before it is done, so the line is on screen while the cursor is
-    // still on its way to whatever it describes.
+    if (run == null || _stepping) return;
+    _stepping = true;
     notifyListeners();
-    await run.step();
+    try {
+      await run.step();
+    } finally {
+      _stepping = false;
+    }
     if (_run != run) return;
-    if (run.isDone) pause();
+    _aim();
     notifyListeners();
+  }
+
+  void _aim() {
+    final run = _run;
+    if (run == null) return;
+    if (hands case final WidgetHands widget) {
+      widget.aimAt(run.next, run.stage);
+    }
+  }
+
+  void _stopIfLeftBehind() {
+    final tab = _tabId;
+    if (tab == null || _leaving || workspace.currentId == tab) return;
+    unawaited(leave());
   }
 
   /// Stop, and throw the demo's build away.
@@ -105,19 +95,15 @@ class DemoPlayer extends ChangeNotifier {
   /// Deleted rather than closed: a tab you did not make, left in your list of
   /// builds, is litter — and the one thing worse than a demo you cannot leave
   /// is one that leaves something behind.
-  void _stopIfLeftBehind() {
-    final tab = _tabId;
-    if (tab == null || _leaving || workspace.currentId == tab) return;
-    unawaited(leave());
-  }
-
   Future<void> leave() async {
     if (_leaving) return;
     _leaving = true;
-    pause();
     _run = null;
     final tab = _tabId;
     _tabId = null;
+    if (hands case final WidgetHands widget) {
+      widget.aimAt(null, DemoStage(controller));
+    }
     if (tab != null) await workspace.delete(tab);
     _leaving = false;
     notifyListeners();
@@ -126,7 +112,6 @@ class DemoPlayer extends ChangeNotifier {
   @override
   void dispose() {
     workspace.removeListener(_stopIfLeftBehind);
-    _timer?.cancel();
     super.dispose();
   }
 }

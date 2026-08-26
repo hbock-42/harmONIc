@@ -76,6 +76,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E15-14` **The words sit beside the thing, and Next with them** — reported by Hugo: the
+  circle was too small, the narration was at the top of the screen while the action was in the
+  middle of it, and it played itself. The bar is gone. A card sits beside whatever is about to
+  be clicked, holding the line that describes it and the button that does it, so the words, the
+  press and the thing are all in one place. The cursor is 40 px across and 60 while pressed.
+  Nothing advances on a clock, which retired `E15-7`: there is no pace to tune when it waits
+  for you
+
 - `E15-12`, `E15-13` **The demo does what a person does** — Hugo, twice: it builds like magic
   and you cannot see where to click. He was right both times, and the second time was after I
   had "fixed" it by lighting a port dot. The cause was `E15-1`'s step model: a step was a call
@@ -1377,7 +1385,8 @@ has been dismissed.
 | E15-11 | ❌ | A step shows where somebody would have clicked | lighting the dot *after* the node appeared was a caption on a magic trick. Superseded by `E15-12`, which fixes the cause | reported: things appear and wire themselves up and you cannot see where the click was. The port dots already know how to glow — that is how a wire being dragged shows its legal targets — so a step points at a port or at the palette row it came from |
 | E15-12 | ✅ | The demo does what a person does, not what the model does | reported twice: it builds like magic and you cannot see where to click. `E15-1` made a step an action on the controller, which is why — nothing is ever clicked, so there is nothing to point at until after the fact. A step becomes an *intent* instead, and how it is carried out depends on who is watching: straight to the controller in a test, and through the real widgets, with a cursor and the real port menu, on screen |
 | E15-13 | ✅ | A cursor you can follow | it moves to the thing, then the thing happens. Cause before effect is the whole of what was missing |
-| E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
+| E15-14 | ✅ | The words sit beside the thing, and Next with them | a line at the top of the screen and the action at the bottom is two places to look. The card follows the cursor, carries the button, and nothing advances on a clock — which retired `E15-7` as well |
+| E15-7 | ❌ | Pace it by what it is saying | there is no pace to tune: it waits for a press. The question was how long a step should sit on screen, and the answer turned out to be "as long as you like" | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality
 
