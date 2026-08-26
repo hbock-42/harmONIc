@@ -320,8 +320,11 @@ The app is most misleading where it is most confident, so:
 - **Space.** Floor area is a tile count, not a shape. Nothing knows whether it
   fits.
 - **Spoilage, morale and germs.** A Dehydrator preserves food and this app sees
-  only that it costs plastic — and since a dish became a material it cannot
-  even be wired to anything sensible, which is written on the recipe itself. Food quality is half the reason anyone cooks and
+  only what that costs: 12 kg of plastic and a Duplicant's time for six packs.
+  What it buys — food that never spoils — is a thing with no rate, so drying
+  and restoring conserve calories exactly and the whole round trip shows up as
+  a bill. Food quality is half the reason anyone cooks and is not modelled at
+  all. Food quality is half the reason anyone cooks and
   is not modelled at all. Germs are deliberate too: they change no rate in the
   game — a Water Sieve passes them through at the same 5 kg/s either way — so a
   germ count here would be a number that never entered a calculation.

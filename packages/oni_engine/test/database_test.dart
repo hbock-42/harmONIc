@@ -615,23 +615,29 @@ void main() {
           greaterThan(solution.nodes['peppers']!.count * 10));
     });
 
-    test('a preserving step makes no food, and says so', () {
-      // A Dehydrator is a cost with no yield in a flow model: the calories out
-      // are the calories in, and what it actually buys — food that never
-      // spoils — is a thing this app has no notion of. Worth pinning, because
-      // a future edit that "fixes" the balance by inventing a yield would be
-      // inventing food.
-      final dehydrator = db.processOrThrow('dehydrator');
-      final into =
-          dehydrator.inputs.firstWhere((p) => p.itemId == 'calories');
-      final out =
-          dehydrator.outputs.firstWhere((p) => p.itemId == 'calories');
-      expect(out.ratePerSecond, into.ratePerSecond);
-      expect(dehydrator.description, contains('never spoil'));
-      // And it says the other thing too, which is newer and worse: its input
-      // is calories, and since a dish became a material the only thing that
-      // makes calories is somebody eating. Nothing can feed it but a plate.
-      expect(dehydrator.description, contains('stranded'));
+    test('preserving food makes none of it, in either direction', () {
+      // A Dehydrator is a cost with no yield: what it buys is food that never
+      // spoils, and this app has no notion of spoiling. So the calories that
+      // come out are the calories that went in, and the same on the way back
+      // through a Rehydrator. Worth pinning across all nine, because an edit
+      // that "fixed" a balance by inventing a yield would be inventing food.
+      double calories(ProcessSpec spec, Iterable<Port> ports) => ports.fold(
+          0.0,
+          (sum, port) =>
+              sum + port.ratePerSecond * (db.item(port.itemId)?.kcalPerKg ?? 0));
+
+      var checked = 0;
+      for (final spec in db.processes) {
+        if (spec.buildingId != 'dehydrator' &&
+            spec.buildingId != 'rehydrator') {
+          continue;
+        }
+        checked++;
+        expect(calories(spec, spec.outputs),
+            closeTo(calories(spec, spec.inputs), 1e-6),
+            reason: '"${spec.id}" makes food out of drying it');
+      }
+      expect(checked, 18, reason: 'nine dishes, dried and restored');
     });
 
     test('a cooker without a published batch time says so', () {

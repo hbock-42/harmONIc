@@ -1511,6 +1511,60 @@
       "tags": [
         "frosty"
       ]
+    },
+    {
+      "id": "dried_stuffed_berry",
+      "name": "Dried Stuffed Berry",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_mushroom_wrap",
+      "name": "Dried Mushroom Wrap",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_surf_n_turf",
+      "name": "Dried Surf'n'Turf",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_pepper_bread",
+      "name": "Dried Pepper Bread",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_mushroom_quiche",
+      "name": "Dried Mushroom Quiche",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_curried_beans",
+      "name": "Dried Curried Beans",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_spicy_tofu",
+      "name": "Dried Spicy Tofu",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_frost_burger",
+      "name": "Dried Frost Burger",
+      "category": "solid",
+      "kcalPerKg": 1000
+    },
+    {
+      "id": "dried_mixed_berry_pie",
+      "name": "Dried Mixed Berry Pie",
+      "category": "solid",
+      "kcalPerKg": 1000
     }
   ],
   "processes": [
@@ -8159,60 +8213,6 @@
       }
     },
     {
-      "id": "dehydrator",
-      "name": "Dehydrator",
-      "kind": "building",
-      "buildingId": "dehydrator",
-      "powerWatts": 0,
-      "heatKdtuPerSecond": 4,
-      "dupeLabourSecondsPerCycle": 0,
-      "footprintWidth": 3,
-      "footprintHeight": 2,
-      "description": "UNVERIFIED, and now stranded: it dries 6 000 kcal of cooked food into 6 000 that never spoil, on 12 kg of plastic and a trickle of natural gas, giving back 6 kg of water. Its input is calories, and since a dish became a material the only thing in this app that makes calories is somebody eating — so the only way to feed this is out of a Duplicant’s plate, which is nonsense. It wants a recipe per Gas Range dish and nine dried foods to make, which is E4-55; until then it is here to be read rather than wired.",
-      "tags": [
-        "food",
-        "unverified"
-      ],
-      "ports": [
-        {
-          "item": "calories",
-          "direction": "input",
-          "rate": 20.0
-        },
-        {
-          "item": "plastic",
-          "direction": "input",
-          "rate": 40.0
-        },
-        {
-          "item": "natural_gas",
-          "direction": "input",
-          "rate": 20
-        },
-        {
-          "item": "calories",
-          "direction": "output",
-          "rate": 20.0,
-          "id": "preserved"
-        },
-        {
-          "item": "water",
-          "direction": "output",
-          "rate": 20.0,
-          "temperatureC": 95
-        },
-        {
-          "item": "carbon_dioxide",
-          "direction": "output",
-          "rate": 5
-        }
-      ],
-      "build": {
-        "refined_metal": 200,
-        "plastic": 100
-      }
-    },
-    {
       "id": "smoker_brisket",
       "name": "Smoker (Tender Brisket)",
       "kind": "building",
@@ -10047,6 +10047,825 @@
           "rate": 0.4166666666666667
         }
       ]
+    },
+    {
+      "id": "dehydrator_stuffed_berry",
+      "name": "Dehydrator (Stuffed Berry)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Stuffed Berry — 1.36 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "stuffed_berry",
+          "direction": "input",
+          "rate": 4.545454545454545
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_stuffed_berry",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_stuffed_berry",
+      "name": "Rehydrator (Stuffed Berry)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Stuffed Berry back — 0.23 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_stuffed_berry",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "stuffed_berry",
+          "direction": "output",
+          "rate": 4.545454545454545
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_mushroom_wrap",
+      "name": "Dehydrator (Mushroom Wrap)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Mushroom Wrap — 1.25 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mushroom_wrap",
+          "direction": "input",
+          "rate": 4.166666666666667
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_mushroom_wrap",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_mushroom_wrap",
+      "name": "Rehydrator (Mushroom Wrap)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mushroom Wrap back — 0.21 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_mushroom_wrap",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "mushroom_wrap",
+          "direction": "output",
+          "rate": 4.166666666666667
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_surf_n_turf",
+      "name": "Dehydrator (Surf'n'Turf)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Surf'n'Turf — 1.00 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "surf_n_turf",
+          "direction": "input",
+          "rate": 3.3333333333333335
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_surf_n_turf",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_surf_n_turf",
+      "name": "Rehydrator (Surf'n'Turf)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Surf'n'Turf back — 0.17 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_surf_n_turf",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "surf_n_turf",
+          "direction": "output",
+          "rate": 3.333333333333333
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_pepper_bread",
+      "name": "Dehydrator (Pepper Bread)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Pepper Bread — 1.50 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pepper_bread",
+          "direction": "input",
+          "rate": 5.0
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_pepper_bread",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_pepper_bread",
+      "name": "Rehydrator (Pepper Bread)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Pepper Bread back — 0.25 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_pepper_bread",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "pepper_bread",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_mushroom_quiche",
+      "name": "Dehydrator (Mushroom Quiche)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Mushroom Quiche — 0.94 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mushroom_quiche",
+          "direction": "input",
+          "rate": 3.125
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_mushroom_quiche",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_mushroom_quiche",
+      "name": "Rehydrator (Mushroom Quiche)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mushroom Quiche back — 0.16 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_mushroom_quiche",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "mushroom_quiche",
+          "direction": "output",
+          "rate": 3.125
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_curried_beans",
+      "name": "Dehydrator (Curried Beans)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Curried Beans — 1.20 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "curried_beans",
+          "direction": "input",
+          "rate": 4.0
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_curried_beans",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_curried_beans",
+      "name": "Rehydrator (Curried Beans)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Curried Beans back — 0.20 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_curried_beans",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "curried_beans",
+          "direction": "output",
+          "rate": 4.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_spicy_tofu",
+      "name": "Dehydrator (Spicy Tofu)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Spicy Tofu — 1.50 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "spicy_tofu",
+          "direction": "input",
+          "rate": 5.0
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_spicy_tofu",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_spicy_tofu",
+      "name": "Rehydrator (Spicy Tofu)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Spicy Tofu back — 0.25 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_spicy_tofu",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "spicy_tofu",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_frost_burger",
+      "name": "Dehydrator (Frost Burger)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Frost Burger — 1.00 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "frost_burger",
+          "direction": "input",
+          "rate": 3.3333333333333335
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_frost_burger",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_frost_burger",
+      "name": "Rehydrator (Frost Burger)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Frost Burger back — 0.17 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_frost_burger",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "frost_burger",
+          "direction": "output",
+          "rate": 3.333333333333333
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
+    },
+    {
+      "id": "dehydrator_mixed_berry_pie",
+      "name": "Dehydrator (Mixed Berry Pie)",
+      "kind": "building",
+      "buildingId": "dehydrator",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 4,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 100,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "6000 kcal of Mixed Berry Pie — 1.43 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mixed_berry_pie",
+          "direction": "input",
+          "rate": 4.761904761904762
+        },
+        {
+          "item": "plastic",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "dried_mixed_berry_pie",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 5.0
+        }
+      ],
+      "build": {
+        "refined_metal": 200,
+        "gasket": 2
+      }
+    },
+    {
+      "id": "rehydrator_mixed_berry_pie",
+      "name": "Rehydrator (Mixed Berry Pie)",
+      "kind": "building",
+      "buildingId": "rehydrator",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 1,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mixed Berry Pie back — 0.24 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "dried_mixed_berry_pie",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "mixed_berry_pie",
+          "direction": "output",
+          "rate": 4.761904761904762
+        }
+      ],
+      "build": {
+        "refined_metal": 100,
+        "gasket": 1
+      }
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
