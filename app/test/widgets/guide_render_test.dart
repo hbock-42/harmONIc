@@ -18,7 +18,7 @@ import '../support/harness.dart';
 void main() {
   final markdown = File('../docs/USING.md').readAsStringSync();
 
-  testWidgets('every section reaches the screen', (tester) async {
+  testWidgets('every topic is listed, and every topic opens', (tester) async {
     await tester.binding.setSurfaceSize(const Size(900, 4000));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -30,15 +30,36 @@ void main() {
     )));
     await tester.pumpAndSettle();
 
-    final headings = [
-      for (final line in markdown.split('\n'))
-        if (line.startsWith('## ')) line.substring(3),
-    ];
-    expect(headings.length, greaterThan(5));
-    for (final heading in headings) {
-      await tester.scrollUntilVisible(find.text(heading), 300,
+    final guide = splitGuide(markdown);
+    expect(guide.topics.length, greaterThan(5));
+
+    for (final topic in guide.topics) {
+      // Listed, with a line saying what it is about — taken from the topic's
+      // own first sentence, so it cannot say something the topic does not.
+      await tester.scrollUntilVisible(find.text(topic.title), 300,
           scrollable: find.byType(Scrollable).first);
-      expect(find.text(heading), findsOneWidget, reason: heading);
+      expect(find.text(topic.title), findsOneWidget, reason: topic.title);
+      // The hint is the topic's own first sentence with the Markdown taken
+      // out, so it cannot say something the topic does not — but it does have
+      // to say something.
+      expect(topic.hint, isNotEmpty, reason: '${topic.title} says nothing');
+      expect(topic.body, contains(topic.hint.split(' ').first));
+
+      // And it opens: the words under that heading really reach the screen,
+      // which is what the list would otherwise be hiding.
+      await tester.tap(find.text(topic.title));
+      await tester.pumpAndSettle();
+      final firstWords = topic.body
+          .split('\n')
+          .map((line) => line.trim())
+          .firstWhere((line) =>
+              line.isNotEmpty && !line.startsWith('- ') && !line.contains('*'));
+      expect(find.textContaining(firstWords.split('.').first.trim()),
+          findsWidgets,
+          reason: '${topic.title} opened on nothing');
+
+      await tester.tap(find.text('← All topics'));
+      await tester.pumpAndSettle();
     }
   });
 

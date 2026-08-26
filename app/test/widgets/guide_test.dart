@@ -118,4 +118,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(GuidePanel), findsOneWidget);
   });
+  testWidgets('it opens on a list of topics rather than the whole thing',
+      (tester) async {
+    await pumpEditor(tester);
+    await openGuide(tester);
+
+    // Twelve headings and three hundred lines is a document, not something
+    // you look an answer up in. The topics are on offer, each with a line
+    // saying what it is about; the three hundred lines are not.
+    expect(find.text('Drawing a build'), findsOneWidget);
+    expect(find.text('Saying how much'), findsOneWidget);
+    expect(find.textContaining('Every port carries one thing'), findsNothing);
+    expect(find.text('← All topics'), findsNothing,
+        reason: 'there is nothing to go back to yet');
+  });
+
+  testWidgets('and reading one shows that one and a way back', (tester) async {
+    await pumpEditor(tester);
+    await openGuide(tester);
+
+    await tester.tap(find.text('Drawing a build'));
+    await tester.pumpAndSettle();
+
+    // That topic's words, and none of its neighbours' headings.
+    expect(find.text('Saying how much'), findsNothing);
+    expect(find.textContaining('palette'), findsWidgets);
+
+    await tester.tap(find.text('← All topics'));
+    await tester.pumpAndSettle();
+    expect(find.text('Saying how much'), findsOneWidget);
+  });
+
 }

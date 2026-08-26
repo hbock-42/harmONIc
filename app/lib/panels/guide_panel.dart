@@ -38,6 +38,12 @@ class _GuidePanelState extends State<GuidePanel> {
   String? _markdown;
   Object? _failed;
 
+  /// The topic being read, or null for the list of them.
+  ///
+  /// It arrived as one scroll of three hundred lines, which is a document
+  /// rather than something you look an answer up in.
+  GuideTopic? _open;
+
   @override
   void initState() {
     super.initState();
@@ -71,12 +77,25 @@ class _GuidePanelState extends State<GuidePanel> {
           child: GestureDetector(
             onTap: () {},
             child: OniPanel(
-              title: 'How this works',
+              title: _open?.title ?? 'How this works',
               width: 640,
-              trailing: OniButton(
-                label: 'Close',
-                compact: true,
-                onPressed: widget.onClose,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_open != null) ...[
+                    OniButton(
+                      label: '← All topics',
+                      compact: true,
+                      onPressed: () => setState(() => _open = null),
+                    ),
+                    const SizedBox(width: OniSpacing.xs),
+                  ],
+                  OniButton(
+                    label: 'Close',
+                    compact: true,
+                    onPressed: widget.onClose,
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -94,10 +113,7 @@ class _GuidePanelState extends State<GuidePanel> {
                           )
                         : _markdown == null
                             ? const SizedBox.shrink()
-                            : ListView(
-                                padding: const EdgeInsets.all(OniSpacing.lg),
-                                children: _render(_markdown!),
-                              ),
+                            : _body(splitGuide(_markdown!)),
                   ),
                   // Under the text even when the text failed to load: a guide
                   // that will not open is itself worth reporting.
@@ -108,9 +124,142 @@ class _GuidePanelState extends State<GuidePanel> {
           ),
         ),
       );
+
+  /// Either the list of topics, or the one being read.
+  Widget _body(({String intro, List<GuideTopic> topics}) guide) {
+    if (_open case final GuideTopic topic) {
+      return ListView(
+        key: const PageStorageKey('guide-topic'),
+        padding: const EdgeInsets.all(OniSpacing.lg),
+        children: _render(topic.body),
+      );
+    }
+    return ListView(
+      padding: const EdgeInsets.all(OniSpacing.lg),
+      children: [
+        ..._render(guide.intro),
+        const SizedBox(height: OniSpacing.sm),
+        for (final topic in guide.topics)
+          _TopicRow(topic: topic, onOpen: () => setState(() => _open = topic)),
+      ],
+    );
+  }
+}
+
+/// One line of the list: what the topic is called, and what it is about.
+class _TopicRow extends StatefulWidget {
+  const _TopicRow({required this.topic, required this.onOpen});
+
+  final GuideTopic topic;
+  final VoidCallback onOpen;
+
+  @override
+  State<_TopicRow> createState() => _TopicRowState();
+}
+
+class _TopicRowState extends State<_TopicRow> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          onTap: widget.onOpen,
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: OniSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+                horizontal: OniSpacing.md, vertical: OniSpacing.sm),
+            decoration: BoxDecoration(
+              color: _hover ? OniColors.surfaceHover : null,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: _hover ? OniColors.borderStrong : OniColors.border,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(widget.topic.title, style: OniType.heading),
+                if (widget.topic.hint.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.topic.hint,
+                    style: OniType.body
+                        .copyWith(fontSize: 12, color: OniColors.textFaint),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
 Future<String> _fromBundle() => rootBundle.loadString('assets/using.md');
+
+/// One section of the guide: a heading, and everything under it.
+class GuideTopic {
+  const GuideTopic({required this.title, required this.body, required this.hint});
+
+  final String title;
+  final String body;
+
+  /// The first sentence, for the list. What a topic is about, in the words it
+  /// already uses, so nothing is written twice and nothing can drift.
+  final String hint;
+}
+
+/// The guide, cut into topics at its own headings.
+///
+/// Derived rather than written down. `docs/USING.md` is the one copy — CI
+/// checks the shipped asset is byte-for-byte the same file — so a topic list
+/// maintained by hand would be a second copy waiting to disagree with it.
+({String intro, List<GuideTopic> topics}) splitGuide(String markdown) {
+  final intro = StringBuffer();
+  final topics = <GuideTopic>[];
+  String? title;
+  final body = StringBuffer();
+
+  void close() {
+    final heading = title;
+    if (heading == null) return;
+    final text = body.toString().trim();
+    final firstLine = text
+        .split('\n')
+        .map((line) => line.trim())
+        .firstWhere((line) => line.isNotEmpty && !line.startsWith('- '),
+            orElse: () => '');
+    final stop = firstLine.indexOf('. ');
+    topics.add(GuideTopic(
+      title: heading,
+      body: text,
+      hint: (stop == -1 ? firstLine : firstLine.substring(0, stop + 1))
+          .replaceAll('**', '')
+          .replaceAll('*', '')
+          .replaceAll('`', ''),
+    ));
+    body.clear();
+  }
+
+  for (final line in markdown.split('\n')) {
+    if (line.startsWith('## ')) {
+      close();
+      title = line.substring(3).trim();
+    } else if (title == null) {
+      if (!line.startsWith('# ')) intro.writeln(line);
+    } else {
+      body.writeln(line);
+    }
+  }
+  close();
+  return (intro: intro.toString().trim(), topics: topics);
+}
 
 /// The small part of Markdown the guide actually uses.
 ///

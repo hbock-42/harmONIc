@@ -4,6 +4,9 @@ The whole app is one idea: **draw what you are building, say how much of one
 thing you have, and everything else follows.** Everything below is a detail
 hanging off that.
 
+In the app it opens as a list of these headings, so you can go straight to the
+one you want; here it is one page, which is what a file is for.
+
 Read it in order the first time. After that, the last section — what this
 deliberately does not know — is the one worth remembering, because the app is
 most misleading where it is most confident.
