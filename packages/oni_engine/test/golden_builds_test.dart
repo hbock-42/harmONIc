@@ -340,4 +340,67 @@ void main() {
     });
   });
 
+  group('the Orehull loop', () {
+    /// Sent in as a build with three questions attached: how much polluted
+    /// water does it net, how much polluted dirt does it need from outside,
+    /// and how much nori is left over. None of them could be answered, because
+    /// a Tower Kelp made kelpoles and nothing in the app would take one — so
+    /// the plants could not be sized against the Orehulls they feed.
+    late PipelineSolution solution;
+
+    setUp(() {
+      final pipeline = (PipelineBuilder(db, name: 'orehulls')
+            ..add('orehull', nodeId: 'orehull')
+            ..add('kelpole', nodeId: 'pole')
+            ..add('tower_kelp', nodeId: 'kelp')
+            ..add('sludge_press_polluted_mud', nodeId: 'press')
+            ..addSource('polluted_dirt')
+            ..addSink('polluted_water')
+            ..connectItem('kelp', 'pole', 'kelpole')
+            ..connectItem('pole', 'orehull', 'nori')
+            ..connectItem('orehull', 'press', 'polluted_mud')
+            ..connectItem('press', 'kelp', 'polluted_water')
+            ..connectItem('press', 'sink_polluted_water', 'polluted_water')
+            // Two wires into the kelp's dirt, so both hand over what they
+            // make and the supply covers the difference.
+            ..connectItem('press', 'kelp', 'polluted_dirt',
+                mode: EdgeMode.push)
+            ..connectItem('src_polluted_dirt', 'kelp', 'polluted_dirt',
+                mode: EdgeMode.push)
+            ..pinCount('orehull', 20))
+          .build();
+      solution = solver.solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+    });
+
+    test('twenty Orehulls eat forty kelpoles a cycle off fifteen plants', () {
+      // 2 kelpoles a cycle each, and a domestic Tower Kelp spawns 2.7.
+      expect(solution.nodes['kelp']!.count, closeTo(40 / 2.7, 1e-2));
+      // And 200 kelpoles alive at once, which is the same fact seen from the
+      // other end: each lives five cycles, so a standing 200 is 40 a cycle.
+      // Not to the microkelpole: 3.333333 g/s of nori is a rounded 2 kg a
+      // cycle, and two hundred of them carry that rounding.
+      expect(solution.nodes['pole']!.count, closeTo(200, 1e-3));
+    });
+
+    test('and the loop nets polluted water while it eats polluted dirt', () {
+      // Which is what the Tower Kelp's page says of it in words: "you can make
+      // slightly more polluted water than you consume but it is negative on
+      // polluted dirt".
+      expect(solution.nodes['sink_polluted_water']!.count, greaterThan(0));
+      expect(solution.nodes['src_polluted_dirt']!.count, greaterThan(0));
+
+      // Per Orehull per cycle: 7.8 kg of water made and 9.6 of dirt eaten.
+      // The wiki's own estimate is "about 6.6" and "about 10", worked out by
+      // hand from the same rates.
+      // A boundary node's count is its rate, in grams a second.
+      final waterPerOrehull =
+          solution.nodes['sink_polluted_water']!.count * 600 / 20 / 1000;
+      final dirtPerOrehull =
+          solution.nodes['src_polluted_dirt']!.count * 600 / 20 / 1000;
+      expect(waterPerOrehull, closeTo(7.8, 0.1));
+      expect(dirtPerOrehull, closeTo(9.6, 0.1));
+    });
+  });
+
 }

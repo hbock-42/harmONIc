@@ -4858,7 +4858,7 @@ const String oniDataJson = r"""
       "id": "kelpole",
       "name": "Kelpole",
       "kind": "critter",
-      "description": "UNVERIFIED: eats nothing at all and yields 10 kg of nori when harvested, spread here across a five-cycle life. Tower Kelp grows them, and Orehulls eat them, so it is the link between the two rather than something you ranch for itself.",
+      "description": "UNVERIFIED: its page is a stub — the diet and ranching sections are empty headings. Everything here is read off the Tower Kelp and Orehull pages instead. A Tower Kelp spawns kelpoles and a kelpole, killed, gives 10 kg of nori; five cycles of a kelpole is one kelpole in and 10 kg of nori out, which is the same fact from either end. It lays no eggs: kelpoles hatch from the plant, and an Orehull ranch needs Tower Kelp precisely because they do not breed.",
       "dupeLabourSecondsPerCycle": 0.0,
       "tags": [
         "ranching",
@@ -4872,14 +4872,14 @@ const String oniDataJson = r"""
           "rate": 1
         },
         {
+          "item": "kelpole",
+          "direction": "input",
+          "rate": 0.0003333333333333333
+        },
+        {
           "item": "nori",
           "direction": "output",
           "rate": 3.333333
-        },
-        {
-          "item": "egg",
-          "direction": "output",
-          "rate": 0.000333
         }
       ]
     },
@@ -6849,7 +6849,7 @@ const String oniDataJson = r"""
       "id": "kelpole_wild",
       "name": "Kelpole (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: the tame figures this is derived from are themselves unverified, so this inherits their doubt. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "UNVERIFIED: its page is a stub — the diet and ranching sections are empty headings. Everything here is read off the Tower Kelp and Orehull pages instead. A Tower Kelp spawns kelpoles and a kelpole, killed, gives 10 kg of nori; five cycles of a kelpole is one kelpole in and 10 kg of nori out, which is the same fact from either end. It lays no eggs: kelpoles hatch from the plant, and an Orehull ranch needs Tower Kelp precisely because they do not breed. Left untamed: nobody grooms it, so it costs no Duplicant time. What it eats and what it yields are unchanged, since neither ever depended on grooming.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -6859,14 +6859,14 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
+          "item": "kelpole",
+          "direction": "input",
+          "rate": 0.0003333333333333333
+        },
+        {
           "item": "nori",
           "direction": "output",
           "rate": 3.333333
-        },
-        {
-          "item": "egg",
-          "direction": "output",
-          "rate": 3.33e-05
         }
       ]
     },
