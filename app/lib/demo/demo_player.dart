@@ -27,6 +27,7 @@ class DemoPlayer extends ChangeNotifier {
     required this.workspace,
     required this.controller,
     this.stepDelay = kDemoStepDelay,
+    this.hands = const ModelHands(),
     Timer Function(Duration, void Function(Timer))? schedule,
   }) : _schedule = schedule ?? Timer.periodic {
     // A demo owns a tab, and only while that tab is the one on screen. Open
@@ -38,6 +39,10 @@ class DemoPlayer extends ChangeNotifier {
   final WorkspaceController workspace;
   final PipelineController controller;
   final Duration stepDelay;
+
+  /// Who carries the steps out: the model directly in a test, and the real
+  /// widgets — cursor, port menu, the lot — on screen.
+  final DemoHands hands;
 
   /// How the waiting is done. A real timer, unless a test says otherwise —
   /// the seam the guide's loader and the link opener already have.
@@ -60,14 +65,14 @@ class DemoPlayer extends ChangeNotifier {
   Future<void> start(Demo demo) async {
     await leave();
     _tabId = await workspace.createNew(name: demo.name);
-    _run = DemoRun(demo, controller);
+    _run = DemoRun(demo, controller, hands: hands);
     notifyListeners();
     play();
   }
 
   void play() {
     if (_run == null || _run!.isDone || isPlaying) return;
-    _timer = _schedule(stepDelay, (_) => step());
+    _timer = _schedule(stepDelay, (_) => unawaited(step()));
     notifyListeners();
   }
 
@@ -83,10 +88,14 @@ class DemoPlayer extends ChangeNotifier {
   /// Pressing this while it plays does not double up: the timer is left alone
   /// and simply has less to do, and the last step stops the clock rather than
   /// letting it tick on over a finished demo.
-  void step() {
+  Future<void> step() async {
     final run = _run;
     if (run == null) return;
-    run.step();
+    // Said before it is done, so the line is on screen while the cursor is
+    // still on its way to whatever it describes.
+    notifyListeners();
+    await run.step();
+    if (_run != run) return;
     if (run.isDone) pause();
     notifyListeners();
   }

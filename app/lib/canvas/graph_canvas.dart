@@ -197,6 +197,41 @@ class GraphCanvasState extends State<GraphCanvas>
     if (selection.length == 1) revealNode(selection.first);
   }
 
+  /// Where a port dot sits on the screen, for anything that has to point at
+  /// it. Null while the node is not laid out.
+  Offset? globalPointOf(PortRef ref) {
+    final node = controller.pipeline.node(ref.nodeId);
+    final spec = node == null ? null : controller.specFor(node);
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    if (node == null || spec == null || box == null) return null;
+    final world = NodeLayout.worldPortOffsetOrNull(node, spec, ref.portId);
+    if (world == null) return null;
+    return box.localToGlobal(localFromWorld(world));
+  }
+
+  /// Open the menu on a port, as clicking its dot would.
+  ///
+  /// Public because a demo clicks the same dots a person does — it is the
+  /// menu opening that makes a wire look like something somebody did rather
+  /// than something that happened.
+  void openPortMenuOn(PortRef ref) {
+    final at = globalPointOf(ref);
+    if (at == null) return;
+    _openPortMenu(ref, at);
+  }
+
+  /// Choose a recipe out of the open port menu, as clicking a row would.
+  String? pickFromPortMenu(String specId) {
+    final ref = _menuRef;
+    if (ref == null) return null;
+    final made = controller.addNodeFor(ref, specId);
+    _closePortMenu();
+    return made;
+  }
+
+  /// What the port menu is open on, if it is.
+  PortRef? get openMenuPort => _menuRef;
+
   /// The part of the build the window is currently showing.
   Rect get visibleWorldRect {
     final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;

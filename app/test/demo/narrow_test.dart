@@ -60,7 +60,7 @@ void main() {
       await player.start(whatAGeyserFeeds);
       await tester.pumpAndSettle();
       while (!player.run!.isDone) {
-        player.step();
+        await player.step();
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull,
             reason: 'step ${player.run!.played} overflows at $width px');

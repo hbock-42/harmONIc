@@ -14,21 +14,24 @@ import '../support/harness.dart';
 /// Playing a demo without eating what somebody was doing.
 void main() {
   /// Three steps, each one a thing a person could have done.
-  Demo threeSteps() => Demo(
+  Demo threeSteps() => const Demo(
         id: 'three',
         name: 'Three steps',
         summary: 'Water into oxygen.',
         steps: [
-          const DemoStep(says: 'Nothing yet.'),
+          DemoStep(says: 'Nothing yet.'),
           DemoStep(
             says: 'A water supply.',
-            does: (stage) => stage.remember('water',
-                stage.controller.addNode('source:water', Offset.zero)),
+            does: PlaceFromPalette('source:water', remember: 'water'),
           ),
           DemoStep(
             says: 'An Electrolyzer, fed from it.',
-            does: (stage) => stage.controller.addNodeFor(
-                PortRef(stage.nodeId('water'), 'out'), 'electrolyzer'),
+            does: ClickPortAndPick(
+              node: 'water',
+              portId: sourcePortId,
+              pick: 'electrolyzer',
+              remember: 'elec',
+            ),
           ),
         ],
       );
@@ -43,10 +46,13 @@ void main() {
   ///
   /// It has to honour cancel, or a paused demo goes on playing here while it
   /// stops everywhere else — which is exactly what the first version did.
-  void tick() {
+  Future<void> tick() async {
     for (final onTick in [...ticks]) {
       onTick(_StubTimer());
     }
+    // A step is a Future now — on screen it moves a cursor and waits — so the
+    // clock ticking is not the same moment as the step being finished.
+    await Future<void>.delayed(Duration.zero);
   }
 
   setUp(() async {
@@ -78,8 +84,8 @@ void main() {
   test('and leaving puts your build back and takes the demo away', () async {
     final mine = controller.pipeline.id;
     await player.start(threeSteps());
-    tick();
-    tick();
+    await tick();
+    await tick();
     expect(controller.pipeline.nodes, isNotEmpty);
 
     await player.leave();
@@ -97,27 +103,27 @@ void main() {
     await player.start(threeSteps());
     expect(player.run!.played, 0);
 
-    tick();
+    await tick();
     expect(player.run!.played, 1);
     expect(player.run!.says, 'Nothing yet.');
 
-    tick();
+    await tick();
     expect(player.run!.played, 2);
     expect(controller.pipeline.nodes, hasLength(1));
   });
 
   test('pause stops it where it is, and play carries on', () async {
     await player.start(threeSteps());
-    tick();
+    await tick();
     player.pause();
     expect(player.isPlaying, isFalse);
 
     final where = player.run!.played;
-    tick();
+    await tick();
     expect(player.run!.played, where, reason: 'a paused demo does not move');
 
     player.play();
-    tick();
+    await tick();
     expect(player.run!.played, where + 1);
   });
 
@@ -125,8 +131,8 @@ void main() {
     await player.start(threeSteps());
     player.pause();
 
-    player.step();
-    player.step();
+    await player.step();
+    await player.step();
 
     expect(player.run!.played, 2);
     expect(controller.pipeline.nodes, hasLength(1));
@@ -136,9 +142,9 @@ void main() {
     // Rather than leaving a timer ticking over a demo with nothing left to
     // do, which is the sort of thing that keeps a test binding awake.
     await player.start(threeSteps());
-    tick();
-    tick();
-    tick();
+    await tick();
+    await tick();
+    await tick();
 
     expect(player.run!.isDone, isTrue);
     expect(player.isPlaying, isFalse);
@@ -152,8 +158,8 @@ void main() {
     // this pipeline. A demo owns a tab, and only while that tab is on screen.
     final mine = controller.pipeline.id;
     await player.start(threeSteps());
-    tick();
-    tick();
+    await tick();
+    await tick();
     expect(controller.pipeline.nodes, isNotEmpty);
 
     await workspace.open(mine);
@@ -168,7 +174,7 @@ void main() {
 
   test('starting another one does not leave the first behind', () async {
     await player.start(threeSteps());
-    tick();
+    await tick();
     await player.start(threeSteps());
 
     expect(player.run!.played, 0);

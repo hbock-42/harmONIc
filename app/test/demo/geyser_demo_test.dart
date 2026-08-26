@@ -8,12 +8,12 @@ import '../support/harness.dart';
 
 /// "What a geyser feeds", and the figures it claims.
 void main() {
-  PipelineController play(Demo demo) {
+  Future<PipelineController> play(Demo demo) async {
     final controller = testController(
       pipeline:
           Pipeline(id: 'demo', name: 'Demo', nodes: const [], edges: const []),
     );
-    DemoRun(demo, controller).runToEnd();
+    await DemoRun(demo, controller).runToEnd();
     return controller;
   }
 
@@ -23,19 +23,19 @@ void main() {
     return controller.solution.nodes[node.id]!.count;
   }
 
-  test('it builds the SPOM, and the solver agrees it works', () {
-    final controller = play(whatAGeyserFeeds);
+  test('it builds the SPOM, and the solver agrees it works', () async {
+    final controller = await play(whatAGeyserFeeds);
 
     expect(controller.solution.status, SolveStatus.solved);
     expect(controller.solution.issues.where((i) => i.isError), isEmpty);
     expect(controller.pipeline.nodes, hasLength(5));
   });
 
-  test('and the numbers it narrates are the ones on screen', () {
+  test('and the numbers it narrates are the ones on screen', () async {
     // Read off the demo as it runs, not typed in from the wiki. When a recipe
     // changes, this fails and the narration is what has to be corrected —
     // which is the whole reason the demo drives the real controller.
-    final controller = play(whatAGeyserFeeds);
+    final controller = await play(whatAGeyserFeeds);
     final said = whatAGeyserFeeds.steps.map((s) => s.says).join(' ');
 
     // "one geyser"
@@ -63,7 +63,7 @@ void main() {
     expect(said, contains('1.40 kW'));
   });
 
-  test('and it really is red before the generator goes in', () {
+  test('and it really is red before the generator goes in', () async {
     // The moment the demo is built around: the build costs power until the
     // hydrogen has somewhere to burn.
     final controller = testController(
@@ -72,7 +72,7 @@ void main() {
     );
     final run = DemoRun(whatAGeyserFeeds, controller);
     while (run.played < 6) {
-      run.step();
+      await run.step();
     }
 
     expect(controller.solution.netPowerWatts, closeTo(-216, 0.1));

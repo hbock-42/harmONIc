@@ -64,7 +64,7 @@ void main() {
     // canvas at any window this is used at — so without the view following,
     // the last things it places happen where nobody can see them.
     while (!player.run!.isDone) {
-      player.step();
+      await player.step();
       await tester.pumpAndSettle();
       if (controller.pipeline.nodes.isEmpty) continue;
 

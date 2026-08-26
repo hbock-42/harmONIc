@@ -48,12 +48,24 @@ class PalettePanel extends StatefulWidget {
     required this.onNewRecipe,
     required this.onEditRecipe,
     this.pointingAt,
+    this.rowKeys,
+    this.search,
     super.key,
   });
 
-  /// A recipe to light up: the one a demo has just placed, so somebody
-  /// watching can see where it came from.
+  /// A recipe to light up: the one a demo is about to place, so somebody
+  /// watching sees where the click is going before it lands.
   final String? pointingAt;
+
+  /// Where each row ended up, filled in as they are built. A demo points at
+  /// one of these, and a row nobody can find is a cursor with nowhere to go.
+  final Map<String, GlobalKey>? rowKeys;
+
+  /// The search box's own controller, when somebody outside needs to type
+  /// into it. A demo does: the list is long, the row it wants is usually
+  /// somewhere below the fold, and searching for it is what a person does
+  /// anyway.
+  final TextEditingController? search;
 
   final GameDatabase database;
 
@@ -68,7 +80,8 @@ class PalettePanel extends StatefulWidget {
 }
 
 class _PalettePanelState extends State<PalettePanel> {
-  final TextEditingController _search = TextEditingController();
+  late final TextEditingController _search =
+      widget.search ?? TextEditingController();
   bool _filtersOpen = false;
 
   @override
@@ -93,7 +106,7 @@ class _PalettePanelState extends State<PalettePanel> {
   @override
   void dispose() {
     widget.display.removeListener(_onDisplayChanged);
-    _search.dispose();
+    if (widget.search == null) _search.dispose();
     super.dispose();
   }
 
@@ -267,6 +280,8 @@ class _PalettePanelState extends State<PalettePanel> {
                   ),
                   for (final spec in groups[name]!)
                     _PaletteRow(
+                      key: widget.rowKeys
+                          ?.putIfAbsent(spec.id, GlobalKey.new),
                       spec: spec,
                       database: widget.database,
                       pointedAt: spec.id == widget.pointingAt,
@@ -293,6 +308,7 @@ class _PaletteRow extends StatefulWidget {
     required this.onEdit,
     this.why,
     this.pointedAt = false,
+    super.key,
   });
 
   /// Lit because a demo has just placed this, so somebody watching can see

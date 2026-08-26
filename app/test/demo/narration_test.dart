@@ -68,7 +68,7 @@ void main() {
       ];
 
   for (final demo in kDemos) {
-    test('"${demo.name}" says only what the app is showing', () {
+    test('"${demo.name}" says only what the app is showing', () async {
       final controller = testController(
         pipeline: Pipeline(
             id: 'demo', name: 'Demo', nodes: const [], edges: const []),
@@ -76,7 +76,7 @@ void main() {
       final run = DemoRun(demo, controller);
 
       var checked = 0;
-      while (run.step()) {
+      while (await run.step()) {
         final shown = onScreen(controller);
         for (final claimed in figuresIn(run.says)) {
           checked++;
@@ -99,13 +99,13 @@ void main() {
     });
   }
 
-  test('and every demo ends somewhere the solver is happy with', () {
+  test('and every demo ends somewhere the solver is happy with', () async {
     for (final demo in kDemos) {
       final controller = testController(
         pipeline: Pipeline(
             id: 'demo', name: 'Demo', nodes: const [], edges: const []),
       );
-      DemoRun(demo, controller).runToEnd();
+      await DemoRun(demo, controller).runToEnd();
 
       expect(controller.solution.status, SolveStatus.solved,
           reason: '"${demo.name}" ends on a build that does not solve');

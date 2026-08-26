@@ -5,7 +5,9 @@ import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 
 import 'canvas/auto_layout.dart';
+import 'canvas/graph_canvas.dart';
 import 'demo/demo_player.dart';
+import 'demo/widget_hands.dart';
 import 'design/tokens.dart';
 import 'editor_screen.dart';
 import 'state/display_controller.dart';
@@ -61,9 +63,18 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
     store: widget.pipelineStore,
     controller: _controller,
   );
+  /// The demo's hands, and the keys they point at. Made here because the
+  /// canvas and the palette both have to be handed the same ones.
+  final GlobalKey<GraphCanvasState> _canvasKey = GlobalKey<GraphCanvasState>();
+  late final WidgetHands _demoHands = WidgetHands(
+    canvas: _canvasKey,
+    rowKeys: {},
+    search: TextEditingController(),
+  );
   late final DemoPlayer _demoPlayer = DemoPlayer(
     workspace: _workspace,
     controller: _controller,
+    hands: _demoHands,
   );
   late final DisplayController _display =
       widget.displaySettings ?? DisplayController(MemoryJsonStore());
@@ -97,6 +108,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
 
   @override
   void dispose() {
+    _demoHands.dispose();
     _demoPlayer.dispose();
     _workspace.dispose();
     _controller.dispose();
@@ -139,6 +151,8 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
                 workspace: _workspace,
                 displaySettings: _display,
                 demoPlayer: _demoPlayer,
+                demoHands: _demoHands,
+                canvasKey: _canvasKey,
                 firstVisit: _firstVisit,
               )
             : ColoredBox(color: OniColors.background),

@@ -6,8 +6,10 @@ import 'package:flutter/widgets.dart';
 import 'canvas/auto_layout.dart';
 import 'demo/demo.dart';
 import 'demo/demo_bar.dart';
+import 'demo/demo_cursor.dart';
 import 'demo/demos.dart';
 import 'demo/demo_player.dart';
+import 'demo/widget_hands.dart';
 import 'canvas/graph_canvas.dart';
 import 'design/keys.dart';
 import 'design/tokens.dart';
@@ -40,6 +42,8 @@ class EditorScreen extends StatefulWidget {
     this.openLink,
     this.demoPlayer,
     this.firstVisit = false,
+    this.demoHands,
+    this.canvasKey,
     super.key,
   });
 
@@ -59,6 +63,14 @@ class EditorScreen extends StatefulWidget {
   /// and the next launch has a session to restore so the question never
   /// arises again.
   final bool firstVisit;
+
+  /// The hands a demo is being played with, when it is being played on a
+  /// screen: they hold the cursor and what it is about to click.
+  final WidgetHands? demoHands;
+
+  /// The canvas's key, when somebody outside needs it — the demo's hands
+  /// click port dots through it.
+  final GlobalKey<GraphCanvasState>? canvasKey;
 
   /// The demo being played, if the app is playing one. Handed in rather than
   /// made here because it opens and deletes builds, which is the workspace's
@@ -151,7 +163,8 @@ const Map<String, String> kShortcutNames = <String, String>{
 };
 
 class _EditorScreenState extends State<EditorScreen> {
-  final GlobalKey<GraphCanvasState> _canvasKey = GlobalKey<GraphCanvasState>();
+  late final GlobalKey<GraphCanvasState> _canvasKey =
+      widget.canvasKey ?? GlobalKey<GraphCanvasState>();
 
   PipelineController get controller => widget.controller;
 
@@ -345,8 +358,9 @@ class _EditorScreenState extends State<EditorScreen> {
                       child: Row(
                         children: [
                           PalettePanel(
-                            pointingAt:
-                                widget.demoPlayer?.run?.pointingAt?.specId,
+                            pointingAt: widget.demoHands?.litSpec,
+                            rowKeys: widget.demoHands?.rowKeys,
+                            search: widget.demoHands?.search,
                             database: controller.database,
                             display: widget.displaySettings,
                             onAdd: _add,
@@ -373,8 +387,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                     offers: widget.displaySettings.includes,
                                     onToggleRates:
                                         widget.displaySettings.toggle,
-                                    pointingAt: widget
-                                        .demoPlayer?.run?.pointingAt?.port,
+                                    pointingAt: widget.demoHands?.litPort,
                                   ),
                           ),
                           InspectorPanel(
@@ -436,6 +449,9 @@ class _EditorScreenState extends State<EditorScreen> {
                   ),
                 ),
               ?_recipeEditor(),
+              // Over everything, because it points at everything.
+              if (widget.demoHands case final WidgetHands hands)
+                Positioned.fill(child: DemoCursor(hands: hands)),
                 ],
               ),
             ),

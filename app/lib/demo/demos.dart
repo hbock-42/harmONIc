@@ -1,169 +1,151 @@
-import 'dart:ui' show Offset;
-
 import 'package:oni_engine/oni_engine.dart';
 
-import '../state/pipeline_controller.dart';
 import 'demo.dart';
 
 /// Act one of `docs/DEMO.md`, played by the app.
 ///
-/// The question somebody has asked themselves in front of their own base, and
-/// an answer they can check against what they already believe. Every figure
-/// the narration quotes below is one the solver produces — `E15-3` is the test
-/// that keeps it that way.
-final Demo whatAGeyserFeeds = Demo(
+/// Every figure the narration quotes is one the solver produces — `E15-3` is
+/// the test that keeps it that way — and every step is one gesture, so it can
+/// be watched as a gesture rather than as a node appearing from nowhere.
+const Demo whatAGeyserFeeds = Demo(
   id: 'geyser',
   name: 'What a geyser feeds',
   summary: 'One Water Geyser, and how many Duplicants it comes to. '
       'Four minutes, ending in a SPOM nobody looked up.',
   steps: [
     DemoStep(
-      says: 'You have found a Water Geyser. The question is always the same: '
-          'what will it actually feed? It comes off the list on the left.',
-      points: (_) => const DemoPointer.palette('water_geyser'),
-      does: (stage) => stage.remember(
-          'geyser', stage.controller.addNode('water_geyser', Offset.zero)),
+      says: 'You have found a Water Geyser. What will it actually feed? '
+          'Everything starts on the list at the left.',
+      does: PlaceFromPalette('water_geyser', remember: 'geyser'),
     ),
     DemoStep(
-      says: 'Click the lit dot — its Water port — and the menu offers '
-          'everything that could take water. An Electrolyzer: placed and '
-          'wired in one move.',
-      points: (stage) => DemoPointer.port(
-          PortRef(stage.nodeId('geyser'), 'water')),
-      does: (stage) => stage.remember(
-          'elec',
-          stage.controller.addNodeFor(
-              PortRef(stage.nodeId('geyser'), 'water'), 'electrolyzer')!),
+      says: 'Click its Water dot. The menu offers everything that could take '
+          'water — an Electrolyzer, say. Placed and wired in one go.',
+      does: ClickPortAndPick(
+        node: 'geyser',
+        portId: 'water',
+        pick: 'electrolyzer',
+        remember: 'elec',
+      ),
     ),
     DemoStep(
-      says: 'The same again from its Oxygen port: the crew.',
-      points: (stage) =>
-          DemoPointer.port(PortRef(stage.nodeId('elec'), 'oxygen')),
-      does: (stage) => stage.remember(
-          'dupes',
-          stage.controller.addNodeFor(
-              PortRef(stage.nodeId('elec'), 'oxygen'), 'duplicant')!),
+      says: 'The same again from its Oxygen dot, and the oxygen has a crew to '
+          'go to.',
+      does: ClickPortAndPick(
+        node: 'elec',
+        portId: 'oxygen',
+        pick: 'duplicant',
+        remember: 'dupes',
+      ),
     ),
     DemoStep(
       says: 'Now say the one number you actually know: you have one geyser.',
-      does: (stage) {
-        stage.controller
-            .pin(BuildingCountPin(nodeId: stage.nodeId('geyser'), count: 1));
-        stage.controller.select(NodeSelection(stage.nodeId('geyser')));
-      },
+      does: PinAmount(node: 'geyser', count: 1),
     ),
-    const DemoStep(
+    DemoStep(
       says: 'Everything answers at once. 16 Duplicants, and 2 Electrolyzers '
           'of which the second runs only 90 % of the time — the app shows '
           'rounding as rounding rather than hiding it.',
     ),
-    const DemoStep(
+    DemoStep(
       says: 'But look at the bottom bar. It is red: this build draws 216 W '
           'and makes none.',
     ),
     DemoStep(
-      says: 'The hydrogen has been going nowhere this whole time. Burn it — '
-          'and the bar turns green: 1.40 kW spare.',
-      points: (stage) =>
-          DemoPointer.port(PortRef(stage.nodeId('elec'), 'hydrogen')),
-      does: (stage) => stage.remember(
-          'hgen',
-          stage.controller.addNodeFor(
-              PortRef(stage.nodeId('elec'), 'hydrogen'),
-              'hydrogen_generator')!),
+      says: 'The hydrogen has been going nowhere this whole time. Click that '
+          'dot and burn it — the bar turns green: 1.40 kW spare.',
+      does: ClickPortAndPick(
+        node: 'elec',
+        portId: 'hydrogen',
+        pick: 'hydrogen_generator',
+        remember: 'hgen',
+      ),
     ),
     DemoStep(
       says: 'Give that power somewhere to go, and the build is finished.',
-      does: (stage) => stage.controller.addNodeFor(
-          PortRef(stage.nodeId('hgen'), 'power_out'), 'sink:power'),
+      does: ClickPortAndPick(
+        node: 'hgen',
+        portId: 'power_out',
+        pick: 'sink:power',
+        remember: 'spare',
+      ),
     ),
-    const DemoStep(
-      says: 'Same geyser, same 16 Duplicants, and it now runs a base as '
-          'well. That is a SPOM, arrived at in two clicks rather than looked '
-          'up.',
+    DemoStep(
+      says: 'Same geyser, same 16 Duplicants, and it now runs a base as well. '
+          'That is a SPOM, arrived at in two clicks rather than looked up.',
     ),
   ],
 );
 
 /// Act two of `docs/DEMO.md`: the part no other calculator for this game does.
-///
-/// One pile of ore and two ways to turn it into metal. The app splits it
-/// evenly because nobody said otherwise — and then, asked, works out the
-/// division that gets the most out of it.
-final Demo letItChooseTheSplit = Demo(
+const Demo letItChooseTheSplit = Demo(
   id: 'split',
   name: 'Let it choose the split',
   summary: 'Ten kilograms of ore a second, two ways to refine it, and the '
       'division that wastes least — worked out rather than guessed.',
   steps: [
     DemoStep(
-      says: 'Ten kilograms of iron ore a second, and two ways to turn it into '
-          'metal. The supply comes off the list on the left.',
-      points: (_) => const DemoPointer.palette('source:iron_ore'),
-      does: (stage) => stage.remember(
-          'ore', stage.controller.addNode('source:iron_ore', Offset.zero)),
+      says: 'Iron ore, and two ways to turn it into metal. The supply comes '
+          'off the list on the left, the same as anything else.',
+      does: PlaceFromPalette('source:iron_ore', remember: 'ore'),
     ),
     DemoStep(
-      says: 'Click the lit dot and pick a Metal Refinery: it takes some of it.',
-      points: (stage) =>
-          DemoPointer.port(PortRef(stage.nodeId('ore'), sourcePortId)),
-      does: (stage) => stage.remember(
-          'refinery',
-          stage.controller.addNodeFor(
-              PortRef(stage.nodeId('ore'), sourcePortId), 'metal_refinery')!),
+      says: 'Click the ore dot and pick a Metal Refinery.',
+      does: ClickPortAndPick(
+        node: 'ore',
+        portId: sourcePortId,
+        pick: 'metal_refinery',
+        remember: 'refinery',
+      ),
     ),
     DemoStep(
-      says: 'The same dot again for a Rock Crusher, which takes the rest. One '
-          'port, two lines out of it — and nobody has said how the ore '
-          'divides.',
-      points: (stage) =>
-          DemoPointer.port(PortRef(stage.nodeId('ore'), sourcePortId)),
-      does: (stage) => stage.remember(
-          'crusher',
-          stage.controller.addNodeFor(PortRef(stage.nodeId('ore'), sourcePortId),
-              'rock_crusher_metal')!),
+      says: 'Then the same dot again for a Rock Crusher. One port, two lines '
+          'out of it, and nobody has said how the ore divides between them.',
+      does: ClickPortAndPick(
+        node: 'ore',
+        portId: sourcePortId,
+        pick: 'rock_crusher_metal',
+        remember: 'crusher',
+      ),
     ),
     DemoStep(
-      says: 'Both of them make iron, and it all goes to the same place.',
-      points: (stage) => DemoPointer.port(
-          PortRef(stage.nodeId('refinery'), 'refined_metal')),
-      does: (stage) {
-        final out = stage.remember(
-            'out',
-            stage.controller.addNodeFor(
-                PortRef(stage.nodeId('refinery'), 'refined_metal'),
-                'sink:iron')!);
-        stage.controller.connect(
-          PortRef(stage.nodeId('crusher'), 'refined_metal'),
-          PortRef(out, sinkPortId),
-        );
-      },
+      says: 'The refinery\'s iron needs somewhere to end up.',
+      does: ClickPortAndPick(
+        node: 'refinery',
+        portId: 'refined_metal',
+        pick: 'sink:iron',
+        remember: 'out',
+      ),
+    ),
+    DemoStep(
+      says: 'And the crusher makes the same iron, so it goes to the same '
+          'place. Drag from one dot to the other.',
+      does: ConnectPorts(
+        fromNode: 'crusher',
+        fromPortId: 'refined_metal',
+        toNode: 'out',
+        toPortId: sinkPortId,
+      ),
     ),
     DemoStep(
       says: 'Say what you have: ten kilograms of ore a second.',
-      does: (stage) => stage.controller.pin(PortRatePin(
-          nodeId: stage.nodeId('ore'),
-          portId: sourcePortId,
-          ratePerSecond: 10000)),
+      does: PinAmount(node: 'ore', portId: sourcePortId, rate: 10000),
     ),
-    const DemoStep(
+    DemoStep(
       says: '6.67 kg/s of iron. Nobody said how the ore divides, so the app '
           'split it evenly — a fair guess, and rarely the best one.',
     ),
     DemoStep(
-      says: 'So ask it for the best. Select the iron coming out and press Get '
-          'as much as possible.',
-      does: (stage) {
-        stage.controller.select(NodeSelection(stage.nodeId('out')));
-        stage.controller.optimiseFor(stage.nodeId('out'));
-      },
+      says: 'So ask for the best: select the iron coming out and press Get as '
+          'much as possible.',
+      does: AskForTheBest('out'),
     ),
-    const DemoStep(
+    DemoStep(
       says: '10.00 kg/s. Half as much again, from the same ore — the refinery '
           'is one for one and the crusher is half, so everything should go to '
           'the refinery.',
     ),
-    const DemoStep(
+    DemoStep(
       says: 'It worked that out from the recipes rather than being told, and '
           'it will do the same on a build with thirty nodes where nobody '
           'could see it. The splits it chose are on the wires: ordinary '
@@ -173,4 +155,4 @@ final Demo letItChooseTheSplit = Demo(
 );
 
 /// Every demo the app can play.
-final List<Demo> kDemos = [whatAGeyserFeeds, letItChooseTheSplit];
+const List<Demo> kDemos = [whatAGeyserFeeds, letItChooseTheSplit];

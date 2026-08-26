@@ -1,17 +1,93 @@
+import 'dart:ui' show Offset;
+
 import 'package:oni_engine/oni_engine.dart';
 
 import '../state/pipeline_controller.dart';
 
-/// What a step is allowed to touch.
+/// What a step wants done, said as the thing a person would do.
 ///
-/// The controller, and nothing else. A demo that could paint its own numbers
-/// would become a lie the first time a recipe changed, and the numbers are the
-/// whole argument — so a step may only do things a person could have done, and
-/// what appears on screen comes back out of the solver as usual.
+/// Not as a call on the controller, which is what it was: a step that says
+/// "add this node" can only ever be watched as a node appearing, and the app
+/// had no way to show a click that never happened. Said this way, the same
+/// step can be carried out twice over — straight at the model by a test with
+/// no screen, and through the real widgets by somebody watching, with a
+/// cursor that arrives before anything moves.
+sealed class DemoAction {
+  const DemoAction();
+}
+
+/// Place a recipe from the palette on the left.
+class PlaceFromPalette extends DemoAction {
+  const PlaceFromPalette(this.specId, {required this.remember});
+
+  final String specId;
+
+  /// The name later steps will call it by, since the node's id is generated.
+  final String remember;
+}
+
+/// Click a port dot, and pick something out of the menu that opens.
 ///
-/// The view is separate on purpose: fitting the canvas is the player's job in
-/// `E15-2`, and a demo that had to know about pixels could not be run by a
-/// test that has no screen.
+/// The two halves are one action because they are one intent — "follow this
+/// port to whatever takes it" — and because a menu left open with nothing
+/// picked is not a state a demo should ever rest in.
+class ClickPortAndPick extends DemoAction {
+  const ClickPortAndPick({
+    required this.node,
+    required this.portId,
+    required this.pick,
+    required this.remember,
+  });
+
+  /// The remembered name of the node whose port this is.
+  final String node;
+  final String portId;
+
+  /// The recipe to choose out of the menu.
+  final String pick;
+  final String remember;
+}
+
+/// Wire two things that are already on the canvas to each other.
+class ConnectPorts extends DemoAction {
+  const ConnectPorts({
+    required this.fromNode,
+    required this.fromPortId,
+    required this.toNode,
+    required this.toPortId,
+  });
+
+  final String fromNode;
+  final String fromPortId;
+  final String toNode;
+  final String toPortId;
+}
+
+/// Select a node and say how much of it there is.
+class PinAmount extends DemoAction {
+  const PinAmount({required this.node, this.count, this.portId, this.rate});
+
+  final String node;
+
+  /// "I have three of these", or a rate on a port. One or the other.
+  final double? count;
+  final String? portId;
+  final double? rate;
+}
+
+/// Select a boundary node and ask for the best it can do.
+class AskForTheBest extends DemoAction {
+  const AskForTheBest(this.node);
+
+  final String node;
+}
+
+/// Nothing but talk: a line about what is already on screen.
+class SaySoFar extends DemoAction {
+  const SaySoFar();
+}
+
+/// What a step is allowed to touch, and what it has made so far.
 class DemoStage {
   DemoStage(this.controller);
 
@@ -20,12 +96,7 @@ class DemoStage {
   final Map<String, String> _named = {};
 
   /// Keep the id of something a step has just made, under a name the demo
-  /// chose.
-  ///
-  /// A later step almost always needs it — you place a geyser and then wire
-  /// it up — and node ids are generated rather than chosen. Naming it where
-  /// it is made reads better than hunting for it by recipe afterwards, and
-  /// this map is the only state a demo carries.
+  /// chose. Node ids are generated; the names in a demo are not.
   String remember(String name, String nodeId) {
     _named[name] = nodeId;
     return nodeId;
@@ -37,47 +108,20 @@ class DemoStage {
   String nodeId(String name) =>
       _named[name] ??
       (throw StateError('This demo never made anything called "$name"'));
-}
 
-/// Where a person would have clicked to do what a step just did.
-///
-/// Things appearing and wiring themselves up is most of what a demo looks
-/// like, and none of it says where the click was. So a step can point: at a
-/// port dot, which is how everything downstream of a node gets placed, or at
-/// the row in the palette a node came from.
-///
-/// The dots already know how to glow — it is how a wire being dragged shows
-/// which ports would take it — so this lights the one that was used rather
-/// than inventing a second way to draw attention.
-class DemoPointer {
-  /// The row in the palette a node was placed from.
-  const DemoPointer.palette(String this.specId) : port = null;
-
-  /// The port dot that was clicked to place what came next.
-  const DemoPointer.port(PortRef this.port) : specId = null;
-
-  final String? specId;
-  final PortRef? port;
+  /// The port a named step's node carries, ready to be clicked or wired.
+  PortRef portOf(String name, String portId) => PortRef(nodeId(name), portId);
 }
 
 /// One thing a demo does, and the line it says while doing it.
 class DemoStep {
-  const DemoStep({required this.says, this.does, this.points});
+  const DemoStep({required this.says, this.does = const SaySoFar()});
 
   /// The narration. Whatever figures it quotes are checked against what the
   /// app really says — see `E15-3` — so it is a claim rather than a caption.
   final String says;
 
-  /// The action. Null for a step that only talks: the first line of a demo
-  /// and the last are usually about what is already on screen.
-  final void Function(DemoStage stage)? does;
-
-  /// Where the click would have been.
-  ///
-  /// A function of the stage, because most of the answers are ports on nodes
-  /// this demo has only just made, and their ids are generated. Asked after
-  /// the step has run, for the same reason.
-  final DemoPointer? Function(DemoStage stage)? points;
+  final DemoAction does;
 }
 
 /// A demo: a build assembled a step at a time, with somebody explaining.
@@ -93,27 +137,81 @@ class Demo {
   final String name;
 
   /// One line saying what it shows, in the terms of somebody deciding whether
-  /// to watch it. The same shape as a `PipelineTemplate`'s summary, because it
-  /// is offered in the same place.
+  /// to watch it.
   final String summary;
 
   final List<DemoStep> steps;
 }
 
-/// A demo part-way through.
+/// Who carries a step out.
 ///
-/// Holds the position and nothing else; the build lives in the controller,
-/// where it would have lived if somebody had done all this by hand. Which
-/// means the app renders a demo exactly as it renders anything, and there is
-/// no second way for a node to be drawn.
+/// The straight one runs against the controller and returns; the one the app
+/// supplies moves a cursor, opens the real menu, and takes its time. Both
+/// leave the build in the same state, which is a test.
+abstract class DemoHands {
+  /// Do it. Returns when the build has changed and the screen has caught up.
+  Future<void> perform(DemoAction action, DemoStage stage);
+}
+
+/// The straight one: no screen, no waiting, no cursor.
+///
+/// What every test uses, and what `E15-3` checks the figures against.
+class ModelHands implements DemoHands {
+  const ModelHands();
+
+  @override
+  Future<void> perform(DemoAction action, DemoStage stage) async {
+    final controller = stage.controller;
+    switch (action) {
+      case SaySoFar():
+        return;
+      case PlaceFromPalette(:final specId, :final remember):
+        stage.remember(remember, controller.addNode(specId, Offset.zero));
+      case ClickPortAndPick(
+          :final node,
+          :final portId,
+          :final pick,
+          :final remember
+        ):
+        final made =
+            controller.addNodeFor(stage.portOf(node, portId), pick);
+        if (made == null) {
+          throw StateError('$pick will not attach to $node.$portId');
+        }
+        stage.remember(remember, made);
+      case ConnectPorts(:final fromNode, :final fromPortId, :final toNode,
+            :final toPortId):
+        controller.connect(
+            stage.portOf(fromNode, fromPortId), stage.portOf(toNode, toPortId));
+      case PinAmount(:final node, :final count, :final portId, :final rate):
+        final id = stage.nodeId(node);
+        controller.select(NodeSelection(id));
+        controller.pin(count != null
+            ? BuildingCountPin(nodeId: id, count: count)
+            : PortRatePin(
+                nodeId: id, portId: portId!, ratePerSecond: rate!));
+      case AskForTheBest(:final node):
+        final id = stage.nodeId(node);
+        controller.select(NodeSelection(id));
+        controller.optimiseFor(id);
+    }
+  }
+}
+
+/// A demo part-way through.
 class DemoRun {
-  DemoRun(this.demo, PipelineController controller)
+  DemoRun(this.demo, PipelineController controller,
+      {this.hands = const ModelHands()})
       : _stage = DemoStage(controller);
 
   final Demo demo;
+
+  /// Who carries the steps out. A test's hands are the model's.
+  final DemoHands hands;
   final DemoStage _stage;
 
   int _done = 0;
+  bool _busy = false;
 
   /// How many steps have been played.
   int get played => _done;
@@ -126,27 +224,30 @@ class DemoRun {
       ? ''
       : demo.steps[_done == 0 ? 0 : _done - 1].says;
 
-  DemoPointer? _pointer;
+  /// The step about to happen, for anybody who needs to know where the next
+  /// click is going.
+  DemoAction? get next => isDone ? null : demo.steps[_done].does;
 
-  /// Where the step that has just happened would have been clicked.
-  DemoPointer? get pointingAt => _pointer;
-
-  /// Play one step. Returns false when there was nothing left to play.
-  bool step() {
-    if (isDone) return false;
-    final step = demo.steps[_done];
-    step.does?.call(_stage);
-    _pointer = step.points?.call(_stage);
-    _done++;
+  /// Play one step. Returns false when there was nothing left to play, or
+  /// when the last one has not finished — a demo on screen takes its time,
+  /// and a second Next while a cursor is still travelling would run two at
+  /// once.
+  Future<bool> step() async {
+    if (isDone || _busy) return false;
+    _busy = true;
+    try {
+      final step = demo.steps[_done];
+      // The line first, so what is said arrives before what it describes.
+      _done++;
+      await hands.perform(step.does, _stage);
+    } finally {
+      _busy = false;
+    }
     return true;
   }
 
   /// Play the rest of it.
-  ///
-  /// The same thing as pressing step until it stops, which is a property worth
-  /// keeping: the test that checks a demo's figures runs it this way, and a
-  /// person watching runs it the other, and they had better agree.
-  void runToEnd() {
-    while (step()) {}
+  Future<void> runToEnd() async {
+    while (await step()) {}
   }
 }

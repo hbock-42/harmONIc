@@ -89,26 +89,4 @@ void main() {
     expect(find.textContaining('Watch'), findsNothing);
     expect(find.text('OR START FROM ONE OF THESE'), findsOneWidget);
   });
-  testWidgets('and what it points at is lit on screen', (tester) async {
-    await pump(tester, pipeline: empty());
-    await tester.tap(find.text('Watch: What a geyser feeds'));
-    await tester.pumpAndSettle();
-
-    // The palette row the geyser came from, and then the port dot that gets
-    // clicked next. Both are already-existing highlights: the row is the one
-    // hovering uses, the dot is the one a dragged wire uses for a port that
-    // would take it.
-    player.step();
-    await tester.pumpAndSettle();
-    expect(player.run!.pointingAt!.specId, 'water_geyser');
-    expect(find.text('Water Geyser'), findsWidgets);
-
-    player.step();
-    await tester.pumpAndSettle();
-    expect(player.run!.pointingAt!.port!.portId, 'water');
-    // The node it names is on the canvas, which is what makes the dot glow.
-    expect(controller.pipeline.node(player.run!.pointingAt!.port!.nodeId),
-        isNotNull);
-  });
-
 }
