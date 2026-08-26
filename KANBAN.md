@@ -47,6 +47,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 
 
+**The app demonstrating itself**
+
+- `E15-12` The demo does what a person does, not what the model does
+- `E15-13` A cursor you can follow
+
 **Data still to gather**
 
 
@@ -1365,6 +1370,8 @@ has been dismissed.
 | E15-9 | ✅ | The canvas keeps up with the demo | a demo places nodes off to the right and the finished one is 1 152 px wide, which is more than the canvas has. The player fits the view after each step — E15-2 said this was its job and did not do it |
 | E15-10 | ✅ | A demo that is no longer on screen stops | switch tabs while one is playing and its next step builds into whatever you switched to — or throws, because the node it was going to wire up is not there |
 | E15-11 | ✅ | A step shows where somebody would have clicked | reported: things appear and wire themselves up and you cannot see where the click was. The port dots already know how to glow — that is how a wire being dragged shows its legal targets — so a step points at a port or at the palette row it came from |
+| E15-12 | P1 | The demo does what a person does, not what the model does | reported twice: it builds like magic and you cannot see where to click. `E15-1` made a step an action on the controller, which is why — nothing is ever clicked, so there is nothing to point at until after the fact. A step becomes an *intent* instead, and how it is carried out depends on who is watching: straight to the controller in a test, and through the real widgets, with a cursor and the real port menu, on screen |
+| E15-13 | P1 | A cursor you can follow | it moves to the thing, then the thing happens. Cause before effect is the whole of what was missing |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality
