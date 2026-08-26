@@ -39,6 +39,7 @@ class EditorScreen extends StatefulWidget {
     this.apple,
     this.openLink,
     this.demoPlayer,
+    this.firstVisit = false,
     super.key,
   });
 
@@ -49,6 +50,15 @@ class EditorScreen extends StatefulWidget {
 
   /// Where the guide's text comes from; the asset unless a test says otherwise.
   final Future<String> Function()? loadGuide;
+
+  /// Whether this is somebody's first time here — nothing was restored from
+  /// the last session, because there was no last session.
+  ///
+  /// The only moment somebody does not know there is anything to be shown. It
+  /// buys one offer and no more: taken or waved away, it does not come back,
+  /// and the next launch has a session to restore so the question never
+  /// arises again.
+  final bool firstVisit;
 
   /// The demo being played, if the app is playing one. Handed in rather than
   /// made here because it opens and deletes builds, which is the workspace's
@@ -151,6 +161,18 @@ class _EditorScreenState extends State<EditorScreen> {
   /// the last arrow press was, so a run of them is one edit, and a fresh
   /// instance on every rebuild would forget between keystrokes.
   late final _NudgeAction _nudge = _NudgeAction(controller);
+
+  /// Waved away, this session. There is no second session to worry about:
+  /// the next launch has something to restore, so [EditorScreen.firstVisit] is
+  /// false and the offer is not made again.
+  bool _offerDeclined = false;
+
+  bool get _offerDemo =>
+      widget.firstVisit &&
+      !_offerDeclined &&
+      widget.demoPlayer != null &&
+      widget.demoPlayer!.run == null &&
+      kDemos.isNotEmpty;
 
   /// The recipe being edited, shown over the whole editor.
   ProcessSpec? _editing;
@@ -277,6 +299,16 @@ class _EditorScreenState extends State<EditorScreen> {
                       onOpenKeys: () => setState(() => _keysPinned = true),
                     ),
                     _Tabs(workspace: widget.workspace),
+                    if (_offerDemo)
+                      _FirstVisitOffer(
+                        demo: kDemos.first,
+                        onWatch: (demo) {
+                          setState(() => _offerDeclined = true);
+                          unawaited(widget.demoPlayer!.start(demo));
+                        },
+                        onDismiss: () =>
+                            setState(() => _offerDeclined = true),
+                      ),
                     // Under the tabs, above everything a demo is about to
                     // change, and gone entirely when nothing is playing.
                     if (widget.demoPlayer case final DemoPlayer player)
@@ -1032,6 +1064,62 @@ class _EmptyCanvas extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      );
+}
+
+/// The one offer, on the one visit where nobody knows there is anything to be
+/// shown.
+///
+/// An offer and not an interruption: nothing plays until it is asked to, and
+/// waving it away is a button rather than a thing to hunt for. It sits under
+/// the tabs, above the build, in the place notices already appear.
+class _FirstVisitOffer extends StatelessWidget {
+  const _FirstVisitOffer({
+    required this.demo,
+    required this.onWatch,
+    required this.onDismiss,
+  });
+
+  final Demo demo;
+  final ValueChanged<Demo> onWatch;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+            horizontal: OniSpacing.lg, vertical: OniSpacing.sm),
+        decoration: BoxDecoration(
+          color: OniColors.accent.withValues(alpha: 0.1),
+          border: Border(
+            bottom: BorderSide(color: OniColors.accent.withValues(alpha: 0.4)),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'First time here? It can build one in front of you and say '
+                'what it is doing — ${demo.name.toLowerCase()}, in a tab of '
+                'its own.',
+                style: OniType.body.copyWith(fontSize: 12),
+              ),
+            ),
+            const SizedBox(width: OniSpacing.md),
+            OniButton(
+              label: 'Show me',
+              compact: true,
+              tone: OniButtonTone.accent,
+              onPressed: () => onWatch(demo),
+            ),
+            const SizedBox(width: OniSpacing.xs),
+            OniButton(
+              label: 'No thanks',
+              compact: true,
+              onPressed: onDismiss,
+            ),
+          ],
         ),
       );
 }

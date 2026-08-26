@@ -45,7 +45,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **The app demonstrating itself**
 
-- `E15-8` Offered once, on a first visit
 
 **Data still to gather**
 
@@ -75,6 +74,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E15-8` **Offered once, on a first visit** — a line under the tabs with *Show me* and *No
+  thanks*, and nothing plays until it is asked to. No new storage was needed: the workspace
+  already returns whether it restored anything, and having nothing to restore is exactly what a
+  first visit is. Which also means the offer is spent by the act of using the app — the next
+  launch has a session, so the question never arises again
 
 - `E15-3` **The narration is checked against the solver** — every demo run a step at a time,
   and every figure a line quotes matched against what the app is showing at that moment. The
@@ -1319,7 +1324,7 @@ has been dismissed.
 | E15-4 | ✅ | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
 | E15-5 | ✅ | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
 | E15-6 | ✅ | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
-| E15-8 | P2 | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
+| E15-8 | ✅ | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality

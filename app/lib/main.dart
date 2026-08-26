@@ -69,6 +69,10 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
       widget.displaySettings ?? DisplayController(MemoryJsonStore());
   bool _ready = false;
 
+  /// Nothing was restored, because there was nothing to restore. The one
+  /// moment worth offering to show somebody around.
+  bool _firstVisit = false;
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +87,12 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
     if (!restored) {
       await _workspace.adopt(_controller.pipeline);
     }
-    if (mounted) setState(() => _ready = true);
+    if (mounted) {
+      setState(() {
+        _firstVisit = !restored;
+        _ready = true;
+      });
+    }
   }
 
   @override
@@ -130,6 +139,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
                 workspace: _workspace,
                 displaySettings: _display,
                 demoPlayer: _demoPlayer,
+                firstVisit: _firstVisit,
               )
             : ColoredBox(color: OniColors.background),
       );

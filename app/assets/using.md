@@ -193,7 +193,9 @@ usually too pale to read on near-white.
 ## Being shown
 
 **Watch a demo**, at the foot of this guide or on an empty canvas, builds one
-in front of you and says what it is doing. It is not a video: every node it
+in front of you and says what it is doing. It is offered once on a first visit
+too, as a line at the top with *Show me* and *No thanks* — an offer, never
+something that starts playing at you. It is not a video: every node it
 places and every amount it pins is a thing you could have typed, and every
 figure it quotes comes out of the solver as it goes — which is why a test can
 check that what it says matches what it does.
