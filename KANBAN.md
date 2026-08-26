@@ -78,6 +78,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-56` **The Microbe Musher's recipes, and a bar that fed eight hundred** — going after
+  Liceloaf and Tofu turned up the worst number found in this data yet: the Mush Bar's output
+  was 1 666 g/s where it should be 1.67, a thousand times over, so one Musher fed eight hundred
+  Duplicants. The recipe's own note said "one bar a cycle" the whole time; the figure did not.
+  A dupe eats 1000 kcal a cycle and a bar is 800, so it takes 1.25 Mushers to keep one person
+  fed, which is what it says now. Five recipes added besides — Liceloaf, Tofu, Berry Sludge
+  twice over and Pemmican — and the Musher mixes with water or, in the Aquatic pack, mucin
+
 - `E4-54` **The other food buildings' recipes** — Sushi Bar and Deep Fryer complete at four
   each, the Smoker at three. Veggie Poppers is one port with three crops on it because
   sweatcorn, pikeapple and spindly grubfruit are all 800 kcal a kilogram, so seven kilograms
@@ -1250,6 +1258,7 @@ _(empty)_
 | E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
 | E4-54 | ✅ | The other food buildings' missing recipes | the Sushi Bar and the Deep Fryer are complete at four each, the Smoker at three. The Dehydrator and Rehydrator pair is still unmodelled, which is `E4-55` |
 | E4-55 | P3 | The Dehydrator and Rehydrator | 6000 kcal of any Gas Range food and 12 kg of plastic make six dried packs that never spoil; a Rehydrator turns one back with 1 kg of water. Nine dried foods as items, and a preservation chain nothing here models |
+| E4-56 | ✅ | The Microbe Musher's six recipes, and a bar that fed eight hundred | its Mush Bar output was a thousand times too large, and had been since the recipe was written |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

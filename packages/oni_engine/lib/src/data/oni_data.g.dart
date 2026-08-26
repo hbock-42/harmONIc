@@ -1501,6 +1501,21 @@ const String oniDataJson = r"""
       "tags": [
         "frosty"
       ]
+    },
+    {
+      "id": "berry_sludge",
+      "name": "Berry Sludge",
+      "category": "solid",
+      "kcalPerKg": 4000
+    },
+    {
+      "id": "pemmican",
+      "name": "Pemmican",
+      "category": "solid",
+      "kcalPerKg": 2600,
+      "tags": [
+        "frosty"
+      ]
     }
   ],
   "processes": [
@@ -7733,7 +7748,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 2,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: 75 kg of dirt and 75 kg of water make one Mush Bar worth 800 kcal. The wiki gives the recipe but not how long it takes, so the rates here assume one bar a cycle and the heat is unstated.",
+      "description": "UNVERIFIED TIME: 75 kg of dirt and 75 kg of water or mucin make one Mush Bar of 800 kcal. The wiki gives the recipe and not how long it takes, so the rates assume one bar a cycle — which is what this always claimed while shipping an output a thousand times too large.",
       "tags": [
         "food",
         "unverified"
@@ -7747,12 +7762,16 @@ const String oniDataJson = r"""
         {
           "item": "water",
           "direction": "input",
-          "rate": 125
+          "rate": 125,
+          "id": "water",
+          "alternatives": [
+            "mucin"
+          ]
         },
         {
           "item": "mush_bar",
           "direction": "output",
-          "rate": 1666.6666666666665
+          "rate": 1.6666666666666667
         }
       ],
       "build": {
@@ -9784,6 +9803,205 @@ const String oniDataJson = r"""
           "item": "shellfish_tempura",
           "direction": "output",
           "rate": 20.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "microbe_musher_liceloaf",
+      "name": "Microbe Musher (Liceloaf)",
+      "kind": "building",
+      "buildingId": "microbe_musher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 2.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "description": "1200 kcal of meal lice — two kilograms — and 50 kg of water or mucin. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "meal_lice",
+          "direction": "input",
+          "rate": 3.3333333333333335
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 83.33333333333333,
+          "id": "water",
+          "alternatives": [
+            "mucin"
+          ]
+        },
+        {
+          "item": "liceloaf",
+          "direction": "output",
+          "rate": 1.6666666666666667
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "microbe_musher_tofu",
+      "name": "Microbe Musher (Tofu)",
+      "kind": "building",
+      "buildingId": "microbe_musher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 2.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "description": "Six nosh beans and 50 kg of water. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "nosh_bean",
+          "direction": "input",
+          "rate": 10.0
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 83.33333333333333
+        },
+        {
+          "item": "tofu",
+          "direction": "output",
+          "rate": 1.6666666666666667
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "microbe_musher_berry_sludge",
+      "name": "Microbe Musher (Berry Sludge)",
+      "kind": "building",
+      "buildingId": "microbe_musher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 2.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "description": "Five kilograms of grain and 1600 kcal of bristle berry, which is a kilogram of it. Pikeapple does the same job at 800 kcal a kilogram, so it is two of them and its own recipe. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "tags": [
+        "food",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 8.333333333333334,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "bristle_berry",
+          "direction": "input",
+          "rate": 1.6666666666666667
+        },
+        {
+          "item": "berry_sludge",
+          "direction": "output",
+          "rate": 1.6666666666666667
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "microbe_musher_berry_sludge_pikeapple",
+      "name": "Microbe Musher (Berry Sludge, pikeapple)",
+      "kind": "building",
+      "buildingId": "microbe_musher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 2.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "description": "The same 1600 kcal of fruit, and pikeapple is half as rich, so it takes two kilograms. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "tags": [
+        "food",
+        "unverified",
+        "frosty"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 8.333333333333334,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "pikeapple",
+          "direction": "input",
+          "rate": 3.3333333333333335
+        },
+        {
+          "item": "berry_sludge",
+          "direction": "output",
+          "rate": 1.6666666666666667
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "microbe_musher_pemmican",
+      "name": "Microbe Musher (Pemmican)",
+      "kind": "building",
+      "buildingId": "microbe_musher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 2.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 3,
+      "description": "1600 kcal of meat — a kilogram — and a kilogram of tallow. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "tags": [
+        "food",
+        "unverified",
+        "frosty"
+      ],
+      "ports": [
+        {
+          "item": "meat",
+          "direction": "input",
+          "rate": 1.6666666666666667
+        },
+        {
+          "item": "tallow",
+          "direction": "input",
+          "rate": 1.6666666666666667
+        },
+        {
+          "item": "pemmican",
+          "direction": "output",
+          "rate": 1.6666666666666667
         }
       ],
       "build": {

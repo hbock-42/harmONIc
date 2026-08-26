@@ -544,6 +544,12 @@ void main() {
             if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
       };
       expect(claiming, {
+        // The Musher mixes with water or, in the Aquatic pack, mucin.
+        'microbe_musher_mush_bar.water',
+        'microbe_musher_liceloaf.water',
+        // And its grain is either grain, like everywhere else.
+        'microbe_musher_berry_sludge.grain',
+        'microbe_musher_berry_sludge_pikeapple.grain',
         // Six kilograms of fillet, fish or Jawbo: both 1000 kcal a kilogram.
         'smoker_smoked_fish.catch',
         // Seven kilograms of sweatcorn, pikeapple or spindly grubfruit —
