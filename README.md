@@ -8,7 +8,9 @@ oxygen"), and every other building, flow, watt and kDTU scales to match.
 solver does, and it has ONI in the middle of it.*
 
 **Live at <https://hbock-42.github.io/harmONIc/>** — no install, no account,
-and your builds stay in your own browser.
+and your builds stay in your own browser. The page is counted by GoatCounter,
+which is cookieless and stores nothing about you; that is the only request this
+app makes to anywhere.
 
 ## Layout
 

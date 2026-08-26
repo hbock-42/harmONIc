@@ -210,6 +210,17 @@ a number. It runs in a tab of its own, so whatever you were building is
 untouched, and **Leave** throws the demo's build away rather than leaving it in
 your list.
 
+## What leaves your machine
+
+Nothing you draw. Builds live in the browser's own storage, and the only way
+one goes anywhere is if you send it — a share code you copy, or a bug report
+you choose to attach it to.
+
+The page itself is counted, by GoatCounter: how many people opened the site and
+what page they came from. No cookies, no identifier, nothing about the build in
+front of you. It is the one request this app makes to anywhere, which is why it
+is written here rather than buried.
+
 ## When it is wrong
 
 The foot of this guide has **Report a bug** and **Suggest something**. Both

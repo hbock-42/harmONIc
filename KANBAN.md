@@ -76,6 +76,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-20` **Count the visits** — GitHub Pages says nothing about who came, so a script tag in
+  `app/web/index.html` does: GoatCounter, cookieless, no identifier, nothing about the build in
+  front of you, which is why there is no consent banner in front of any of it. It is also the
+  first request this app has ever made to anywhere, so the README and the guide say so — the
+  guide gained a **What leaves your machine** section rather than a footnote. The endpoint is
+  not a secret and cannot be one: it is in the HTML of every page load, and all it permits is
+  adding a count that anybody could add from the live site anyway
+
 - `E8-7b` **The guide is a list of topics, not a wall** — reported by Hugo: three hundred lines
   and twelve headings arriving as one scroll, which is a document rather than something you
   look an answer up in. It opens on the twelve, each with a line saying what it is about, and
@@ -1421,6 +1429,7 @@ has been dismissed.
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
 | E8-7b | ✅ | The guide is a list of topics, not a wall | twelve headings and three hundred lines arriving as one scroll. The headings are already in the file, so the split costs nothing and stays honest: pick a topic, read that topic, go back |
+| E8-20 | ✅ | Count the visits | GitHub Pages says nothing about who came. GoatCounter: cookieless, no personal data, so no banner — and the first network request this app has ever made, which the README has to stop being silent about |
 | E8-19 | ✅ | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |
 | E8-18 | ✅ | Golden builds for this week's data | fifteen recipes seeded in a week, each unit-tested against its own page and none of them checked as a chain |
 
