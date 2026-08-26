@@ -84,6 +84,14 @@ class _PalettePanelState extends State<PalettePanel> {
       widget.search ?? TextEditingController();
   bool _filtersOpen = false;
 
+  /// The groups the reader has folded away.
+  ///
+  /// Three start folded. A supply and an output node exist for every item in
+  /// the database and an eating node for every food, so those three groups
+  /// are 428 of the roughly 700 rows here — and none of them is what somebody
+  /// opening the palette is looking for. The buildings are.
+  final Set<String> _folded = {'Supply', 'Output', 'Eating'};
+
   @override
   void initState() {
     super.initState();
@@ -139,7 +147,7 @@ class _PalettePanelState extends State<PalettePanel> {
         // groups of their own rather than swamping the list they would
         // otherwise be sorted into.
         _ when spec.tags.contains('pumping') => 'Pumping',
-        // And one eating node per food, for the same reason: 54 ways to put
+        // And one eating node per food, for the same reason: 64 ways to put
         // something on a plate would bury the dozen buildings that cook.
         _ when spec.tags.contains('eating') => 'Eating',
         _ when spec.tags.contains('filtering') => 'Filtering',
@@ -235,6 +243,7 @@ class _PalettePanelState extends State<PalettePanel> {
   @override
   Widget build(BuildContext context) {
     final groups = _groups;
+    final searching = _search.text.trim().isNotEmpty;
     final names = groups.keys.toList()
       ..sort((a, b) {
         int rank(String g) => switch (g) {
@@ -277,12 +286,18 @@ class _PalettePanelState extends State<PalettePanel> {
               padding: const EdgeInsets.only(bottom: OniSpacing.lg),
               children: [
                 for (final name in names) ...[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                        OniSpacing.md, OniSpacing.md, OniSpacing.md, 4),
-                    child: Text(name.toUpperCase(), style: OniType.label),
+                  _GroupHeader(
+                    name: name,
+                    count: groups[name]!.length,
+                    // A search that has found something shows it, whatever
+                    // was folded before the search was typed.
+                    folded: _folded.contains(name) && !searching,
+                    onTap: () => setState(() {
+                      if (!_folded.remove(name)) _folded.add(name);
+                    }),
                   ),
-                  for (final spec in groups[name]!)
+                  if (!(_folded.contains(name) && !searching))
+                    for (final spec in groups[name]!)
                     _PaletteRow(
                       key: widget.rowKeys
                           ?.putIfAbsent(spec.id, GlobalKey.new),
@@ -299,6 +314,43 @@ class _PalettePanelState extends State<PalettePanel> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// A group's name, how many are in it, and whether it is folded away.
+class _GroupHeader extends StatelessWidget {
+  const _GroupHeader({
+    required this.name,
+    required this.count,
+    required this.folded,
+    required this.onTap,
+  });
+
+  final String name;
+  final int count;
+  final bool folded;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+            OniSpacing.md, OniSpacing.md, OniSpacing.md, 4),
+        child: Row(
+          children: [
+            // Pointing down when open and right when folded, which is the
+            // arrow every file tree has taught everybody to read.
+            Text(folded ? '\u25B8' : '\u25BE', style: OniType.label),
+            const SizedBox(width: 6),
+            Expanded(child: Text(name.toUpperCase(), style: OniType.label)),
+            Text('$count', style: OniType.label),
+          ],
+        ),
       ),
     );
   }
