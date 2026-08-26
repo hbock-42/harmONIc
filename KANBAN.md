@@ -78,6 +78,12 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-22` **The eating nodes keep out of the way** — looking at what yesterday's change did to
+  the palette rather than only at what it did to the model. `E4-53` generated one node per
+  food, and they were tagged `food`, so 55 ways to put something on a plate landed in the list
+  of the 45 things that cook. The palette had already solved exactly this for pumps and
+  filters, and said so in a comment two lines above; they get a group of the same kind
+
 - `E4-52` **What grows the grill's ingredients** — mostly already here, and nobody knew: making
   a plant grow a crop instead of calories gave the Mealwood, Bristle Blossom, Dusk Cap,
   Waterweed and Pikeapple Bush back to the kitchen in one move. Two more added — the Megafrond,
@@ -1587,6 +1593,7 @@ has been dismissed.
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
 | E8-7b | ✅ | The guide is a list of topics, not a wall | twelve headings and three hundred lines arriving as one scroll. The headings are already in the file, so the split costs nothing and stays honest: pick a topic, read that topic, go back |
+| E8-22 | ✅ | The eating nodes keep out of the way | 55 generated nodes landed in the group that lists things that cook, which is what the palette already solved for pumps |
 | E8-21 | ✅ | The audit that would have caught the Mush Bar | a kitchen that makes 60 kg of food a cycle out of one machine is a batch mistaken for a rate |
 | E8-20 | ✅ | Count the visits | GitHub Pages says nothing about who came. GoatCounter: cookieless, no personal data, so no banner — and the first network request this app has ever made, which the README has to stop being silent about |
 | E8-19 | ✅ | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |

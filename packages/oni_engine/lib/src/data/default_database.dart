@@ -82,7 +82,10 @@ GameDatabase withGeneratedNodes(GameDatabase base) {
         kind: ProcessKind.custom,
         description: 'A kilogram of ${item.name} is $kcalPerKg kcal on '
             'somebody\'s plate. One unit = 1 kg/s of it eaten.',
-        tags: {'food', 'verified', ...packs},
+        // Its own tag, so the palette can keep 54 of these out of the list of
+        // things that actually cook. The same reason pumps and filters have
+        // tags of their own.
+        tags: {'eating', 'verified', ...packs},
         ports: [
           Port(
             id: eatPortId,

@@ -139,6 +139,9 @@ class _PalettePanelState extends State<PalettePanel> {
         // groups of their own rather than swamping the list they would
         // otherwise be sorted into.
         _ when spec.tags.contains('pumping') => 'Pumping',
+        // And one eating node per food, for the same reason: 54 ways to put
+        // something on a plate would bury the dozen buildings that cook.
+        _ when spec.tags.contains('eating') => 'Eating',
         _ when spec.tags.contains('filtering') => 'Filtering',
         _ => _capitalise(
             spec.tags.firstWhere((t) => t != 'verified', orElse: () => 'other')),
@@ -238,6 +241,7 @@ class _PalettePanelState extends State<PalettePanel> {
               'My builds' => 0,
               'Pumping' => 2,
               'Filtering' => 2,
+              'Eating' => 2,
               'Supply' => 3,
               'Output' => 4,
               _ => 1,

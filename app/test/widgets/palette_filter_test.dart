@@ -187,4 +187,28 @@ void main() {
     expect(display.includes(testDatabase.processOrThrow('electrolyzer')),
         isTrue);
   });
+  testWidgets('the eating nodes keep out of the list of things that cook',
+      (tester) async {
+    // One per food, and there are 55 of them — as many as the pumps and the
+    // filters put together, and more than the buildings that actually cook.
+    // They have a group, the way pumps and filters do, for the same reason.
+    await pumpEditor(tester);
+    // Search for a dish, so both headings are on screen at once.
+    await tester.enterText(paletteSearch(), 'frost bun');
+    await tester.pumpAndSettle();
+
+    expect(find.text('EATING'), findsOneWidget);
+    expect(find.text('FOOD'), findsOneWidget);
+
+    // The recipe and the way to eat what it makes are both offered, and they
+    // are in different places: a cook looking through FOOD is not reading
+    // past "Eating Frost Bun" to get to the next recipe.
+    expect(find.text('Electric Grill (Frost Bun)'), findsOneWidget);
+    expect(find.text('Eating Frost Bun'), findsOneWidget);
+    final food = tester.getTopLeft(find.text('FOOD'));
+    final eating = tester.getTopLeft(find.text('EATING'));
+    expect(food.dy, lessThan(eating.dy),
+        reason: 'what cooks comes before what eats');
+  });
+
 }
