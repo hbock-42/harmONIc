@@ -1756,7 +1756,11 @@ const String oniDataJson = r"""
         {
           "item": "raw_mineral",
           "direction": "input",
-          "rate": 2500
+          "rate": 2500,
+          "id": "rock",
+          "alternatives": [
+            "ceramic"
+          ]
         },
         {
           "item": "sand",
@@ -1768,7 +1772,8 @@ const String oniDataJson = r"""
       "description": "Any rock crushes to sand at the same rate, so this takes the class rather than one stone in particular.",
       "build": {
         "metal_ore": 800
-      }
+      },
+      "notes": "Ceramic is on the port rather than in the raw mineral class because that class is also a Hatch’s dinner, and a Hatch does not eat ceramic. Reported by a player: the game crushes it and this would not. 100 kg in, 100 kg of sand out, the same as every other rock on the list."
     },
     {
       "id": "duplicant",

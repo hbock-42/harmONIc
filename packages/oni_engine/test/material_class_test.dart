@@ -542,6 +542,11 @@ void main() {
             if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
       };
       expect(claiming, {
+        // 100 kg of ceramic makes 100 kg of sand, the same as every rock on
+        // the crusher's list. It is here rather than in the raw mineral class
+        // because that class is also a Hatch's dinner, and a Hatch does not
+        // eat ceramic.
+        'rock_crusher_sand.rock',
         // 25 kg of coal, wood or peat to fire the clay — the same 25 kg
         // whichever it is, which is why the fuel is a choice here and its own
         // recipe in the refined carbon ones, where the amounts differ.
