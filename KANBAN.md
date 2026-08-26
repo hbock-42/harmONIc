@@ -51,7 +51,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E4-39` One recipe per food building is not enough
 - `E4-41` Pinpoket, Pinpoki, and what eats it
-- `E4-44` Plywood, and whatever makes it
 
 **Data still to gather**
 
@@ -81,6 +80,13 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E4-44` **Plywood, and the press that makes it** — the fifth thing the Kiln burns, from a
+  page Hugo found. It joins the **wood class** rather than being wired into recipes one at a
+  time, because that is what it is: the wiki says it substitutes for wood one for one,
+  "including all of those in Kilns and Smokers", and can be distilled to ethanol. Adding it to
+  the class did all four at once and touched no recipe. Resin was on the unused-on-purpose list
+  and had to come off it, which is that list working
 
 - `E4-40` **The Kiln's other recipes, and what it does not cost** — reported: it will not take
   Gum Wood. Four recipes now instead of two, and the split follows the rule rather than
@@ -1154,7 +1160,7 @@ _(empty)_
 | E4-39 | P2 | One recipe per food building is not enough | the Electric Grill has one of its many, the Gas Range one of its many. A player trying a food chain finds the building and not the dish. The Rehydrator is missing outright; the Spice Grinder already has its own row |
 | E4-40 | ✅ | The Kiln's other recipes, and what it does not cost | reported: it will not take Gum Wood. The wikitext, read raw after a summary of it came back self-contradictory, settles all of it — and settles the doubt the two existing recipes carried, which was never about their rates but about whether a Duplicant is tied to them. Nobody is |
 | E4-41 | P2 | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
-| E4-44 | P3 | Plywood | the fifth thing the Kiln burns and the only one it cannot be given here. Whatever makes it is not in this data either |
+| E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | P3 | Biodiesel | the third fuel the Petroleum Generator takes, and nothing in this data makes it yet |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
 | E4-11a | ✅ | The Marine Drill's sulfur | 250 kg an operation over a 1 300 s cycle is 192 g/s, and a thousandth of that had been sitting in a field measured in grams since the day it was seeded |

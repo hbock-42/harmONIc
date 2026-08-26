@@ -429,6 +429,15 @@
       ]
     },
     {
+      "id": "plywood",
+      "name": "Plywood",
+      "category": "solid",
+      "specificHeat": 2.3,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
       "id": "sulfur",
       "name": "Sulfur",
       "category": "solid",
@@ -1049,7 +1058,8 @@
       "category": "solid",
       "members": [
         "lumber",
-        "gum_wood"
+        "gum_wood",
+        "plywood"
       ],
       "tags": [
         "class"
@@ -7842,6 +7852,44 @@
           "rate": 10.416666666666666
         }
       ]
+    },
+    {
+      "id": "plywood_press",
+      "name": "Plywood Press",
+      "kind": "building",
+      "buildingId": "plywood_press",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 1.25,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "90 kg of plant husk and 10 kg of resin make 100 kg of plywood in 40 s of Duplicant time, which is a batch — stated here as the continuous rate it comes to, the way the Rock Crusher and the Metal Refinery are.",
+      "tags": [
+        "refining",
+        "prehistoric",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "plant_husk",
+          "direction": "input",
+          "rate": 2250
+        },
+        {
+          "item": "resin",
+          "direction": "input",
+          "rate": 250
+        },
+        {
+          "item": "plywood",
+          "direction": "output",
+          "rate": 2500
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
