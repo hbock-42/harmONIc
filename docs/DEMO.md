@@ -49,7 +49,8 @@ Let the red sit there for a second. Then:
 **Hydrogen Generator**, then click the generator's **Power** dot and pick
 **Power output**.
 
-The bar turns green: **+1 397 W**. Same geyser, same sixteen dupes, and the
+The bar turns green: **+1.40 kW** — 1 396.8 W, shown in kilowatts because the
+app switches unit above a thousand. Same geyser, same sixteen dupes, and the
 build now runs a base. That is a SPOM, discovered in two clicks rather than
 looked up.
 
@@ -59,8 +60,8 @@ looked up.
 | roll | dupes | spare power |
 |---|---|---|
 | 40 % | 10.7 | 931 W |
-| 60 % (shipped) | 16.0 | 1 397 W |
-| 80 % | 21.3 | 1 862 W |
+| 60 % (shipped) | 16.0 | 1.40 kW |
+| 80 % | 21.3 | 1.86 kW |
 
 Say what this is: a geyser rolls both its output *and* its active share when
 the world is made, and the shipped rate is a lifetime average at a middling

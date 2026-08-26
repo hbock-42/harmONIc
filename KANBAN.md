@@ -46,7 +46,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 **The app demonstrating itself**
 
 - `E15-3` The narration is checked against the solver
-- `E15-4` "What a geyser feeds"
 - `E15-5` "Let it choose the split"
 - `E15-6` Where it is offered
 - `E15-8` Offered once, on a first visit
@@ -79,6 +78,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E15-4` **"What a geyser feeds"** — nine steps: a geyser, an Electrolyzer, a crew, one number,
+  the red bar, the generator that turns it green. Every figure it narrates was read off the
+  running demo rather than typed in from the wiki, and two were wrong when checked: the bar
+  prints **1.40 kW**, not 1 397 W, because it switches unit above a thousand. `docs/DEMO.md`
+  said the same wrong thing and now does not
 
 - `E15-2` **The player** — play, pause, Next while it is still playing, and leave. It runs in a
   build of its own, because a demo places nodes and pins amounts on the real controller and
@@ -1294,7 +1299,7 @@ has been dismissed.
 | E15-1 | ✅ | The demo engine | a demo is a list of steps; a step is an action on a real `PipelineController` plus a line of narration. No animation framework, no second renderer, and nothing a person could not have typed |
 | E15-2 | ✅ | The player | play, pause, step forward, and leave at any point. It runs in a workspace tab of its own, so whatever you were building is exactly where you left it — a demo that eats your work is worse than no demo |
 | E15-3 | P2 | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
-| E15-4 | P2 | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
+| E15-4 | ✅ | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
 | E15-5 | P2 | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
 | E15-6 | P2 | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
 | E15-8 | P2 | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
