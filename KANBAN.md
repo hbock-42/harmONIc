@@ -78,6 +78,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E10-30` **A port says what it is measured in** — the recipe form asked for `g/s` whatever
+  the port carried, so a Power output wanted grams of power and a Heat output wanted grams of
+  heat. Reported with a screenshot and the caption *"5 grams of power, please"*. Every item
+  already knows its unit — the whole app prints W and kDTU/s everywhere else — so the form was
+  the one place ignoring it. A port with no item yet says "per second", because it does not
+  know what it is measuring
+
 - `E4-41`, `E4-50` **Pinpoket, Pinpoki, and the two things that take it** — the last of the
   chain a player reported as missing. 5 kg of refined carbon a cycle for a sixteenth of a
   Pinpoki; one Pinpoki is 100 kg of diamond in a Rock Crusher, or 7200 kcal of Uni in a Sushi
@@ -1193,6 +1200,7 @@ _(empty)_
 | E4-48 | P3 | How many critters one Grooming Station keeps | eight is a fair guess and still a guess: a stable is 12–96 tiles and every species takes a different amount of room |
 | E4-49 | ✅ | The Seaquine excretes slime, not carbon dioxide | the right number beside the wrong material — 12 kg/cycle was the diet's output all along |
 | E4-50 | ✅ | Pinpoket, Pinpoki, and the two things that take it | the plant, the fruit, 100 kg of diamond in a Rock Crusher and 7200 kcal of Uni in a Sushi Bar |
+| E10-30 | ✅ | A port says what it is measured in | reported with a picture: a Power port asking for grams per second. "5 grams of power, please" |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
