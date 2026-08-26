@@ -45,7 +45,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **The app demonstrating itself**
 
-- `E15-1` The demo engine: steps that drive the real controller
 - `E15-2` The player: play, pause, step, and leave without losing your build
 - `E15-3` The narration is checked against the solver
 - `E15-4` "What a geyser feeds"
@@ -81,6 +80,14 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E15-1` **The demo engine** — a demo is a list of steps; a step is one action on a real
+  `PipelineController` and one line of narration. Nothing a person could not have typed, so
+  every figure on screen still comes out of the solver — which is the only reason a demo of
+  this app is worth playing rather than filming. A stage carries the ids of what earlier steps
+  made, under names the demo chose, and throws by name when asked for one that was never made.
+  Stepping through and running to the end reach the same build, which is the property the
+  `E15-3` check will lean on
 
 - `E14-3` **Report it, from inside the app** — at the foot of the guide, because that is where
   somebody already is when the app has confused them, and the toolbar has been out of room
@@ -1278,7 +1285,7 @@ has been dismissed.
 
 | id | P | Task | Notes |
 |---|---|---|---|
-| E15-1 | P2 | The demo engine | a demo is a list of steps; a step is an action on a real `PipelineController` plus a line of narration. No animation framework, no second renderer, and nothing a person could not have typed |
+| E15-1 | ✅ | The demo engine | a demo is a list of steps; a step is an action on a real `PipelineController` plus a line of narration. No animation framework, no second renderer, and nothing a person could not have typed |
 | E15-2 | P2 | The player | play, pause, step forward, and leave at any point. It runs in a workspace tab of its own, so whatever you were building is exactly where you left it — a demo that eats your work is worse than no demo |
 | E15-3 | P2 | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
 | E15-4 | P2 | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
