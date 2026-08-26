@@ -46,6 +46,11 @@ Everything not pulled into **Ready**. Grouped by epic below.
 **The app demonstrating itself**
 
 
+**What using it turned up**
+
+- `E12-9` A door out of "nothing here makes that"
+- `E8-19` The third reachability sweep
+
 **Data still to gather**
 
 
@@ -1262,6 +1267,7 @@ to build something real, which is a different activity from writing it.
 | E12-5 | ✅ | The scale warning speaks English | it said "Not enough pins: spare could be anything", which is three pieces of jargon in six words |
 | E12-6 | ✅ | Selecting a node goes to it | being told which node is the problem is no use when it is off screen |
 | E12-7 | ✅ | Two builds on one canvas | an amount belongs to the build it was given to, not to the page |
+| E12-9 | P2 | A door out of "nothing here makes that" | the port menu names the dead end and offers nothing to do about it. `draftFor` was written for exactly this and never wired to anything |
 | E12-8 | ✅ | ⌘C / ⌘V for nodes | copy a selection into the same canvas or another build |
 
 ## E13 — Materials as classes
@@ -1358,6 +1364,7 @@ has been dismissed.
 | E8-15 | ✅ | The rest of the per-frame work | connected components and the scoped totals were recomputed on every frame; measured at 300 nodes, cached, and the dropping is what the tests check |
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
+| E8-19 | P2 | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |
 | E8-18 | ✅ | Golden builds for this week's data | fifteen recipes seeded in a week, each unit-tested against its own page and none of them checked as a chain |
 
 ---
