@@ -542,6 +542,10 @@ void main() {
             if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
       };
       expect(claiming, {
+        // Petroleum or ethanol, 2 kg/s of it either way — the wiki gives one
+        // set of figures for every fuel the generator burns, power and
+        // byproducts included. Reported by somebody who could not switch it.
+        'petroleum_generator.fuel',
         // "Either Peat or Wood", 100 kg of it whichever you use.
         'smoker_brisket.fuel',
         // 60 kg a cycle of any ore or any refined metal, the same either way.

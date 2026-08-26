@@ -1649,7 +1649,11 @@ const String oniDataJson = r"""
         {
           "item": "petroleum",
           "direction": "input",
-          "rate": 2000
+          "rate": 2000,
+          "alternatives": [
+            "ethanol"
+          ],
+          "id": "fuel"
         },
         {
           "item": "carbon_dioxide",
@@ -1664,7 +1668,8 @@ const String oniDataJson = r"""
       ],
       "build": {
         "metal_ore": 800
-      }
+      },
+      "notes": "The wiki gives one set of figures for every fuel it burns — 2 kg/s in, 2 kW out, 500 g/s of carbon dioxide and 750 g/s of polluted water — so the fuel is a choice on the port rather than a second recipe. Biodiesel is the third one it takes and is not in this data yet."
     },
     {
       "id": "metal_refinery",
@@ -3435,7 +3440,7 @@ const String oniDataJson = r"""
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.00001388889
+          "rate": 1.388889e-05
         },
         {
           "item": "meat",
@@ -3478,7 +3483,7 @@ const String oniDataJson = r"""
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000370370
+          "rate": 0.00037037
         },
         {
           "item": "meat",
@@ -3517,7 +3522,7 @@ const String oniDataJson = r"""
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.0000370370
+          "rate": 3.7037e-05
         },
         {
           "item": "meat",
@@ -3599,7 +3604,7 @@ const String oniDataJson = r"""
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.0000185185
+          "rate": 1.85185e-05
         },
         {
           "item": "meat",
@@ -3681,7 +3686,7 @@ const String oniDataJson = r"""
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.0000185185
+          "rate": 1.85185e-05
         },
         {
           "item": "meat",
@@ -7774,4 +7779,5 @@ const String oniDataJson = r"""
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
-}""";
+}
+""";

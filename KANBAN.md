@@ -47,6 +47,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 
 
+**Game data**
+
+- `E4-39` One recipe per food building is not enough
+- `E4-40` The Kiln's other five recipes
+- `E4-41` Pinpoket, Pinpoki, and what eats it
+
 **Data still to gather**
 
 
@@ -75,6 +81,13 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E4-43` **The Petroleum Generator burns ethanol** — the first report from somebody who does
+  not know the app: *"I can't set petroleum generator to take ethanol either."* Quite right.
+  The wiki gives one set of figures for every fuel it takes, so this is a port with
+  alternatives rather than a second recipe, which is the rule that mechanism exists for — and
+  the test that pins which ports claim alternatives made me say out loud that the rate really
+  is the same before it would pass
 
 - `E8-20` **Count the visits** — GitHub Pages says nothing about who came, so a script tag in
   `app/web/index.html` does: GoatCounter, cookieless, no identifier, nothing about the build in
@@ -1125,6 +1138,11 @@ _(empty)_
 | E4-9a | ✅ | Enriching uranium | 10 kg of ore every 40 s into 2 of enriched and 8 of depleted, which builds like any other refined metal. The Research Reactor is `E4-9c` |
 | E4-9d | ❌ | Rockets | decided against. A launch is an event, not a rate: fuel is spent per journey, and a journey has a distance and a duration this model has no way to hold. Averaging a launch over a cycle would be the mistake the Beeta's five-day life is already refused for |
 | E4-9c | P3 | The Research Reactor | its page gives the fuel (16.7 g/s of enriched uranium) and the waste (1.67 kg/s) and never the coolant between them, so the mass cannot be made to balance |
+| E4-43 | ✅ | The Petroleum Generator burns ethanol | reported by a player: "I can't set petroleum generator to take ethanol either". The wiki gives one set of figures for every fuel it takes — 2 kg/s in, 2 kW out, 500 g/s CO2, 750 g/s polluted water — so it is a choice on the port, not a second recipe |
+| E4-39 | P2 | One recipe per food building is not enough | the Electric Grill has one of its many, the Gas Range one of its many. A player trying a food chain finds the building and not the dish. The Rehydrator is missing outright; the Spice Grinder already has its own row |
+| E4-40 | P2 | The Kiln's other five recipes | reported: it will not take Gum Wood. It takes wood, plywood, gum wood and peat as well as coal, across six recipes; this data has two of them, both already tagged unverified. The wiki's table needs reading properly — a summary of it came back self-contradictory |
+| E4-41 | P2 | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
+| E4-42 | P3 | Biodiesel | the third fuel the Petroleum Generator takes, and nothing in this data makes it yet |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
 | E4-11a | ✅ | The Marine Drill's sulfur | 250 kg an operation over a 1 300 s cycle is 192 g/s, and a thousandth of that had been sitting in a field measured in grams since the day it was seeded |
 | E4-12 | ✅ | Palette filter by DLC |
