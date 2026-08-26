@@ -185,6 +185,15 @@ A wire is **pull** by default: the consumer decides, and the producer is sized t
 cover it. **Push** is the other way — this line takes a fixed share of what the
 producer makes, and the rest is somebody else's.
 
+**Two wires into one port** need saying out loud. With nothing else to go on
+the app splits that port's demand equally between them, which is rarely what
+anybody means. If you are feeding an Arbor Tree from a Petroleum Generator's
+own polluted water *and* topping it up from somewhere else, set **both** wires
+to *the producer*: each then hands over what its own end makes, and the supply
+covers whatever is left. Pinning one end and leaving the wires alone gives you
+twice the trees, because the generator's 750 g/s is read as half of what they
+drink.
+
 The number on a wire is its flow. Click it to switch every rate in the app
 between per second and per cycle. Select a wire and it says what carries it —
 how many pipes or wires, since a ratio that balances on paper is unbuildable at

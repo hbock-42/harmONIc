@@ -1513,6 +1513,8 @@ to build something real, which is a different activity from writing it.
 | E12-7 | ✅ | Two builds on one canvas | an amount belongs to the build it was given to, not to the page |
 | E12-9 | ✅ | The port menu's empty list tells the truth | there is no dead end to build a door out of: every one of 1 415 ports has something to offer, so "nothing here makes water" was only ever shown to somebody whose *search* found nothing, and it blamed the catalogue for that |
 | E12-8 | ✅ | ⌘C / ⌘V for nodes | copy a selection into the same canvas or another build |
+| E12-11 | ✅ | Two wires into one port say what they are doing | reported twice from one build: a Petroleum Generator's own polluted water plus a supply to top it up came out as *twice* the trees, because two wires into one input split its demand evenly and nothing said so. Setting both to "the producer" has always solved it exactly — 750 g/s from the generator and 90 topped up — and nothing pointed there |
+| E12-12 | ✅ | The over-committed list stops repeating itself | eight bullets of the same forty words, one per port, with the one that mattered indistinguishable from four innocent ones. The function's own comment already said listing them all "was no help" |
 | E12-10 | ✅ | A wire follows its port when the port is renamed | today's food work renamed six port ids, and a port id is part of the saved format: every build wired to `sleet_wheat_grain` lost that wire. Repair now moves a wire to the port carrying the same thing, and drops it only when the guess would be a guess |
 
 ## E13 — Materials as classes

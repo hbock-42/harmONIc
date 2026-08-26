@@ -280,7 +280,9 @@ void main() {
         for (final issue in s.issues)
           if (issue.severity == IssueSeverity.info) issue.message,
       ];
-      expect(hints, hasLength(2));
+      // One sentence naming both, not one sentence each: the same forty
+      // words repeated per port is what made a real build unreadable.
+      expect(hints, hasLength(1));
       expect(hints.join('\n'), contains('Electrolyzer\u2019s hydrogen'));
       expect(hints.join('\n'), contains('Hydrogen Generator\u2019s power'));
       expect(hints.join('\n'), isNot(contains('water')));
@@ -826,6 +828,67 @@ void main() {
       // A real negative still says so: surplus and deficit are the whole point
       // of the power line in the bottom bar.
       expect(Unit.watts.format(-216), '-216.00 W');
+    });
+  });
+
+  group('two wires into one port', () {
+    // Reported twice from one build. A Petroleum Generator's own polluted
+    // water goes back to the Arbor Trees that feed it, and a supply is added
+    // alongside to make up the difference — which is how anybody would draw
+    // it, and which the app read as "half each".
+    test('split a demand evenly, which is a guess', () {
+      final p = (PipelineBuilder(db, name: 'top up')
+            ..addSource('polluted_water', nodeId: 'fixed')
+            ..addSource('polluted_water', nodeId: 'topup')
+            ..add('arbor_tree', nodeId: 'tree')
+            ..connectItem('fixed', 'tree', 'polluted_water')
+            ..connectItem('topup', 'tree', 'polluted_water')
+            ..pinCount('tree', 7.2)
+            ..pinRate('fixed', 'out', 750))
+          .build();
+      final s = solver.solve(p);
+
+      // 7.2 trees drink 840 g/s. One wire brings 750 and the other should
+      // bring 90 — but each is told to carry half of 840, and 750 is not 420.
+      expect(s.status, SolveStatus.inconsistent);
+      final said = s.issues.map((i) => i.message).join('\n');
+      expect(said, contains('2 wires bring polluted water into the Arbor Tree'));
+      expect(said, contains('the producer'));
+    });
+
+    test('and say so exactly when each hands over what it makes', () {
+      final p = (PipelineBuilder(db, name: 'top up')
+            ..addSource('polluted_water', nodeId: 'fixed')
+            ..addSource('polluted_water', nodeId: 'topup')
+            ..add('arbor_tree', nodeId: 'tree')
+            ..connectItem('fixed', 'tree', 'polluted_water', mode: EdgeMode.push)
+            ..connectItem('topup', 'tree', 'polluted_water', mode: EdgeMode.push)
+            ..pinCount('tree', 7.2)
+            ..pinRate('fixed', 'out', 750))
+          .build();
+      final s = solver.solve(p);
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.nodes['fixed']!.count, closeTo(750, 1e-6));
+      // Not to the microgram: the tree's 70 kg a cycle is stored as
+      // 116.666667 g/s, and seven of them carry that rounding into the
+      // answer.
+      expect(s.nodes['topup']!.count, closeTo(90, 1e-3));
+    });
+
+    test('and stay quiet when somebody has already said how to divide it', () {
+      final p = (PipelineBuilder(db, name: 'told')
+            ..addSource('polluted_water', nodeId: 'fixed')
+            ..addSource('polluted_water', nodeId: 'topup')
+            ..add('arbor_tree', nodeId: 'tree')
+            ..connectItem('fixed', 'tree', 'polluted_water', share: 750 / 840)
+            ..connectItem('topup', 'tree', 'polluted_water', share: 90 / 840)
+            ..pinCount('tree', 7.2))
+          .build();
+      final s = solver.solve(p);
+
+      expect(s.status, SolveStatus.solved);
+      expect(s.issues.map((i) => i.message).join(), isNot(contains('2 wires')));
     });
   });
 

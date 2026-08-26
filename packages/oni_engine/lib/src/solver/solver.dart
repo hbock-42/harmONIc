@@ -169,6 +169,7 @@ class PipelineSolver {
           'No scale satisfies every constraint at once.',
         ));
         if (explain) {
+          resolvedIssues.addAll(_evenlySplitInputHints(pipeline));
           resolvedIssues.addAll(_overCommittedOutputHints(pipeline));
         }
     }
@@ -316,6 +317,51 @@ class PipelineSolver {
     );
   }
 
+  /// Input ports fed by more than one wire, where nobody has said how to
+  /// divide them.
+  ///
+  /// Two wires into one input split its demand evenly, because with nothing
+  /// else to go on that is the only even-handed guess. It is almost never what
+  /// anybody means. Somebody wiring a Petroleum Generator's own polluted water
+  /// into an Arbor Tree and adding a supply alongside it means "the generator
+  /// gives back what it gives back, and the supply covers the difference" —
+  /// and what they get is twice the trees, because the generator's 750 g/s is
+  /// read as *half* of what they drink.
+  ///
+  /// Saying "the producer decides" on both wires expresses it exactly, and
+  /// solves: 750 g/s from the generator and 90 topped up. Two people found
+  /// this the hard way in one build, so the app says it out loud now.
+  List<PipelineIssue> _evenlySplitInputHints(Pipeline pipeline) {
+    final issues = <PipelineIssue>[];
+    for (final node in pipeline.nodes) {
+      final spec = database.process(node.specId);
+      if (spec == null) continue;
+      for (final port in spec.ports) {
+        if (!port.isInput) continue;
+        final incoming = pipeline.edgesInto(PortRef(node.id, port.id));
+        if (incoming.length < 2) continue;
+        // An explicit share, or a producer-driven wire, means somebody has
+        // already said how this port is divided. Only the silent case is a
+        // guess worth warning about.
+        if (incoming.any((e) => e.mode != EdgeMode.pull || e.share != null)) {
+          continue;
+        }
+        final item =
+            database.item(port.itemId)?.name.toLowerCase() ?? port.itemId;
+        issues.add(PipelineIssue(
+          IssueSeverity.info,
+          '${incoming.length} wires bring $item into the ${spec.name}, and '
+          'nothing says how to divide it — so each carries an equal share, '
+          'which is a guess. If instead each end should hand over what it '
+          'makes and one of them take up the slack, set every one of these '
+          'wires to "the producer".',
+          nodeId: node.id,
+        ));
+      }
+    }
+    return issues;
+  }
+
   /// An inconsistent system is usually not a contradiction between *pins* — it
   /// is a by-product with nowhere to go. A port drained only by pull edges has
   /// to deliver exactly what it makes, so an Electrolyzer whose hydrogen feeds
@@ -380,17 +426,28 @@ class PipelineSolver {
       ];
     }
 
+    // One sentence, however many ports. Saying the same forty words eight
+    // times over made the four innocent ports look exactly like the guilty
+    // one, which is the complaint that started this.
+    final named = guilty.isEmpty ? candidates : guilty;
     return [
-      for (final ref in guilty.isEmpty ? candidates : guilty)
-        PipelineIssue(
-          IssueSeverity.info,
-          'The ${_portDescription(pipeline, ref)} must go somewhere exactly, '
-          'because everything drawing from that port pulls. If the rest should '
-          'go to waste, mark the port as venting; if it should go somewhere, '
-          'connect an output node.',
-          nodeId: ref.nodeId,
-        ),
+      PipelineIssue(
+        IssueSeverity.info,
+        'Each of these has to hand over exactly what it makes, because '
+        'everything drawing from it pulls: '
+        '${_sentenceList({for (final ref in named) _portDescription(pipeline, ref)}.toList())}. '
+        'Whichever of them has the surplus, either mark that port as venting '
+        'or connect an output node to it.',
+        nodeId: named.first.nodeId,
+      ),
     ];
+  }
+
+  /// "a, b and c", so a list of ports reads as a sentence rather than as
+  /// output.
+  static String _sentenceList(List<String> parts) {
+    if (parts.length == 1) return parts.single;
+    return '${parts.take(parts.length - 1).join(', ')} and ${parts.last}';
   }
 
   /// The build as it would stand if this one port were allowed to overflow.

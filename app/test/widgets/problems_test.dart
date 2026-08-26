@@ -132,8 +132,14 @@ void main() {
   });
 
   group('several problems at once', () {
-    /// A geyser and a crew both pinned: one error, plus a note for each port
-    /// that could be vented to resolve it.
+    /// Two unrelated faults on one canvas: a geyser and a crew both pinned,
+    /// and an Arbor Tree fed by two wires that nobody has divided. Three
+    /// notes, which is one more than the panel shows before folding.
+    ///
+    /// It used to be the first fault alone, back when a build with four
+    /// over-committed ports produced four near-identical notes about them.
+    /// One fault now says its piece once, so a test about folding needs a
+    /// build that has genuinely gone wrong in more than one way.
     Pipeline messy() => (PipelineBuilder(testDatabase, name: 'Messy')
           ..add('water_geyser', nodeId: 'geyser')
           ..add('electrolyzer', nodeId: 'elec')
@@ -142,6 +148,13 @@ void main() {
           ..connectItem('geyser', 'elec', 'water')
           ..connectItem('elec', 'dupes', 'oxygen')
           ..connectItem('elec', 'sink_hydrogen', 'hydrogen')
+          ..addSource('polluted_water', nodeId: 'well')
+          ..addSource('polluted_water', nodeId: 'spare')
+          ..add('arbor_tree', nodeId: 'tree')
+          ..connectItem('well', 'tree', 'polluted_water')
+          ..connectItem('spare', 'tree', 'polluted_water')
+          ..pinRate('well', 'out', 750)
+          ..pinCount('tree', 7.2)
           ..pinCount('geyser', 1)
           ..pinCount('dupes', 12))
         .build();
@@ -149,20 +162,22 @@ void main() {
     testWidgets('the rest are behind a count, not silently dropped',
         (tester) async {
       await pumpEditor(tester, pipeline: messy());
-      expect(textContaining('more'), findsOneWidget);
+      // By name, not by the word: the summary bar folds its own list with the
+      // same word, and this build now has enough flowing through it to fold.
+      expect(find.text('and 1 more'), findsOneWidget);
     });
 
     testWidgets('expanding shows them and can be collapsed again',
         (tester) async {
       await pumpEditor(tester, pipeline: messy());
 
-      await tester.tap(textContaining('more'));
+      await tester.tap(find.text('and 1 more'));
       await tester.pump();
       expect(find.text('show less'), findsOneWidget);
 
       await tester.tap(find.text('show less'));
       await tester.pump();
-      expect(textContaining('more'), findsOneWidget);
+      expect(find.text('and 1 more'), findsOneWidget);
     });
   });
 
