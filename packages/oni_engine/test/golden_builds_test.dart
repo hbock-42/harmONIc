@@ -291,4 +291,53 @@ void main() {
     });
   });
 
+  group('the ethanol loop that closes', () {
+    /// Reported from the Discord twice: an Arbor Tree fed by a Petroleum
+    /// Generator's own polluted water cannot fuel that generator. It is 11 %
+    /// short, and the wiki's answer — buried on the Pokeshell page — is
+    /// Oakshells, whose molts are wood that costs no water at all.
+    late PipelineSolution solution;
+
+    setUp(() {
+      final pipeline = (PipelineBuilder(db, name: 'ethanol')
+            ..add('petroleum_generator', nodeId: 'gen')
+            ..add('arbor_tree', nodeId: 'tree')
+            ..add('ethanol_distiller', nodeId: 'still')
+            ..add('oakshell', nodeId: 'oak')
+            ..add('rock_crusher_oakshell_molt', nodeId: 'crusher')
+            ..addSource('polluted_dirt')
+            // Both wood wires hand over what their own end makes: the trees
+            // give what the water grows, and the molts make up the rest.
+            ..connectItem('gen', 'tree', 'polluted_water', mode: EdgeMode.push)
+            ..connectItem('tree', 'still', 'lumber', mode: EdgeMode.push)
+            ..connectItem('crusher', 'still', 'lumber', mode: EdgeMode.push)
+            ..connectItem('oak', 'crusher', 'oakshell_molt')
+            ..connectItem('src_polluted_dirt', 'oak', 'polluted_dirt')
+            ..connectItem('still', 'gen', 'ethanol')
+            ..pinCount('gen', 1))
+          .build();
+      solution = solver.solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+    });
+
+    test('one generator now runs four distillers, not 3.57', () {
+      // 2 kg/s of ethanol at 500 g/s apiece. Without the molts the trees can
+      // only manage 3.57 of them, which is where the 11 % goes missing.
+      expect(solution.nodes['still']!.count, closeTo(4, 1e-3));
+      expect(solution.nodes['tree']!.count, closeTo(6.43, 1e-2));
+    });
+
+    test('and it takes two and a half Oakshells to do it', () {
+      // The trees give 3.57 kg/s of the 4 kg/s of wood; the molts give the
+      // other 429 g/s, at 100 kg a cycle each.
+      expect(solution.nodes['oak']!.count, closeTo(2.57, 1e-2));
+
+      // Which is the wiki's own rule of thumb, arrived at from the other end:
+      // "you would need 1 Oakshell per ~2.5 Arbor Trees".
+      final perTree =
+          solution.nodes['tree']!.count / solution.nodes['oak']!.count;
+      expect(perTree, closeTo(2.5, 0.05));
+    });
+  });
+
 }

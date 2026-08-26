@@ -625,6 +625,11 @@ const String oniDataJson = r"""
       "category": "solid"
     },
     {
+      "id": "oakshell_molt",
+      "name": "Oakshell Molt",
+      "category": "solid"
+    },
+    {
       "id": "cinnabar_ore",
       "name": "Cinnabar Ore",
       "category": "solid",
@@ -3707,7 +3712,7 @@ const String oniDataJson = r"""
       "id": "pokeshell",
       "name": "Pokeshell",
       "kind": "critter",
-      "description": "Eats 70 kg/cycle of polluted dirt or rot pile — the same either way — and gives half of it back as sand: renewable sand without a Rock Crusher. Slime is for the Oakshell and the Sanishell, which this app does not model, so it is not offered here. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
+      "description": "Eats 70 kg/cycle of polluted dirt or rot pile — the same either way — and gives half of it back as sand: renewable sand without a Rock Crusher. Slime is for the Oakshell and the Sanishell, so it is not offered here. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -6284,6 +6289,91 @@ const String oniDataJson = r"""
       ]
     },
     {
+      "id": "oakshell",
+      "name": "Oakshell",
+      "kind": "critter",
+      "description": "A Pokeshell morph, which is why it has no page of its own. Eats the same 70 kg/cycle of polluted dirt or rot pile as its cousins and slime besides, and gives a quarter of it back as sand rather than half. What it is kept for is the molt: 100 kg a cycle from a happy, well-fed adult, crushed 1:1 into lumber — wood that costs no polluted water, which is what lets an Arbor Tree and Ethanol Distiller loop close. The wiki puts it at one Oakshell per 2.5 trees. Its egg and its meat are the Pokeshell’s figures, which is why this is unverified; the death drop of 500 kg and the 50 kg it sheds on growing up are not counted here.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "item": "polluted_dirt",
+          "direction": "input",
+          "rate": 116.66666666666667,
+          "alternatives": [
+            "rot_pile",
+            "slime"
+          ]
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 29.166666666666668
+        },
+        {
+          "item": "oakshell_molt",
+          "direction": "output",
+          "rate": 166.66666666666666
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "raw_shellfish",
+          "direction": "output",
+          "rate": 0.0125
+        }
+      ]
+    },
+    {
+      "id": "oakshell_wild",
+      "name": "Oakshell (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. It sheds no Oakshell Molt at all — an Oakshell has to be happy to shed one and a wild one never is, which is the whole reason to ranch them. Unverified for the same reason as the tame one: the egg and the meat are the Pokeshell’s figures, because no page states the morph’s own.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "wild",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_dirt",
+          "direction": "input",
+          "rate": 116.66666666666667,
+          "alternatives": [
+            "rot_pile",
+            "slime"
+          ]
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 29.166666666666668
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "raw_shellfish",
+          "direction": "output",
+          "rate": 0.0125
+        }
+      ]
+    },
+    {
       "id": "gassy_moo_wild",
       "name": "Gassy Moo (wild)",
       "kind": "critter",
@@ -8530,6 +8620,38 @@ const String oniDataJson = r"""
           "item": "lime",
           "direction": "output",
           "rate": 1500
+        }
+      ],
+      "build": {
+        "metal_ore": 800
+      }
+    },
+    {
+      "id": "rock_crusher_oakshell_molt",
+      "name": "Rock Crusher (Oakshell Molt)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "500 kg of molt into 500 of lumber, per 40 s operation.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "oakshell_molt",
+          "direction": "input",
+          "rate": 12500
+        },
+        {
+          "item": "lumber",
+          "direction": "output",
+          "rate": 12500
         }
       ],
       "build": {

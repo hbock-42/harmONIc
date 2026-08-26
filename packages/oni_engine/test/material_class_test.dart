@@ -607,6 +607,10 @@ void main() {
         // 70 kg a cycle of polluted dirt or rot pile, half of it back as sand.
         'pokeshell.polluted_dirt',
         'pokeshell_wild.polluted_dirt',
+        // The Oakshell morph eats the same 70 kg and slime besides, which is
+        // the one thing its cousins will not touch.
+        'oakshell.polluted_dirt',
+        'oakshell_wild.polluted_dirt',
         // 50 kg of plastic or of rubber, one gasket either way.
         'crafting_station_gasket.feedstock',
         // 8.89 % of a plant's maturity a cycle, whichever plant it is.
