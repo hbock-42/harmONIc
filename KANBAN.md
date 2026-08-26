@@ -78,6 +78,19 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-52` **What grows the grill's ingredients** — mostly already here, and nobody knew: making
+  a plant grow a crop instead of calories gave the Mealwood, Bristle Blossom, Dusk Cap,
+  Waterweed and Pikeapple Bush back to the kitchen in one move. Two more added — the Megafrond,
+  which eats 54 kg of chlorine a cycle out of the air for four grains, and the Spindly
+  Grubfruit, which eats nothing at all and fruits once every four cycles. The wild Megafrond is
+  deliberately absent: a wild plant in this data takes nothing, and that one takes chlorine, so
+  it would be a lie in the shape of a convention
+- **Every kcal figure checked against the wiki's food table** — 54 of them, three of which the
+  parser could not match. Two were right and their rows were simply formatted differently.
+  The third was wrong: mimillet is a seed a Mimika drops on dying and is inedible until it is
+  toasted, and it had been given the *dish's* calories, so the app was generating a way to eat
+  a seed
+
 - `E8-21` **The audit that would have caught the Mush Bar** — five shipped errors were found by
   hand this week and not one by a test, so the newest of them got turned into one. No cooking
   building may make more than 100 g/s of food: a batch is a kilogram or two and the slowest in
@@ -1262,11 +1275,12 @@ _(empty)_
 | E4-50 | ✅ | Pinpoket, Pinpoki, and the two things that take it | the plant, the fruit, 100 kg of diamond in a Rock Crusher and 7200 kcal of Uni in a Sushi Bar |
 | E10-30 | ✅ | A port says what it is measured in | reported with a picture: a Power port asking for grams per second. "5 grams of power, please" |
 | E4-51 | ✅ | The Electric Grill's fourteen recipes | it had one. Thirteen added, ten ingredients that were not items here, and a footprint that was 2×2 where the game says 3×2 |
-| E4-52 | P2 | What grows the grill's ingredients | ten new items arrive as supplies: the Mealwood, Dusk Cap, Bristle Blossom and the four DLC fruits are not here, so a food chain starts in the middle |
+| E4-52 | ✅ | What grows the grill's ingredients | most of them turned out to be already here: `E4-53` made the plants grow crops instead of calories, so the Mealwood, Bristle Blossom, Dusk Cap, Waterweed and Pikeapple Bush all feed the grill now. Megafrond and the Spindly Grubfruit added. What is left is `E4-57` |
 | E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
 | E4-54 | ✅ | The other food buildings' missing recipes | the Sushi Bar and the Deep Fryer are complete at four each, the Smoker at three. The Dehydrator and Rehydrator pair is still unmodelled, which is `E4-55` |
 | E4-55 | P3 | The Dehydrator and Rehydrator | 6000 kcal of any Gas Range food and 12 kg of plastic make six dried packs that never spoil; a Rehydrator turns one back with 1 kg of water. Nine dried foods as items, and a preservation chain nothing here models |
 | E4-56 | ✅ | The Microbe Musher's six recipes, and a bar that fed eight hundred | its Mush Bar output was a thousand times too large, and had been since the recipe was written |
+| E4-57 | P3 | The last kitchen ingredients nothing grows | grubfruit needs a Divergent to tend the plant, sweatcorn a pollinator, jawbo fillet and calamari their critters, and bog jelly, ovagro fig, plume squash and tonic root their own plants. Each is blocked on a figure or a creature, not on effort |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

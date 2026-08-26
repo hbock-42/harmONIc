@@ -1013,8 +1013,7 @@
       "category": "solid",
       "tags": [
         "prehistoric"
-      ],
-      "kcalPerKg": 1500
+      ]
     },
     {
       "id": "pikeapple",
@@ -10003,6 +10002,51 @@
       "build": {
         "metal_ore": 400
       }
+    },
+    {
+      "id": "megafrond",
+      "name": "Megafrond",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 4,
+      "description": "54 kg of chlorine a cycle, drawn straight out of the air around it, for 36 grains every 9 cycles — four a cycle. The grain is not food until it is baked; three of them are a Frost Bun. A wild one takes 36 cycles and 13.5 kg of chlorine a cycle, and is not here: the wild plants in this data take nothing at all, and that one takes chlorine.",
+      "tags": [
+        "farming",
+        "prehistoric",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "chlorine",
+          "direction": "input",
+          "rate": 90.0
+        },
+        {
+          "item": "megafrond_grain",
+          "direction": "output",
+          "rate": 6.666666666666667
+        }
+      ]
+    },
+    {
+      "id": "spindly_grubfruit_plant",
+      "name": "Spindly Grubfruit Plant",
+      "kind": "plant",
+      "footprintWidth": 1,
+      "footprintHeight": 3,
+      "description": "One Spindly Grubfruit of 800 kcal every four cycles, and nothing to feed it — no irrigation, no fertiliser. Five plants keep one Duplicant fed raw, or 3.33 if the fruit is roasted first. The tended form, which a Divergent turns into a proper Grubfruit Plant, needs a critter this app does not model.",
+      "tags": [
+        "farming",
+        "spacedout",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "spindly_grubfruit",
+          "direction": "output",
+          "rate": 0.4166666666666667
+        }
+      ]
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"

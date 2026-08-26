@@ -118,6 +118,11 @@ void main() {
       // still fruits — matter out of nowhere, which is the actual game rule and
       // the whole reason wild farms are worth the floor space.
       if (spec.tags.contains('wild')) continue;
+      // A plant does not conserve matter either, and for the same reason one
+      // step earlier: a Mealwood turns 10 kg of dirt a cycle into 340 g of
+      // meal lice, and a Megafrond turns 54 kg of chlorine into four grains.
+      // What a farm converts is sunlight it does not have and time it does.
+      if (spec.kind == ProcessKind.plant) continue;
       // Food does not conserve matter and never did: a Mealwood turns 10 kg of
       // dirt a cycle into 340 g of meal lice, and three kilograms of that make
       // one of Pickled Meal. What a kitchen conserves is calories, which this

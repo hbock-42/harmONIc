@@ -21,6 +21,8 @@ const Map<String, String> tinyOnPurpose = {
   'lettuce': 'the same',
   'pikeapple': 'the same',
   'salty_sticks': 'the same, and a Sodicane takes four cycles over it',
+  'spindly_grubfruit': 'one fruit every four cycles, which is the slowest crop '
+      'here and still feeds a fifth of a Duplicant',
   'meat': 'dropped once when a critter dies, spread over its whole life',
   'tough_meat': 'the same, for the bigger animals',
   'fish_fillet': 'the same, for the ones that swim',
