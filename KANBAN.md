@@ -76,6 +76,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E15-11` **A step shows where somebody would have clicked** — reported by Hugo: things
+  appear and wire themselves up and you cannot see where the click was. A step points, at a
+  port dot or at the palette row a node came from, and both were already able to light up —
+  the dot is the glow a dragged wire uses for a port that would take it, the row is the one
+  hovering uses. Considered `showcaseview` and `tutorial_coach_mark` and did not take either:
+  they own the stepping, they dim the screen the demo exists to let you watch, and their
+  targets have to exist before the tour starts, while every one of these is made by the step
+  before
+
 - `E15-10` **A demo that is no longer on screen stops** — switch tabs while one is playing and
   the next step used to build into whatever you switched to, then throw, because the node it
   meant to wire up was in the tab you left. A demo owns a tab and only while that tab is the
@@ -1355,6 +1364,7 @@ has been dismissed.
 | E15-8 | ✅ | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
 | E15-9 | ✅ | The canvas keeps up with the demo | a demo places nodes off to the right and the finished one is 1 152 px wide, which is more than the canvas has. The player fits the view after each step — E15-2 said this was its job and did not do it |
 | E15-10 | ✅ | A demo that is no longer on screen stops | switch tabs while one is playing and its next step builds into whatever you switched to — or throws, because the node it was going to wire up is not there |
+| E15-11 | ✅ | A step shows where somebody would have clicked | reported: things appear and wire themselves up and you cannot see where the click was. The port dots already know how to glow — that is how a wire being dragged shows its legal targets — so a step points at a port or at the palette row it came from |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality

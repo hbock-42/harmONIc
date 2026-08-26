@@ -27,6 +27,7 @@ class GraphCanvas extends StatefulWidget {
     required this.rateDisplay,
     this.offers = _everything,
     required this.onToggleRates,
+    this.pointingAt,
     super.key,
   });
 
@@ -45,6 +46,11 @@ class GraphCanvas extends StatefulWidget {
   /// Switches every rate between per second and per cycle — reachable from the
   /// labels on the wires, which are where most rates are actually read.
   final VoidCallback onToggleRates;
+
+  /// A port to make glow: the one a demo has just used, so somebody watching
+  /// can see where the click was. The same glow a dragged wire uses to show
+  /// the ports that would take it.
+  final PortRef? pointingAt;
 
 
   @override
@@ -778,7 +784,9 @@ class GraphCanvasState extends State<GraphCanvas>
                             onPortDragStart: _onPortDragStart,
                             onPortDragUpdate: _onPortDragUpdate,
                             onPortDragEnd: _onPortDragEnd,
-                            highlightPort: _isLegalTarget,
+                            highlightPort: (ref) =>
+                                _isLegalTarget(ref) ||
+                                widget.pointingAt == ref,
                           ),
                         ),
                       ?_marquee(),

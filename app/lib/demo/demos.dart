@@ -19,20 +19,26 @@ final Demo whatAGeyserFeeds = Demo(
   steps: [
     DemoStep(
       says: 'You have found a Water Geyser. The question is always the same: '
-          'what will it actually feed?',
+          'what will it actually feed? It comes off the list on the left.',
+      points: (_) => const DemoPointer.palette('water_geyser'),
       does: (stage) => stage.remember(
           'geyser', stage.controller.addNode('water_geyser', Offset.zero)),
     ),
     DemoStep(
-      says: 'Its water goes to an Electrolyzer. Placed and wired in one move, '
-          'because the port already knows what could take what it carries.',
+      says: 'Click the lit dot — its Water port — and the menu offers '
+          'everything that could take water. An Electrolyzer: placed and '
+          'wired in one move.',
+      points: (stage) => DemoPointer.port(
+          PortRef(stage.nodeId('geyser'), 'water')),
       does: (stage) => stage.remember(
           'elec',
           stage.controller.addNodeFor(
               PortRef(stage.nodeId('geyser'), 'water'), 'electrolyzer')!),
     ),
     DemoStep(
-      says: 'And the oxygen goes to the crew.',
+      says: 'The same again from its Oxygen port: the crew.',
+      points: (stage) =>
+          DemoPointer.port(PortRef(stage.nodeId('elec'), 'oxygen')),
       does: (stage) => stage.remember(
           'dupes',
           stage.controller.addNodeFor(
@@ -58,6 +64,8 @@ final Demo whatAGeyserFeeds = Demo(
     DemoStep(
       says: 'The hydrogen has been going nowhere this whole time. Burn it — '
           'and the bar turns green: 1.40 kW spare.',
+      points: (stage) =>
+          DemoPointer.port(PortRef(stage.nodeId('elec'), 'hydrogen')),
       does: (stage) => stage.remember(
           'hgen',
           stage.controller.addNodeFor(
@@ -90,20 +98,26 @@ final Demo letItChooseTheSplit = Demo(
   steps: [
     DemoStep(
       says: 'Ten kilograms of iron ore a second, and two ways to turn it into '
-          'metal.',
+          'metal. The supply comes off the list on the left.',
+      points: (_) => const DemoPointer.palette('source:iron_ore'),
       does: (stage) => stage.remember(
           'ore', stage.controller.addNode('source:iron_ore', Offset.zero)),
     ),
     DemoStep(
-      says: 'A Metal Refinery takes some of it.',
+      says: 'Click the lit dot and pick a Metal Refinery: it takes some of it.',
+      points: (stage) =>
+          DemoPointer.port(PortRef(stage.nodeId('ore'), sourcePortId)),
       does: (stage) => stage.remember(
           'refinery',
           stage.controller.addNodeFor(
               PortRef(stage.nodeId('ore'), sourcePortId), 'metal_refinery')!),
     ),
     DemoStep(
-      says: 'And a Rock Crusher takes the rest. One port, two lines out of it '
-          '— and nobody has said how the ore divides.',
+      says: 'The same dot again for a Rock Crusher, which takes the rest. One '
+          'port, two lines out of it — and nobody has said how the ore '
+          'divides.',
+      points: (stage) =>
+          DemoPointer.port(PortRef(stage.nodeId('ore'), sourcePortId)),
       does: (stage) => stage.remember(
           'crusher',
           stage.controller.addNodeFor(PortRef(stage.nodeId('ore'), sourcePortId),
@@ -111,6 +125,8 @@ final Demo letItChooseTheSplit = Demo(
     ),
     DemoStep(
       says: 'Both of them make iron, and it all goes to the same place.',
+      points: (stage) => DemoPointer.port(
+          PortRef(stage.nodeId('refinery'), 'refined_metal')),
       does: (stage) {
         final out = stage.remember(
             'out',

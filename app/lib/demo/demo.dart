@@ -1,3 +1,5 @@
+import 'package:oni_engine/oni_engine.dart';
+
 import '../state/pipeline_controller.dart';
 
 /// What a step is allowed to touch.
@@ -37,9 +39,30 @@ class DemoStage {
       (throw StateError('This demo never made anything called "$name"'));
 }
 
+/// Where a person would have clicked to do what a step just did.
+///
+/// Things appearing and wiring themselves up is most of what a demo looks
+/// like, and none of it says where the click was. So a step can point: at a
+/// port dot, which is how everything downstream of a node gets placed, or at
+/// the row in the palette a node came from.
+///
+/// The dots already know how to glow — it is how a wire being dragged shows
+/// which ports would take it — so this lights the one that was used rather
+/// than inventing a second way to draw attention.
+class DemoPointer {
+  /// The row in the palette a node was placed from.
+  const DemoPointer.palette(String this.specId) : port = null;
+
+  /// The port dot that was clicked to place what came next.
+  const DemoPointer.port(PortRef this.port) : specId = null;
+
+  final String? specId;
+  final PortRef? port;
+}
+
 /// One thing a demo does, and the line it says while doing it.
 class DemoStep {
-  const DemoStep({required this.says, this.does});
+  const DemoStep({required this.says, this.does, this.points});
 
   /// The narration. Whatever figures it quotes are checked against what the
   /// app really says — see `E15-3` — so it is a claim rather than a caption.
@@ -48,6 +71,13 @@ class DemoStep {
   /// The action. Null for a step that only talks: the first line of a demo
   /// and the last are usually about what is already on screen.
   final void Function(DemoStage stage)? does;
+
+  /// Where the click would have been.
+  ///
+  /// A function of the stage, because most of the answers are ports on nodes
+  /// this demo has only just made, and their ids are generated. Asked after
+  /// the step has run, for the same reason.
+  final DemoPointer? Function(DemoStage stage)? points;
 }
 
 /// A demo: a build assembled a step at a time, with somebody explaining.
@@ -96,10 +126,17 @@ class DemoRun {
       ? ''
       : demo.steps[_done == 0 ? 0 : _done - 1].says;
 
+  DemoPointer? _pointer;
+
+  /// Where the step that has just happened would have been clicked.
+  DemoPointer? get pointingAt => _pointer;
+
   /// Play one step. Returns false when there was nothing left to play.
   bool step() {
     if (isDone) return false;
-    demo.steps[_done].does?.call(_stage);
+    final step = demo.steps[_done];
+    step.does?.call(_stage);
+    _pointer = step.points?.call(_stage);
     _done++;
     return true;
   }

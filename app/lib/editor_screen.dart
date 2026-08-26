@@ -190,17 +190,18 @@ class _EditorScreenState extends State<EditorScreen> {
   void initState() {
     super.initState();
     widget.library.addListener(_onLibraryChanged);
-    widget.demoPlayer?.addListener(_followTheDemo);
+    widget.demoPlayer?.addListener(_demoChanged);
   }
 
   @override
   void dispose() {
     widget.library.removeListener(_onLibraryChanged);
-    widget.demoPlayer?.removeListener(_followTheDemo);
+    widget.demoPlayer?.removeListener(_demoChanged);
     super.dispose();
   }
 
-  /// Keep what the demo is building on screen.
+  /// Follow the demo: rebuild for what it is pointing at, and keep what it is
+  /// building on screen.
   ///
   /// A demo puts each new node to the right of the last, and the geyser one
   /// ends up 1 152 px wide — wider than the canvas at any window this app is
@@ -210,7 +211,10 @@ class _EditorScreenState extends State<EditorScreen> {
   /// Here rather than in the demo, which is the arrangement `demo.dart`
   /// describes: a step says what to build, and the view is somebody else's
   /// problem. Next frame, because the node it just placed is not laid out yet.
-  void _followTheDemo() {
+  void _demoChanged() {
+    // The palette and the canvas both read what the step pointed at, and
+    // neither is inside the builder the bar sits in.
+    setState(() {});
     if (widget.demoPlayer?.run == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _canvasKey.currentState?.fitToContent();
@@ -341,6 +345,8 @@ class _EditorScreenState extends State<EditorScreen> {
                       child: Row(
                         children: [
                           PalettePanel(
+                            pointingAt:
+                                widget.demoPlayer?.run?.pointingAt?.specId,
                             database: controller.database,
                             display: widget.displaySettings,
                             onAdd: _add,
@@ -367,6 +373,8 @@ class _EditorScreenState extends State<EditorScreen> {
                                     offers: widget.displaySettings.includes,
                                     onToggleRates:
                                         widget.displaySettings.toggle,
+                                    pointingAt: widget
+                                        .demoPlayer?.run?.pointingAt?.port,
                                   ),
                           ),
                           InspectorPanel(

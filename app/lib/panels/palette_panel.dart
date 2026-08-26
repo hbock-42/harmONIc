@@ -47,8 +47,13 @@ class PalettePanel extends StatefulWidget {
     required this.onAdd,
     required this.onNewRecipe,
     required this.onEditRecipe,
+    this.pointingAt,
     super.key,
   });
+
+  /// A recipe to light up: the one a demo has just placed, so somebody
+  /// watching can see where it came from.
+  final String? pointingAt;
 
   final GameDatabase database;
 
@@ -264,6 +269,7 @@ class _PalettePanelState extends State<PalettePanel> {
                     _PaletteRow(
                       spec: spec,
                       database: widget.database,
+                      pointedAt: spec.id == widget.pointingAt,
                       why: paletteWhy(spec,
                           _search.text.trim().toLowerCase(), widget.database),
                       onTap: () => widget.onAdd(spec.id),
@@ -286,7 +292,12 @@ class _PaletteRow extends StatefulWidget {
     required this.onTap,
     required this.onEdit,
     this.why,
+    this.pointedAt = false,
   });
+
+  /// Lit because a demo has just placed this, so somebody watching can see
+  /// where it came from.
+  final bool pointedAt;
 
   final ProcessSpec spec;
   final GameDatabase database;
@@ -318,7 +329,21 @@ class _PaletteRowState extends State<_PaletteRow> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Container(
-          color: _hover ? OniColors.surfaceHover : null,
+          // The pointed-at row reads as hovered and then some: it is the
+          // same gesture being shown, so it should look like the same thing
+          // about to happen.
+          decoration: BoxDecoration(
+            color: widget.pointedAt
+                ? OniColors.accent.withValues(alpha: 0.14)
+                : _hover
+                    ? OniColors.surfaceHover
+                    : null,
+            border: widget.pointedAt
+                ? Border(
+                    left: BorderSide(color: OniColors.accent, width: 2),
+                  )
+                : null,
+          ),
           padding: const EdgeInsets.symmetric(
               horizontal: OniSpacing.md, vertical: 6),
           child: Row(
