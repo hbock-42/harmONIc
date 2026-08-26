@@ -3,6 +3,8 @@ import 'package:oni_engine/oni_engine.dart';
 import 'package:flutter/widgets.dart';
 
 import 'canvas/auto_layout.dart';
+import 'demo/demo_bar.dart';
+import 'demo/demo_player.dart';
 import 'canvas/graph_canvas.dart';
 import 'design/keys.dart';
 import 'design/tokens.dart';
@@ -33,6 +35,7 @@ class EditorScreen extends StatefulWidget {
     this.loadGuide,
     this.apple,
     this.openLink,
+    this.demoPlayer,
     super.key,
   });
 
@@ -43,6 +46,11 @@ class EditorScreen extends StatefulWidget {
 
   /// Where the guide's text comes from; the asset unless a test says otherwise.
   final Future<String> Function()? loadGuide;
+
+  /// The demo being played, if the app is playing one. Handed in rather than
+  /// made here because it opens and deletes builds, which is the workspace's
+  /// business and not a screen's.
+  final DemoPlayer? demoPlayer;
 
   /// How a link out of the app is opened; the browser unless a test says
   /// otherwise, since a widget test has no browser to hand one to.
@@ -266,6 +274,13 @@ class _EditorScreenState extends State<EditorScreen> {
                       onOpenKeys: () => setState(() => _keysPinned = true),
                     ),
                     _Tabs(workspace: widget.workspace),
+                    // Under the tabs, above everything a demo is about to
+                    // change, and gone entirely when nothing is playing.
+                    if (widget.demoPlayer case final DemoPlayer player)
+                      ListenableBuilder(
+                        listenable: player,
+                        builder: (context, _) => DemoBar(player: player),
+                      ),
                     _RepairNotice(workspace: widget.workspace),
                     ProblemsBanner(controller: controller),
                     Expanded(
