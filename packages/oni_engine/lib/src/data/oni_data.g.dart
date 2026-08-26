@@ -8172,7 +8172,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: dries 6 000 kcal of cooked food into 6 000 kcal that never spoils, using 12 kg of plastic and a trickle of natural gas, and giving back 6 kg of water. It makes no food — the calories out are the calories in — so in a flow model it is purely a cost, and what it buys is a thing this app has no notion of. Its power is not published and is modelled as none; the 300 s is 250 of drying plus 50 of somebody unloading it.",
+      "description": "UNVERIFIED, and now stranded: it dries 6 000 kcal of cooked food into 6 000 that never spoil, on 12 kg of plastic and a trickle of natural gas, giving back 6 kg of water. Its input is calories, and since a dish became a material the only thing in this app that makes calories is somebody eating — so the only way to feed this is out of a Duplicant’s plate, which is nonsense. It wants a recipe per Gas Range dish and nine dried foods to make, which is E4-55; until then it is here to be read rather than wired.",
       "tags": [
         "food",
         "unverified"

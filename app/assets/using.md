@@ -153,6 +153,26 @@ and undo the whole thing. And all of them say when there is no answer rather
 than inventing one — nothing limits the build, or nothing has been asked of it,
 or two amounts you set contradict each other.
 
+## Feeding people
+
+A dish is a material. An Electric Grill makes **kilograms of Frost Bun**, not
+calories, and a Gas Range takes two kilograms of Gristle Berry the way a Kiln
+takes two hundred of wood. That is what lets a kitchen be drawn at all: five of
+the Gas Range's twelve recipes cook something the grill made first.
+
+So somewhere the kilograms become a meal, and that somewhere is a node of its
+own — **Eating Frost Bun**, under EATING in the palette. One per food. Click the
+grill's output dot and it is the first thing offered.
+
+If you only want to know how many people a farm feeds, that is one extra node
+and nothing else changes: crop → grill → eating → Duplicant, and the Duplicant
+still eats calories as it always did. If you want to cook, the chain carries on
+through the Gas Range instead and the calories appear at the end.
+
+A Duplicant eats 1 000 kcal a cycle. A Mush Bar is 800, so it takes 1.25
+Microbe Mushers to keep one person fed; a Frost Bun is 1 200 and a Uni is 7 200,
+which is the densest food in the game.
+
 ## Wires
 
 A wire is **pull** by default: the consumer decides, and the producer is sized to
@@ -300,7 +320,8 @@ The app is most misleading where it is most confident, so:
 - **Space.** Floor area is a tile count, not a shape. Nothing knows whether it
   fits.
 - **Spoilage, morale and germs.** A Dehydrator preserves food and this app sees
-  only that it costs plastic. Food quality is half the reason anyone cooks and
+  only that it costs plastic — and since a dish became a material it cannot
+  even be wired to anything sensible, which is written on the recipe itself. Food quality is half the reason anyone cooks and
   is not modelled at all. Germs are deliberate too: they change no rate in the
   game — a Water Sieve passes them through at the same 5 kg/s either way — so a
   germ count here would be a number that never entered a calculation.

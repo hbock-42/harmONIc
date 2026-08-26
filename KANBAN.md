@@ -78,6 +78,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-23` **The guide says how food works now** — a *Feeding people* section, because somebody
+  wiring a grill to a Duplicant will find it does not connect and deserves to be told why
+  before they find out. Checking the "what this deliberately does not know" section against the
+  new model then found something worse: the Dehydrator takes **calories**, and since a dish
+  became a material the only thing in this app that makes calories is somebody eating — so the
+  only way to feed it is out of a Duplicant's plate. Written on the recipe, pinned by a test,
+  and `E4-55` is P2 now instead of P3
+
 - `E8-22` **The eating nodes keep out of the way** — looking at what yesterday's change did to
   the palette rather than only at what it did to the model. `E4-53` generated one node per
   food, and they were tagged `food`, so 55 ways to put something on a plate landed in the list
@@ -1284,7 +1292,7 @@ _(empty)_
 | E4-52 | ✅ | What grows the grill's ingredients | most of them turned out to be already here: `E4-53` made the plants grow crops instead of calories, so the Mealwood, Bristle Blossom, Dusk Cap, Waterweed and Pikeapple Bush all feed the grill now. Megafrond and the Spindly Grubfruit added. What is left is `E4-57` |
 | E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
 | E4-54 | ✅ | The other food buildings' missing recipes | the Sushi Bar and the Deep Fryer are complete at four each, the Smoker at three. The Dehydrator and Rehydrator pair is still unmodelled, which is `E4-55` |
-| E4-55 | P3 | The Dehydrator and Rehydrator | 6000 kcal of any Gas Range food and 12 kg of plastic make six dried packs that never spoil; a Rehydrator turns one back with 1 kg of water. Nine dried foods as items, and a preservation chain nothing here models |
+| E4-55 | P2 | The Dehydrator and Rehydrator | 6000 kcal of any Gas Range food and 12 kg of plastic make six dried packs that never spoil; a Rehydrator turns one back with 1 kg of water. Nine dried foods as items. Raised to P2 by `E4-53`: the Dehydrator's input is calories, and now that a dish is a material the only thing that makes calories is somebody eating — so the only way to feed it is out of a Duplicant's plate. It needs a recipe per dish |
 | E4-56 | ✅ | The Microbe Musher's six recipes, and a bar that fed eight hundred | its Mush Bar output was a thousand times too large, and had been since the recipe was written |
 | E4-57 | P3 | The last kitchen ingredients nothing grows | grubfruit needs a Divergent to tend the plant, sweatcorn a pollinator, jawbo fillet and calamari their critters, and bog jelly, ovagro fig, plume squash and tonic root their own plants. Each is blocked on a figure or a creature, not on effort |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
@@ -1593,6 +1601,7 @@ has been dismissed.
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
 | E8-7b | ✅ | The guide is a list of topics, not a wall | twelve headings and three hundred lines arriving as one scroll. The headings are already in the file, so the split costs nothing and stays honest: pick a topic, read that topic, go back |
+| E8-23 | ✅ | The guide says how food works now | and reading its "what this does not know" section found the Dehydrator stranded |
 | E8-22 | ✅ | The eating nodes keep out of the way | 55 generated nodes landed in the group that lists things that cook, which is what the palette already solved for pumps |
 | E8-21 | ✅ | The audit that would have caught the Mush Bar | a kitchen that makes 60 kg of food a cycle out of one machine is a batch mistaken for a rate |
 | E8-20 | ✅ | Count the visits | GitHub Pages says nothing about who came. GoatCounter: cookieless, no personal data, so no banner — and the first network request this app has ever made, which the README has to stop being silent about |

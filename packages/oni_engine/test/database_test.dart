@@ -627,7 +627,11 @@ void main() {
       final out =
           dehydrator.outputs.firstWhere((p) => p.itemId == 'calories');
       expect(out.ratePerSecond, into.ratePerSecond);
-      expect(dehydrator.description, contains('never spoils'));
+      expect(dehydrator.description, contains('never spoil'));
+      // And it says the other thing too, which is newer and worse: its input
+      // is calories, and since a dish became a material the only thing that
+      // makes calories is somebody eating. Nothing can feed it but a plate.
+      expect(dehydrator.description, contains('stranded'));
     });
 
     test('a cooker without a published batch time says so', () {
