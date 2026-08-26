@@ -113,4 +113,27 @@ void main() {
           reason: '"${demo.name}" ends with a problem on screen');
     }
   });
+  test('and no step of a demo leaves the build broken on screen', () async {
+    // Underdetermined is fine and expected — nothing is pinned for the first
+    // few steps — but a step that makes the build *impossible* would put a
+    // red banner up mid-demo. The order matters and is easy to get wrong:
+    // wiring the generator back into the Electrolyzer before its surplus has
+    // anywhere to go is exactly the build that cannot balance.
+    for (final demo in kDemos) {
+      final controller = testController(
+        pipeline: Pipeline(
+            id: 'demo', name: 'Demo', nodes: const [], edges: const []),
+      );
+      final run = DemoRun(demo, controller);
+      while (await run.step()) {
+        expect(
+          controller.solution.status,
+          isNot(anyOf(SolveStatus.invalid, SolveStatus.inconsistent)),
+          reason: 'step ${run.played} of "${demo.name}" breaks the build:\n'
+              '  ${run.says}',
+        );
+      }
+    }
+  });
+
 }

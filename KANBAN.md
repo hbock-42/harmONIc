@@ -155,8 +155,9 @@ _(empty)_
   offer to be shown around first. An app built without a player offers nothing anywhere, which
   is what keeps the template tests from having to know demos exist
 
-- `E15-4` **"What a geyser feeds"** — nine steps: a geyser, an Electrolyzer, a crew, one number,
-  the red bar, the generator that turns it green. Every figure it narrates was read off the
+- `E15-4` **"What a geyser feeds"** — ten steps: a geyser, an Electrolyzer, a crew, one number,
+  the red bar, the generator that turns it green, and the power wired back into the Electrolyzer
+  so the build runs itself. Every figure it narrates was read off the
   running demo rather than typed in from the wiki, and two were wrong when checked: the bar
   prints **1.40 kW**, not 1 397 W, because it switches unit above a thousand. `docs/DEMO.md`
   said the same wrong thing and now does not

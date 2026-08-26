@@ -71,6 +71,17 @@ const Demo whatAGeyserFeeds = Demo(
       ),
     ),
     DemoStep(
+      says: 'And run the Electrolyzer off it. Drag from the generator\'s '
+          'Power dot to the Electrolyzer\'s: the build pays its own power '
+          'bill, and 1.40 kW is what is left after it has.',
+      does: ConnectPorts(
+        fromNode: 'hgen',
+        fromPortId: 'power_out',
+        toNode: 'elec',
+        toPortId: 'power_in',
+      ),
+    ),
+    DemoStep(
       says: 'Same geyser, same 16 Duplicants, and it now runs a base as well. '
           'That is a SPOM, arrived at in two clicks rather than looked up.',
     ),

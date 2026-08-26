@@ -47,7 +47,13 @@ Let the red sit there for a second. Then:
 
 **4. Make it pay for itself.** Click the Electrolyzer's **Hydrogen** dot, pick
 **Hydrogen Generator**, then click the generator's **Power** dot and pick
-**Power output**.
+**Power output**. Then drag from that same Power dot to the Electrolyzer's
+**Power** dot, so the build runs its own Electrolyzer.
+
+Order matters, and it is worth saying why: wire the generator back into the
+Electrolyzer *before* the surplus has anywhere to go and the build cannot
+balance at all — the generator makes 896 W, the Electrolyzer wants 120, and
+both ports would be insisting on being emptied exactly.
 
 The bar turns green: **+1.40 kW** — 1 396.8 W, shown in kilowatts because the
 app switches unit above a thousand. Same geyser, same sixteen dupes, and the
