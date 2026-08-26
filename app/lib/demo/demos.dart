@@ -47,9 +47,9 @@ final Demo whatAGeyserFeeds = Demo(
       },
     ),
     const DemoStep(
-      says: 'Everything answers at once. Sixteen Duplicants, and two '
-          'Electrolyzers of which one idles a tenth of the time — the app '
-          'shows rounding as rounding rather than hiding it.',
+      says: 'Everything answers at once. 16 Duplicants, and 2 Electrolyzers '
+          'of which the second runs only 90 % of the time — the app shows '
+          'rounding as rounding rather than hiding it.',
     ),
     const DemoStep(
       says: 'But look at the bottom bar. It is red: this build draws 216 W '
@@ -70,7 +70,7 @@ final Demo whatAGeyserFeeds = Demo(
           PortRef(stage.nodeId('hgen'), 'power_out'), 'sink:power'),
     ),
     const DemoStep(
-      says: 'Same geyser, same sixteen Duplicants, and it now runs a base as '
+      says: 'Same geyser, same 16 Duplicants, and it now runs a base as '
           'well. That is a SPOM, arrived at in two clicks rather than looked '
           'up.',
     ),

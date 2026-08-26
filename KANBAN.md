@@ -45,7 +45,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **The app demonstrating itself**
 
-- `E15-3` The narration is checked against the solver
 - `E15-8` Offered once, on a first visit
 
 **Data still to gather**
@@ -76,6 +75,14 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E15-3` **The narration is checked against the solver** — every demo run a step at a time,
+  and every figure a line quotes matched against what the app is showing at that moment. The
+  rule is digits: a number in figures is a claim, a number in words is prose, so a caption says
+  which of its numbers it means. Compared as *written* rather than within a tolerance — the
+  first version allowed 0.01 either way and let "1.39 kW" through, because 1 396.8 W over a
+  thousand is 1.3968. Four wrong figures were tried against the finished version and all four
+  fail
 
 - `E15-5` **"Let it choose the split"** — act two, and the part no other calculator for this
   game does: one port with two lines out of it, an even split nobody asked for at 6.67 kg/s,
@@ -1308,7 +1315,7 @@ has been dismissed.
 |---|---|---|---|
 | E15-1 | ✅ | The demo engine | a demo is a list of steps; a step is an action on a real `PipelineController` plus a line of narration. No animation framework, no second renderer, and nothing a person could not have typed |
 | E15-2 | ✅ | The player | play, pause, step forward, and leave at any point. It runs in a workspace tab of its own, so whatever you were building is exactly where you left it — a demo that eats your work is worse than no demo |
-| E15-3 | P2 | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
+| E15-3 | ✅ | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
 | E15-4 | ✅ | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
 | E15-5 | ✅ | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
 | E15-6 | ✅ | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |

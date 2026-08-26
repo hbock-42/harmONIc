@@ -45,7 +45,7 @@ void main() {
     final dupes = countOf(controller, 'duplicant');
     expect(dupes, closeTo(15.98, 0.01));
     expect(dupes.ceil(), 16);
-    expect(said, contains('sixteen Duplicants'));
+    expect(said, contains('16 Duplicants'));
 
     // "two Electrolyzers of which one idles a tenth of the time"
     final elec = countOf(controller, 'electrolyzer');
