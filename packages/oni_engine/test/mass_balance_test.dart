@@ -192,4 +192,32 @@ void main() {
     }
     expect(((output - input) / output).abs(), greaterThan(0.01));
   });
+  test('drying a dish and wetting it again keeps its calories', () {
+    // The Dehydrator takes 6000 kcal of any Gas Range dish and gives back six
+    // 1000 kcal packs, so the calories are conserved and the *mass* is not:
+    // 1.2 kg of curried beans and 1.5 kg of pepper bread both become 6 kg of
+    // pack. That makes each recipe's input mass a different number, worked
+    // out from that dish's own kcal/kg — nine chances to divide wrong, and
+    // nine more on the way back through the Rehydrator.
+    //
+    // This is the one part of the food data a machine can check without the
+    // wiki open: the calorie figures themselves were read back by hand.
+    for (final spec in db.processes) {
+      if (!spec.id.startsWith('dehydrator_') &&
+          !spec.id.startsWith('rehydrator_')) {
+        continue;
+      }
+      double calories(PortDirection direction) => spec.ports
+          .where((port) => port.direction == direction)
+          .fold(0, (sum, port) {
+        final food = db.item(port.itemId);
+        return sum + port.ratePerSecond * (food?.kcalPerKg ?? 0);
+      });
+
+      expect(calories(PortDirection.output),
+          closeTo(calories(PortDirection.input), 1e-6),
+          reason: '${spec.id} gains or loses calories in the drying');
+    }
+  });
+
 }
