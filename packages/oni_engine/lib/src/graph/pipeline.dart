@@ -204,6 +204,8 @@ class PipelineEdge {
   final double? capPerSecond;
 
   PipelineEdge copyWith({
+    String? fromPortId,
+    String? toPortId,
     EdgeMode? mode,
     double? share,
     double? capPerSecond,
@@ -213,9 +215,9 @@ class PipelineEdge {
       PipelineEdge(
         id: id,
         fromNodeId: fromNodeId,
-        fromPortId: fromPortId,
+        fromPortId: fromPortId ?? this.fromPortId,
         toNodeId: toNodeId,
-        toPortId: toPortId,
+        toPortId: toPortId ?? this.toPortId,
         mode: mode ?? this.mode,
         share: clearShare ? null : (share ?? this.share),
         capPerSecond: clearCap ? null : (capPerSecond ?? this.capPerSecond),

@@ -193,4 +193,46 @@ void main() {
       expect(validatePipeline(repaired, db).where((i) => i.isError), isEmpty);
     }
   });
+  test('a wire follows its port when the port is renamed', () {
+    // A port's id is part of the saved format, and a recipe that gains a
+    // choice gets its port renamed for it: the Electric Grill's
+    // "sleet_wheat_grain" became "grain" the day megafrond grain became an
+    // alternative to it. Every build already drawn was wired by the old name,
+    // and used to lose the wire — along with every other wire on that node,
+    // because a node that no longer fits was treated as a node with nothing
+    // worth keeping.
+    final saved = Pipeline(
+      id: 'old',
+      name: 'Canteen',
+      nodes: const [
+        PipelineNode(id: 'wheat', specId: 'sleet_wheat'),
+        PipelineNode(id: 'grill', specId: 'electric_grill_frost_bun'),
+      ],
+      edges: const [
+        PipelineEdge(
+          id: 'e1',
+          fromNodeId: 'wheat',
+          fromPortId: 'sleet_wheat_grain',
+          toNodeId: 'grill',
+          // What it was called before the megafrond alternative arrived.
+          toPortId: 'sleet_wheat_grain',
+        ),
+      ],
+    );
+
+    final repair = repairPipeline(saved, db);
+
+    expect(repair.pipeline.edges, hasLength(1));
+    expect(repair.pipeline.edges.single.toPortId, 'grain');
+    expect(repair.notes.join(), contains('under a new name'));
+  });
+
+  test('and it is not moved when the guess would be a guess', () {
+    // Two ports carrying the same thing in the same direction is a fork, and
+    // picking one of them would be inventing a decision somebody else made.
+    final spec = db.processOrThrow('electric_grill_souffle_pancakes');
+    final grain = spec.inputs.where((p) => p.accepted.contains('megafrond_grain'));
+    expect(grain, hasLength(1), reason: 'the premise of the rule above');
+  });
+
 }

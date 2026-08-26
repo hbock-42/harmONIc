@@ -1,4 +1,5 @@
 import '../model/game_database.dart';
+import '../model/port.dart';
 import '../model/units.dart';
 import '../model/process_spec.dart';
 import 'pin.dart';
@@ -14,6 +15,25 @@ class PipelineRepair {
   final List<String> notes;
 
   bool get changed => notes.isNotEmpty;
+}
+
+/// The port on [spec] that carries what a wire named [wanted] used to carry.
+///
+/// A port id is usually the item's own id, which is what makes this work at
+/// all: "sleet_wheat_grain" names the grain whether or not the port is still
+/// called that. Null when the guess would be a guess.
+String? _portCarrying(
+  ProcessSpec spec,
+  String wanted,
+  PortDirection direction,
+  Pipeline pipeline,
+  GameDatabase database,
+) {
+  final matching = [
+    for (final port in spec.ports)
+      if (port.direction == direction && port.accepted.contains(wanted)) port,
+  ];
+  return matching.length == 1 ? matching.single.id : null;
 }
 
 /// Reconciles a saved pipeline with the recipes as they are now.
@@ -79,14 +99,41 @@ PipelineRepair repairPipeline(Pipeline pipeline, GameDatabase database) {
         'which still has the ports it was wired by.');
   }
 
-  // 3. Wires whose ports are gone with nowhere to move them.
+  // 3. Wires whose port has been renamed, and then wires whose port is gone.
+  //
+  //    A port's id is part of the saved format, and a recipe that gains a
+  //    choice gets its port renamed for it: the Electric Grill's
+  //    "sleet_wheat_grain" became "grain" the day megafrond grain became an
+  //    alternative to it. Every build already drawn was wired by the old name.
+  //    So before dropping a wire, look for the port that carries the same
+  //    thing in the same direction — which is what the wire meant, and the
+  //    only thing about it that was ever load-bearing.
   final byId = {for (final node in nodes) node.id: node};
   final kept = <PipelineEdge>[];
-  for (final edge in edges) {
+  var renamed = 0;
+  for (var edge in edges) {
     final from = byId[edge.fromNodeId];
     final to = byId[edge.toNodeId];
     final fromSpec = from == null ? null : database.process(from.specId);
     final toSpec = to == null ? null : database.process(to.specId);
+
+    if (fromSpec != null && fromSpec.portById(edge.fromPortId) == null) {
+      final moved = _portCarrying(fromSpec, edge.fromPortId,
+          PortDirection.output, pipeline, database);
+      if (moved != null) {
+        edge = edge.copyWith(fromPortId: moved);
+        renamed++;
+      }
+    }
+    if (toSpec != null && toSpec.portById(edge.toPortId) == null) {
+      final moved = _portCarrying(
+          toSpec, edge.toPortId, PortDirection.input, pipeline, database);
+      if (moved != null) {
+        edge = edge.copyWith(toPortId: moved);
+        renamed++;
+      }
+    }
+
     final ok = fromSpec?.portById(edge.fromPortId) != null &&
         toSpec?.portById(edge.toPortId) != null;
     if (ok) {
@@ -94,6 +141,10 @@ PipelineRepair repairPipeline(Pipeline pipeline, GameDatabase database) {
     } else {
       notes.add('Removed a connection whose port no longer exists.');
     }
+  }
+  if (renamed > 0) {
+    notes.add('Moved $renamed ${renamed == 1 ? 'wire' : 'wires'} to the port '
+        'that carries the same thing under a new name.');
   }
   edges = kept;
 
