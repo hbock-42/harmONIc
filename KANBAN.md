@@ -78,6 +78,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-51` **The Electric Grill's fourteen recipes** — it shipped with one, the Frost Bun, so a
+  player looking for an Omelette found the building and not the dish. All fourteen now, at the
+  50 s a batch takes. Ten ingredients had to be invented as items first — meal lice, mush bar,
+  bristle berry, mushroom, raw egg, four fruits and megafrond grain — and each is a supply node
+  until something here grows it, which is `E4-52`. Two of them are choices rather than recipes:
+  three kilos of grain whether sleet wheat or megafrond, and Cooked Seafood out of fish fillet
+  or raw shellfish at the same 1600 kcal. The footprint was 2×2 and the game says 3×2
+
 - `E4-47` **The Rock Crusher's own list, and a rate that was 20× out** — reading the crusher's
   table properly, after a player's ceramic report, turned up two errors already shipped. Egg
   shell into lime was 100 kg a side; the game gives each lime recipe its own mass and this one
@@ -1210,6 +1218,8 @@ _(empty)_
 | E4-49 | ✅ | The Seaquine excretes slime, not carbon dioxide | the right number beside the wrong material — 12 kg/cycle was the diet's output all along |
 | E4-50 | ✅ | Pinpoket, Pinpoki, and the two things that take it | the plant, the fruit, 100 kg of diamond in a Rock Crusher and 7200 kcal of Uni in a Sushi Bar |
 | E10-30 | ✅ | A port says what it is measured in | reported with a picture: a Power port asking for grams per second. "5 grams of power, please" |
+| E4-51 | ✅ | The Electric Grill's fourteen recipes | it had one. Thirteen added, ten ingredients that were not items here, and a footprint that was 2×2 where the game says 3×2 |
+| E4-52 | P2 | What grows the grill's ingredients | ten new items arrive as supplies: the Mealwood, Dusk Cap, Bristle Blossom and the four DLC fruits are not here, so a food chain starts in the middle |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

@@ -542,6 +542,12 @@ void main() {
             if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
       };
       expect(claiming, {
+        // Three kilos of grain, whether it is sleet wheat or megafrond.
+        'electric_grill_frost_bun.grain',
+        'electric_grill_souffle_pancakes.grain',
+        // A kilogram of fish fillet or a kilogram of raw shellfish, and the
+        // same 1600 kcal out of either.
+        'electric_grill_cooked_seafood.catch',
         // 100 kg of ceramic makes 100 kg of sand, the same as every rock on
         // the crusher's list. It is here rather than in the raw mineral class
         // because that class is also a Hatch's dinner, and a Hatch does not

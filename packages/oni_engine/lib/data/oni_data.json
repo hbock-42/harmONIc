@@ -947,6 +947,71 @@
       ]
     },
     {
+      "id": "meal_lice",
+      "name": "Meal Lice",
+      "category": "solid"
+    },
+    {
+      "id": "mush_bar",
+      "name": "Mush Bar",
+      "category": "solid"
+    },
+    {
+      "id": "bristle_berry",
+      "name": "Bristle Berry",
+      "category": "solid"
+    },
+    {
+      "id": "mushroom",
+      "name": "Mushroom",
+      "category": "solid"
+    },
+    {
+      "id": "raw_egg",
+      "name": "Raw Egg",
+      "category": "solid"
+    },
+    {
+      "id": "megafrond_grain",
+      "name": "Megafrond Grain",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "grubfruit",
+      "name": "Grubfruit",
+      "category": "solid",
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "spindly_grubfruit",
+      "name": "Spindly Grubfruit",
+      "category": "solid",
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "mimillet",
+      "name": "Mimillet",
+      "category": "solid",
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "pikeapple",
+      "name": "Pikeapple",
+      "category": "solid",
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
       "id": "sleet_wheat_grain",
       "name": "Sleet Wheat Grain",
       "category": "solid",
@@ -4935,17 +5000,22 @@
       "powerWatts": 60,
       "heatKdtuPerSecond": 4.5,
       "dupeLabourSecondsPerCycle": 600,
-      "footprintWidth": 2,
+      "footprintWidth": 3,
       "footprintHeight": 2,
       "tags": [
         "food",
+        "prehistoric",
         "verified"
       ],
       "ports": [
         {
           "item": "sleet_wheat_grain",
           "direction": "input",
-          "rate": 60.0
+          "rate": 60.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
         },
         {
           "item": "calories",
@@ -8181,6 +8251,441 @@
       ],
       "build": {
         "metal_ore": 800
+      }
+    },
+    {
+      "id": "electric_grill_pickled_meal",
+      "name": "Electric Grill (Pickled Meal)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "meal_lice",
+          "direction": "input",
+          "rate": 60.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 36.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_mush_fry",
+      "name": "Electric Grill (Mush Fry)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mush_bar",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 21.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_gristle_berry",
+      "name": "Electric Grill (Gristle Berry)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "bristle_berry",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 40.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_fried_mushroom",
+      "name": "Electric Grill (Fried Mushroom)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "mushroom",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 56.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_omelette",
+      "name": "Electric Grill (Omelette)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "raw_egg",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 56.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_souffle_pancakes",
+      "name": "Electric Grill (Soufflé Pancakes)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified",
+        "prehistoric"
+      ],
+      "ports": [
+        {
+          "item": "raw_egg",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 40.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 72.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_barbeque",
+      "name": "Electric Grill (Barbeque)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "meat",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 80.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_cooked_seafood",
+      "name": "Electric Grill (Cooked Seafood)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "Either a kilogram of fish fillet or a kilogram of raw shellfish, and the same 1600 kcal out of both — which is why the catch is a choice on one port rather than two recipes.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "fish_fillet",
+          "direction": "input",
+          "rate": 20.0,
+          "id": "catch",
+          "alternatives": [
+            "raw_shellfish"
+          ]
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 32.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_swampy_delights",
+      "name": "Electric Grill (Swampy Delights)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified",
+        "spacedout"
+      ],
+      "ports": [
+        {
+          "item": "bog_jelly",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 44.8
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_roast_grubfruit_nut",
+      "name": "Electric Grill (Roast Grubfruit Nut)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified",
+        "spacedout"
+      ],
+      "ports": [
+        {
+          "item": "spindly_grubfruit",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 24.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_grubfruit_preserve",
+      "name": "Electric Grill (Grubfruit Preserve)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified",
+        "spacedout"
+      ],
+      "ports": [
+        {
+          "item": "grubfruit",
+          "direction": "input",
+          "rate": 160.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 48.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_toasted_mimillet",
+      "name": "Electric Grill (Toasted Mimillet)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified",
+        "prehistoric"
+      ],
+      "ports": [
+        {
+          "item": "mimillet",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 30.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "electric_grill_pikeapple_skewer",
+      "name": "Electric Grill (Pikeapple Skewer)",
+      "kind": "building",
+      "buildingId": "electric_grill",
+      "powerWatts": 60,
+      "heatKdtuPerSecond": 4.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "description": "One batch every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "verified",
+        "frosty"
+      ],
+      "ports": [
+        {
+          "item": "pikeapple",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 24.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
       }
     }
   ],
