@@ -72,14 +72,20 @@ Everything not pulled into **Ready**. Grouped by epic below.
 - `E4-11` Nail down the unverified DLC rates: the Vulcanizer's latex and rubber rates, the
   Plant Pulverizer's cycle time, the Marine Drill's natural gas, Gum Palm's CO2. Checked
   again on 2026-08-22 — all four are still unpublished
-- `E4-22` The Grooming Station's power draw, if it is ever published. Checked again on
-  2026-08-22: 400 kg of ore and a 2×3 footprint, and no watts anywhere on the page
 
 ### 🚧 In Progress
 
 _(empty)_
 
 ### ✅ Done
+
+- `E4-22`, `E4-49` **Two answers out of the game files** — a player read both off oni-db, which
+  is generated from the game rather than written by hand, and it settled two rows the wiki has
+  never been able to. The Grooming Station draws **no power**, which is what this modelled on
+  the guess that silence meant none — a guess now retired into a fact. And the Seaquine eats
+  3.1 kg of pearl a cycle and excretes **12 kg of slime**: this said carbon dioxide against
+  that same 12 kg, the right number beside the wrong material. Both stay `unverified` for what
+  is still open — the station's capacity is `E4-48`, and nobody has published the ovolene rate
 
 - `E4-46` **The Rock Crusher takes ceramic** — the second report from a stranger, and right:
   the game crushes 100 kg of ceramic into 100 kg of sand and this refused it. Put on the port
@@ -1176,6 +1182,8 @@ _(empty)_
 | E4-45 | P3 | Whatever makes biodiesel | the Emulsifier's cycle time is unpublished; the Husky Moo would need a critter and a Milking Station this data does not have |
 | E4-46 | ✅ | The Rock Crusher takes ceramic | reported by a player: the game crushes ceramic into sand and this refused it |
 | E4-47 | P2 | The raw mineral class is two different lists | it stands for both what a Rock Crusher will crush into sand and what a Hatch will eat, and the game's two lists are not the same one. Ours has seven members; the crusher's own table has eleven, and five of those are not items here at all |
+| E4-48 | P3 | How many critters one Grooming Station keeps | eight is a fair guess and still a guess: a stable is 12–96 tiles and every species takes a different amount of room |
+| E4-49 | ✅ | The Seaquine excretes slime, not carbon dioxide | the right number beside the wrong material — 12 kg/cycle was the diet's output all along |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
@@ -1197,7 +1205,7 @@ _(empty)_
 | E4-20b | P3 | Eggs per critter | a Bammoth's egg is four times a Hatch's, and this app has one Egg item; the cracker uses Hatch figures |
 | E4-21 | ✅ | Wild versus groomed | a `(wild)` twin per ranched critter: no grooming, no Duplicant time, a tenth of the eggs |
 | E4-21b | P3 | Glo Squid and Seaquine wild twins | wants somebody to check in game which outputs the milking station takes |
-| E4-22 | P3 | The Grooming Station's power draw | checked again 2026-08-22: the page gives its 400 kg of ore and its 2×3 footprint and no watts at all, nor a heat figure |
+| E4-22 | ✅ | The Grooming Station's power draw | none. The wiki never said, in years of asking; a player read it out of the game files. It is what this modelled on the guess that silence meant none, so nothing changed but the certainty. Capacity is still open as `E4-48` |
 | E4-23 | ✅ | Sweetle and Grubgrub | seeded once `E13-8` made Spaced Out a pack you can switch off. The Beeta is `E4-23a`: a five-cycle life would be misrepresented by a per-cycle average |
 | E4-23a | P3 | The Beeta | it lives five cycles and its honey comes at the end of them, so a rate is the wrong shape for it — the same reason the app refuses to average a Bammoth's shearing |
 | E4-24 | ✅ | The Frosty and Prehistoric Planet Packs | 21 elements, Peat Burner, Ice Liquefier, Wood Heater, Alveo Vera, five critters |

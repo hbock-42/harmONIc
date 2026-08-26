@@ -3115,7 +3115,7 @@ const String oniDataJson = r"""
       "id": "grooming_station",
       "name": "Grooming Station",
       "kind": "building",
-      "description": "UNVERIFIED: the wiki does not publish this building’s power draw, so it is modelled as drawing none and will under-report your grid. Capacity is the sticking point: a stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "description": "It draws no power at all — read out of the game files by a player after the wiki went years without saying, and it is what was modelled here on the guess that silence meant none. UNVERIFIED still, for the other reason: capacity. A stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
       "tags": [
         "ranching",
         "unverified"
@@ -3137,7 +3137,7 @@ const String oniDataJson = r"""
       "id": "aquatic_grooming_station",
       "name": "Aquatic Grooming Station",
       "kind": "building",
-      "description": "UNVERIFIED: like its dry sibling, the wiki gives the 2×3 footprint but no power draw, so none is modelled. Capacity is the sticking point: a stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "description": "It draws no power at all — read out of the game files by a player after the wiki went years without saying, and it is what was modelled here on the guess that silence meant none. UNVERIFIED still, for the other reason: capacity. A stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
       "footprintWidth": 2,
       "footprintHeight": 3,
       "tags": [
@@ -4328,7 +4328,7 @@ const String oniDataJson = r"""
       "id": "seaquine",
       "name": "Seaquine",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: the only source of ovolene, through an Aquatic Milking Station — but the wiki gives no rate for it, so that output is missing here and only the 12 kg/cycle of carbon dioxide is modelled. Milking also halves its breeding, which this model has no way to show.",
+      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime — the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. UNVERIFIED OUTPUT still: it is the only source of ovolene, through an Aquatic Milking Station, and nobody has published how much. Milking also halves its breeding, which this model has no way to show.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -4352,7 +4352,7 @@ const String oniDataJson = r"""
           "rate": 5.166667
         },
         {
-          "item": "carbon_dioxide",
+          "item": "slime",
           "direction": "output",
           "rate": 20.0
         },
