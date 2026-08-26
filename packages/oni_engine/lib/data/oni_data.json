@@ -205,6 +205,26 @@
       "category": "solid"
     },
     {
+      "id": "granite",
+      "name": "Granite",
+      "category": "solid"
+    },
+    {
+      "id": "igneous_rock",
+      "name": "Igneous Rock",
+      "category": "solid"
+    },
+    {
+      "id": "sandstone",
+      "name": "Sandstone",
+      "category": "solid"
+    },
+    {
+      "id": "insulite",
+      "name": "Insulite",
+      "category": "solid"
+    },
+    {
       "id": "sedimentary_rock",
       "name": "Sedimentary Rock",
       "category": "solid"
@@ -1007,8 +1027,7 @@
         "shale",
         "siltstone",
         "basalt",
-        "coquina",
-        "corallium"
+        "coquina"
       ],
       "tags": [
         "class"
@@ -1763,7 +1782,11 @@
           "rate": 2500,
           "id": "rock",
           "alternatives": [
-            "ceramic"
+            "ceramic",
+            "granite",
+            "igneous_rock",
+            "sandstone",
+            "insulite"
           ]
         },
         {
@@ -1773,7 +1796,7 @@
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Any rock crushes to sand at the same rate, so this takes the class rather than one stone in particular.",
+      "description": "Eleven rocks crush into sand, one for one, and the class on this port covers six of them. The other five are listed beside it rather than added to the class, because that class is also what a Hatch eats and a Hatch does not eat ceramic or insulite.",
       "build": {
         "metal_ore": 800
       },
@@ -7710,7 +7733,7 @@
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Egg shell into lime, kilogram for kilogram. The other way to get lime is a Pokeshell or a Beakon; this is the one that comes free with a ranch you were keeping anyway.",
+      "description": "Five kilograms of egg shell into five of lime, per 40 s operation. This read 100 kg both sides for a long time — the crusher’s usual batch, and not this recipe’s: the table gives each of the lime recipes its own mass, and they are 5 kg, 60 kg and 10 kg rather than a hundred.",
       "tags": [
         "refining",
         "verified"
@@ -7719,12 +7742,12 @@
         {
           "item": "egg_shell",
           "direction": "input",
-          "rate": 2500
+          "rate": 125.0
         },
         {
           "item": "lime",
           "direction": "output",
-          "rate": 2500
+          "rate": 125.0
         }
       ],
       "build": {
@@ -8022,6 +8045,142 @@
       ],
       "build": {
         "wood": 400
+      }
+    },
+    {
+      "id": "rock_crusher_corallium",
+      "name": "Rock Crusher (Corallium)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "100 kg of corallium into 10 kg of lime and 90 of sand. It used to be in the raw mineral class, which made it 100 kg of sand and no lime at all.",
+      "tags": [
+        "refining",
+        "verified",
+        "aquatic"
+      ],
+      "ports": [
+        {
+          "item": "corallium",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 250
+        },
+        {
+          "item": "sand",
+          "direction": "output",
+          "rate": 2250
+        }
+      ],
+      "build": {
+        "metal_ore": 800
+      }
+    },
+    {
+      "id": "rock_crusher_pokeshell_molt",
+      "name": "Rock Crusher (Pokeshell Molt)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "60 kg of molt into 60 of lime, per 40 s operation.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pokeshell_molt",
+          "direction": "input",
+          "rate": 1500
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 1500
+        }
+      ],
+      "build": {
+        "metal_ore": 800
+      }
+    },
+    {
+      "id": "rock_crusher_slogo_molt",
+      "name": "Rock Crusher (Slogo Molt)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "10 kg of molt into 10 of lime, per 40 s operation.",
+      "tags": [
+        "refining",
+        "verified",
+        "aquatic"
+      ],
+      "ports": [
+        {
+          "item": "slogo_molt",
+          "direction": "input",
+          "rate": 250
+        },
+        {
+          "item": "lime",
+          "direction": "output",
+          "rate": 250
+        }
+      ],
+      "build": {
+        "metal_ore": 800
+      }
+    },
+    {
+      "id": "rock_crusher_gildgo_molt",
+      "name": "Rock Crusher (Gildgo Molt)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "10 kg of molt into 10 of gold amalgam, per 40 s operation.",
+      "tags": [
+        "refining",
+        "verified",
+        "aquatic"
+      ],
+      "ports": [
+        {
+          "item": "gildgo_molt",
+          "direction": "input",
+          "rate": 250
+        },
+        {
+          "item": "gold_amalgam",
+          "direction": "output",
+          "rate": 250
+        }
+      ],
+      "build": {
+        "metal_ore": 800
       }
     }
   ],

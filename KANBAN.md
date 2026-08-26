@@ -78,6 +78,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-47` **The Rock Crusher's own list, and a rate that was 20× out** — reading the crusher's
+  table properly, after a player's ceramic report, turned up two errors already shipped. Egg
+  shell into lime was 100 kg a side; the game gives each lime recipe its own mass and this one
+  is **5 kg**, so it was twenty times too generous. And corallium sat in the raw mineral class,
+  which made it 100 kg of sand when it is 10 kg of lime and 90 of sand. Both fixed. The eleven
+  rocks that crush into sand are now all offered — four of them were not items here at all —
+  listed on the port rather than added to the class, because that class is also a Hatch's
+  dinner. Three molt recipes added besides
+
 - `E10-30` **A port says what it is measured in** — the recipe form asked for `g/s` whatever
   the port carried, so a Power output wanted grams of power and a Heat output wanted grams of
   heat. Reported with a screenshot and the caption *"5 grams of power, please"*. Every item
@@ -1196,7 +1205,7 @@ _(empty)_
 | E4-41 | ✅ | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
 | E4-45 | P3 | Whatever makes biodiesel | the Emulsifier's cycle time is unpublished; the Husky Moo would need a critter and a Milking Station this data does not have |
 | E4-46 | ✅ | The Rock Crusher takes ceramic | reported by a player: the game crushes ceramic into sand and this refused it |
-| E4-47 | P2 | The raw mineral class is two different lists | it stands for both what a Rock Crusher will crush into sand and what a Hatch will eat, and the game's two lists are not the same one. Ours has seven members; the crusher's own table has eleven, and five of those are not items here at all |
+| E4-47 | ✅ | The Rock Crusher's own list, and a rate that was 20× out | eleven rocks make sand and this offered six; egg shell into lime read 100 kg a side when the game says 5; corallium was in the class and so made pure sand instead of lime and sand |
 | E4-48 | P3 | How many critters one Grooming Station keeps | eight is a fair guess and still a guess: a stable is 12–96 tiles and every species takes a different amount of room |
 | E4-49 | ✅ | The Seaquine excretes slime, not carbon dioxide | the right number beside the wrong material — 12 kg/cycle was the diet's output all along |
 | E4-50 | ✅ | Pinpoket, Pinpoki, and the two things that take it | the plant, the fruit, 100 kg of diamond in a Rock Crusher and 7200 kcal of Uni in a Sushi Bar |
