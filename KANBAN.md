@@ -49,7 +49,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Game data**
 
-- `E4-55` The Dehydrator and Rehydrator, which are a chain
 
 **Data still to gather**
 
@@ -1301,7 +1300,7 @@ _(empty)_
 | E4-52 | ✅ | What grows the grill's ingredients | most of them turned out to be already here: `E4-53` made the plants grow crops instead of calories, so the Mealwood, Bristle Blossom, Dusk Cap, Waterweed and Pikeapple Bush all feed the grill now. Megafrond and the Spindly Grubfruit added. What is left is `E4-57` |
 | E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
 | E4-54 | ✅ | The other food buildings' missing recipes | the Sushi Bar and the Deep Fryer are complete at four each, the Smoker at three. The Dehydrator and Rehydrator pair is still unmodelled, which is `E4-55` |
-| E4-55 | ✅ | The Dehydrator and Rehydrator | 6000 kcal of any Gas Range food and 12 kg of plastic make six dried packs that never spoil; a Rehydrator turns one back with 1 kg of water. Nine dried foods as items. Raised to P2 by `E4-53`: the Dehydrator's input is calories, and now that a dish is a material the only thing that makes calories is somebody eating — so the only way to feed it is out of a Duplicant's plate. It needs a recipe per dish |
+| E4-55 | ✅ | The Dehydrator and Rehydrator | eighteen recipes, nine dried foods. It was raised to P2 by `E4-53`, which left the Dehydrator taking calories that only a Duplicant's plate could supply; it takes a dish now |
 | E4-56 | ✅ | The Microbe Musher's six recipes, and a bar that fed eight hundred | its Mush Bar output was a thousand times too large, and had been since the recipe was written |
 | E4-57 | P3 | The last kitchen ingredients nothing grows | grubfruit needs a Divergent to tend the plant, sweatcorn a pollinator, jawbo fillet and calamari their critters, and bog jelly, ovagro fig, plume squash and tonic root their own plants. Each is blocked on a figure or a creature, not on effort |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
