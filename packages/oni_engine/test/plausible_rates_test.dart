@@ -91,4 +91,33 @@ void main() {
           reason: '"$itemId" no longer moves at less than a gram a second');
     }
   });
+  test('and no kitchen makes more food than a kitchen can', () {
+    // The audit today's worst number would have failed. The Microbe Musher's
+    // Mush Bar was 1 666 g/s where it should be 1.67 — a thousand times over,
+    // so one Musher fed eight hundred Duplicants — and nothing caught it. Mass
+    // balance cannot weigh food, and the two rules above look for grams a
+    // second and for pipe capacity; 1 666 g/s of a solid is neither.
+    //
+    // A cooking building makes a kilogram or two a batch, and the slowest
+    // batch in the game is the Smoker's 600 s. 100 g/s is 60 kg a cycle out of
+    // one machine, which no ONI kitchen approaches — the busiest here is 20.
+    const mostAKitchenMakes = 100.0;
+    final greedy = <String>[];
+    for (final spec in db.processes) {
+      if (spec.kind != ProcessKind.building) continue;
+      if (spec.id.startsWith('eat:')) continue;
+      for (final port in spec.outputs) {
+        final item = db.item(port.itemId);
+        if (item == null || !item.isFood) continue;
+        if (port.ratePerSecond <= mostAKitchenMakes) continue;
+        greedy.add('${spec.id} makes ${port.ratePerSecond} g/s of '
+            '${port.itemId}, which is ${(port.ratePerSecond * 600 / 1000)
+                .toStringAsFixed(0)} kg a cycle');
+      }
+    }
+    expect(greedy, isEmpty,
+        reason: 'a rate that large is a batch mistaken for a rate, or grams '
+            'mistaken for kilograms');
+  });
+
 }

@@ -78,6 +78,14 @@ _(empty)_
 
 ### ✅ Done
 
+- `E8-21` **The audit that would have caught the Mush Bar** — five shipped errors were found by
+  hand this week and not one by a test, so the newest of them got turned into one. No cooking
+  building may make more than 100 g/s of food: a batch is a kilogram or two and the slowest in
+  the game is the Smoker's 600 s, so 100 g/s is 60 kg a cycle out of one machine and the
+  busiest thing here makes 20. Put the old figure back and it fails by name. It would not have
+  caught the other four, which is worth admitting — the egg shell was 20× and the corallium was
+  the wrong outputs entirely, and both are inside any plausible range
+
 - `E4-56` **The Microbe Musher's recipes, and a bar that fed eight hundred** — going after
   Liceloaf and Tofu turned up the worst number found in this data yet: the Mush Bar's output
   was 1 666 g/s where it should be 1.67, a thousand times over, so one Musher fed eight hundred
@@ -1565,6 +1573,7 @@ has been dismissed.
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
 | E8-7b | ✅ | The guide is a list of topics, not a wall | twelve headings and three hundred lines arriving as one scroll. The headings are already in the file, so the split costs nothing and stays honest: pick a topic, read that topic, go back |
+| E8-21 | ✅ | The audit that would have caught the Mush Bar | a kitchen that makes 60 kg of food a cycle out of one machine is a batch mistaken for a rate |
 | E8-20 | ✅ | Count the visits | GitHub Pages says nothing about who came. GoatCounter: cookieless, no personal data, so no banner — and the first network request this app has ever made, which the README has to stop being silent about |
 | E8-19 | ✅ | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |
 | E8-18 | ✅ | Golden builds for this week's data | fifteen recipes seeded in a week, each unit-tested against its own page and none of them checked as a chain |
