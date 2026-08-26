@@ -50,7 +50,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 **Game data**
 
 - `E4-39` One recipe per food building is not enough
-- `E4-41` Pinpoket, Pinpoki, and what eats it
 
 **Data still to gather**
 
@@ -78,6 +77,15 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E4-41`, `E4-50` **Pinpoket, Pinpoki, and the two things that take it** — the last of the
+  chain a player reported as missing. 5 kg of refined carbon a cycle for a sixteenth of a
+  Pinpoki; one Pinpoki is 100 kg of diamond in a Rock Crusher, or 7200 kcal of Uni in a Sushi
+  Bar. The wild twin is the usual quarter with nothing to feed it, which the page bears out
+  sideways: eight domestic plants keep a Marine Drill in diamond, and thirty wild ones. The
+  Uni recipe is `unverified` for its time alone — the Sushi Bar's base craft time is published
+  nowhere, so it uses the 50 s the Sushi Roll recipe here already assumed, and the two are
+  wrong together or right together
 
 - `E4-22`, `E4-49` **Two answers out of the game files** — a player read both off oni-db, which
   is generated from the game rather than written by hand, and it settled two rows the wiki has
@@ -1178,12 +1186,13 @@ _(empty)_
 | E4-43 | ✅ | The Petroleum Generator burns ethanol | reported by a player: "I can't set petroleum generator to take ethanol either". The wiki gives one set of figures for every fuel it takes — 2 kg/s in, 2 kW out, 500 g/s CO2, 750 g/s polluted water — so it is a choice on the port, not a second recipe |
 | E4-39 | P2 | One recipe per food building is not enough | the Electric Grill has one of its many, the Gas Range one of its many. A player trying a food chain finds the building and not the dish. The Rehydrator is missing outright; the Spice Grinder already has its own row |
 | E4-40 | ✅ | The Kiln's other recipes, and what it does not cost | reported: it will not take Gum Wood. The wikitext, read raw after a summary of it came back self-contradictory, settles all of it — and settles the doubt the two existing recipes carried, which was never about their rates but about whether a Duplicant is tied to them. Nobody is |
-| E4-41 | P2 | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
+| E4-41 | ✅ | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
 | E4-45 | P3 | Whatever makes biodiesel | the Emulsifier's cycle time is unpublished; the Husky Moo would need a critter and a Milking Station this data does not have |
 | E4-46 | ✅ | The Rock Crusher takes ceramic | reported by a player: the game crushes ceramic into sand and this refused it |
 | E4-47 | P2 | The raw mineral class is two different lists | it stands for both what a Rock Crusher will crush into sand and what a Hatch will eat, and the game's two lists are not the same one. Ours has seven members; the crusher's own table has eleven, and five of those are not items here at all |
 | E4-48 | P3 | How many critters one Grooming Station keeps | eight is a fair guess and still a guess: a stable is 12–96 tiles and every species takes a different amount of room |
 | E4-49 | ✅ | The Seaquine excretes slime, not carbon dioxide | the right number beside the wrong material — 12 kg/cycle was the diet's output all along |
+| E4-50 | ✅ | Pinpoket, Pinpoki, and the two things that take it | the plant, the fruit, 100 kg of diamond in a Rock Crusher and 7200 kcal of Uni in a Sushi Bar |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

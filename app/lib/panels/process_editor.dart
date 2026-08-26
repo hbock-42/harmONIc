@@ -475,7 +475,13 @@ class _ProcessEditorState extends State<ProcessEditor> {
             width: 84,
             child: OniField(
               controller: draft.rate,
-              hint: 'g/s',
+              // What this port is measured in, which is not always grams: a
+              // power port is watts and a heat port is kDTU/s. It said g/s to
+              // everything, which somebody reported as "5 grams of power,
+              // please".
+              hint: item == null || item.unit.symbol.isEmpty
+                  ? 'per second'
+                  : item.unit.symbol,
               textAlign: TextAlign.right,
             ),
           ),

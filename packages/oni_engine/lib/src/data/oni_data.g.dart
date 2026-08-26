@@ -468,6 +468,14 @@ const String oniDataJson = r"""
       "specificHeat": 0.7
     },
     {
+      "id": "pinpoki",
+      "name": "Pinpoki",
+      "category": "entity",
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
       "id": "diamond",
       "name": "Diamond",
       "category": "solid",
@@ -7908,6 +7916,116 @@ const String oniDataJson = r"""
       ],
       "build": {
         "metal_ore": 200
+      }
+    },
+    {
+      "id": "pinpoket",
+      "name": "Pinpoket",
+      "kind": "plant",
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "5 kg of refined carbon a cycle for a sixteenth of a Pinpoki, which is 6.25 kg of diamond a cycle or 450 kcal of food. A backwall plant: it only grows in a Wall Planter, submerged, which is a fact about your base rather than about the rate.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "refined_carbon",
+          "direction": "input",
+          "rate": 8.333333
+        },
+        {
+          "item": "pinpoki",
+          "direction": "output",
+          "rate": 0.000104167
+        }
+      ]
+    },
+    {
+      "id": "pinpoket_wild",
+      "name": "Pinpoket (wild)",
+      "kind": "plant",
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "A quarter of the tame one, and no refined carbon to feed it — the same as every wild plant here. The page bears it out sideways: eight domestic plants keep a Marine Drill in diamond, and thirty wild ones.",
+      "tags": [
+        "farming",
+        "aquatic",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pinpoki",
+          "direction": "output",
+          "rate": 2.60418e-05
+        }
+      ]
+    },
+    {
+      "id": "rock_crusher_pinpoki",
+      "name": "Rock Crusher (Pinpoki)",
+      "kind": "building",
+      "buildingId": "rock_crusher",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 16,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "description": "One Pinpoki crushed into 100 kg of diamond, in the 40 s every Rock Crusher operation takes. Renewable diamond, which is the whole reason anybody grows the plant.",
+      "tags": [
+        "refining",
+        "aquatic",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "pinpoki",
+          "direction": "input",
+          "rate": 0.025
+        },
+        {
+          "item": "diamond",
+          "direction": "output",
+          "rate": 2500
+        }
+      ],
+      "build": {
+        "metal_ore": 800
+      }
+    },
+    {
+      "id": "sushi_bar_uni",
+      "name": "Sushi Bar (Uni)",
+      "kind": "building",
+      "buildingId": "sushi_bar",
+      "heatKdtuPerSecond": 0.5,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: one Pinpoki becomes 7200 kcal of Uni, the densest food in the game. The page does not give the Sushi Bar’s base craft time, so this uses the 50 s the Sushi Roll recipe here already assumes — the two are wrong together or right together.",
+      "tags": [
+        "food",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "pinpoki",
+          "direction": "input",
+          "rate": 0.02
+        },
+        {
+          "item": "calories",
+          "direction": "output",
+          "rate": 144.0
+        }
+      ],
+      "build": {
+        "wood": 400
       }
     }
   ],

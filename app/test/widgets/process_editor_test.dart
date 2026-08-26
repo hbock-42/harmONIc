@@ -312,4 +312,44 @@ void main() {
     expect(Conduits.forCategory(invented.category), Conduits.liquidPipe);
     expect(library.database.process(pumpSpecId('brine_syrup')), isNotNull);
   });
+  testWidgets('a port says what it is measured in', (tester) async {
+    // Reported, with a picture: a Power port asking for grams per second.
+    // "5 grams of power, please."
+    await pumpEditor(tester);
+    await openNewRecipe(tester);
+    await tester.tap(find.text('+ Produces'));
+    await tester.pumpAndSettle();
+
+    Finder inForm(String text) => find.descendant(
+        of: find.byType(ProcessEditor), matching: find.text(text));
+
+    // Before an item is chosen there is nothing to measure in.
+    expect(inForm('per second'), findsWidgets);
+
+    await tester.tap(find.text('Choose an item…').last);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(itemPickerSearchKey), 'Power');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Power').last);
+    await tester.pumpAndSettle();
+
+    expect(inForm('W'), findsOneWidget, reason: 'power is watts');
+    expect(inForm('g/s'), findsNothing);
+    expect(inForm('per second'), findsNothing);
+  });
+
+  testWidgets('and a port with no item yet does not claim one',
+      (tester) async {
+    await pumpEditor(tester);
+    await openNewRecipe(tester);
+    await tester.tap(find.text('+ Consumes'));
+    await tester.pump();
+
+    Finder inForm(String text) => find.descendant(
+        of: find.byType(ProcessEditor), matching: find.text(text));
+    expect(inForm('per second'), findsWidgets);
+    expect(inForm('g/s'), findsNothing,
+        reason: 'it does not know what it is measuring yet');
+  });
+
 }
