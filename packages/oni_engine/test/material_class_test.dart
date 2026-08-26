@@ -559,8 +559,10 @@ void main() {
         // And the 100 kg of wood or peat under both, as under the brisket.
         'smoker_smoked_fish.fuel',
         'smoker_veggie_poppers.fuel',
-        // Two kilograms of grain in the tempura, either grain.
+        // Two kilograms of grain in the tempura, either grain — and the
+        // same two in the fish taco one row above it.
         'deep_fryer_shellfish_tempura.grain',
+        'deep_fryer_fish_taco.grain',
         // Three kilos of grain, whether it is sleet wheat or megafrond.
         'electric_grill_frost_bun.grain',
         'electric_grill_souffle_pancakes.grain',

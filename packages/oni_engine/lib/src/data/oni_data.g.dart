@@ -5528,7 +5528,11 @@ const String oniDataJson = r"""
         {
           "item": "sleet_wheat_grain",
           "direction": "input",
-          "rate": 40.0
+          "rate": 40.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
         },
         {
           "item": "tallow",
@@ -8956,6 +8960,11 @@ const String oniDataJson = r"""
           "item": "grubfruit",
           "direction": "input",
           "rate": 160.0
+        },
+        {
+          "item": "sucrose",
+          "direction": "input",
+          "rate": 80.0
         },
         {
           "item": "grubfruit_preserve",
