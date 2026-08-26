@@ -49,7 +49,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Game data**
 
-- `E4-39` One recipe per food building is not enough
+- `E4-54` The other food buildings' missing recipes
 
 **Data still to gather**
 
@@ -77,6 +77,16 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E4-39` **The Gas Range's twelve recipes** — it had one. Five of the other eleven take
+  Electric Grill dishes and were unreachable until `E4-53` made a dish a material; those five
+  are the reason that change was worth making. The Mixed Berry Pie is four recipes rather than
+  one port with a choice, because its four berries go in at four different weights — 4 kg of
+  grubfruit, 1 of gristle berry, 1.66 of pikeapple skewer, 6.15 of ovagro fig — and a port has
+  one rate. Two tag errors fell out: Waterweed is base game and this called it Aquatic, and
+  the Frost Bun had inherited *prehistoric* from its own recipe, which carries it only because
+  megafrond grain is an alternative to sleet wheat. The pack audit caught both. And the Gas
+  Range is 3×3, not the 2×2 this had — the same slip the grill had
 
 - `E4-53` **A cooked dish is a material, not just calories** — 33 recipes stopped making
   calories and started making the dish, 37 foods carry a `kcalPerKg`, and the step that turns
@@ -1217,7 +1227,7 @@ _(empty)_
 | E4-9d | ❌ | Rockets | decided against. A launch is an event, not a rate: fuel is spent per journey, and a journey has a distance and a duration this model has no way to hold. Averaging a launch over a cycle would be the mistake the Beeta's five-day life is already refused for |
 | E4-9c | P3 | The Research Reactor | its page gives the fuel (16.7 g/s of enriched uranium) and the waste (1.67 kg/s) and never the coolant between them, so the mass cannot be made to balance |
 | E4-43 | ✅ | The Petroleum Generator burns ethanol | reported by a player: "I can't set petroleum generator to take ethanol either". The wiki gives one set of figures for every fuel it takes — 2 kg/s in, 2 kW out, 500 g/s CO2, 750 g/s polluted water — so it is a choice on the port, not a second recipe |
-| E4-39 | P2 | One recipe per food building is not enough | the Electric Grill has one of its many, the Gas Range one of its many. A player trying a food chain finds the building and not the dish. The Rehydrator is missing outright; the Spice Grinder already has its own row |
+| E4-39 | ✅ | One recipe per food building is not enough | the Electric Grill had one of fourteen and the Gas Range one of twelve. Both complete. The Deep Fryer, Sushi Bar, Smoker and Dehydrator still have one each, which is `E4-54` |
 | E4-40 | ✅ | The Kiln's other recipes, and what it does not cost | reported: it will not take Gum Wood. The wikitext, read raw after a summary of it came back self-contradictory, settles all of it — and settles the doubt the two existing recipes carried, which was never about their rates but about whether a Duplicant is tied to them. Nobody is |
 | E4-41 | ✅ | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
 | E4-45 | P3 | Whatever makes biodiesel | the Emulsifier's cycle time is unpublished; the Husky Moo would need a critter and a Milking Station this data does not have |
@@ -1230,6 +1240,7 @@ _(empty)_
 | E4-51 | ✅ | The Electric Grill's fourteen recipes | it had one. Thirteen added, ten ingredients that were not items here, and a footprint that was 2×2 where the game says 3×2 |
 | E4-52 | P2 | What grows the grill's ingredients | ten new items arrive as supplies: the Mealwood, Dusk Cap, Bristle Blossom and the four DLC fruits are not here, so a food chain starts in the middle |
 | E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
+| E4-54 | P2 | The other food buildings' missing recipes | Sushi Bar has two of four, the Smoker one of three, the Deep Fryer two of its own, and the Dehydrator and Rehydrator are a chain nobody has modelled |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

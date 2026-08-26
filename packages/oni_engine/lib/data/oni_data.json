@@ -1203,10 +1203,7 @@
       "id": "lettuce",
       "name": "Lettuce",
       "category": "solid",
-      "kcalPerKg": 400,
-      "tags": [
-        "aquatic"
-      ]
+      "kcalPerKg": 400
     },
     {
       "id": "salty_sticks",
@@ -1245,10 +1242,7 @@
       "id": "frost_bun",
       "name": "Frost Bun",
       "category": "solid",
-      "kcalPerKg": 1200,
-      "tags": [
-        "prehistoric"
-      ]
+      "kcalPerKg": 1200
     },
     {
       "id": "omelette",
@@ -1372,6 +1366,65 @@
       "tags": [
         "frosty"
       ]
+    },
+    {
+      "id": "tofu",
+      "name": "Tofu",
+      "category": "solid",
+      "kcalPerKg": 3600
+    },
+    {
+      "id": "tonic_root",
+      "name": "Tonic Root",
+      "category": "solid"
+    },
+    {
+      "id": "stuffed_berry",
+      "name": "Stuffed Berry",
+      "category": "solid",
+      "kcalPerKg": 4400
+    },
+    {
+      "id": "mushroom_wrap",
+      "name": "Mushroom Wrap",
+      "category": "solid",
+      "kcalPerKg": 4800
+    },
+    {
+      "id": "surf_n_turf",
+      "name": "Surf'n'Turf",
+      "category": "solid",
+      "kcalPerKg": 6000
+    },
+    {
+      "id": "mushroom_quiche",
+      "name": "Mushroom Quiche",
+      "category": "solid",
+      "kcalPerKg": 6400
+    },
+    {
+      "id": "spicy_tofu",
+      "name": "Spicy Tofu",
+      "category": "solid",
+      "kcalPerKg": 4000
+    },
+    {
+      "id": "frost_burger",
+      "name": "Frost Burger",
+      "category": "solid",
+      "kcalPerKg": 6000
+    },
+    {
+      "id": "curried_beans",
+      "name": "Curried Beans",
+      "category": "solid",
+      "kcalPerKg": 5000
+    },
+    {
+      "id": "mixed_berry_pie",
+      "name": "Mixed Berry Pie",
+      "category": "solid",
+      "kcalPerKg": 4200
     }
   ],
   "processes": [
@@ -5110,7 +5163,6 @@
       "tags": [
         "farming",
         "food",
-        "aquatic",
         "verified"
       ],
       "ports": [
@@ -5135,7 +5187,6 @@
       "footprintHeight": 1,
       "tags": [
         "farming",
-        "aquatic",
         "verified"
       ],
       "ports": [
@@ -5224,8 +5275,8 @@
       "powerWatts": 240,
       "heatKdtuPerSecond": 9,
       "dupeLabourSecondsPerCycle": 600,
-      "footprintWidth": 2,
-      "footprintHeight": 2,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
       "tags": [
         "food",
         "verified"
@@ -5259,7 +5310,8 @@
       ],
       "build": {
         "metal_ore": 400
-      }
+      },
+      "overheatCelsius": 75
     },
     {
       "id": "deep_fryer_squash_fries",
@@ -7006,7 +7058,6 @@
       "tags": [
         "farming",
         "food",
-        "aquatic",
         "wild",
         "verified"
       ],
@@ -7027,7 +7078,6 @@
       "footprintHeight": 1,
       "tags": [
         "farming",
-        "aquatic",
         "wild",
         "verified"
       ],
@@ -8875,6 +8925,531 @@
       ],
       "build": {
         "metal_ore": 400
+      }
+    },
+    {
+      "id": "gas_range_stuffed_berry",
+      "name": "Gas Range (Stuffed Berry)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "Two kilograms of Gristle Berry — an Electric Grill dish — and two of peppernut. One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "gristle_berry",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "pincha_peppernut",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "stuffed_berry",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_mushroom_wrap",
+      "name": "Gas Range (Mushroom Wrap)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "fried_mushroom",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "lettuce",
+          "direction": "input",
+          "rate": 80.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "mushroom_wrap",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_surf_n_turf",
+      "name": "Gas Range (Surf'n'Turf)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "Two grill dishes into one: the chain this app could not draw at all until a dish became a material. One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "barbeque",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "cooked_seafood",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "surf_n_turf",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_mushroom_quiche",
+      "name": "Gas Range (Mushroom Quiche)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "omelette",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "lettuce",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "fried_mushroom",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "mushroom_quiche",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_spicy_tofu",
+      "name": "Gas Range (Spicy Tofu)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "tofu",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "pincha_peppernut",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "spicy_tofu",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_frost_burger",
+      "name": "Gas Range (Frost Burger)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "frost_bun",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "lettuce",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "barbeque",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "frost_burger",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_curried_beans",
+      "name": "Gas Range (Curried Beans)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "tonic_root",
+          "direction": "input",
+          "rate": 80.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "curried_beans",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_mixed_berry_pie_grubfruit",
+      "name": "Gas Range (Mixed Berry Pie, grubfruit)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "The pie takes one berry of four, and each in its own amount — 4 kg of grubfruit, 1 of gristle berry, 1.66 of pikeapple skewer, 6.15 of ovagro fig — so they are four recipes rather than one port with a choice. One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified",
+        "spacedout"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 60.0
+        },
+        {
+          "item": "grubfruit",
+          "direction": "input",
+          "rate": 80.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "mixed_berry_pie",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_mixed_berry_pie_gristle",
+      "name": "Gas Range (Mixed Berry Pie, gristle berry)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 60.0
+        },
+        {
+          "item": "gristle_berry",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "mixed_berry_pie",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_mixed_berry_pie_pikeapple",
+      "name": "Gas Range (Mixed Berry Pie, pikeapple)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified",
+        "frosty"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 60.0
+        },
+        {
+          "item": "pikeapple_skewer",
+          "direction": "input",
+          "rate": 33.2
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "mixed_berry_pie",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
+      }
+    },
+    {
+      "id": "gas_range_mixed_berry_pie_fig",
+      "name": "Gas Range (Mixed Berry Pie, ovagro fig)",
+      "kind": "building",
+      "buildingId": "gas_range",
+      "powerWatts": 240,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "tags": [
+        "food",
+        "verified",
+        "prehistoric"
+      ],
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 60.0
+        },
+        {
+          "item": "ovagro_fig",
+          "direction": "input",
+          "rate": 123.0
+        },
+        {
+          "item": "natural_gas",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 25
+        },
+        {
+          "item": "mixed_berry_pie",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "refined_metal": 100
       }
     }
   ],
