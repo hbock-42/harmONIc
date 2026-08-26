@@ -47,6 +47,10 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 
 
+**Quality**
+
+- `E8-7b` The guide is a list of topics, not a wall
+
 **Data still to gather**
 
 
@@ -1412,6 +1416,7 @@ has been dismissed.
 | E8-15 | ✅ | The rest of the per-frame work | connected components and the scoped totals were recomputed on every frame; measured at 300 nodes, cached, and the dropping is what the tests check |
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
+| E8-7b | P2 | The guide is a list of topics, not a wall | twelve headings and three hundred lines arriving as one scroll. The headings are already in the file, so the split costs nothing and stays honest: pick a topic, read that topic, go back |
 | E8-19 | ✅ | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |
 | E8-18 | ✅ | Golden builds for this week's data | fifteen recipes seeded in a week, each unit-tested against its own page and none of them checked as a chain |
 
