@@ -28,7 +28,12 @@ class DemoPlayer extends ChangeNotifier {
     required this.controller,
     this.stepDelay = kDemoStepDelay,
     Timer Function(Duration, void Function(Timer))? schedule,
-  }) : _schedule = schedule ?? Timer.periodic;
+  }) : _schedule = schedule ?? Timer.periodic {
+    // A demo owns a tab, and only while that tab is the one on screen. Open
+    // another and the next step would build into it — or throw, because the
+    // node it meant to wire up is somewhere else.
+    workspace.addListener(_stopIfLeftBehind);
+  }
 
   final WorkspaceController workspace;
   final PipelineController controller;
@@ -41,6 +46,7 @@ class DemoPlayer extends ChangeNotifier {
   DemoRun? _run;
   Timer? _timer;
   String? _tabId;
+  bool _leaving = false;
 
   /// The demo being played, if one is.
   DemoRun? get run => _run;
@@ -90,17 +96,27 @@ class DemoPlayer extends ChangeNotifier {
   /// Deleted rather than closed: a tab you did not make, left in your list of
   /// builds, is litter — and the one thing worse than a demo you cannot leave
   /// is one that leaves something behind.
+  void _stopIfLeftBehind() {
+    final tab = _tabId;
+    if (tab == null || _leaving || workspace.currentId == tab) return;
+    unawaited(leave());
+  }
+
   Future<void> leave() async {
+    if (_leaving) return;
+    _leaving = true;
     pause();
     _run = null;
     final tab = _tabId;
     _tabId = null;
     if (tab != null) await workspace.delete(tab);
+    _leaving = false;
     notifyListeners();
   }
 
   @override
   void dispose() {
+    workspace.removeListener(_stopIfLeftBehind);
     _timer?.cancel();
     super.dispose();
   }

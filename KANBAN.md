@@ -76,6 +76,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E15-10` **A demo that is no longer on screen stops** — switch tabs while one is playing and
+  the next step used to build into whatever you switched to, then throw, because the node it
+  meant to wire up was in the tab you left. A demo owns a tab and only while that tab is the
+  one on screen; the player watches the workspace and lets go. Found by a probe, not a person —
+  two measurements that day found nothing (73 µs for the wire labels, no overflow at 760 px)
+  and the third found a crash
+
 - `E8-19` **The third reachability sweep** — every public thing in `app/lib/` against every
   reader of it. Six had none worth having and went: `draftFor`, `legendOrder`,
   `WorkspaceController.isSaving` and the `_saving` field nothing ever read, `DemoRun.isAtStart`
@@ -1347,6 +1354,7 @@ has been dismissed.
 | E15-6 | ✅ | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
 | E15-8 | ✅ | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
 | E15-9 | ✅ | The canvas keeps up with the demo | a demo places nodes off to the right and the finished one is 1 152 px wide, which is more than the canvas has. The player fits the view after each step — E15-2 said this was its job and did not do it |
+| E15-10 | ✅ | A demo that is no longer on screen stops | switch tabs while one is playing and its next step builds into whatever you switched to — or throws, because the node it was going to wire up is not there |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality

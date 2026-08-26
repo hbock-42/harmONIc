@@ -145,6 +145,27 @@ void main() {
     expect(controller.pipeline.edges, hasLength(1));
   });
 
+  test('opening another build ends the demo rather than building into it',
+      () async {
+    // Reported by a probe rather than a person, and it threw: switch tabs
+    // mid-demo and the next step wires a node to something that is not in
+    // this pipeline. A demo owns a tab, and only while that tab is on screen.
+    final mine = controller.pipeline.id;
+    await player.start(threeSteps());
+    tick();
+    tick();
+    expect(controller.pipeline.nodes, isNotEmpty);
+
+    await workspace.open(mine);
+
+    expect(player.isRunning, isFalse, reason: 'it let go');
+    expect(player.isPlaying, isFalse);
+    expect(controller.pipeline.id, mine);
+    expect(controller.pipeline.nodes, hasLength(testPipeline().nodes.length),
+        reason: 'and did not build into what I switched to');
+    expect(workspace.saved.map((s) => s.name), isNot(contains('Three steps')));
+  });
+
   test('starting another one does not leave the first behind', () async {
     await player.start(threeSteps());
     tick();
