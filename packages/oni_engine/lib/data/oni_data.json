@@ -1423,7 +1423,10 @@
       "id": "mixed_berry_pie",
       "name": "Mixed Berry Pie",
       "category": "solid",
-      "kcalPerKg": 4200
+      "kcalPerKg": 4200,
+      "tags": [
+        "spacedout"
+      ]
     },
     {
       "id": "jawbo_fillet",
@@ -5427,7 +5430,11 @@
         {
           "item": "sleet_wheat_grain",
           "direction": "input",
-          "rate": 200.0
+          "rate": 200.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
         },
         {
           "item": "pincha_peppernut",
@@ -9337,6 +9344,11 @@
           "rate": 80.0
         },
         {
+          "item": "nosh_bean",
+          "direction": "input",
+          "rate": 80.0
+        },
+        {
           "item": "natural_gas",
           "direction": "input",
           "rate": 100
@@ -9357,54 +9369,6 @@
       }
     },
     {
-      "id": "gas_range_mixed_berry_pie_grubfruit",
-      "name": "Gas Range (Mixed Berry Pie, grubfruit)",
-      "kind": "building",
-      "buildingId": "gas_range",
-      "powerWatts": 240,
-      "heatKdtuPerSecond": 9,
-      "overheatCelsius": 75,
-      "dupeLabourSecondsPerCycle": 600,
-      "footprintWidth": 3,
-      "footprintHeight": 3,
-      "description": "The pie takes one berry of four, and each in its own amount — 4 kg of grubfruit, 1 of gristle berry, 1.66 of pikeapple skewer, 6.15 of ovagro fig — so they are four recipes rather than one port with a choice. One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
-      "tags": [
-        "food",
-        "verified",
-        "spacedout"
-      ],
-      "ports": [
-        {
-          "item": "sleet_wheat_grain",
-          "direction": "input",
-          "rate": 60.0
-        },
-        {
-          "item": "grubfruit",
-          "direction": "input",
-          "rate": 80.0
-        },
-        {
-          "item": "natural_gas",
-          "direction": "input",
-          "rate": 100
-        },
-        {
-          "item": "carbon_dioxide",
-          "direction": "output",
-          "rate": 25
-        },
-        {
-          "item": "mixed_berry_pie",
-          "direction": "output",
-          "rate": 20.0
-        }
-      ],
-      "build": {
-        "refined_metal": 100
-      }
-    },
-    {
       "id": "gas_range_mixed_berry_pie_gristle",
       "name": "Gas Range (Mixed Berry Pie, gristle berry)",
       "kind": "building",
@@ -9415,16 +9379,26 @@
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 1 kg of Gristle Berry make one 4200 kcal pie in 50 s. The grubfruit is not the choice — the berry is.",
       "tags": [
         "food",
+        "spacedout",
         "verified"
       ],
       "ports": [
         {
           "item": "sleet_wheat_grain",
           "direction": "input",
-          "rate": 60.0
+          "rate": 60.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "grubfruit",
+          "direction": "input",
+          "rate": 80.0
         },
         {
           "item": "gristle_berry",
@@ -9462,17 +9436,27 @@
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 1.66 kg of Pikeapple Skewer make one 4200 kcal pie in 50 s. The grubfruit is not the choice — the berry is.",
       "tags": [
         "food",
-        "verified",
-        "frosty"
+        "frosty",
+        "spacedout",
+        "verified"
       ],
       "ports": [
         {
           "item": "sleet_wheat_grain",
           "direction": "input",
-          "rate": 60.0
+          "rate": 60.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "grubfruit",
+          "direction": "input",
+          "rate": 80.0
         },
         {
           "item": "pikeapple_skewer",
@@ -9510,17 +9494,27 @@
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 6.15 kg of Ovagro Fig make one 4200 kcal pie in 50 s. The grubfruit is not the choice — the berry is.",
       "tags": [
         "food",
-        "verified",
-        "prehistoric"
+        "prehistoric",
+        "spacedout",
+        "verified"
       ],
       "ports": [
         {
           "item": "sleet_wheat_grain",
           "direction": "input",
-          "rate": 60.0
+          "rate": 60.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "grubfruit",
+          "direction": "input",
+          "rate": 80.0
         },
         {
           "item": "ovagro_fig",
@@ -10790,6 +10784,7 @@
       "description": "6000 kcal of Mixed Berry Pie — 1.43 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
+        "spacedout",
         "verified"
       ],
       "ports": [
@@ -10843,6 +10838,7 @@
       "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mixed Berry Pie back — 0.24 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
+        "spacedout",
         "unverified"
       ],
       "ports": [

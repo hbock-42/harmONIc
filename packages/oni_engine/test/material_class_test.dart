@@ -564,6 +564,15 @@ void main() {
         // Three kilos of grain, whether it is sleet wheat or megafrond.
         'electric_grill_frost_bun.grain',
         'electric_grill_souffle_pancakes.grain',
+        // The Gas Range takes the same choice of grain: ten for a Pepper
+        // Bread, three for a pie. The pie's *berry* is not a choice on a
+        // port, because a kilogram of gristle berry, 1.66 of pikeapple
+        // skewer and 6.15 of ovagro fig are three rates — so they are three
+        // recipes, which is exactly what this rule is for.
+        'gas_range_pepper_bread.grain',
+        'gas_range_mixed_berry_pie_gristle.grain',
+        'gas_range_mixed_berry_pie_pikeapple.grain',
+        'gas_range_mixed_berry_pie_fig.grain',
         // A kilogram of fish fillet or a kilogram of raw shellfish, and the
         // same 1600 kcal out of either.
         'electric_grill_cooked_seafood.catch',

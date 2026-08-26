@@ -252,4 +252,43 @@ void main() {
       );
     });
   });
+  group('the canteen', () {
+    /// Grain, a grill and a plate — the whole of the food work in one build,
+    /// which until now had only ever been tested a recipe at a time.
+    late PipelineSolution solution;
+
+    setUp(() {
+      final pipeline = (PipelineBuilder(db, name: 'canteen')
+            ..addSource('water')
+            ..addSource('dirt')
+            ..add('sleet_wheat', nodeId: 'wheat')
+            ..add('electric_grill_frost_bun', nodeId: 'grill')
+            ..add(eatSpecId('frost_bun'), nodeId: 'plate')
+            ..add('duplicant', nodeId: 'dupes')
+            ..connectItem('src_water', 'wheat', 'water')
+            ..connectItem('src_dirt', 'wheat', 'dirt')
+            ..connectItem('wheat', 'grill', 'sleet_wheat_grain')
+            ..connectItem('grill', 'plate', 'frost_bun')
+            ..connectItem('plate', 'dupes', 'calories')
+            ..pinCount('dupes', 12))
+          .build();
+      solution = solver.solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+    });
+
+    test('twelve Duplicants eat thirty Sleet Wheat', () {
+      // 12 dupes x 1000 kcal a cycle is 20 kcal/s. A Frost Bun is 1200
+      // kcal/kg, so that is 16.67 g/s of bun; a grill makes 20 g/s, so it
+      // runs 5/6 of the time and pulls 50 g/s of grain. A plant makes
+      // 1.667 g/s, which is 30 of them.
+      expect(solution.nodes['grill']!.count, closeTo(5 / 6, 1e-3));
+      expect(solution.nodes['wheat']!.count, closeTo(30, 1e-3));
+    });
+
+    test('and drink a kilogram of water a second doing it', () {
+      // 30 plants x 20 kg a cycle. The irrigation, not the drinking.
+      expect(solution.nodes['src_water']!.count, closeTo(1000, 1e-1));
+    });
+  });
+
 }
