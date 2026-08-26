@@ -366,6 +366,11 @@ class GraphCanvasState extends State<GraphCanvas>
           NodeLayout.worldRect(node, controller.specOf(node)));
     }
     bounds = bounds.inflate(60);
+    // Stop any glide first. A reveal in flight goes on writing to the offset
+    // for as long as it lasts, so a fit that lands mid-glide is undone a frame
+    // later — which is what a demo looked like, since placing a node selects
+    // it and selecting one reveals it.
+    _travel.stop();
     setState(() {
       _scale = math.min(size.width / bounds.width, size.height / bounds.height)
           .clamp(minScale, maxScale);

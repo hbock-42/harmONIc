@@ -190,12 +190,31 @@ class _EditorScreenState extends State<EditorScreen> {
   void initState() {
     super.initState();
     widget.library.addListener(_onLibraryChanged);
+    widget.demoPlayer?.addListener(_followTheDemo);
   }
 
   @override
   void dispose() {
     widget.library.removeListener(_onLibraryChanged);
+    widget.demoPlayer?.removeListener(_followTheDemo);
     super.dispose();
+  }
+
+  /// Keep what the demo is building on screen.
+  ///
+  /// A demo puts each new node to the right of the last, and the geyser one
+  /// ends up 1 152 px wide — wider than the canvas at any window this app is
+  /// used at. Without this the last two things it places happen off the edge,
+  /// narrated but invisible.
+  ///
+  /// Here rather than in the demo, which is the arrangement `demo.dart`
+  /// describes: a step says what to build, and the view is somebody else's
+  /// problem. Next frame, because the node it just placed is not laid out yet.
+  void _followTheDemo() {
+    if (widget.demoPlayer?.run == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _canvasKey.currentState?.fitToContent();
+    });
   }
 
   void _onLibraryChanged() =>

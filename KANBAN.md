@@ -75,6 +75,13 @@ _(empty)_
 
 ### ✅ Done
 
+- `E15-9` **The canvas keeps up with the demo** — the finished geyser build is 1 152 px wide,
+  more than the canvas has at any window this is used at, so the last things it placed happened
+  off the edge: narrated and invisible. The player fits the view after each step, which is what
+  `E15-2` said was its job and did not do. It also turned up a fault older than the demo —
+  `fitToContent` did not stop a glide in flight, so a fit landing mid-reveal was overwritten a
+  frame later. Pressing **Fit** while the view was still sliding did nothing at all
+
 - `E15-8` **Offered once, on a first visit** — a line under the tabs with *Show me* and *No
   thanks*, and nothing plays until it is asked to. No new storage was needed: the workspace
   already returns whether it restored anything, and having nothing to restore is exactly what a
@@ -1325,6 +1332,7 @@ has been dismissed.
 | E15-5 | ✅ | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
 | E15-6 | ✅ | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
 | E15-8 | ✅ | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
+| E15-9 | ✅ | The canvas keeps up with the demo | a demo places nodes off to the right and the finished one is 1 152 px wide, which is more than the canvas has. The player fits the view after each step — E15-2 said this was its job and did not do it |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
 ## E8 — Quality
