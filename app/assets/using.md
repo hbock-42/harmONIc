@@ -19,6 +19,12 @@ your own saved builds go, and **Supply** and **Output** at the bottom are the
 edges of a build — "water comes from somewhere else", "the oxygen goes to the
 base".
 
+Click a group's name to fold it away, or to open one that starts folded. Three
+do: **Supply**, **Output** and **Eating**, which have one node per item and one
+per food and are 428 of the roughly 700 rows in the list. The number beside
+each name is how many are behind it. A search shows what it finds whatever is
+folded, and clearing the search puts the folds back.
+
 Wire two nodes by dragging from one port dot to another. Or click a port dot
 and pick from the list: it shows everything that could plug in there, places it
 beside the node and connects it in one move. That list obeys your pack filters,
