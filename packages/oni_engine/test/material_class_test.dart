@@ -544,6 +544,17 @@ void main() {
             if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
       };
       expect(claiming, {
+        // Six kilograms of fillet, fish or Jawbo: both 1000 kcal a kilogram.
+        'smoker_smoked_fish.catch',
+        // Seven kilograms of sweatcorn, pikeapple or spindly grubfruit —
+        // three crops that are all 800 kcal a kilogram, so one rate really
+        // does cover all three.
+        'smoker_veggie_poppers.crop',
+        // And the 100 kg of wood or peat under both, as under the brisket.
+        'smoker_smoked_fish.fuel',
+        'smoker_veggie_poppers.fuel',
+        // Two kilograms of grain in the tempura, either grain.
+        'deep_fryer_shellfish_tempura.grain',
         // Three kilos of grain, whether it is sleet wheat or megafrond.
         'electric_grill_frost_bun.grain',
         'electric_grill_souffle_pancakes.grain',

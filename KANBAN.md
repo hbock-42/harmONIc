@@ -49,7 +49,7 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 **Game data**
 
-- `E4-54` The other food buildings' missing recipes
+- `E4-55` The Dehydrator and Rehydrator, which are a chain
 
 **Data still to gather**
 
@@ -77,6 +77,14 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E4-54` **The other food buildings' recipes** — Sushi Bar and Deep Fryer complete at four
+  each, the Smoker at three. Veggie Poppers is one port with three crops on it because
+  sweatcorn, pikeapple and spindly grubfruit are all 800 kcal a kilogram, so seven kilograms
+  really is one rate — the first time that rule has been satisfied by a coincidence of
+  nutrition rather than of mass. And five recipes had no `buildingId` at all, so the app could
+  not offer to swap a Frost Bun for an Omelette on a grill it had already placed: the counts
+  said 13 where the palette showed 14, which is how it was noticed
 
 - `E4-39` **The Gas Range's twelve recipes** — it had one. Five of the other eleven take
   Electric Grill dishes and were unreachable until `E4-53` made a dish a material; those five
@@ -1240,7 +1248,8 @@ _(empty)_
 | E4-51 | ✅ | The Electric Grill's fourteen recipes | it had one. Thirteen added, ten ingredients that were not items here, and a footprint that was 2×2 where the game says 3×2 |
 | E4-52 | P2 | What grows the grill's ingredients | ten new items arrive as supplies: the Mealwood, Dusk Cap, Bristle Blossom and the four DLC fruits are not here, so a food chain starts in the middle |
 | E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
-| E4-54 | P2 | The other food buildings' missing recipes | Sushi Bar has two of four, the Smoker one of three, the Deep Fryer two of its own, and the Dehydrator and Rehydrator are a chain nobody has modelled |
+| E4-54 | ✅ | The other food buildings' missing recipes | the Sushi Bar and the Deep Fryer are complete at four each, the Smoker at three. The Dehydrator and Rehydrator pair is still unmodelled, which is `E4-55` |
+| E4-55 | P3 | The Dehydrator and Rehydrator | 6000 kcal of any Gas Range food and 12 kg of plastic make six dried packs that never spoil; a Rehydrator turns one back with 1 kg of water. Nine dried foods as items, and a preservation chain nothing here models |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

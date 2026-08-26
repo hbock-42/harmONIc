@@ -1429,6 +1429,78 @@ const String oniDataJson = r"""
       "name": "Mixed Berry Pie",
       "category": "solid",
       "kcalPerKg": 4200
+    },
+    {
+      "id": "jawbo_fillet",
+      "name": "Jawbo Fillet",
+      "category": "solid",
+      "kcalPerKg": 1000,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "sweatcorn",
+      "name": "Sweatcorn",
+      "category": "solid",
+      "kcalPerKg": 800,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "smoked_fish",
+      "name": "Smoked Fish",
+      "category": "solid",
+      "kcalPerKg": 2800,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "veggie_poppers",
+      "name": "Veggie Poppers",
+      "category": "solid",
+      "kcalPerKg": 2863,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "edamame",
+      "name": "Edamame",
+      "category": "solid",
+      "kcalPerKg": 1450,
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "nigiri",
+      "name": "Nigiri",
+      "category": "solid",
+      "kcalPerKg": 3600,
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "nosh_noms",
+      "name": "Nosh Noms",
+      "category": "solid",
+      "kcalPerKg": 5000,
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "shellfish_tempura",
+      "name": "Shellfish Tempura",
+      "category": "solid",
+      "kcalPerKg": 4200,
+      "tags": [
+        "frosty"
+      ]
     }
   ],
   "processes": [
@@ -5240,6 +5312,7 @@ const String oniDataJson = r"""
       "id": "electric_grill_frost_bun",
       "name": "Electric Grill (Frost Bun)",
       "kind": "building",
+      "buildingId": "electric_grill",
       "description": "Three Sleet Wheat Grain become one Frost Bun worth 1200 kcal, in 50 s. The rates here assume a Duplicant standing at it all cycle, which is what the 600 s of labour means: twelve buns a cycle, and 36 kg of grain to make them.",
       "powerWatts": 60,
       "heatKdtuPerSecond": 4.5,
@@ -5275,6 +5348,7 @@ const String oniDataJson = r"""
       "id": "gas_range_pepper_bread",
       "name": "Gas Range (Pepper Bread)",
       "kind": "building",
+      "buildingId": "gas_range",
       "description": "Ten grain and a peppernut become 4000 kcal of the best food in the game, with no pre-cooking. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
       "powerWatts": 240,
       "heatKdtuPerSecond": 9,
@@ -5321,6 +5395,7 @@ const String oniDataJson = r"""
       "id": "deep_fryer_squash_fries",
       "name": "Deep Fryer (Squash Fries)",
       "kind": "building",
+      "buildingId": "deep_fryer",
       "description": "UNVERIFIED RATE: 1 kg of plume squash and 1 kg of tallow make 5400 kcal, but the wiki does not give this building a batch time, so the 50 s the other cookers use is assumed. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
       "powerWatts": 480,
       "heatKdtuPerSecond": 10,
@@ -5357,6 +5432,7 @@ const String oniDataJson = r"""
       "id": "deep_fryer_fish_taco",
       "name": "Deep Fryer (Fish Taco)",
       "kind": "building",
+      "buildingId": "deep_fryer",
       "description": "UNVERIFIED RATE: a fillet, two grain and 2.4 kg of tallow make 4200 kcal. The batch time is assumed at 50 s, as above. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
       "powerWatts": 480,
       "heatKdtuPerSecond": 10,
@@ -5398,6 +5474,7 @@ const String oniDataJson = r"""
       "id": "sushi_bar_sushi_roll",
       "name": "Sushi Bar (Sushi Roll)",
       "kind": "building",
+      "buildingId": "sushi_bar",
       "description": "UNVERIFIED RATE: liceloaf, nori and a fillet make 3600 kcal and an Aquatic Diet buff this model has no way to represent. Needs no power at all, which is unusual for a cooker. The batch time is assumed at 50 s. Rates assume a Duplicant standing at it the whole cycle, which is what the 600 s of labour means: twelve batches a cycle at 50 s each.",
       "heatKdtuPerSecond": 0.5,
       "dupeLabourSecondsPerCycle": 600,
@@ -9454,6 +9531,263 @@ const String oniDataJson = r"""
       ],
       "build": {
         "refined_metal": 100
+      }
+    },
+    {
+      "id": "sushi_bar_edamame",
+      "name": "Sushi Bar (Edamame)",
+      "kind": "building",
+      "buildingId": "sushi_bar",
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: a nosh bean and a kilogram of salty sticks. The Sushi Bar’s base craft time is published nowhere, so this uses the 50 s the Sushi Roll recipe here already assumes — right or wrong, they are so together.",
+      "tags": [
+        "food",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "nosh_bean",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "salty_sticks",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "edamame",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "wood": 400
+      }
+    },
+    {
+      "id": "sushi_bar_nigiri",
+      "name": "Sushi Bar (Nigiri)",
+      "kind": "building",
+      "buildingId": "sushi_bar",
+      "heatKdtuPerSecond": 0.5,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 2,
+      "description": "UNVERIFIED TIME: liceloaf, nori and 800 kcal of calamari, which is a kilogram of it. The Sushi Bar’s base craft time is published nowhere; this uses the same 50 s as the rest.",
+      "tags": [
+        "food",
+        "aquatic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "liceloaf",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "nori",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "calamari",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "nigiri",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "wood": 400
+      }
+    },
+    {
+      "id": "smoker_smoked_fish",
+      "name": "Smoker (Smoked Fish)",
+      "kind": "building",
+      "buildingId": "smoker",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "Six kilograms of fillet — fish or Jawbo, 6000 kcal of either — into four of smoked fish, over the 600 s every Smoker recipe takes, on 100 kg of wood or peat.",
+      "tags": [
+        "food",
+        "prehistoric",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "fish_fillet",
+          "direction": "input",
+          "rate": 10.0,
+          "id": "catch",
+          "alternatives": [
+            "jawbo_fillet"
+          ]
+        },
+        {
+          "item": "wood",
+          "direction": "input",
+          "rate": 166.66666666666666,
+          "id": "fuel",
+          "alternatives": [
+            "peat"
+          ]
+        },
+        {
+          "item": "smoked_fish",
+          "direction": "output",
+          "rate": 6.666666666666667
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "smoker_veggie_poppers",
+      "name": "Smoker (Veggie Poppers)",
+      "kind": "building",
+      "buildingId": "smoker",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 9,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 4,
+      "footprintHeight": 3,
+      "description": "Seven kilograms of sweatcorn, pikeapple or spindly grubfruit — 5600 kcal of any of them, and all three are 800 kcal a kilogram, so it really is one rate — into four of poppers, over 600 s, on 100 kg of wood or peat.",
+      "tags": [
+        "food",
+        "prehistoric",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "sweatcorn",
+          "direction": "input",
+          "rate": 11.666666666666666,
+          "id": "crop",
+          "alternatives": [
+            "pikeapple",
+            "spindly_grubfruit"
+          ]
+        },
+        {
+          "item": "wood",
+          "direction": "input",
+          "rate": 166.66666666666666,
+          "id": "fuel",
+          "alternatives": [
+            "peat"
+          ]
+        },
+        {
+          "item": "veggie_poppers",
+          "direction": "output",
+          "rate": 6.666666666666667
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "deep_fryer_nosh_noms",
+      "name": "Deep Fryer (Nosh Noms)",
+      "kind": "building",
+      "buildingId": "deep_fryer",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 10,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "Six nosh beans and a kilogram of tallow. One kilogram out every 50 s, with a Duplicant at it the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "nosh_bean",
+          "direction": "input",
+          "rate": 120.0
+        },
+        {
+          "item": "tallow",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "nosh_noms",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
+      }
+    },
+    {
+      "id": "deep_fryer_shellfish_tempura",
+      "name": "Deep Fryer (Shellfish Tempura)",
+      "kind": "building",
+      "buildingId": "deep_fryer",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 10,
+      "overheatCelsius": 75,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "Shellfish, two kilograms of grain and 2.4 of tallow. One kilogram out every 50 s, with a Duplicant at it the whole cycle, which is what the 600 s of labour means.",
+      "tags": [
+        "food",
+        "frosty",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "raw_shellfish",
+          "direction": "input",
+          "rate": 20.0
+        },
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 40.0,
+          "id": "grain",
+          "alternatives": [
+            "megafrond_grain"
+          ]
+        },
+        {
+          "item": "tallow",
+          "direction": "input",
+          "rate": 48.0
+        },
+        {
+          "item": "shellfish_tempura",
+          "direction": "output",
+          "rate": 20.0
+        }
+      ],
+      "build": {
+        "metal_ore": 400
       }
     }
   ],
