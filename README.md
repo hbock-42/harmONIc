@@ -25,6 +25,7 @@ docs/PERFORMANCE.md    how it was made eight times quicker, and how to do it aga
 docs/CHOOSING-SHARES.md what it took to let the solver pick the splits itself.
 docs/MIXTURES.md       why a pipe of mixed gas is not modelled, and what would change that.
 docs/DEMO.md           ten minutes of it, for somebody who plays the game.
+docs/FOOD.md           why a cooked dish has to stop being calories, and what that costs.
 KANBAN.md              the plan, epic by epic.
 ```
 
