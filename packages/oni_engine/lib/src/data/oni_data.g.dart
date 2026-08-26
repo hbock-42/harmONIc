@@ -53,6 +53,15 @@ const String oniDataJson = r"""
       "specificHeat": 1.76
     },
     {
+      "id": "biodiesel",
+      "name": "Biodiesel",
+      "category": "liquid",
+      "tags": [
+        "frosty"
+      ],
+      "specificHeat": 2.19
+    },
+    {
       "id": "ethanol",
       "name": "Ethanol",
       "category": "liquid",
@@ -1661,7 +1670,8 @@ const String oniDataJson = r"""
           "direction": "input",
           "rate": 2000,
           "alternatives": [
-            "ethanol"
+            "ethanol",
+            "biodiesel"
           ],
           "id": "fuel"
         },
@@ -1679,7 +1689,7 @@ const String oniDataJson = r"""
       "build": {
         "metal_ore": 800
       },
-      "notes": "The wiki gives one set of figures for every fuel it burns — 2 kg/s in, 2 kW out, 500 g/s of carbon dioxide and 750 g/s of polluted water — so the fuel is a choice on the port rather than a second recipe. Biodiesel is the third one it takes and is not in this data yet."
+      "notes": "The wiki gives one set of figures for every fuel it burns — 2 kg/s in, 2 kW out, 500 g/s of carbon dioxide and 750 g/s of polluted water — so the fuel is a choice on the port rather than three recipes."
     },
     {
       "id": "metal_refinery",
