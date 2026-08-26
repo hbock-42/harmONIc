@@ -190,6 +190,19 @@ remembered. The light palette is not the dark one inverted — every colour is
 picked for the background it sits on, because a hue that reads on near-black is
 usually too pale to read on near-white.
 
+## Being shown
+
+**Watch a demo**, at the foot of this guide or on an empty canvas, builds one
+in front of you and says what it is doing. It is not a video: every node it
+places and every amount it pins is a thing you could have typed, and every
+figure it quotes comes out of the solver as it goes — which is why a test can
+check that what it says matches what it does.
+
+It runs in a tab of its own, so whatever you were building is untouched, and
+**Leave** throws the demo's build away rather than leaving it in your list.
+**Next** works while it is playing, for anybody who reads faster than the
+clock.
+
 ## When it is wrong
 
 The foot of this guide has **Report a bug** and **Suggest something**. Both

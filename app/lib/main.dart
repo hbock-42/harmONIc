@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 
 import 'canvas/auto_layout.dart';
+import 'demo/demo_player.dart';
 import 'design/tokens.dart';
 import 'editor_screen.dart';
 import 'state/display_controller.dart';
@@ -60,6 +61,10 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
     store: widget.pipelineStore,
     controller: _controller,
   );
+  late final DemoPlayer _demoPlayer = DemoPlayer(
+    workspace: _workspace,
+    controller: _controller,
+  );
   late final DisplayController _display =
       widget.displaySettings ?? DisplayController(MemoryJsonStore());
   bool _ready = false;
@@ -83,6 +88,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
 
   @override
   void dispose() {
+    _demoPlayer.dispose();
     _workspace.dispose();
     _controller.dispose();
     super.dispose();
@@ -123,6 +129,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
                 library: widget.library,
                 workspace: _workspace,
                 displaySettings: _display,
+                demoPlayer: _demoPlayer,
               )
             : ColoredBox(color: OniColors.background),
       );

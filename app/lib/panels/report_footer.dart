@@ -75,9 +75,18 @@ String describePlatform() {
 /// when the app has confused them, and because the toolbar has been out of
 /// room since before any of this.
 class ReportFooter extends StatefulWidget {
-  const ReportFooter({required this.controller, this.open, super.key});
+  const ReportFooter({
+    required this.controller,
+    this.open,
+    this.onWatch,
+    super.key,
+  });
 
   final PipelineController controller;
+
+  /// Play a demo, and close the guide on the way. Null when the app was built
+  /// without a player.
+  final VoidCallback? onWatch;
 
   /// How a link is opened. The browser, unless a test says otherwise — a
   /// widget test has no browser and no desktop to hand one to.
@@ -130,6 +139,29 @@ class _ReportFooterState extends State<ReportFooter> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (widget.onWatch case final VoidCallback watch) ...[
+              // Above the reporting, because somebody in the guide is more
+              // often lost than cross, and being shown beats being read to.
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Would you rather be shown? It builds one in front of '
+                      'you, in a tab of its own.',
+                      style: OniType.body.copyWith(fontSize: 12),
+                    ),
+                  ),
+                  const SizedBox(width: OniSpacing.md),
+                  OniButton(
+                    label: 'Watch a demo',
+                    compact: true,
+                    tone: OniButtonTone.accent,
+                    onPressed: watch,
+                  ),
+                ],
+              ),
+              const SizedBox(height: OniSpacing.lg),
+            ],
             Text(
               'Something wrong, or something missing? Say so — the report '
               'takes the build with it, which is most of the work of a fix.',

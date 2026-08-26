@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:flutter/widgets.dart';
 
 import 'canvas/auto_layout.dart';
+import 'demo/demo.dart';
 import 'demo/demo_bar.dart';
+import 'demo/demos.dart';
 import 'demo/demo_player.dart';
 import 'canvas/graph_canvas.dart';
 import 'design/keys.dart';
@@ -300,6 +303,10 @@ class _EditorScreenState extends State<EditorScreen> {
                                 ? _EmptyCanvas(
                                     onStartFrom: widget.workspace
                                         .createFromTemplate,
+                                    onWatch: widget.demoPlayer == null
+                                        ? null
+                                        : (demo) => unawaited(
+                                            widget.demoPlayer!.start(demo)),
                                   )
                                 : GraphCanvas(
                                     key: _canvasKey,
@@ -351,6 +358,12 @@ class _EditorScreenState extends State<EditorScreen> {
                     footer: ReportFooter(
                       controller: controller,
                       open: widget.openLink,
+                      onWatch: widget.demoPlayer == null || kDemos.isEmpty
+                          ? null
+                          : () {
+                              setState(() => _guideOpen = false);
+                              unawaited(widget.demoPlayer!.start(kDemos.first));
+                            },
                     ),
                   ),
                 ),
@@ -956,9 +969,13 @@ class _TopBarState extends State<_TopBar> {
 /// behind two clicks in a menu — the wrong way round for the one screen
 /// somebody sees before they know the app has any.
 class _EmptyCanvas extends StatelessWidget {
-  const _EmptyCanvas({required this.onStartFrom});
+  const _EmptyCanvas({required this.onStartFrom, this.onWatch});
 
   final ValueChanged<PipelineTemplate> onStartFrom;
+
+  /// Play a demo. Null when the app was built without a player — the tests
+  /// that are about templates should not have to know demos exist.
+  final ValueChanged<Demo>? onWatch;
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
@@ -994,6 +1011,24 @@ class _EmptyCanvas extends StatelessWidget {
                       ),
                   ],
                 ),
+                // Under the builds rather than above them: somebody who came
+                // here to draw something should not have to walk past an
+                // offer to be shown around first.
+                if (onWatch case final ValueChanged<Demo> watch) ...[
+                  const SizedBox(height: OniSpacing.lg),
+                  Text('OR BE SHOWN', style: OniType.label),
+                  const SizedBox(height: OniSpacing.sm),
+                  for (final demo in kDemos)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: OniSpacing.sm),
+                      child: OniButton(
+                        label: 'Watch: ${demo.name}',
+                        compact: true,
+                        tone: OniButtonTone.accent,
+                        onPressed: () => watch(demo),
+                      ),
+                    ),
+                ],
               ],
             ),
           ),

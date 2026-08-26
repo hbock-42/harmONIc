@@ -47,7 +47,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 
 - `E15-3` The narration is checked against the solver
 - `E15-5` "Let it choose the split"
-- `E15-6` Where it is offered
 - `E15-8` Offered once, on a first visit
 
 **Data still to gather**
@@ -78,6 +77,12 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E15-6` **Where it is offered** — under the four starting builds on an empty canvas, and at
+  the top of the guide's footer, which is where somebody lost already is. Below the builds
+  rather than above them: somebody who came to draw something should not have to walk past an
+  offer to be shown around first. An app built without a player offers nothing anywhere, which
+  is what keeps the template tests from having to know demos exist
 
 - `E15-4` **"What a geyser feeds"** — nine steps: a geyser, an Electrolyzer, a crew, one number,
   the red bar, the generator that turns it green. Every figure it narrates was read off the
@@ -1301,7 +1306,7 @@ has been dismissed.
 | E15-3 | P2 | The narration is checked against the solver | the test that stops it rotting: run every demo to its end and compare each figure a caption states with what the app actually says. A caption that quotes 16 Duplicants fails the day the Electrolyzer's rate is corrected. Same idea as the guide-and-asset check, for the same reason |
 | E15-4 | ✅ | "What a geyser feeds" | act one: geyser → Electrolyzer → Duplicants, the red −216 W, then the Hydrogen Generator that turns it green. The SPOM discovered in two clicks rather than looked up |
 | E15-5 | P2 | "Let it choose the split" | act two: one ore, a refinery and a crusher, an even split at 6.67 kg/s, and 10.00 kg/s once it is asked for the best. The part no other ONI calculator does |
-| E15-6 | P2 | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
+| E15-6 | ✅ | Where it is offered | the empty canvas already offers four builds to start from; a demo belongs beside them, and in the guide. Always reachable, never in the way |
 | E15-8 | P2 | Offered once, on a first visit | the one moment somebody does not know there is anything to see. An *offer* — a line on the empty canvas with a button — never a thing that starts playing at somebody. Taken or dismissed, it does not come back |
 | E15-7 | P3 | Pace it by what it is saying | a fixed delay per step reads as slow on a sentence and rushed on a table. Length of the caption is the obvious rule, and obvious rules about reading speed are usually wrong — worth measuring on somebody before writing |
 
