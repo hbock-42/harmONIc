@@ -11,6 +11,3 @@ const String _commit = String.fromEnvironment('BUILD_COMMIT');
 /// Seven characters of the commit, or `dev` when nobody said.
 String get buildStamp =>
     _commit.isEmpty ? 'dev' : _commit.substring(0, _commit.length.clamp(0, 7));
-
-/// True when this is a build somebody published rather than one somebody ran.
-bool get isPublishedBuild => _commit.isNotEmpty;

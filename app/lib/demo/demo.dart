@@ -88,9 +88,6 @@ class DemoRun {
   /// How many steps have been played.
   int get played => _done;
 
-  /// Nothing has happened yet.
-  bool get isAtStart => _done == 0;
-
   bool get isDone => _done >= demo.steps.length;
 
   /// What is being said now: the line of the last step played, or the first
@@ -98,10 +95,6 @@ class DemoRun {
   String get says => demo.steps.isEmpty
       ? ''
       : demo.steps[_done == 0 ? 0 : _done - 1].says;
-
-  /// The next line, for a player that wants to show where it is going.
-  String? get next =>
-      _done < demo.steps.length ? demo.steps[_done].says : null;
 
   /// Play one step. Returns false when there was nothing left to play.
   bool step() {

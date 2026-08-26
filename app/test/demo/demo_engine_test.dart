@@ -49,7 +49,7 @@ void main() {
     final controller = emptyController();
     final run = DemoRun(aLittleOne(), controller);
 
-    expect(run.isAtStart, isTrue);
+    expect(run.played, 0);
     expect(run.says, 'Start with nothing.');
     expect(controller.pipeline.nodes, isEmpty);
 
@@ -94,18 +94,15 @@ void main() {
     // Before anything, the first line — there is something to read while the
     // player is still on its opening pause.
     expect(run.says, 'Start with nothing.');
-    expect(run.next, 'Start with nothing.');
 
     run.step();
     expect(run.says, 'Start with nothing.');
-    expect(run.next, 'Place a water supply.');
 
     run.step();
     expect(run.says, 'Place a water supply.');
 
     run.runToEnd();
     expect(run.says, 'Ten kilograms of water a second.');
-    expect(run.next, isNull, reason: 'there is nothing after the last line');
   });
 
   test('an empty demo is over before it starts', () {

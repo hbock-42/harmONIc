@@ -362,5 +362,44 @@ void main() {
       expect(find.byType(PortMenu), findsOneWidget);
       expect(find.textContaining('hidden by your pack filters'), findsOneWidget);
     });
+
+    test('and no port in the whole database is a dead end', () {
+      // The claim the message above rests on, checked rather than asserted:
+      // every item has a generated supply and output, so every port has
+      // something to offer. If that ever stops being true, the message needs
+      // its old branch back.
+      var checked = 0;
+      for (final spec in testDatabase.processes) {
+        final controller = testController(
+          pipeline: (PipelineBuilder(testDatabase, name: 'one')
+                ..add(spec.id, nodeId: 'n'))
+              .build(),
+        );
+        for (final port in spec.ports) {
+          checked++;
+          expect(controller.candidatesFor(PortRef('n', port.id)), isNotEmpty,
+              reason: '${spec.id}.${port.id} has nothing to offer');
+        }
+      }
+      expect(checked, greaterThan(1000));
+    });
+
+    testWidgets('and a search that matches nothing says so, not the catalogue',
+        (tester) async {
+      // It used to say "Nothing here makes water", which is never true: every
+      // item has a generated supply and output, so no port's list is empty of
+      // its own accord. 1 415 of them were checked. What is empty is your
+      // search, and that is what it says now.
+      final controller = await pumpCanvas(tester);
+      await tester.tapAt(screenPort(controller, const PortRef('elec', 'water')));
+      await tester.pump();
+
+      await tester.enterText(find.byType(EditableText).last, 'zzzz');
+      await tester.pump();
+
+      expect(find.textContaining('Nothing here matches "zzzz"'), findsOneWidget);
+      expect(find.textContaining('makes water'), findsNothing);
+    });
+
   });
 }

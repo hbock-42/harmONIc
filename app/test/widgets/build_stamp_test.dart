@@ -4,10 +4,11 @@ import 'package:oni_pipeline/design/build_stamp.dart';
 /// Which build of the app this is.
 void main() {
   test('an unstamped build says so rather than inventing a version', () {
-    // Written as the relationship rather than as "dev", because the suite
-    // itself can be run with the define set — and a test that fails when you
-    // pass the flag it is testing would be a poor sort of test.
-    expect(buildStamp == 'dev', !isPublishedBuild);
+    // Under `flutter test` nobody passes --dart-define, so this is the
+    // unstamped case; a version number invented to look official would be
+    // worse than the truth.
+    const stamped = bool.hasEnvironment('BUILD_COMMIT');
+    expect(buildStamp == 'dev', !stamped);
   });
 
   test('and a stamped one is short enough to read out', () {

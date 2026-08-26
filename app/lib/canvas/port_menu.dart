@@ -120,16 +120,19 @@ class _PortMenuState extends State<PortMenu> {
                     padding: const EdgeInsets.all(OniSpacing.md),
                     child: Text(
                       // Every item has a supply and an output, generated —
-                      // including one you invented — so an empty list is not
-                      // "the app knows nothing about this". It is a pack you
-                      // have switched off, and saying which is the difference
-                      // between a dead end and a door.
-                      _hidden == 0
-                          ? 'Nothing here ${port.isInput ? 'makes' : 'takes'} '
-                              '${item?.name.toLowerCase() ?? port.itemId}.'
-                          : '$_hidden '
+                      // including one you invented — so "nothing here makes
+                      // that" is not a thing this list can honestly say. It
+                      // was said anyway, to anybody whose search matched
+                      // nothing: 1 415 ports were checked and not one of them
+                      // has an empty list of its own.
+                      //
+                      // So an empty list has exactly two meanings, and both of
+                      // them are about something you did.
+                      _hidden > 0
+                          ? '$_hidden '
                               '${_hidden == 1 ? 'recipe is' : 'recipes are'} '
-                              'hidden by your pack filters.',
+                              'hidden by your pack filters.'
+                          : 'Nothing here matches "${_search.text.trim()}".',
                       style: OniType.body
                           .copyWith(fontSize: 12, color: OniColors.textFaint),
                     ),

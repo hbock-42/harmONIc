@@ -46,10 +46,6 @@ Everything not pulled into **Ready**. Grouped by epic below.
 **The app demonstrating itself**
 
 
-**What using it turned up**
-
-- `E12-9` A door out of "nothing here makes that"
-- `E8-19` The third reachability sweep
 
 **Data still to gather**
 
@@ -79,6 +75,18 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E8-19` **The third reachability sweep** — every public thing in `app/lib/` against every
+  reader of it. Six had none worth having and went: `draftFor`, `legendOrder`,
+  `WorkspaceController.isSaving` and the `_saving` field nothing ever read, `DemoRun.isAtStart`
+  and `DemoRun.next`, and `isPublishedBuild`. Three of those were mine, written the same week,
+  which is the point of doing this on new code rather than only on old
+- `E12-9` **The port menu's empty list tells the truth** — the sweep went looking for what
+  should call `draftFor` and found that the case it was written for cannot happen: every item
+  has a generated supply and output, so all 1 415 ports have something to offer. What can
+  happen is a search that matches nothing, and the menu answered that with "Nothing here makes
+  water" — blaming the catalogue for the search box. It names the search now, and a test walks
+  every port in the database to keep the claim honest
 
 - `E15-9` **The canvas keeps up with the demo** — the finished geyser build is 1 152 px wide,
   more than the canvas has at any window this is used at, so the last things it placed happened
@@ -1267,7 +1275,7 @@ to build something real, which is a different activity from writing it.
 | E12-5 | ✅ | The scale warning speaks English | it said "Not enough pins: spare could be anything", which is three pieces of jargon in six words |
 | E12-6 | ✅ | Selecting a node goes to it | being told which node is the problem is no use when it is off screen |
 | E12-7 | ✅ | Two builds on one canvas | an amount belongs to the build it was given to, not to the page |
-| E12-9 | P2 | A door out of "nothing here makes that" | the port menu names the dead end and offers nothing to do about it. `draftFor` was written for exactly this and never wired to anything |
+| E12-9 | ✅ | The port menu's empty list tells the truth | there is no dead end to build a door out of: every one of 1 415 ports has something to offer, so "nothing here makes water" was only ever shown to somebody whose *search* found nothing, and it blamed the catalogue for that |
 | E12-8 | ✅ | ⌘C / ⌘V for nodes | copy a selection into the same canvas or another build |
 
 ## E13 — Materials as classes
@@ -1364,7 +1372,7 @@ has been dismissed.
 | E8-15 | ✅ | The rest of the per-frame work | connected components and the scoped totals were recomputed on every frame; measured at 300 nodes, cached, and the dropping is what the tests check |
 | E8-16 | ✅ | The undo stack that grew while you arranged things | the cap lived in one of the two places that push to it, and not in the one a drag takes |
 | E8-17 | ✅ | One place for each rule | three rules were written out in fourteen places between them, and one of the copies was already dead |
-| E8-19 | P2 | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |
+| E8-19 | ✅ | The third reachability sweep | every public thing in `app/lib/` against every reader of it, tests included |
 | E8-18 | ✅ | Golden builds for this week's data | fifteen recipes seeded in a week, each unit-tested against its own page and none of them checked as a chain |
 
 ---

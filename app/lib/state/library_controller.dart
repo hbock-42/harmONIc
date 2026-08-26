@@ -176,21 +176,6 @@ class LibraryController extends ChangeNotifier {
         description: 'UNVERIFIED: added by hand.',
       );
 
-  /// A draft that already answers the port somebody was looking at.
-  ///
-  /// Reached from "nothing here makes that": the form opens knowing what was
-  /// wanted, so the first line is filled in and only the rate is missing. What
-  /// fills an *input* is something that produces, and the other way round.
-  ProcessSpec draftFor(Port port) => draft(ports: [
-        Port(
-          id: port.itemId,
-          itemId: port.itemId,
-          direction:
-              port.isInput ? PortDirection.output : PortDirection.input,
-          ratePerSecond: 0,
-        ),
-      ]);
-
   /// A copy of an existing process, ready to be edited into an override.
   ///
   /// Everything comes across, including the parts the form has no field for.

@@ -55,7 +55,6 @@ class WorkspaceController extends ChangeNotifier {
   final List<String> _openIds = [];
   Timer? _timer;
   Pipeline? _lastSeen;
-  bool _saving = false;
   bool _loaded = false;
 
   String? get currentId => _currentId;
@@ -69,8 +68,6 @@ class WorkspaceController extends ChangeNotifier {
                 name: pipeline.name,
                 nodeCount: pipeline.nodes.length),
       ];
-  bool get isSaving => _saving;
-
   /// What had to change to bring saved builds back into line with the recipes.
   /// Empty when nothing did, which is the usual case.
   List<String> get repairNotes => List.unmodifiable(_repairNotes);
@@ -341,13 +338,11 @@ class WorkspaceController extends ChangeNotifier {
   }
 
   Future<void> _persist() async {
-    _saving = true;
     await _store.write(<String, dynamic>{
       'schemaVersion': 1,
       if (_currentId != null) 'lastOpenedId': _currentId,
       'openIds': [..._openIds],
       'pipelines': [for (final p in _pipelines.values) p.toJson()],
     });
-    _saving = false;
   }
 }

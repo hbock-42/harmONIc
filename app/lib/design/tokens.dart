@@ -136,14 +136,6 @@ abstract final class OniItemColors {
   static Color ofItem(Item? item) =>
       item == null ? OniColors.textFaint : of(item.category);
 
-  static const List<ItemCategory> legendOrder = [
-    ItemCategory.gas,
-    ItemCategory.liquid,
-    ItemCategory.solid,
-    ItemCategory.power,
-    ItemCategory.heat,
-    ItemCategory.entity,
-  ];
 }
 
 abstract final class OniSpacing {
