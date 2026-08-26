@@ -13,6 +13,15 @@ const Map<String, String> expectedImbalance = <String, String>{
   'petroleum_generator': 'likewise, and the rest leaves as power and heat',
   'peat_burner': 'likewise',
   'wood_heater': 'wood is burnt for heat, which is the point of it',
+  // The Kiln is lossy on purpose, and by a different amount for each fuel:
+  // 125 kg of coal, 200 of wood or 300 of peat all come out as 100 kg of
+  // refined carbon. Cheaper than heating it to 280 °C yourself, which is the
+  // comparison the wiki draws.
+  'kiln_refined_carbon': '125 kg of coal makes 100 kg of refined carbon',
+  'kiln_refined_carbon_wood': '200 kg of wood makes 100 kg',
+  'kiln_refined_carbon_peat': '300 kg of peat makes 100 kg, the dearest way',
+  'kiln_ceramic': '100 kg of clay and 25 kg of fuel make 100 kg of ceramic; '
+      'the fuel is burnt',
   'duplicant': 'a Duplicant breathes 100 g/s and exhales 2 g/s of CO2',
 
   // Conversion rates the game states outright.

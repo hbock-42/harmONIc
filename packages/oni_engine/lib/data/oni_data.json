@@ -7074,13 +7074,13 @@
       "buildingId": "kiln",
       "powerWatts": 0,
       "heatKdtuPerSecond": 20,
-      "dupeLabourSecondsPerCycle": 600,
+      "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: 100 kg of clay and 25 kg of coal make 100 kg of ceramic in 40 s, which is the recipe; whether a Duplicant is tied up the whole cycle is stated two ways on the same page.",
+      "description": "100 kg of clay and 25 kg of any fuel make 100 kg of ceramic at 80 °C in 40 s, with no Duplicant tied to it.",
       "tags": [
         "refining",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
@@ -7091,7 +7091,12 @@
         {
           "item": "coal",
           "direction": "input",
-          "rate": 625
+          "rate": 625,
+          "id": "fuel",
+          "alternatives": [
+            "wood",
+            "peat"
+          ]
         },
         {
           "item": "ceramic",
@@ -7111,19 +7116,84 @@
       "buildingId": "kiln",
       "powerWatts": 0,
       "heatKdtuPerSecond": 20,
-      "dupeLabourSecondsPerCycle": 600,
+      "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: 125 kg of coal down to 100 kg of refined carbon in 40 s. Same doubt about the Duplicant time as the ceramic recipe.",
+      "description": "125 kg of coal down to 100 kg of refined carbon at 80 °C in 40 s, with no Duplicant tied to it. The other fuels are their own recipes because they are their own amounts.",
       "tags": [
         "refining",
-        "unverified"
+        "verified"
       ],
       "ports": [
         {
           "item": "coal",
           "direction": "input",
           "rate": 3125
+        },
+        {
+          "item": "refined_carbon",
+          "direction": "output",
+          "rate": 2500,
+          "temperatureC": 80
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "kiln_refined_carbon_wood",
+      "name": "Kiln (Refined Carbon, wood)",
+      "kind": "building",
+      "buildingId": "kiln",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 20,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "200 kg of wood down to 100 kg of refined carbon in 40 s. The port takes the class, so lumber and gum wood are both it — the game charges the same 200 kg for either.",
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "wood",
+          "direction": "input",
+          "rate": 5000
+        },
+        {
+          "item": "refined_carbon",
+          "direction": "output",
+          "rate": 2500,
+          "temperatureC": 80
+        }
+      ],
+      "build": {
+        "metal_ore": 200
+      }
+    },
+    {
+      "id": "kiln_refined_carbon_peat",
+      "name": "Kiln (Refined Carbon, peat)",
+      "kind": "building",
+      "buildingId": "kiln",
+      "powerWatts": 0,
+      "heatKdtuPerSecond": 20,
+      "dupeLabourSecondsPerCycle": 0,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "description": "300 kg of peat down to 100 kg of refined carbon in 40 s — the dearest of the four, and the wiki says so in the same breath.",
+      "tags": [
+        "refining",
+        "verified",
+        "prehistoric"
+      ],
+      "ports": [
+        {
+          "item": "peat",
+          "direction": "input",
+          "rate": 7500
         },
         {
           "item": "refined_carbon",

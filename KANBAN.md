@@ -50,8 +50,8 @@ Everything not pulled into **Ready**. Grouped by epic below.
 **Game data**
 
 - `E4-39` One recipe per food building is not enough
-- `E4-40` The Kiln's other five recipes
 - `E4-41` Pinpoket, Pinpoki, and what eats it
+- `E4-44` Plywood, and whatever makes it
 
 **Data still to gather**
 
@@ -81,6 +81,18 @@ Everything not pulled into **Ready**. Grouped by epic below.
 _(empty)_
 
 ### ✅ Done
+
+- `E4-40` **The Kiln's other recipes, and what it does not cost** — reported: it will not take
+  Gum Wood. Four recipes now instead of two, and the split follows the rule rather than
+  convenience: firing clay costs 25 kg of coal *or* wood *or* peat, one rate, so the fuel is a
+  choice on the port; making refined carbon costs 125 kg of coal, 200 of wood or 300 of peat,
+  three rates, so it is three recipes. The wood one takes the class, so lumber and gum wood are
+  both it. Both old recipes had their rates right and were tagged unverified over the wrong
+  question — the page says crafting "does not require duplicant operation", so 600 s/cycle of
+  Duplicant time came off both. Marking them verified is what dragged them into the
+  mass-balance audit for the first time, where the Kiln's real losses now have their reasons
+  written down. Plywood is the one fuel still missing, because the item itself is not in this
+  data — `E4-44`
 
 - `E4-43` **The Petroleum Generator burns ethanol** — the first report from somebody who does
   not know the app: *"I can't set petroleum generator to take ethanol either."* Quite right.
@@ -1140,8 +1152,9 @@ _(empty)_
 | E4-9c | P3 | The Research Reactor | its page gives the fuel (16.7 g/s of enriched uranium) and the waste (1.67 kg/s) and never the coolant between them, so the mass cannot be made to balance |
 | E4-43 | ✅ | The Petroleum Generator burns ethanol | reported by a player: "I can't set petroleum generator to take ethanol either". The wiki gives one set of figures for every fuel it takes — 2 kg/s in, 2 kW out, 500 g/s CO2, 750 g/s polluted water — so it is a choice on the port, not a second recipe |
 | E4-39 | P2 | One recipe per food building is not enough | the Electric Grill has one of its many, the Gas Range one of its many. A player trying a food chain finds the building and not the dish. The Rehydrator is missing outright; the Spice Grinder already has its own row |
-| E4-40 | P2 | The Kiln's other five recipes | reported: it will not take Gum Wood. It takes wood, plywood, gum wood and peat as well as coal, across six recipes; this data has two of them, both already tagged unverified. The wiki's table needs reading properly — a summary of it came back self-contradictory |
+| E4-40 | ✅ | The Kiln's other recipes, and what it does not cost | reported: it will not take Gum Wood. The wikitext, read raw after a summary of it came back self-contradictory, settles all of it — and settles the doubt the two existing recipes carried, which was never about their rates but about whether a Duplicant is tied to them. Nobody is |
 | E4-41 | P2 | Pinpoket, Pinpoki, and what eats it | reported as a chain: the plant, its fruit, Pinpoki → Diamond in the Rock Crusher, Pinpoki → Uni in the Sushi Bar. `E4-30` already has the plant waiting on figures; the two recipes are new |
+| E4-44 | P3 | Plywood | the fifth thing the Kiln burns and the only one it cannot be given here. Whatever makes it is not in this data either |
 | E4-42 | P3 | Biodiesel | the third fuel the Petroleum Generator takes, and nothing in this data makes it yet |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |
 | E4-11a | ✅ | The Marine Drill's sulfur | 250 kg an operation over a 1 300 s cycle is 192 g/s, and a thousandth of that had been sitting in a field measured in grams since the day it was seeded |

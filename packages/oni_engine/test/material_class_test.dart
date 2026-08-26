@@ -542,6 +542,10 @@ void main() {
             if (port.alternatives.isNotEmpty) '${spec.id}.${port.id}',
       };
       expect(claiming, {
+        // 25 kg of coal, wood or peat to fire the clay — the same 25 kg
+        // whichever it is, which is why the fuel is a choice here and its own
+        // recipe in the refined carbon ones, where the amounts differ.
+        'kiln_ceramic.fuel',
         // Petroleum or ethanol, 2 kg/s of it either way — the wiki gives one
         // set of figures for every fuel the generator burns, power and
         // byproducts included. Reported by somebody who could not switch it.
