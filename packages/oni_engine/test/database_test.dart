@@ -520,13 +520,16 @@ void main() {
       });
 
       test('five Mealwood feed one Duplicant', () {
-        // The oldest number in the game, and it falls out of the model now
-        // that plants publish calories.
+        // The oldest number in the game, and it still falls out of the model
+        // now that a plant grows meal lice rather than calories: the eating
+        // node in the middle is what turns kilograms into a meal.
         final solver = PipelineSolver(db);
         final pipeline = (PipelineBuilder(db, name: 'mess hall')
               ..add('mealwood', nodeId: 'crop')
+              ..add(eatSpecId('meal_lice'), nodeId: 'plate')
               ..add('duplicant', nodeId: 'dupes')
-              ..connectItem('crop', 'dupes', 'calories')
+              ..connectItem('crop', 'plate', 'meal_lice')
+              ..connectItem('plate', 'dupes', 'calories')
               ..pinCount('dupes', 1))
             .build();
         final solution = solver.solve(pipeline);
@@ -540,9 +543,11 @@ void main() {
       final pipeline = (PipelineBuilder(db, name: 'canteen')
             ..add('sleet_wheat', nodeId: 'wheat')
             ..add('electric_grill_frost_bun', nodeId: 'grill')
+            ..add(eatSpecId('frost_bun'), nodeId: 'plate')
             ..add('duplicant', nodeId: 'dupes')
             ..connectItem('wheat', 'grill', 'sleet_wheat_grain')
-            ..connectItem('grill', 'dupes', 'calories')
+            ..connectItem('grill', 'plate', 'frost_bun')
+            ..connectItem('plate', 'dupes', 'calories')
             ..pinCount('dupes', 12))
           .build();
       final solution = solver.solve(pipeline);
@@ -569,7 +574,9 @@ void main() {
             ..connectItem('wheat', 'range', 'sleet_wheat_grain')
             ..connectItem('src_pincha_peppernut', 'range', 'pincha_peppernut')
             ..connectItem('src_natural_gas', 'range', 'natural_gas')
-            ..connectItem('range', 'dupes', 'calories')
+            ..add(eatSpecId('pepper_bread'), nodeId: 'plate')
+            ..connectItem('range', 'plate', 'pepper_bread')
+            ..connectItem('plate', 'dupes', 'calories')
             ..pinCount('dupes', 20))
           .build();
       final solution = solver.solve(pipeline);
@@ -594,7 +601,9 @@ void main() {
             ..connectItem('wheat', 'range', 'sleet_wheat_grain')
             ..connectItem('peppers', 'range', 'pincha_peppernut')
             ..connectItem('src_natural_gas', 'range', 'natural_gas')
-            ..connectItem('range', 'dupes', 'calories')
+            ..add(eatSpecId('pepper_bread'), nodeId: 'plate')
+            ..connectItem('range', 'plate', 'pepper_bread')
+            ..connectItem('plate', 'dupes', 'calories')
             ..pinCount('dupes', 20))
           .build();
       final solution = solver.solve(pipeline);

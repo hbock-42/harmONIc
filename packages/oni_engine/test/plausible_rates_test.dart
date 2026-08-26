@@ -12,6 +12,15 @@ import 'package:test/test.dart';
 /// The exceptions are real: a critter drops its meat once, at the end of its
 /// life, so a rate spread over that life is small however you write it.
 const Map<String, String> tinyOnPurpose = {
+  // A crop is a few hundred grams every few cycles, so a plant's yield in
+  // grams a second is always small. It is the calories that are worth
+  // anything: a kilogram of meal lice feeds most of a Duplicant for a day.
+  'meal_lice': 'a crop, and crops are grams a second',
+  'bristle_berry': 'the same',
+  'mushroom': 'the same',
+  'lettuce': 'the same',
+  'pikeapple': 'the same',
+  'salty_sticks': 'the same, and a Sodicane takes four cycles over it',
   'meat': 'dropped once when a critter dies, spread over its whole life',
   'tough_meat': 'the same, for the bigger animals',
   'fish_fillet': 'the same, for the ones that swim',

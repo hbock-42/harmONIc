@@ -505,7 +505,9 @@ void main() {
             ..add('duplicant', nodeId: 'dupes')
             ..connectItem('src_peat', 'smoker', 'peat')
             ..connectItem('src_tough_meat', 'smoker', 'tough_meat')
-            ..connectItem('smoker', 'dupes', 'calories')
+            ..add(eatSpecId('tender_brisket'), nodeId: 'plate')
+            ..connectItem('smoker', 'plate', 'tender_brisket')
+            ..connectItem('plate', 'dupes', 'calories')
             ..pinCount('smoker', 1))
           .build();
       final solution = solver.solve(pipeline);

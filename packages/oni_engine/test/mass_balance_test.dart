@@ -118,6 +118,18 @@ void main() {
       // still fruits — matter out of nowhere, which is the actual game rule and
       // the whole reason wild farms are worth the floor space.
       if (spec.tags.contains('wild')) continue;
+      // Food does not conserve matter and never did: a Mealwood turns 10 kg of
+      // dirt a cycle into 340 g of meal lice, and three kilograms of that make
+      // one of Pickled Meal. What a kitchen conserves is calories, which this
+      // audit cannot weigh — so a recipe that makes something edible is
+      // exempt, and `docs/FOOD.md` is why there is anything to weigh at all.
+      //
+      // This was free before that change, when every dish was calories and
+      // calories have no mass. The audit could not see a kitchen; now it can
+      // see one and has to be told to look away.
+      if (spec.outputs.any((port) => db.item(port.itemId)?.isFood ?? false)) {
+        continue;
+      }
       if (expectedImbalance.containsKey(spec.id)) continue;
       unexplained.add('${spec.id} '
           '(${(driftOf(spec) * 100).toStringAsFixed(0)} %)');

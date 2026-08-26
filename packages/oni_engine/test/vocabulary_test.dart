@@ -23,7 +23,6 @@ const Map<String, String> unusedOnPurpose = {
   'amber': 'the same, and the Plant Pulverizer takes it in a recipe nobody has '
       'published a cycle time for',
   'bristle_blossom': 'the crop, where the plant reports calories directly',
-  'ovagro_fig': 'a Prehistoric crop with no numbers',
   'lumen_quartz': 'a decorative mineral',
   'iridium': 'a Prehistoric metal nothing here refines',
   'mercury_gas': 'mercury above 356.75 °C, which is a state a build can reach '

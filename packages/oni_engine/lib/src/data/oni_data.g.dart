@@ -583,12 +583,14 @@ const String oniDataJson = r"""
     {
       "id": "meat",
       "name": "Meat",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 1600
     },
     {
       "id": "fish_fillet",
       "name": "Fish Fillet",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 1000
     },
     {
       "id": "grooming",
@@ -614,7 +616,8 @@ const String oniDataJson = r"""
     {
       "id": "raw_shellfish",
       "name": "Raw Shellfish",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 1000
     },
     {
       "id": "pokeshell_molt",
@@ -782,7 +785,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "prehistoric"
-      ]
+      ],
+      "kcalPerKg": 325
     },
     {
       "id": "bog_jelly",
@@ -790,7 +794,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "prehistoric"
-      ]
+      ],
+      "kcalPerKg": 1840
     },
     {
       "id": "dewdrip",
@@ -953,27 +958,32 @@ const String oniDataJson = r"""
     {
       "id": "meal_lice",
       "name": "Meal Lice",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 600
     },
     {
       "id": "mush_bar",
       "name": "Mush Bar",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 800
     },
     {
       "id": "bristle_berry",
       "name": "Bristle Berry",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 1600
     },
     {
       "id": "mushroom",
       "name": "Mushroom",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 2400
     },
     {
       "id": "raw_egg",
       "name": "Raw Egg",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 1600
     },
     {
       "id": "megafrond_grain",
@@ -989,7 +999,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "spacedout"
-      ]
+      ],
+      "kcalPerKg": 250
     },
     {
       "id": "spindly_grubfruit",
@@ -997,7 +1008,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "spacedout"
-      ]
+      ],
+      "kcalPerKg": 800
     },
     {
       "id": "mimillet",
@@ -1005,7 +1017,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "prehistoric"
-      ]
+      ],
+      "kcalPerKg": 1500
     },
     {
       "id": "pikeapple",
@@ -1013,7 +1026,8 @@ const String oniDataJson = r"""
       "category": "solid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "kcalPerKg": 800
     },
     {
       "id": "sleet_wheat_grain",
@@ -1029,7 +1043,8 @@ const String oniDataJson = r"""
     {
       "id": "liceloaf",
       "name": "Liceloaf",
-      "category": "solid"
+      "category": "solid",
+      "kcalPerKg": 1700
     },
     {
       "id": "nosh_bean",
@@ -1187,6 +1202,180 @@ const String oniDataJson = r"""
       "name": "Egg Shell",
       "category": "solid",
       "tags": []
+    },
+    {
+      "id": "lettuce",
+      "name": "Lettuce",
+      "category": "solid",
+      "kcalPerKg": 400,
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "salty_sticks",
+      "name": "Salty Sticks",
+      "category": "solid",
+      "kcalPerKg": 600,
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "pickled_meal",
+      "name": "Pickled Meal",
+      "category": "solid",
+      "kcalPerKg": 1800
+    },
+    {
+      "id": "mush_fry",
+      "name": "Mush Fry",
+      "category": "solid",
+      "kcalPerKg": 1050
+    },
+    {
+      "id": "gristle_berry",
+      "name": "Gristle Berry",
+      "category": "solid",
+      "kcalPerKg": 2000
+    },
+    {
+      "id": "fried_mushroom",
+      "name": "Fried Mushroom",
+      "category": "solid",
+      "kcalPerKg": 2800
+    },
+    {
+      "id": "frost_bun",
+      "name": "Frost Bun",
+      "category": "solid",
+      "kcalPerKg": 1200,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "omelette",
+      "name": "Omelette",
+      "category": "solid",
+      "kcalPerKg": 2800
+    },
+    {
+      "id": "souffle_pancakes",
+      "name": "Soufflé Pancakes",
+      "category": "solid",
+      "kcalPerKg": 3600,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "barbeque",
+      "name": "Barbeque",
+      "category": "solid",
+      "kcalPerKg": 4000
+    },
+    {
+      "id": "cooked_seafood",
+      "name": "Cooked Seafood",
+      "category": "solid",
+      "kcalPerKg": 1600
+    },
+    {
+      "id": "swampy_delights",
+      "name": "Swampy Delights",
+      "category": "solid",
+      "kcalPerKg": 2240,
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "roast_grubfruit_nut",
+      "name": "Roast Grubfruit Nut",
+      "category": "solid",
+      "kcalPerKg": 1200,
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "grubfruit_preserve",
+      "name": "Grubfruit Preserve",
+      "category": "solid",
+      "kcalPerKg": 2400,
+      "tags": [
+        "spacedout"
+      ]
+    },
+    {
+      "id": "toasted_mimillet",
+      "name": "Toasted Mimillet",
+      "category": "solid",
+      "kcalPerKg": 1500,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "pikeapple_skewer",
+      "name": "Pikeapple Skewer",
+      "category": "solid",
+      "kcalPerKg": 1200,
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "pepper_bread",
+      "name": "Pepper Bread",
+      "category": "solid",
+      "kcalPerKg": 4000
+    },
+    {
+      "id": "tender_brisket",
+      "name": "Tender Brisket",
+      "category": "solid",
+      "kcalPerKg": 5000,
+      "tags": [
+        "prehistoric"
+      ]
+    },
+    {
+      "id": "sushi_roll",
+      "name": "Sushi Roll",
+      "category": "solid",
+      "kcalPerKg": 3600,
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "uni",
+      "name": "Uni",
+      "category": "solid",
+      "kcalPerKg": 7200,
+      "tags": [
+        "aquatic"
+      ]
+    },
+    {
+      "id": "fish_taco",
+      "name": "Fish Taco",
+      "category": "solid",
+      "kcalPerKg": 4200,
+      "tags": [
+        "frosty"
+      ]
+    },
+    {
+      "id": "squash_fries",
+      "name": "Squash Fries",
+      "category": "solid",
+      "kcalPerKg": 5400,
+      "tags": [
+        "frosty"
+      ]
     }
   ],
   "processes": [
@@ -4611,9 +4800,9 @@ const String oniDataJson = r"""
           "rate": 16.666667
         },
         {
-          "item": "calories",
+          "item": "meal_lice",
           "direction": "output",
-          "rate": 0.3333333333333333
+          "rate": 0.5555555555555555
         }
       ]
     },
@@ -4665,9 +4854,9 @@ const String oniDataJson = r"""
           "rate": 8.333333
         },
         {
-          "item": "calories",
+          "item": "pikeapple",
           "direction": "output",
-          "rate": 0.4444333333333334
+          "rate": 0.5555416666666667
         }
       ]
     },
@@ -4860,9 +5049,9 @@ const String oniDataJson = r"""
           "rate": 33.333333
         },
         {
-          "item": "calories",
+          "item": "bristle_berry",
           "direction": "output",
-          "rate": 0.4444444444444445
+          "rate": 0.2777777777777778
         }
       ]
     },
@@ -4909,9 +5098,9 @@ const String oniDataJson = r"""
           "rate": 6.666667
         },
         {
-          "item": "calories",
+          "item": "mushroom",
           "direction": "output",
-          "rate": 0.5333333333333333
+          "rate": 0.22222222222222224
         }
       ]
     },
@@ -4935,9 +5124,9 @@ const String oniDataJson = r"""
           "rate": 33.333333
         },
         {
-          "item": "calories",
+          "item": "lettuce",
           "direction": "output",
-          "rate": 0.6666666666666666
+          "rate": 1.6666666666666665
         }
       ]
     },
@@ -5022,9 +5211,9 @@ const String oniDataJson = r"""
           ]
         },
         {
-          "item": "calories",
+          "item": "frost_bun",
           "direction": "output",
-          "rate": 24.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -5067,9 +5256,9 @@ const String oniDataJson = r"""
           "rate": 25
         },
         {
-          "item": "calories",
+          "item": "pepper_bread",
           "direction": "output",
-          "rate": 80.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -5103,9 +5292,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "squash_fries",
           "direction": "output",
-          "rate": 108.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -5144,9 +5333,9 @@ const String oniDataJson = r"""
           "rate": 48.0
         },
         {
-          "item": "calories",
+          "item": "fish_taco",
           "direction": "output",
-          "rate": 84.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -5184,9 +5373,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "sushi_roll",
           "direction": "output",
-          "rate": 72.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -6579,9 +6768,9 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "calories",
+          "item": "meal_lice",
           "direction": "output",
-          "rate": 0.0833333333
+          "rate": 0.13888888883333333
         }
       ]
     },
@@ -6620,9 +6809,9 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "calories",
+          "item": "pikeapple",
           "direction": "output",
-          "rate": 0.1111083333
+          "rate": 0.138885416625
         }
       ]
     },
@@ -6764,9 +6953,9 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "calories",
+          "item": "bristle_berry",
           "direction": "output",
-          "rate": 0.1111111111
+          "rate": 0.0694444444375
         }
       ]
     },
@@ -6805,9 +6994,9 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "calories",
+          "item": "mushroom",
           "direction": "output",
-          "rate": 0.1333333333
+          "rate": 0.05555555554166666
         }
       ]
     },
@@ -6827,9 +7016,9 @@ const String oniDataJson = r"""
       ],
       "ports": [
         {
-          "item": "calories",
+          "item": "lettuce",
           "direction": "output",
-          "rate": 0.1666666667
+          "rate": 0.41666666675
         }
       ]
     },
@@ -7434,9 +7623,9 @@ const String oniDataJson = r"""
           "rate": 125
         },
         {
-          "item": "calories",
+          "item": "mush_bar",
           "direction": "output",
-          "rate": 1333.3333333333333
+          "rate": 1666.6666666666665
         }
       ],
       "build": {
@@ -7633,9 +7822,9 @@ const String oniDataJson = r"""
           "rate": 0.025
         },
         {
-          "item": "calories",
+          "item": "raw_egg",
           "direction": "output",
-          "rate": 40.0
+          "rate": 25.0
         },
         {
           "item": "egg_shell",
@@ -7914,9 +8103,9 @@ const String oniDataJson = r"""
           ]
         },
         {
-          "item": "calories",
+          "item": "tender_brisket",
           "direction": "output",
-          "rate": 26.666666666666668
+          "rate": 5.333333333333334
         }
       ],
       "build": {
@@ -7940,9 +8129,9 @@ const String oniDataJson = r"""
           "rate": 16.666666666666668
         },
         {
-          "item": "calories",
+          "item": "salty_sticks",
           "direction": "output",
-          "rate": 0.25
+          "rate": 0.4166666666666667
         }
       ]
     },
@@ -8112,9 +8301,9 @@ const String oniDataJson = r"""
           "rate": 0.02
         },
         {
-          "item": "calories",
+          "item": "uni",
           "direction": "output",
-          "rate": 144.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8280,9 +8469,9 @@ const String oniDataJson = r"""
           "rate": 60.0
         },
         {
-          "item": "calories",
+          "item": "pickled_meal",
           "direction": "output",
-          "rate": 36.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8312,9 +8501,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "mush_fry",
           "direction": "output",
-          "rate": 21.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8344,9 +8533,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "gristle_berry",
           "direction": "output",
-          "rate": 40.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8376,9 +8565,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "fried_mushroom",
           "direction": "output",
-          "rate": 56.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8408,9 +8597,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "omelette",
           "direction": "output",
-          "rate": 56.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8450,9 +8639,9 @@ const String oniDataJson = r"""
           ]
         },
         {
-          "item": "calories",
+          "item": "souffle_pancakes",
           "direction": "output",
-          "rate": 72.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8482,9 +8671,9 @@ const String oniDataJson = r"""
           "rate": 40.0
         },
         {
-          "item": "calories",
+          "item": "barbeque",
           "direction": "output",
-          "rate": 80.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8518,9 +8707,9 @@ const String oniDataJson = r"""
           ]
         },
         {
-          "item": "calories",
+          "item": "cooked_seafood",
           "direction": "output",
-          "rate": 32.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8551,9 +8740,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "swampy_delights",
           "direction": "output",
-          "rate": 44.8
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8584,9 +8773,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "roast_grubfruit_nut",
           "direction": "output",
-          "rate": 24.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8617,9 +8806,9 @@ const String oniDataJson = r"""
           "rate": 160.0
         },
         {
-          "item": "calories",
+          "item": "grubfruit_preserve",
           "direction": "output",
-          "rate": 48.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8650,9 +8839,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "toasted_mimillet",
           "direction": "output",
-          "rate": 30.0
+          "rate": 20.0
         }
       ],
       "build": {
@@ -8683,9 +8872,9 @@ const String oniDataJson = r"""
           "rate": 20.0
         },
         {
-          "item": "calories",
+          "item": "pikeapple_skewer",
           "direction": "output",
-          "rate": 24.0
+          "rate": 20.0
         }
       ],
       "build": {

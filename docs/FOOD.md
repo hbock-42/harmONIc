@@ -65,6 +65,24 @@ the middle of it.
   is the real cost, and it is why this is written down rather than done: it
   makes the simple case slightly worse to make the impossible case possible.
 
+## What it actually cost, once done
+
+Thirty-three recipes changed and 37 foods now carry a `kcalPerKg`. Four tests
+that fed a crew had to grow an eating node in the middle, which is the cost
+this page promised and the only visible one.
+
+Two audits changed meaning, and that is the part worth recording. Mass balance
+and plausible rates could never see a kitchen before, because a dish was
+calories and calories weigh nothing. The moment food became matter they both
+started shouting — correctly. A Mealwood turns 10 kg of dirt a cycle into 340 g
+of meal lice, and three kilograms of that make one of Pickled Meal: food does
+not conserve matter and never did. So the mass audit now looks away from
+anything that makes something edible, in one place, with the reason written
+beside it, and the rate audit has the crops listed as small on purpose.
+
+Losing an audit's opinion is a real cost. It is worth it because the audit was
+only ever silent about food by accident.
+
 ## The decision
 
 Do it, and generate the eating nodes rather than writing them. The Gas Range is

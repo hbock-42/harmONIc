@@ -65,6 +65,41 @@ GameDatabase withGeneratedNodes(GameDatabase base) {
       ],
     ));
 
+    // Somebody has to eat it. A cooked dish is a material here — a Gas Range
+    // takes two kilograms of Gristle Berry the way a Kiln takes two hundred of
+    // wood — so the step that turns kilograms into the calories a Duplicant
+    // consumes is its own node, generated per food the way the supply and the
+    // pump are. `docs/FOOD.md` is why.
+    //
+    // A build that only wants to feed people wires its grill straight into one
+    // of these and reads the same figures it always did. A build that wants to
+    // cook wires the grill into the Gas Range instead, and the calories turn
+    // up at the end of the chain rather than in the middle of it.
+    if (item.kcalPerKg case final double kcalPerKg) {
+      extra.add(ProcessSpec(
+        id: eatSpecId(item.id),
+        name: 'Eating ${item.name}',
+        kind: ProcessKind.custom,
+        description: 'A kilogram of ${item.name} is $kcalPerKg kcal on '
+            'somebody\'s plate. One unit = 1 kg/s of it eaten.',
+        tags: {'food', 'verified', ...packs},
+        ports: [
+          Port(
+            id: eatPortId,
+            itemId: item.id,
+            direction: PortDirection.input,
+            ratePerSecond: 1000,
+          ),
+          Port(
+            id: 'calories',
+            itemId: WellKnownItems.calories,
+            direction: PortDirection.output,
+            ratePerSecond: kcalPerKg,
+          ),
+        ],
+      ));
+    }
+
     // A pump is the same building whatever it moves, so rather than a spec per
     // fluid written by hand there is one generated per fluid. Their power is
     // easily the largest hidden cost in a plumbed build: two gas pumps to fill
@@ -340,7 +375,11 @@ String filterSpecId(String itemId) => 'filter:$itemId';
 String sourceSpecId(String itemId) => 'source:$itemId';
 String sinkSpecId(String itemId) => 'sink:$itemId';
 String pumpSpecId(String itemId) => 'pump:$itemId';
+String eatSpecId(String itemId) => 'eat:$itemId';
 
 /// The single port id every generated source/sink uses.
 const String sourcePortId = 'out';
 const String sinkPortId = 'in';
+
+/// What an eating node takes.
+const String eatPortId = 'food';

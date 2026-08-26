@@ -31,6 +31,7 @@ class Item {
     this.members = const {},
     this.refinesTo,
     this.specificHeat,
+    this.kcalPerKg,
     this.tags = const {},
   });
 
@@ -43,6 +44,7 @@ class Item {
         },
         refinesTo: json['refinesTo'] as String?,
         specificHeat: (json['specificHeat'] as num?)?.toDouble(),
+        kcalPerKg: (json['kcalPerKg'] as num?)?.toDouble(),
         tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
       );
 
@@ -93,6 +95,21 @@ class Item {
   /// Null for anything not measured yet, and for things where it has no
   /// meaning — power, heat, a grooming slot.
   final double? specificHeat;
+
+  /// How many kilocalories a kilogram of this feeds somebody, for the things
+  /// somebody eats.
+  ///
+  /// A cooked dish is a material here — a Gas Range takes two kilograms of
+  /// Gristle Berry the way a Kiln takes two hundred of wood — so somewhere the
+  /// kilograms have to become the calories a Duplicant actually consumes. This
+  /// is that number, and `docs/FOOD.md` is why it is on the item rather than
+  /// on every recipe that makes one.
+  ///
+  /// Null for anything nobody eats.
+  final double? kcalPerKg;
+
+  bool get isFood => kcalPerKg != null;
+
   final Set<String> tags;
 
   Unit get unit => switch (category) {
@@ -172,6 +189,7 @@ class Item {
         if (members.isNotEmpty) 'members': members.toList(),
         if (refinesTo != null) 'refinesTo': refinesTo,
         if (specificHeat != null) 'specificHeat': specificHeat,
+        if (kcalPerKg != null) 'kcalPerKg': kcalPerKg,
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 
@@ -183,4 +201,8 @@ class Item {
 abstract final class WellKnownItems {
   static const String power = 'power';
   static const String heat = 'heat';
+
+  /// What a Duplicant actually eats. Every dish is a material until somebody
+  /// puts it on a plate; see `docs/FOOD.md`.
+  static const String calories = 'calories';
 }

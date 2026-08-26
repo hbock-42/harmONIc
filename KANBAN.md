@@ -78,6 +78,15 @@ _(empty)_
 
 ### ✅ Done
 
+- `E4-53` **A cooked dish is a material, not just calories** — 33 recipes stopped making
+  calories and started making the dish, 37 foods carry a `kcalPerKg`, and the step that turns
+  kilograms into a meal is generated per food the way a supply and a pump already are. The Gas
+  Range's five unreachable recipes are reachable. The cost landed where `docs/FOOD.md` said it
+  would — a node in the middle of every feeding chain — and somewhere it did not: two audits
+  could never see a kitchen, because calories weigh nothing, and the moment food became matter
+  both started shouting correctly. Food does not conserve matter, so the mass audit now looks
+  away from anything edible, in one place, with the reason beside it
+
 - `E4-51` **The Electric Grill's fourteen recipes** — it shipped with one, the Frost Bun, so a
   player looking for an Omelette found the building and not the dish. All fourteen now, at the
   50 s a batch takes. Ten ingredients had to be invented as items first — meal lice, mush bar,
@@ -1220,7 +1229,7 @@ _(empty)_
 | E10-30 | ✅ | A port says what it is measured in | reported with a picture: a Power port asking for grams per second. "5 grams of power, please" |
 | E4-51 | ✅ | The Electric Grill's fourteen recipes | it had one. Thirteen added, ten ingredients that were not items here, and a footprint that was 2×2 where the game says 3×2 |
 | E4-52 | P2 | What grows the grill's ingredients | ten new items arrive as supplies: the Mealwood, Dusk Cap, Bristle Blossom and the four DLC fruits are not here, so a food chain starts in the middle |
-| E4-53 | P2 | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
+| E4-53 | ✅ | A cooked dish is a material, not just calories | five of the Gas Range's nine recipes take Electric Grill dishes, and this app turns every dish into calories the moment it is made. `docs/FOOD.md` is the decision |
 | E4-44 | ✅ | Plywood, and the press that makes it | the fifth thing the Kiln burns. 90 kg of plant husk and 10 kg of resin make 100 kg in 40 s of Duplicant time, and both ingredients were already here — resin came off the unused-on-purpose list, which is what that list is for |
 | E4-42 | ✅ | Biodiesel, the third fuel | the material and the generator's third choice. What *makes* it is still out: the Emulsifier has no published cycle time — the same wall Super Coolant hit in `E13-9a` — and the Husky Moo is not modelled |
 | E4-11 | P2 | Confirm the unverified DLC rates once the wiki fills them in | checked again 2026-08-22: the Vulcanizer's latex and rubber rates, the Plant Pulverizer's cycle time, the Marine Drill's natural gas and the Gum Palm's carbon dioxide are all still absent. Everything else on those four pages has been read across |

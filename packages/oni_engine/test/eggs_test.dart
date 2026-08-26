@@ -9,13 +9,16 @@ void main() {
     test('an egg is food and a shell, in the proportions the game gives', () {
       final cracker = db.processOrThrow('egg_cracker');
       final eggs = cracker.inputs.firstWhere((p) => p.itemId == 'egg');
-      final calories =
-          cracker.outputs.firstWhere((p) => p.itemId == 'calories');
+      final raw = cracker.outputs.firstWhere((p) => p.itemId == 'raw_egg');
       final shell = cracker.outputs.firstWhere((p) => p.itemId == 'egg_shell');
 
-      // 1 600 kcal and a kilogram of shell per egg, whatever the throughput.
-      expect(calories.ratePerSecond / eggs.ratePerSecond, closeTo(1600, 1e-6));
+      // A kilogram of raw egg and a kilogram of shell per egg, whatever the
+      // throughput — and the kilogram of raw egg is 1 600 kcal when somebody
+      // eats it, which is the eating node's business rather than the
+      // cracker's. See `docs/FOOD.md`.
+      expect(raw.ratePerSecond / eggs.ratePerSecond, closeTo(1000, 1e-6));
       expect(shell.ratePerSecond / eggs.ratePerSecond, closeTo(1000, 1e-6));
+      expect(db.itemOrThrow('raw_egg').kcalPerKg, 1600);
     });
 
     test('shell crushes to lime one for one', () {
@@ -36,7 +39,9 @@ void main() {
             ..addSink('coal')
             ..connectItem('src_sedimentary_rock', 'hatches', 'raw_mineral')
             ..connectItem('hatches', 'cracker', 'egg')
-            ..connectItem('cracker', 'dupes', 'calories')
+            ..add(eatSpecId('raw_egg'), nodeId: 'plate')
+            ..connectItem('cracker', 'plate', 'raw_egg')
+            ..connectItem('plate', 'dupes', 'calories')
             ..connectItem('cracker', 'sink_egg_shell', 'egg_shell')
             ..connectItem('hatches', 'sink_coal', 'coal')
             ..pinCount('hatches', 24))

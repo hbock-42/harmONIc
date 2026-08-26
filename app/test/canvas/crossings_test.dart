@@ -238,7 +238,7 @@ void main() {
       graphs++;
     }
 
-    expect(graphs, 427, reason: 'the corpus itself changed, so the score below '
+    expect(graphs, 424, reason: 'the corpus itself changed, so the score below '
         'is no longer comparable — re-measure before moving it');
     expect(total, lessThanOrEqualTo(2329));
   });
@@ -402,7 +402,7 @@ void main() {
       // of a card is one you cannot follow at all — and it is the trade a
       // person makes by hand, moving a node down out of the way even though its
       // own wire then has further to fall.
-      expect(graphs, 427);
+      expect(graphs, 424);
       expect(through, lessThanOrEqualTo(983));
       expect(total, lessThanOrEqualTo(720102));
     });
