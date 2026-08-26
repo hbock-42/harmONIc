@@ -77,5 +77,84 @@ final Demo whatAGeyserFeeds = Demo(
   ],
 );
 
+/// Act two of `docs/DEMO.md`: the part no other calculator for this game does.
+///
+/// One pile of ore and two ways to turn it into metal. The app splits it
+/// evenly because nobody said otherwise — and then, asked, works out the
+/// division that gets the most out of it.
+final Demo letItChooseTheSplit = Demo(
+  id: 'split',
+  name: 'Let it choose the split',
+  summary: 'Ten kilograms of ore a second, two ways to refine it, and the '
+      'division that wastes least — worked out rather than guessed.',
+  steps: [
+    DemoStep(
+      says: 'Ten kilograms of iron ore a second, and two ways to turn it into '
+          'metal.',
+      does: (stage) => stage.remember(
+          'ore', stage.controller.addNode('source:iron_ore', Offset.zero)),
+    ),
+    DemoStep(
+      says: 'A Metal Refinery takes some of it.',
+      does: (stage) => stage.remember(
+          'refinery',
+          stage.controller.addNodeFor(
+              PortRef(stage.nodeId('ore'), sourcePortId), 'metal_refinery')!),
+    ),
+    DemoStep(
+      says: 'And a Rock Crusher takes the rest. One port, two lines out of it '
+          '— and nobody has said how the ore divides.',
+      does: (stage) => stage.remember(
+          'crusher',
+          stage.controller.addNodeFor(PortRef(stage.nodeId('ore'), sourcePortId),
+              'rock_crusher_metal')!),
+    ),
+    DemoStep(
+      says: 'Both of them make iron, and it all goes to the same place.',
+      does: (stage) {
+        final out = stage.remember(
+            'out',
+            stage.controller.addNodeFor(
+                PortRef(stage.nodeId('refinery'), 'refined_metal'),
+                'sink:iron')!);
+        stage.controller.connect(
+          PortRef(stage.nodeId('crusher'), 'refined_metal'),
+          PortRef(out, sinkPortId),
+        );
+      },
+    ),
+    DemoStep(
+      says: 'Say what you have: ten kilograms of ore a second.',
+      does: (stage) => stage.controller.pin(PortRatePin(
+          nodeId: stage.nodeId('ore'),
+          portId: sourcePortId,
+          ratePerSecond: 10000)),
+    ),
+    const DemoStep(
+      says: '6.67 kg/s of iron. Nobody said how the ore divides, so the app '
+          'split it evenly — a fair guess, and rarely the best one.',
+    ),
+    DemoStep(
+      says: 'So ask it for the best. Select the iron coming out and press Get '
+          'as much as possible.',
+      does: (stage) {
+        stage.controller.select(NodeSelection(stage.nodeId('out')));
+        stage.controller.optimiseFor(stage.nodeId('out'));
+      },
+    ),
+    const DemoStep(
+      says: '10.00 kg/s. Half as much again, from the same ore — the refinery '
+          'is one for one and the crusher is half, so everything should go to '
+          'the refinery.',
+    ),
+    const DemoStep(
+      says: 'It worked that out from the recipes rather than being told, and '
+          'it will do the same on a build with thirty nodes where nobody '
+          'could see it. The splits it chose are on the wires: ordinary '
+          'numbers you can change, and undo puts them back.',
+    ),
+  ],
+);
+
 /// Every demo the app can play.
-final List<Demo> kDemos = [whatAGeyserFeeds];
+final List<Demo> kDemos = [whatAGeyserFeeds, letItChooseTheSplit];
