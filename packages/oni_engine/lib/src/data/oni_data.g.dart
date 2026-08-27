@@ -4746,7 +4746,7 @@ const String oniDataJson = r"""
       "id": "orehull",
       "name": "Orehull",
       "kind": "critter",
-      "description": "UNVERIFIED: iron ore from a critter. Eats 20 kg/cycle of nori — or two kelpoles — and excretes 50 kg/cycle of polluted mud; shearing a full-grown one yields 250 kg/cycle of iron ore, which is the reason to keep them.",
+      "description": "UNVERIFIED: the egg and the raw shellfish are the figures its page does not give. Eats 20 kg/cycle of nori — or two kelpoles — and excretes 50 kg/cycle of polluted mud; shearing yields 250 kg of iron ore every *ten* cycles, which is 25 a cycle and is the reason to keep them. That last figure is on the Iron Ore page rather than this critter’s, which is how it shipped here as ten times itself.",
       "dupeLabourSecondsPerCycle": 24.0,
       "tags": [
         "ranching",
@@ -4777,7 +4777,7 @@ const String oniDataJson = r"""
         {
           "item": "iron_ore",
           "direction": "output",
-          "rate": 416.666667
+          "rate": 41.666666666666664
         },
         {
           "item": "egg",

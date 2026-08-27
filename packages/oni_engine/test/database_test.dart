@@ -1071,9 +1071,14 @@ void main() {
       final orehull = db.processOrThrow('orehull');
       expect(orehull.inputs.map((p) => p.itemId), contains('shearing'));
       expect(orehull.dupeLabourSecondsPerCycle, 24);
+      // 250 kg every *ten* cycles, which is 25 a cycle. It shipped at 250 a
+      // cycle because the Orehull's own page never says, and the figure that
+      // does is on the Iron Ore page: "Orehulls can be sheared for 250 kg of
+      // iron ore every 10 cycles when fed". Reported by a player who worked
+      // it out from the scale growing 10 % a cycle.
       expect(
         orehull.outputs.firstWhere((p) => p.itemId == 'iron_ore').ratePerSecond,
-        closeTo(250000 / secondsPerCycle, 1e-3),
+        closeTo(25000 / secondsPerCycle, 1e-3),
       );
     });
 
