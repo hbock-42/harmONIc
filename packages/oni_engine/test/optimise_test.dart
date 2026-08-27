@@ -306,4 +306,66 @@ void main() {
     });
   });
 
+  group('asking twice gives the same answer', () {
+    // Reported: "Use as little as possible works once, but if you keep
+    // pressing it, it will go the other direction and start overriding
+    // Petroleum Generator's contribution of Polluted Water."
+    Pipeline topUp() => (PipelineBuilder(db, name: 'ethanol')
+          ..add('petroleum_generator', nodeId: 'gen')
+          ..add('arbor_tree', nodeId: 'tree')
+          ..add('ethanol_distiller', nodeId: 'still')
+          ..addSource('polluted_water')
+          ..addSink('power')
+          ..connectItem('gen', 'tree', 'polluted_water')
+          ..connectItem('src_polluted_water', 'tree', 'polluted_water')
+          ..connectItem('tree', 'still', 'lumber')
+          ..connectItem('still', 'gen', 'ethanol')
+          ..connectItem('gen', 'sink_power', 'power')
+          ..pinCount('gen', 1))
+        .build();
+
+    test('and again, and again', () {
+      var pipeline = topUp();
+      final bought = <double>[];
+      for (var press = 0; press < 5; press++) {
+        final best = leastOf(pipeline, db, 'polluted_water');
+        expect(best.isAnswer, isTrue, reason: 'press ${press + 1}');
+        pipeline = withShares(pipeline, db, best);
+        final solved = solver.solve(pipeline);
+        expect(solved.status, SolveStatus.solved, reason: 'press ${press + 1}');
+        bought.add(solved.nodes['src_polluted_water']!.count);
+      }
+
+      // 7.2 trees drink 840 g/s; the generator gives back 750 of it. Every
+      // press should say 90, and every press used to say more than the last:
+      // 90, then 191, then 304, then 430.
+      for (final answer in bought) {
+        expect(answer, closeTo(90, 0.5));
+      }
+    });
+
+    test('because a pull share means a fraction of what is *needed*', () {
+      // The optimiser read every share against the producer, which is what a
+      // push share means, while the solver reads a pull share against the
+      // consumer. A supply line carrying a quarter of what a tree drinks was
+      // read as carrying a quarter of what the supply itself makes, so the
+      // supply had to be four times the size to deliver it.
+      final base = (PipelineBuilder(db, name: 'two taps')
+            ..addSource('polluted_water', nodeId: 'a')
+            ..addSource('polluted_water', nodeId: 'b')
+            ..add('arbor_tree', nodeId: 'tree')
+            ..connectItem('a', 'tree', 'polluted_water', share: 0.25)
+            ..connectItem('b', 'tree', 'polluted_water', share: 0.75)
+            ..pinCount('tree', 1))
+          .build();
+
+      final best = leastOf(base, db, 'polluted_water');
+
+      expect(best.isAnswer, isTrue);
+      // A tree drinks 116.667 g/s, so a quarter of it is 29.17 — not 116.667
+      // divided by a quarter, which is what the other reading gave.
+      expect(best.nodeCounts['a'], closeTo(116.666667 * 0.25, 1e-3));
+      expect(best.nodeCounts['b'], closeTo(116.666667 * 0.75, 1e-3));
+    });
+  });
 }

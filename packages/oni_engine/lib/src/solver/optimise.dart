@@ -170,16 +170,33 @@ BestCase _optimise(
 
   // A share somebody set by hand is a decision, so the optimiser works around
   // it rather than over it. Left alone, an unshared edge is free.
+  //
+  // Which end the share is read against is the whole of what it means, and
+  // this read every share against the *producer* — the push meaning — while
+  // the ordinary solver reads a pull share against the consumer. So a build
+  // whose shares this optimiser had itself just written came back through it
+  // meaning something else: a supply line carrying 10.7 % of what the trees
+  // drink was read as carrying 10.7 % of what the supply makes, and the
+  // supply grew ninefold to deliver the same water. Pressing "use as little
+  // as possible" again compounded it — 90 g/s, then 191, then 304 — which is
+  // how it was reported.
   for (final edge in pipeline.edges) {
     final share = edge.share;
     if (share == null) continue;
-    final source = pipeline.nodeOrThrow(edge.fromNodeId);
-    final port = database
-        .processOrThrow(source.specId)
-        .portByIdOrThrow(edge.fromPortId);
-    final coefficients = row()
-      ..[edgeColumn[edge.id]!] = 1
-      ..[nodeColumn[source.id]!] = -share * rateOf(source, port);
+    final coefficients = row()..[edgeColumn[edge.id]!] = 1;
+    if (edge.mode == EdgeMode.push) {
+      final source = pipeline.nodeOrThrow(edge.fromNodeId);
+      final port = database
+          .processOrThrow(source.specId)
+          .portByIdOrThrow(edge.fromPortId);
+      coefficients[nodeColumn[source.id]!] = -share * rateOf(source, port);
+    } else {
+      final target = pipeline.nodeOrThrow(edge.toNodeId);
+      final port = database
+          .processOrThrow(target.specId)
+          .portByIdOrThrow(edge.toPortId);
+      coefficients[nodeColumn[target.id]!] = -share * rateOf(target, port);
+    }
     constraints.add(Constraint.exactly(coefficients, 0));
   }
 
@@ -275,6 +292,27 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
 
   double flowOn(String edgeId) => best.edgeFlows[edgeId] ?? 0;
 
+  // Ports fed by several lines where at least one of those lines is also
+  // dividing its own producer between several destinations.
+  //
+  // Such a port used to get one of each: the divided line written as a
+  // fraction of production, its sibling as a fraction of demand. That
+  // double-counts, because the demand-driven line claims its fraction of the
+  // *whole* demand and the other adds its production on top. The whole group
+  // goes to push instead, which is an amount rather than a claim on somebody
+  // else's total and so cannot double-count.
+  final mustPush = <PortRef>{};
+  for (final edge in pipeline.edges) {
+    final target = PortRef(edge.toNodeId, edge.toPortId);
+    if (pipeline.edgesInto(target).length < 2) continue;
+    if (pipeline
+            .edgesOutOf(PortRef(edge.fromNodeId, edge.fromPortId))
+            .length >
+        1) {
+      mustPush.add(target);
+    }
+  }
+
   final edges = <PipelineEdge>[];
   for (final edge in pipeline.edges) {
     final siblingsOut =
@@ -282,7 +320,8 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
     final siblingsIn =
         pipeline.edgesInto(PortRef(edge.toNodeId, edge.toPortId));
 
-    if (siblingsOut.length > 1) {
+    if (siblingsOut.length > 1 ||
+        mustPush.contains(PortRef(edge.toNodeId, edge.toPortId))) {
       // A producer divided between several lines: each takes a fraction of
       // what is *made*, which is push, and the rest of the production is the
       // surplus the port already reports.
@@ -298,8 +337,9 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
         share: made <= 1e-9 ? 0 : flowOn(edge.id) / made,
       ));
     } else if (siblingsIn.length > 1) {
-      // Several lines feeding one port: each brings a fraction of what that
-      // port *needs*, which is pull, and the fractions add to one.
+      // Several lines feeding one port, none of them divided at its own end:
+      // each brings a fraction of what that port *needs*, which is pull, and
+      // the fractions add to one.
       final total = siblingsIn.fold<double>(0, (sum, e) => sum + flowOn(e.id));
       edges.add(edge.copyWith(
         mode: EdgeMode.pull,

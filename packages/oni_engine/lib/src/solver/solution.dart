@@ -65,7 +65,24 @@ class NodeResult {
   double get physicalCount => uptime <= 0 ? count : count / uptime;
 
   /// How many you must actually build, rounded up to whole buildings.
-  int get wholeCount => physicalCount <= 0 ? 0 : physicalCount.ceil();
+  ///
+  /// Rounded up, but not off the back of a rounding error. An Arbor Tree
+  /// makes 555.55 g/s of lumber — six digits of a number that does not end —
+  /// so four distillers' worth of it arrives as 4.0000024, and ceiling that
+  /// asked for a fifth distiller running at 80 %. It was reported as "4.00 ×
+  /// build 5", because the count beside it had already rounded the other way.
+  ///
+  /// No rate in this data carries more than six significant digits, so a
+  /// count that is whole to within a millionth of itself is whole.
+  int get wholeCount {
+    if (physicalCount <= 0) return 0;
+    final nearest = physicalCount.roundToDouble();
+    final slack = 1e-6 * (nearest.abs() < 1 ? 1 : nearest.abs());
+    if (nearest > 0 && (physicalCount - nearest).abs() <= slack) {
+      return nearest.toInt();
+    }
+    return physicalCount.ceil();
+  }
 
   /// 1.0 = the whole build is busy; 0.8 = 20 % of the built capacity is idle.
   double get utilisation => wholeCount == 0 ? 0 : physicalCount / wholeCount;
