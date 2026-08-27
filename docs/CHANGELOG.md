@@ -8,6 +8,20 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — Being told about it
+
+The notice that tells you a release has happened could not tell you about the
+release that added it.
+
+- On a first run the newest entry is recorded silently, because to somebody who
+  has just arrived the whole app is new and none of it is news. On the day the
+  feature shipped, every reader was on a first run.
+- Saved builds are the evidence otherwise: work in this browser means you were
+  here before there was a changelog, so the whole of it is new to you and you
+  are owed the notice. Genuinely new readers still get nothing.
+
+If this line is the first you have seen of any of it, that is the fix working.
+
 ## 27 August 2026 — Builds that would not open
 
 Mostly faults where the app was the problem, and several in builds it had
@@ -130,6 +144,12 @@ top of this file, open it with one plain sentence — that sentence is what the
 app shows under the heading in its list — and then use bullets, because six
 things fixed reads as six things when it is six lines and as a wall when it is a
 paragraph. Run `tool/copy_docs.sh`.*
+
+*Once an entry has shipped, anything done after it goes in a **new** entry, not
+as another bullet in that one. The app decides what somebody has read by
+matching the heading, so work added to an entry they have already read is work
+they will never be told about — which is exactly what happened on the day this
+file was written. Editing a shipped body is for corrections.*
 
 *Entries run newest first, and several in one day is normal: the date is not
 what tells them apart, the title is. That is why a heading is both. Two entries
