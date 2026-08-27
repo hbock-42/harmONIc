@@ -1711,11 +1711,22 @@ class _EdgeShare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final share = edge.share;
-    final siblings = controller.pipeline.edges
+    // Every other line off this port, however it is driven.
+    //
+    // It used to count only the producer-driven ones, so a port with one of
+    // those and two consumers said "nothing else is asking for it" while two
+    // things asked. The other lines are what "whatever is left" is left over
+    // from; leaving some of them out of the count is how the sentence came to
+    // describe a port that was not there.
+    final others = controller.pipeline.edges
         .where((e) =>
-            e.mode == EdgeMode.push &&
+            e.id != edge.id &&
             e.fromNodeId == edge.fromNodeId &&
             e.fromPortId == edge.fromPortId)
+        .toList();
+    // Only the ones with no share of their own divide the remainder equally.
+    final sharingTheRest = others
+        .where((e) => e.mode == EdgeMode.push && e.share == null)
         .length;
 
     return Column(
@@ -1728,7 +1739,7 @@ class _EdgeShare extends StatelessWidget {
           runSpacing: OniSpacing.sm,
           children: [
             OniButton(
-              label: siblings > 1 ? 'An even split' : 'Whatever is left',
+              label: sharingTheRest > 0 ? 'An even split' : 'Whatever is left',
               compact: true,
               tone: share == null
                   ? OniButtonTone.accent
@@ -1749,11 +1760,16 @@ class _EdgeShare extends StatelessWidget {
         const SizedBox(height: OniSpacing.sm),
         Text(
           share == null
-              ? (siblings > 1
-                  ? 'Sharing what the other $siblings lines off this port do '
-                      'not claim, equally between them.'
-                  : 'Taking everything the port makes, since nothing else is '
-                      'asking for it.')
+              ? (sharingTheRest > 0
+                  ? 'Sharing what the named shares do not claim, equally with '
+                      '$sharingTheRest other '
+                      '${sharingTheRest == 1 ? 'line' : 'lines'} off this port.'
+                  : others.isEmpty
+                      ? 'Taking everything the port makes, since nothing else '
+                          'is asking for it.'
+                      : 'Taking what the other ${others.length} '
+                          '${others.length == 1 ? 'line does' : 'lines do'} '
+                          'not claim.')
               : 'Taking ${(share * 100).toStringAsFixed(0)} % of what the port '
                   'makes. Whatever the other lines do not claim after that is '
                   'surplus.',

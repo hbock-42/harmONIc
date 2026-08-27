@@ -37,6 +37,10 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- A wire's share counts the wires that are actually there. "Taking everything
+  the port makes, since nothing else is asking for it" was said with two other
+  wires asking for it: only the producer-driven ones were counted, so the
+  consumer-driven ones were invisible to the sentence describing them.
 - A build shared from a newer version says what it could not open. It arrives
   with a node this app has never heard of, and every wire that touched it goes
   too — which can be all of them. The note named the node and stopped there, so

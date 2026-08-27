@@ -53,7 +53,10 @@ void main() {
 
     expect(find.text('TAKES'), findsOneWidget);
     expect(find.text('An even split'), findsOneWidget);
-    expect(textContaining('equally between them'), findsOneWidget);
+    // It says how many it is sharing with, rather than "between them" —
+    // which was said whether there was one other line or six, and was said
+    // about producer-driven lines only.
+    expect(textContaining('equally with 1 other line'), findsOneWidget);
   });
 
   testWidgets('setting one moves the oxygen, and the other line takes the rest',
