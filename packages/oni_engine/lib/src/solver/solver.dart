@@ -4,6 +4,7 @@ import '../graph/pipeline.dart';
 import '../graph/validation.dart';
 import '../model/game_database.dart';
 import '../model/port.dart';
+import '../model/process_spec.dart';
 import '../model/units.dart';
 import 'linear_algebra.dart';
 import 'shares.dart';
@@ -168,8 +169,7 @@ class PipelineSolver {
                   'it could be anything. It has ${names.length} loose ends and '
                   'needs an amount for each: ${_sentenceList(names)}. Any node '
                   'on the same run as one of them will do instead.'
-                  '${_hasASplit(pipeline) ? ' Or ask one of them for as much '
-                      'as possible, and it will choose the split for you.' : ''}',
+                  '${_secondRoute(pipeline, database)}',
         ));
       case LinearSolveStatus.inconsistent:
         status = SolveStatus.inconsistent;
@@ -507,6 +507,36 @@ class PipelineSolver {
         nodeId: named.first.nodeId,
       ),
     ];
+  }
+
+  /// The other way out, when there is one worth naming.
+  ///
+  /// The loose ends this names are wherever the elimination left its free
+  /// columns — output nodes, usually, and an amount for one of those is a
+  /// thing somebody planning a base does not know yet. What they do know is
+  /// what they *have*, and giving every supply an amount is often the whole
+  /// answer: it was, in the build this came from.
+  ///
+  /// Asking an output for as much as possible is the other route, and it only
+  /// works once something limits the thing being asked for. Offering it to
+  /// somebody whose supplies are all unset sends them to a button that
+  /// answers "there is no most", which is what happened.
+  static String _secondRoute(Pipeline pipeline, GameDatabase database) {
+    final loose = [
+      for (final node in pipeline.nodes)
+        if (database.process(node.specId)?.kind == ProcessKind.source &&
+            !pipeline.pins.any((pin) => pin.nodeId == node.id))
+          database.process(node.specId)?.name ?? node.specId,
+    ];
+    if (loose.isNotEmpty) {
+      return ' If you are planning from what you have, give each supply an '
+          'amount instead — ${_sentenceList(loose.toSet().toList())} — which '
+          'is often the whole answer.';
+    }
+    return _hasASplit(pipeline)
+        ? ' Or ask one of them for as much as possible, and it will choose '
+            'the split for you.'
+        : '';
   }
 
   /// Whether anything in the build is divided between several lines.

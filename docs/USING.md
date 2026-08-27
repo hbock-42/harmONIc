@@ -186,14 +186,17 @@ Saying what you *have* — 180 g/s of natural gas, a geyser's output, a stockpil
 thing feeds several, how much goes where is a choice rather than arithmetic, and
 the app will not invent it.
 
-Three ways to make that choice, and they are all the same choice:
+**Give every supply an amount.** That is what "planning from what I have"
+means, and it is often the whole answer: a build with three supplies and two
+loose ends comes out the moment all three are set.
+
+Where something is still divided after that, three ways to say how:
 
 - **Say how much you want** of what comes out, on any node downstream.
 - **Say the split**, on the wires, as shares.
 - **Ask an output node for as much as possible**, and it works the split out.
-  This is the one for "I have this much gas, what is the most sand I can get?" —
-  and the answer comes back as ordinary shares on the wires, which you can then
-  change.
+  This one needs something to be limiting it already — with every supply left
+  unset there is no most to be had, and it will say so rather than guess.
 
 ## Power
 

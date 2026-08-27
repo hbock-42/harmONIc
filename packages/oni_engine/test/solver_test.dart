@@ -1117,7 +1117,7 @@ void main() {
       expect(said, contains('an amount for each'));
       // And the other way out, since somebody who has said what they *have*
       // does not yet know the amount they are being asked for.
-      expect(said, contains('as much as possible'));
+      expect(said, contains('give each supply an amount'));
       // The phrase that read as a menu, rather than the words in it.
       expect(said, isNot(contains('an amount for one of')));
     });
@@ -1145,7 +1145,43 @@ void main() {
     });
   });
 
-  test('and asking for as much as possible is a way out of it', () {
+  test('and giving every supply an amount is the way out it names', () {
+    // Reported: told to ask an output for as much as possible, somebody did,
+    // and got "there is no most" — because with the gas supply unset nothing
+    // limited the sand, so there was no most to have. The advice was wrong
+    // for the build it was given about.
+    //
+    // What that build needed was the thing its owner actually knew: how much
+    // gas there is. Every supply given an amount, and it comes out.
+    final pipeline = (PipelineBuilder(db, name: 'what I have')
+          ..add('natural_gas_generator', nodeId: 'gen')
+          ..addSource('natural_gas')
+          ..addSink('power')
+          ..add('rock_crusher_sand', nodeId: 'crusher')
+          ..addSource('raw_mineral')
+          ..addSink('sand')
+          ..connectItem('src_natural_gas', 'gen', 'natural_gas')
+          ..connect('gen', 'power_out', 'sink_power', 'in')
+          ..connect('gen', 'power_out', 'crusher', 'power_in')
+          ..connectItem('src_raw_mineral', 'crusher', 'raw_mineral')
+          ..connectItem('crusher', 'sink_sand', 'sand'))
+        .build();
+
+    expect(solver.solve(pipeline).status, SolveStatus.underdetermined);
+    // And no most to be had, which is what the old advice sent people to.
+    expect(mostOf(pipeline, db, 'sand').status, LpStatus.unbounded);
+
+    final told = pipeline.copyWith(pins: [
+      const PortRatePin(
+          nodeId: 'src_natural_gas', portId: 'out', ratePerSecond: 180),
+      const PortRatePin(
+          nodeId: 'src_raw_mineral', portId: 'out', ratePerSecond: 2000),
+    ]);
+
+    expect(solver.solve(told).status, SolveStatus.solved);
+  });
+
+  test('and asking for as much as possible works once something limits it', () {
     // The route the message offers, taken. Somebody who has said what they
     // have — 180 g/s of gas — has sized the generators and nothing else; the
     // split between three consumers is a choice, and this is one way of
