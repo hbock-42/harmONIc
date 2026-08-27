@@ -395,6 +395,45 @@ void main() {
       }
     });
 
+    test('and never zero, which is a deletion rather than a division', () {
+      // A spare-power outlet the answer happened not to need came back with
+      // share: 0, which locks it shut. The Hydrogen Generator could then only
+      // run as large as the Electrolyzer's own draw, the hydrogen it did not
+      // burn had nowhere to go, and a plain SPOM would not balance at any
+      // size. Reported as "basic build is now broken", and it was — the app
+      // had written it.
+      Pipeline spom() => (PipelineBuilder(db, name: 'spom')
+            ..addSource('water')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..add('duplicant', nodeId: 'dupes')
+            ..add('hydrogen_generator', nodeId: 'hgen')
+            ..addSink('power')
+            ..connectItem('src_water', 'elec', 'water')
+            ..connectItem('elec', 'dupes', 'oxygen')
+            ..connectItem('elec', 'hgen', 'hydrogen')
+            ..connect('hgen', 'power_out', 'elec', 'power_in')
+            ..connect('hgen', 'power_out', 'sink_power', 'in')
+            ..pinCount('dupes', 8))
+          .build();
+
+      for (final ask in [
+        () => leastOf(spom(), db, 'water'),
+        () => mostOf(spom(), db, 'power'),
+        () => leastTotal(spom(), db, BuildTotal.power),
+        () => leastTotal(spom(), db, BuildTotal.heat),
+      ]) {
+        final best = ask();
+        if (!best.isAnswer) continue;
+        final applied = withShares(spom(), db, best);
+
+        for (final edge in applied.edges) {
+          expect(edge.share, isNot(0), reason: edge.id);
+        }
+        // And the build it wrote is one the build still solves.
+        expect(solver.solve(applied).status, SolveStatus.solved);
+      }
+    });
+
     test('and a build carrying one still opens', () {
       // Builds already saved carry the values that were written before this,
       // so tolerating them is not tidiness — it is the difference between

@@ -4,6 +4,8 @@ import '../model/game_database.dart';
 import '../model/port.dart';
 import '../model/process_spec.dart';
 import 'simplex.dart';
+import 'solution.dart';
+import 'solver.dart';
 
 /// The best a build could do, and what it would be doing to get there.
 class BestCase {
@@ -287,6 +289,19 @@ BestCase _optimise(
 /// A port with one edge is left exactly as it was: there was nothing to
 /// choose, and rewriting it would fill the inspector with shares nobody
 /// decided.
+/// Nothing down a wire is written as *no decision*, not as a share of zero.
+///
+/// Zero is not a division, it is a deletion — and the wire it deletes is
+/// usually the one somebody added on purpose. A spare-power outlet that the
+/// answer happened not to need came back with `share: 0`, which locks it shut:
+/// the Hydrogen Generator could then only run as large as the Electrolyzer's
+/// own draw, the hydrogen it did not burn had nowhere to go, and a plain SPOM
+/// would not balance at any size. Reported as "basic build is now broken", and
+/// it was: the app had written it.
+///
+/// Left unshared, the wire carries what is left over, which is what an outlet
+/// is for.
+///
 /// A fraction, written the way somebody would have written it.
 ///
 /// One flow divided by another is 1.0000000000000009 or -6.2e-16 often enough,
@@ -344,22 +359,74 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
       final made = port.ratePerSecond *
           node.outputScale *
           (best.nodeCounts[node.id] ?? 0);
-      edges.add(edge.copyWith(
-        mode: EdgeMode.push,
-        share: made <= 1e-9 ? 0 : _asShare(flowOn(edge.id) / made),
-      ));
+      final fraction = made <= 1e-9 ? 0.0 : _asShare(flowOn(edge.id) / made);
+      edges.add(fraction <= 0
+          ? edge.copyWith(mode: EdgeMode.push, clearShare: true)
+          : edge.copyWith(mode: EdgeMode.push, share: fraction));
     } else if (siblingsIn.length > 1) {
       // Several lines feeding one port, none of them divided at its own end:
       // each brings a fraction of what that port *needs*, which is pull, and
       // the fractions add to one.
       final total = siblingsIn.fold<double>(0, (sum, e) => sum + flowOn(e.id));
-      edges.add(edge.copyWith(
-        mode: EdgeMode.pull,
-        share: total <= 1e-9 ? 0 : _asShare(flowOn(edge.id) / total),
-      ));
+      final fraction =
+          total <= 1e-9 ? 0.0 : _asShare(flowOn(edge.id) / total);
+      edges.add(fraction <= 0
+          ? edge.copyWith(mode: EdgeMode.pull, clearShare: true)
+          : edge.copyWith(mode: EdgeMode.pull, share: fraction));
     } else {
       edges.add(edge);
     }
   }
-  return pipeline.copyWith(edges: edges);
+  final written = pipeline.copyWith(edges: edges);
+
+  // Ports the answer leaves with something spare are vented — but only if the
+  // build will not solve without it.
+  //
+  // The optimiser allows an output port to make more than its wires carry —
+  // the slack is the surplus, and it is the freedom the whole thing needs. The
+  // ordinary solver does not: a port drained only by pull wires has to hand
+  // over exactly what it makes. So an answer could be one the app then called
+  // impossible, which is how "least heat" on a SPOM produced a build that
+  // would not balance at any size.
+  //
+  // Venting is the existing word for "the rest goes to waste", it is what the
+  // answer means, and it shows on the node rather than being assumed.
+  //
+  // Sparingly, though. Where the surplus could just as well have gone down a
+  // wire the build already has, leaving it slack costs the optimiser nothing
+  // and it does so arbitrarily — venting on that would turn a coin-flip into
+  // a setting somebody has to find and undo. So the shares go on first, and
+  // the vents only if what came out cannot balance.
+  if (PipelineSolver(database).solve(written, explain: false).status ==
+      SolveStatus.solved) {
+    return written;
+  }
+
+  final vented = <String, Set<String>>{};
+  for (final node in pipeline.nodes) {
+    final spec = database.process(node.specId);
+    if (spec == null) continue;
+    final count = best.nodeCounts[node.id] ?? 0;
+    for (final port in spec.ports) {
+      if (!port.isOutput || node.ventsPort(port.id)) continue;
+      final out = pipeline.edgesOutOf(PortRef(node.id, port.id));
+      if (out.isEmpty) continue;
+      final made = port.ratePerSecond * node.outputScale * count;
+      final carried = out.fold<double>(0, (sum, e) => sum + flowOn(e.id));
+      if (made - carried > 1e-6 * (made.abs() + 1)) {
+        (vented[node.id] ??= {...node.ventedPorts}).add(port.id);
+      }
+    }
+  }
+
+  if (vented.isEmpty) return written;
+  return written.copyWith(
+    nodes: [
+      for (final node in written.nodes)
+        if (vented[node.id] case final Set<String> ports)
+          node.copyWith(ventedPorts: ports)
+        else
+          node,
+    ],
+  );
 }
