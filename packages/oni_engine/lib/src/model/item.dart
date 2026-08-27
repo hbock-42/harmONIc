@@ -32,6 +32,7 @@ class Item {
     this.refinesTo,
     this.specificHeat,
     this.kcalPerKg,
+    this.unitLabel,
     this.tags = const {},
   });
 
@@ -45,6 +46,7 @@ class Item {
         refinesTo: json['refinesTo'] as String?,
         specificHeat: (json['specificHeat'] as num?)?.toDouble(),
         kcalPerKg: (json['kcalPerKg'] as num?)?.toDouble(),
+        unitLabel: json['unitLabel'] as String?,
         tags: {...(json['tags'] as List<dynamic>? ?? const []).cast<String>()},
       );
 
@@ -63,6 +65,15 @@ class Item {
   final Set<String> members;
 
   bool get isClass => members.isNotEmpty;
+
+  /// What one of it is called, for the things that are counted rather than
+  /// weighed.
+  ///
+  /// A gram is a gram and needs no saying, but a count on its own is a number
+  /// with nothing attached: "2880000.00 /cycle" leaves a reader asking two
+  /// million of what. Calories are kcal and a plant's growth is percentage
+  /// points of maturity, and both of those are worth putting on the page.
+  final String? unitLabel;
 
   /// Counted in ones rather than weighed: gaskets, eggs, Duplicants.
   ///
@@ -168,7 +179,12 @@ class Item {
         display == RateDisplay.perSecond ? value : value * secondsPerCycle,
         precision);
     if (display == RateDisplay.perSecond) {
-      return unit.format(value, precision: precision);
+      final formatted = unit.format(value, precision: precision);
+      // A count keeps the shape it has always had per second -- a bare number,
+      // because one Duplicant is one Duplicant and not one a second. All the
+      // label does is say what is being counted.
+      if (unit != Unit.count || unitLabel == null) return formatted;
+      return '$formatted $unitLabel';
     }
     final perCycle = value * secondsPerCycle;
     return switch (unit) {
@@ -178,7 +194,9 @@ class Item {
       Unit.watts => '${(perCycle / 1000).toStringAsFixed(precision)} kJ/cycle',
       Unit.kdtuPerSecond =>
         '${perCycle.toStringAsFixed(precision)} kDTU/cycle',
-      Unit.count => '${perCycle.toStringAsFixed(precision)} /cycle',
+      Unit.count => unitLabel == null
+          ? '${perCycle.toStringAsFixed(precision)} /cycle'
+          : '${perCycle.toStringAsFixed(precision)} $unitLabel/cycle',
     };
   }
 
@@ -190,6 +208,7 @@ class Item {
         if (refinesTo != null) 'refinesTo': refinesTo,
         if (specificHeat != null) 'specificHeat': specificHeat,
         if (kcalPerKg != null) 'kcalPerKg': kcalPerKg,
+        if (unitLabel != null) 'unitLabel': unitLabel,
         if (tags.isNotEmpty) 'tags': tags.toList(),
       };
 

@@ -15,14 +15,20 @@ out and sorted by how much.
 
 - **What makes it** and **What eats it**: the same catalogue from either end.
   A figure means little alone and a lot beside its neighbours.
-- **Cards, Rows or Table** — table for scanning a column, cards for reading
-  one.
+- A card for each way of getting a thing, two side by side where there is
+  room, so two ways are the same shape and can be read against each other.
+- The bar under a figure says how much of the best in its group that is.
 - **Published** or **judged**, so you can tell the game's figures from ours.
-- **×2 ×5 ×10** scales everything at once, for checking a ratio in your head.
-- Click a row for the recipe whole, including **what it does to matter**: kg in
+- **×2 ×5 ×10** on a card, one card at a time — comparing two ways means
+  holding one still while the other moves.
+- Click what a recipe takes to go and look at that thing, which is how you
+  walk a chain backwards.
+- **Inspect** for the recipe whole, including **what it does to matter**: kg in
   against kg out, which is how a recipe that invents matter shows itself.
-- Rates are per cycle, which is how the game quotes them.
-- **wrong?** on a row opens a report with the recipe already named.
+- Rates are per cycle, which is how the game quotes them, and a counted thing
+  now says what it is counting — kcal, points of growth, eggs, gaskets —
+  where it used to say a number and nothing else.
+- **Wrong?** on a card opens a report with the recipe already named.
 
 It is read off the data the solver is using rather than written down anywhere,
 so it cannot be out of date.

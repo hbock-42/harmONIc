@@ -137,8 +137,8 @@ void main() {
       // Per cycle it is a figure you can hold in your head. Per second it is
       // awkward — but awkward and true, where "0.00" would have said the ranch
       // lays no eggs at all.
-      expect(egg.formatRate(rate, RateDisplay.perCycle), '0.17 /cycle');
-      expect(egg.formatRate(rate, RateDisplay.perSecond), '0.0003');
+      expect(egg.formatRate(rate, RateDisplay.perCycle), '0.17 eggs/cycle');
+      expect(egg.formatRate(rate, RateDisplay.perSecond), '0.0003 eggs');
     });
 
     test('a rate too small for its decimals grows them rather than lying', () {
@@ -172,8 +172,10 @@ void main() {
       final rate = starnacle.outputs
           .firstWhere((p) => p.itemId == 'starnacle_growth')
           .ratePerSecond;
-      // The wiki says a domesticated Starnacle ripens over 4 cycles: 25 % each.
-      expect(growth.formatRate(rate, RateDisplay.perCycle), '25.00 /cycle');
+      // The wiki says a domesticated Starnacle ripens over 4 cycles: 25 % each,
+      // and a point is one of those per cent.
+      expect(
+          growth.formatRate(rate, RateDisplay.perCycle), '25.00 points/cycle');
     });
   });
 

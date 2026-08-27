@@ -246,12 +246,14 @@ const String oniDataJson = r"""
     {
       "id": "calories",
       "name": "Calories",
-      "category": "other"
+      "category": "other",
+      "unitLabel": "kcal"
     },
     {
       "id": "duplicant",
       "name": "Duplicant",
-      "category": "entity"
+      "category": "entity",
+      "unitLabel": "dupes"
     },
     {
       "id": "coquina",
@@ -493,7 +495,8 @@ const String oniDataJson = r"""
       "category": "entity",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "unitLabel": "pinpoki"
     },
     {
       "id": "diamond",
@@ -555,7 +558,8 @@ const String oniDataJson = r"""
       "category": "entity",
       "tags": [
         "aquatic"
-      ]
+      ],
+      "unitLabel": "kelpole"
     },
     {
       "id": "bleach_stone",
@@ -578,7 +582,8 @@ const String oniDataJson = r"""
     {
       "id": "egg",
       "name": "Egg",
-      "category": "entity"
+      "category": "entity",
+      "unitLabel": "eggs"
     },
     {
       "id": "meat",
@@ -598,7 +603,8 @@ const String oniDataJson = r"""
       "category": "service",
       "tags": [
         "service"
-      ]
+      ],
+      "unitLabel": "grooms"
     },
     {
       "id": "shearing",
@@ -606,7 +612,8 @@ const String oniDataJson = r"""
       "category": "service",
       "tags": [
         "service"
-      ]
+      ],
+      "unitLabel": "shears"
     },
     {
       "id": "regolith",
@@ -808,7 +815,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "prehistoric"
-      ]
+      ],
+      "unitLabel": "dewdrips"
     },
     {
       "id": "tough_meat",
@@ -878,7 +886,8 @@ const String oniDataJson = r"""
       "category": "service",
       "tags": [
         "service"
-      ]
+      ],
+      "unitLabel": "milkings"
     },
     {
       "id": "starnacle_growth",
@@ -887,7 +896,8 @@ const String oniDataJson = r"""
       "tags": [
         "growth",
         "aquatic"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "tublia_growth",
@@ -896,7 +906,8 @@ const String oniDataJson = r"""
       "tags": [
         "growth",
         "aquatic"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "gas_grass_growth",
@@ -904,7 +915,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "plant_husk",
@@ -925,7 +937,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "arbor_tree_growth",
@@ -933,7 +946,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "pikeapple_growth",
@@ -942,7 +956,8 @@ const String oniDataJson = r"""
       "tags": [
         "growth",
         "frosty"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "waterweed_growth",
@@ -950,7 +965,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "bristle_blossom_growth",
@@ -958,7 +974,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "meal_lice",
@@ -1061,7 +1078,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "thimble_reed_growth",
@@ -1069,7 +1087,8 @@ const String oniDataJson = r"""
       "category": "other",
       "tags": [
         "growth"
-      ]
+      ],
+      "unitLabel": "points"
     },
     {
       "id": "metal_ore",
@@ -1163,7 +1182,8 @@ const String oniDataJson = r"""
       "id": "gasket",
       "name": "Gaskets",
       "category": "other",
-      "tags": []
+      "tags": [],
+      "unitLabel": "gaskets"
     },
     {
       "id": "cultivable_soil",
@@ -1260,7 +1280,7 @@ const String oniDataJson = r"""
     },
     {
       "id": "souffle_pancakes",
-      "name": "Soufflé Pancakes",
+      "name": "Souffl\u00e9 Pancakes",
       "category": "solid",
       "kcalPerKg": 3600,
       "tags": [
@@ -2137,7 +2157,7 @@ const String oniDataJson = r"""
       "id": "power_network",
       "name": "Power Network",
       "kind": "custom",
-      "description": "The grid itself. In the game every wire that touches is one network, and what matters is generation minus consumption — not which generator feeds which building, which is a question the game never asks. Wiring each generator to each consumer asks it, and the answer is a guess: two generators into one machine split its draw evenly, and nothing about that is right.\n\nSo put one of these in the middle. Generators go into it set to \"the producer\", because each hands over everything it makes; everything that draws power comes off it and takes what it needs; and a Power output on the end is what the grid has spare. A build with two separate grids has two of these.\n\nIt costs nothing and stands nowhere: it is the wires you were going to run anyway.",
+      "description": "The grid itself. In the game every wire that touches is one network, and what matters is generation minus consumption \u2014 not which generator feeds which building, which is a question the game never asks. Wiring each generator to each consumer asks it, and the answer is a guess: two generators into one machine split its draw evenly, and nothing about that is right.\n\nSo put one of these in the middle. Generators go into it set to \"the producer\", because each hands over everything it makes; everything that draws power comes off it and takes what it needs; and a Power output on the end is what the grid has spare. A build with two separate grids has two of these.\n\nIt costs nothing and stands nowhere: it is the wires you were going to run anyway.",
       "tags": [
         "power",
         "verified"
@@ -2195,7 +2215,7 @@ const String oniDataJson = r"""
       "build": {
         "metal_ore": 800
       },
-      "notes": "The wiki gives one set of figures for every fuel it burns — 2 kg/s in, 2 kW out, 500 g/s of carbon dioxide and 750 g/s of polluted water — so the fuel is a choice on the port rather than three recipes."
+      "notes": "The wiki gives one set of figures for every fuel it burns \u2014 2 kg/s in, 2 kW out, 500 g/s of carbon dioxide and 750 g/s of polluted water \u2014 so the fuel is a choice on the port rather than three recipes."
     },
     {
       "id": "metal_refinery",
@@ -2240,7 +2260,7 @@ const String oniDataJson = r"""
         }
       ],
       "heatKdtuPerSecond": 16,
-      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is — galena excepted, which is 87 % lead and 13 % sulfur and has its own recipe. The coolant comes back 14 °C hotter per kilogram refined; the figure here is water.",
+      "description": "Takes any metal ore and gives back the metal it came from, kilogram for kilogram, at the same rate whichever ore it is \u2014 galena excepted, which is 87 % lead and 13 % sulfur and has its own recipe. The coolant comes back 14 \u00b0C hotter per kilogram refined; the figure here is water.",
       "build": {
         "raw_mineral": 800
       }
@@ -2283,7 +2303,7 @@ const String oniDataJson = r"""
       "build": {
         "metal_ore": 800
       },
-      "notes": "Ceramic is on the port rather than in the raw mineral class because that class is also a Hatch’s dinner, and a Hatch does not eat ceramic. Reported by a player: the game crushes it and this would not. 100 kg in, 100 kg of sand out, the same as every other rock on the list."
+      "notes": "Ceramic is on the port rather than in the raw mineral class because that class is also a Hatch\u2019s dinner, and a Hatch does not eat ceramic. Reported by a player: the game crushes it and this would not. 100 kg in, 100 kg of sand out, the same as every other rock on the list."
     },
     {
       "id": "duplicant",
@@ -2389,7 +2409,7 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 0.625,
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "Built on a Tidal Spring; needs no fuel. 300 W while the spring spouts, 225 W averaged over the draw/spout cycle — the figure used here. Buffer it with a battery.",
+      "description": "Built on a Tidal Spring; needs no fuel. 300 W while the spring spouts, 225 W averaged over the draw/spout cycle \u2014 the figure used here. Buffer it with a battery.",
       "tags": [
         "power",
         "aquatic",
@@ -2410,7 +2430,7 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 17,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: the wiki gives 2.5 kg/s of latex and a 100 kg → 100 kg latex-to-rubber ratio, but also lists carbon dioxide, polluted ice and sucrose in the recipe without rates. Only the latex, rubber and CO2 figures are modelled, so the mass does not balance.",
+      "description": "UNVERIFIED: the wiki gives 2.5 kg/s of latex and a 100 kg \u2192 100 kg latex-to-rubber ratio, but also lists carbon dioxide, polluted ice and sucrose in the recipe without rates. Only the latex, rubber and CO2 figures are modelled, so the mass does not balance.",
       "tags": [
         "refining",
         "aquatic",
@@ -2446,7 +2466,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "UNVERIFIED RATE: the wiki gives 100 kg Gum Wood → 50 kg Latex but no cycle time; 40 s per batch is assumed, matching the other duplicant-operated batch buildings.",
+      "description": "UNVERIFIED RATE: the wiki gives 100 kg Gum Wood \u2192 50 kg Latex but no cycle time; 40 s per batch is assumed, matching the other duplicant-operated batch buildings.",
       "tags": [
         "refining",
         "aquatic",
@@ -2477,7 +2497,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "UNVERIFIED RATE: 100 kg Slime → 70 kg Phyto Oil + 30 kg Dirt, with a 40 s batch assumed.",
+      "description": "UNVERIFIED RATE: 100 kg Slime \u2192 70 kg Phyto Oil + 30 kg Dirt, with a 40 s batch assumed.",
       "tags": [
         "refining",
         "aquatic",
@@ -2513,7 +2533,7 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 2,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Built on a Thermal Gas Fissure, and duty-cycled — 100 s of drilling in every 1300 s — so every figure here is the average over the whole cycle, the way the wiki quotes its 74 W. The fissure emits 83.3 g/s of natural gas for the 1200 s it is unblocked, which is 76.9 averaged, and a drilling drops 250 kg of sulfur on each of four neutronium tiles: 1000 kg, or 769 g/s averaged. Diamond goes in at 1 kg/s while it runs, which is 77 g/s averaged.",
+      "description": "Built on a Thermal Gas Fissure, and duty-cycled \u2014 100 s of drilling in every 1300 s \u2014 so every figure here is the average over the whole cycle, the way the wiki quotes its 74 W. The fissure emits 83.3 g/s of natural gas for the 1200 s it is unblocked, which is 76.9 averaged, and a drilling drops 250 kg of sulfur on each of four neutronium tiles: 1000 kg, or 769 g/s averaged. Diamond goes in at 1 kg/s while it runs, which is 77 g/s averaged.",
       "tags": [
         "refining",
         "aquatic",
@@ -2549,7 +2569,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 3,
       "footprintHeight": 4,
-      "description": "UNVERIFIED: domesticated in a Wide Hydroponic Farm it takes 20 kg/cycle of sulfur — or liquid sulfur, in the same amount — and gives 700 kg of gum wood every 10 cycles, all of which the page states. What it does not state is the carbon dioxide the plant also takes, which is why this is still marked doubtful: a build around it will under-count its CO2 draw by however much that is.",
+      "description": "UNVERIFIED: domesticated in a Wide Hydroponic Farm it takes 20 kg/cycle of sulfur \u2014 or liquid sulfur, in the same amount \u2014 and gives 700 kg of gum wood every 10 cycles, all of which the page states. What it does not state is the carbon dioxide the plant also takes, which is why this is still marked doubtful: a build around it will under-count its CO2 draw by however much that is.",
       "tags": [
         "farming",
         "aquatic",
@@ -2578,7 +2598,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "UNVERIFIED OUTPUT: the wiki gives the irrigation (20 kg/cycle salt water) and fertiliser (5 kg/cycle lime), but not the oxygen rate — 150 g/s comes from the Klei forums and Steam discussions, not the wiki. The mass does not balance at that rate, which suggests an unmodelled carbon dioxide intake. It also needs ~2500 lux on one of its three upper tiles, which this model does not represent.",
+      "description": "UNVERIFIED OUTPUT: the wiki gives the irrigation (20 kg/cycle salt water) and fertiliser (5 kg/cycle lime), but not the oxygen rate \u2014 150 g/s comes from the Klei forums and Steam discussions, not the wiki. The mass does not balance at that rate, which suggests an unmodelled carbon dioxide intake. It also needs ~2500 lux on one of its three upper tiles, which this model does not represent.",
       "tags": [
         "oxygen",
         "farming",
@@ -2639,7 +2659,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water — polluted brine is modelled.",
+      "description": "UNVERIFIED: 200 kg of plastic per harvest on an 8-cycle domestic growth, averaged here to a continuous rate. It also yields liquid naphtha in an amount the wiki does not state, so that output is missing. Irrigation accepts polluted brine, polluted water or salt water \u2014 polluted brine is modelled.",
       "tags": [
         "farming",
         "aquatic",
@@ -2672,7 +2692,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 1,
-      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled — it will under-report your liquid needs.",
+      "description": "UNVERIFIED: 80 kg of phosphorite per harvest on a 4-cycle domestic growth, averaged to a continuous rate. The wiki does not state an irrigation amount, so none is modelled \u2014 it will under-report your liquid needs.",
       "tags": [
         "farming",
         "aquatic",
@@ -2695,7 +2715,7 @@ const String oniDataJson = r"""
       "id": "water_geyser",
       "name": "Water Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2715,7 +2735,7 @@ const String oniDataJson = r"""
       "id": "salt_water_geyser",
       "name": "Salt Water Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2735,7 +2755,7 @@ const String oniDataJson = r"""
       "id": "polluted_water_vent",
       "name": "Polluted Water Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2755,7 +2775,7 @@ const String oniDataJson = r"""
       "id": "polluted_brine_vent",
       "name": "Polluted Brine Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2776,7 +2796,7 @@ const String oniDataJson = r"""
       "id": "cool_steam_vent",
       "name": "Cool Steam Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2796,7 +2816,7 @@ const String oniDataJson = r"""
       "id": "steam_vent",
       "name": "Steam Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2816,7 +2836,7 @@ const String oniDataJson = r"""
       "id": "cool_slush_geyser",
       "name": "Cool Slush Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2836,7 +2856,7 @@ const String oniDataJson = r"""
       "id": "cool_salt_slush_geyser",
       "name": "Cool Salt Slush Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2856,7 +2876,7 @@ const String oniDataJson = r"""
       "id": "liquid_sulfur_geyser",
       "name": "Liquid Sulfur Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2877,7 +2897,7 @@ const String oniDataJson = r"""
       "id": "natural_gas_geyser",
       "name": "Natural Gas Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2897,7 +2917,7 @@ const String oniDataJson = r"""
       "id": "hydrogen_vent",
       "name": "Hydrogen Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2917,7 +2937,7 @@ const String oniDataJson = r"""
       "id": "chlorine_gas_vent",
       "name": "Chlorine Gas Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2937,7 +2957,7 @@ const String oniDataJson = r"""
       "id": "carbon_dioxide_vent",
       "name": "Carbon Dioxide Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2957,7 +2977,7 @@ const String oniDataJson = r"""
       "id": "carbon_dioxide_geyser",
       "name": "Carbon Dioxide Geyser",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2977,7 +2997,7 @@ const String oniDataJson = r"""
       "id": "hot_polluted_oxygen_vent",
       "name": "Hot Polluted Oxygen Vent",
       "kind": "custom",
-      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -2997,7 +3017,7 @@ const String oniDataJson = r"""
       "id": "leaky_oil_fissure",
       "name": "Leaky Oil Fissure",
       "kind": "custom",
-      "description": "Erupts continuously, unlike the other geysers — no dormancy period to plan around. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "Erupts continuously, unlike the other geysers \u2014 no dormancy period to plan around. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -3017,7 +3037,7 @@ const String oniDataJson = r"""
       "id": "copper_volcano",
       "name": "Copper Volcano",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "UNVERIFIED RATE: the wiki quotes 180\u2013300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -3037,7 +3057,7 @@ const String oniDataJson = r"""
       "id": "iron_volcano",
       "name": "Iron Volcano",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "UNVERIFIED RATE: the wiki quotes 180\u2013300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -3057,7 +3077,7 @@ const String oniDataJson = r"""
       "id": "gold_volcano",
       "name": "Gold Volcano",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: the wiki quotes 180–300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25–225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got — a Duplicant with Field Research can measure it.",
+      "description": "UNVERIFIED RATE: the wiki quotes 180\u2013300 g/s across the metal volcanoes collectively rather than a figure per metal; the low end is used here. Lifetime average, assuming the typical roll. Every geyser picks its own emission rate, eruption duty and active share when the world is generated: the active share of a 25\u2013225 cycle dormancy is always between 40 % and 80 %, and sits in the middle fifth about half the time. Use the activity control to plan for the geyser you actually got \u2014 a Duplicant with Field Research can measure it.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -3077,7 +3097,7 @@ const String oniDataJson = r"""
       "id": "tidal_spring",
       "name": "Tidal Spring",
       "kind": "custom",
-      "description": "UNVERIFIED RATE: a Tidal Spring makes no liquid of its own — it draws its surroundings in at 500 kg/s until it holds 15 t, then spouts the lot back out at 166.7 kg/s. That is a 30 s draw and a 90 s spout, so the average each way works out at 125 kg/s; the wiki states the phase rates but not that average, which is derived here. Its real purpose is to host a Tidal Turbine.",
+      "description": "UNVERIFIED RATE: a Tidal Spring makes no liquid of its own \u2014 it draws its surroundings in at 500 kg/s until it holds 15 t, then spouts the lot back out at 166.7 kg/s. That is a 30 s draw and a 90 s spout, so the average each way works out at 125 kg/s; the wiki states the phase rates but not that average, which is derived here. Its real purpose is to host a Tidal Turbine.",
       "footprintWidth": 3,
       "footprintHeight": 3,
       "tags": [
@@ -3104,7 +3124,7 @@ const String oniDataJson = r"""
       "id": "hatch",
       "name": "Hatch",
       "kind": "critter",
-      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner. Eats rock of any sort, which is what the class here means. It will also take some ores and most of what a Duplicant eats; neither is modelled, because a ranch fed on rock is the one anybody builds.",
+      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life \u2014 cull sooner and you get it sooner. Eats rock of any sort, which is what the class here means. It will also take some ores and most of what a Duplicant eats; neither is modelled, because a ranch fed on rock is the one anybody builds.",
       "tags": [
         "ranching",
         "verified"
@@ -3142,7 +3162,7 @@ const String oniDataJson = r"""
       "id": "sage_hatch",
       "name": "Sage Hatch",
       "kind": "critter",
-      "description": "The efficient one: 100 % of what it eats comes back as coal, and it eats seven things at the same rate — dirt, slime, algae, fertiliser, polluted dirt, corallium or polluted mud — so this is one recipe you pick the feed for rather than six. It will also eat prepared food, at 700 kcal a cycle rather than by weight, which is a different recipe and not modelled. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "The efficient one: 100 % of what it eats comes back as coal, and it eats seven things at the same rate \u2014 dirt, slime, algae, fertiliser, polluted dirt, corallium or polluted mud \u2014 so this is one recipe you pick the feed for rather than six. It will also eat prepared food, at 700 kcal a cycle rather than by weight, which is a different recipe and not modelled. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -3188,7 +3208,7 @@ const String oniDataJson = r"""
       "id": "smooth_hatch",
       "name": "Smooth Hatch",
       "kind": "critter",
-      "description": "Refines metal ore without a Metal Refinery, at 75 % conversion — galena excepted, which is two metals and not one and which nobody has published a Hatch figure for. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Refines metal ore without a Metal Refinery, at 75 % conversion \u2014 galena excepted, which is two metals and not one and which nobody has published a Hatch figure for. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -3230,7 +3250,7 @@ const String oniDataJson = r"""
       "id": "slickster",
       "name": "Slickster",
       "kind": "critter",
-      "description": "Turns your CO2 problem into oil, at half the mass. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Turns your CO2 problem into oil, at half the mass. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -3300,13 +3320,13 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life \u2014 cull sooner and you get it sooner."
     },
     {
       "id": "puft",
       "name": "Puft",
       "kind": "critter",
-      "description": "95 % of the polluted oxygen it breathes comes back as slime. Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "95 % of the polluted oxygen it breathes comes back as slime. Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -3376,7 +3396,7 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life \u2014 cull sooner and you get it sooner."
     },
     {
       "id": "squeaky_puft",
@@ -3414,13 +3434,13 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life \u2014 cull sooner and you get it sooner."
     },
     {
       "id": "puft_prince",
       "name": "Puft Prince",
       "kind": "critter",
-      "description": "Only 10 % efficient — kept for its eggs, not its slime. Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "Only 10 % efficient \u2014 kept for its eggs, not its slime. Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -3458,7 +3478,7 @@ const String oniDataJson = r"""
       "id": "drecko",
       "name": "Drecko",
       "kind": "critter",
-      "description": "Grazes 25 % of a plant’s maturity a cycle, which is three quarters of a domesticated Mealwood — so four Dreckos live off three plants. Sheared for 2 kg of reed fibre about every 8 cycles, averaged here.",
+      "description": "Grazes 25 % of a plant\u2019s maturity a cycle, which is three quarters of a domesticated Mealwood \u2014 so four Dreckos live off three plants. Sheared for 2 kg of reed fibre about every 8 cycles, averaged here.",
       "tags": [
         "ranching",
         "verified"
@@ -3506,7 +3526,7 @@ const String oniDataJson = r"""
       "id": "glossy_drecko",
       "name": "Glossy Drecko",
       "kind": "critter",
-      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Grazes 33.3 % of a plant’s maturity a cycle, which is exactly one domesticated Mealwood each.",
+      "description": "Plastic without an Oil Refinery: 150 kg every 3 cycles when sheared on schedule, averaged here. Grazes 33.3 % of a plant\u2019s maturity a cycle, which is exactly one domesticated Mealwood each.",
       "tags": [
         "ranching",
         "verified"
@@ -3554,7 +3574,7 @@ const String oniDataJson = r"""
       "id": "gulp_fish",
       "name": "Gulp Fish",
       "kind": "critter",
-      "description": "A living Water Sieve: 200 g/s of polluted water in, clean water out. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "A living Water Sieve: 200 g/s of polluted water in, clean water out. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "verified"
@@ -3597,7 +3617,7 @@ const String oniDataJson = r"""
       "id": "pacu",
       "name": "Pacu",
       "kind": "critter",
-      "description": "UNVERIFIED: the wiki gives the 7.5 kg/cycle of algae it eats, but not the rate at which it produces polluted dirt, so that output is missing. Its fillets and eggs are not modelled either. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "description": "UNVERIFIED: the wiki gives the 7.5 kg/cycle of algae it eats, but not the rate at which it produces polluted dirt, so that output is missing. Its fillets and eggs are not modelled either. Groomed: one egg every 1.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 25-cycle life, spread across that life \u2014 cull sooner and you get it sooner.",
       "tags": [
         "ranching",
         "unverified"
@@ -3630,7 +3650,7 @@ const String oniDataJson = r"""
       "id": "blowter",
       "name": "Blowter",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: grazes 8.33 % of a plant’s maturity a cycle, which is exactly one domesticated Waterweed. The 15 kg/cycle of oxygen — a tidy 100 % conversion of what it eats, 25 g/s — comes from a Steam discussion citing the wiki rather than from the wiki itself, so confirm it before you build around it. Its liquid oxygen output is not modelled.",
+      "description": "UNVERIFIED OUTPUT: grazes 8.33 % of a plant\u2019s maturity a cycle, which is exactly one domesticated Waterweed. The 15 kg/cycle of oxygen \u2014 a tidy 100 % conversion of what it eats, 25 g/s \u2014 comes from a Steam discussion citing the wiki rather than from the wiki itself, so confirm it before you build around it. Its liquid oxygen output is not modelled.",
       "tags": [
         "oxygen",
         "ranching",
@@ -3665,7 +3685,7 @@ const String oniDataJson = r"""
       "id": "grooming_station",
       "name": "Grooming Station",
       "kind": "building",
-      "description": "It draws no power at all — read out of the game files by a player after the wiki went years without saying, and it is what was modelled here on the guess that silence meant none. UNVERIFIED still, for the other reason: capacity. A stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "description": "It draws no power at all \u2014 read out of the game files by a player after the wiki went years without saying, and it is what was modelled here on the guess that silence meant none. UNVERIFIED still, for the other reason: capacity. A stable runs 12\u201396 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters \u2014 if yours differs, correct it with + Recipe. The Duplicant time is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
       "tags": [
         "ranching",
         "unverified"
@@ -3687,7 +3707,7 @@ const String oniDataJson = r"""
       "id": "aquatic_grooming_station",
       "name": "Aquatic Grooming Station",
       "kind": "building",
-      "description": "It draws no power at all — read out of the game files by a player after the wiki went years without saying, and it is what was modelled here on the guess that silence meant none. UNVERIFIED still, for the other reason: capacity. A stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "description": "It draws no power at all \u2014 read out of the game files by a player after the wiki went years without saying, and it is what was modelled here on the guess that silence meant none. UNVERIFIED still, for the other reason: capacity. A stable runs 12\u201396 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters \u2014 if yours differs, correct it with + Recipe. The Duplicant time is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
       "footprintWidth": 2,
       "footprintHeight": 3,
       "tags": [
@@ -3710,7 +3730,7 @@ const String oniDataJson = r"""
       "id": "shearing_station",
       "name": "Shearing Station",
       "kind": "building",
-      "description": "UNVERIFIED CAPACITY: the 60 W, the 3×3 footprint and the 12 s shearing are all from the wiki; only how many critters one station keeps up with is a judgement. Capacity is the sticking point: a stable runs 12–96 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters — if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
+      "description": "UNVERIFIED CAPACITY: the 60 W, the 3\u00d73 footprint and the 12 s shearing are all from the wiki; only how many critters one station keeps up with is a judgement. Capacity is the sticking point: a stable runs 12\u201396 tiles and each species takes a different amount of room, so a full-size one holds 24 Shove Voles but only 6 Drecko. Eight is a fair figure for a standard stable of ordinary critters \u2014 if yours differs, correct it with + Recipe. The Duplicant time for this is booked on the critters themselves, so this building carries none: counting it here as well would charge you twice.",
       "powerWatts": 60,
       "heatKdtuPerSecond": 0.625,
       "footprintWidth": 3,
@@ -3734,7 +3754,7 @@ const String oniDataJson = r"""
       "id": "pip",
       "name": "Pip",
       "kind": "critter",
-      "description": "Grazes 8.89 percentage points of a plant’s maturity a cycle, which is a twelfth and a half of a domesticated Arbor Tree. The figure is a share of whatever it is grazing, so the crops are one recipe and the node says which. It gives back 20 kg of dirt a cycle: two Mealwood, two domestic Arbor Trees or four Sleet Wheat, all of which the page lists. A Bonbon Tree and a Gum Palm feed it too, and neither has a grazed form here yet. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
+      "description": "Grazes 8.89 percentage points of a plant\u2019s maturity a cycle, which is a twelfth and a half of a domesticated Arbor Tree. The figure is a share of whatever it is grazing, so the crops are one recipe and the node says which. It gives back 20 kg of dirt a cycle: two Mealwood, two domestic Arbor Trees or four Sleet Wheat, all of which the page lists. A Bonbon Tree and a Gum Palm feed it too, and neither has a grazed form here yet. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3776,7 +3796,7 @@ const String oniDataJson = r"""
       "id": "pokeshell",
       "name": "Pokeshell",
       "kind": "critter",
-      "description": "Eats 70 kg/cycle of polluted dirt or rot pile — the same either way — and gives half of it back as sand: renewable sand without a Rock Crusher. Slime is for the Oakshell and the Sanishell, so it is not offered here. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
+      "description": "Eats 70 kg/cycle of polluted dirt or rot pile \u2014 the same either way \u2014 and gives half of it back as sand: renewable sand without a Rock Crusher. Slime is for the Oakshell and the Sanishell, so it is not offered here. The 60 kg molt is what it sheds on death, spread over a 100-cycle life.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3822,7 +3842,7 @@ const String oniDataJson = r"""
       "id": "gassy_moo",
       "name": "Gassy Moo",
       "kind": "critter",
-      "description": "A Moo eats 50 % of a plant’s maturity a cycle, which is two Gas Grass at 25 % each, and makes 10 kg/cycle of natural gas. Moos lay no eggs — they summon another by meteor roughly every 16 cycles — so there is no egg output either.",
+      "description": "A Moo eats 50 % of a plant\u2019s maturity a cycle, which is two Gas Grass at 25 % each, and makes 10 kg/cycle of natural gas. Moos lay no eggs \u2014 they summon another by meteor roughly every 16 cycles \u2014 so there is no egg output either.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3856,7 +3876,7 @@ const String oniDataJson = r"""
       "id": "plug_slug",
       "name": "Plug Slug",
       "kind": "critter",
-      "description": "UNVERIFIED: eats 60 kg a cycle of any metal ore or any refined metal — the same amount either way — and gives back hydrogen, eggs, meat and power. The power is the awkward one: 1 600 W, but only for the 75 s of each cycle it is awake, so the 200 W here is the average and a build that needs it at a particular moment will not find it there. It also drops to 1 200 W below 5 000 kcal and 800 W below 3 000, which this does not model.",
+      "description": "UNVERIFIED: eats 60 kg a cycle of any metal ore or any refined metal \u2014 the same amount either way \u2014 and gives back hydrogen, eggs, meat and power. The power is the awkward one: 1 600 W, but only for the 75 s of each cycle it is awake, so the 200 W here is the average and a build that needs it at a particular moment will not find it there. It also drops to 1 200 W below 5 000 kcal and 800 W below 3 000, which this does not model.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3906,7 +3926,7 @@ const String oniDataJson = r"""
       "id": "shove_vole",
       "name": "Shove Vole",
       "kind": "critter",
-      "description": "UNVERIFIED: shifts 4800 kg/cycle of regolith, dirt or iron ore and packs half of it back as solid tile — modelled as regolith in and out, since the tile it leaves behind is the same stuff. The headline reason to keep them is the meat: 10 kg a life is the most of any base-game critter.",
+      "description": "UNVERIFIED: shifts 4800 kg/cycle of regolith, dirt or iron ore and packs half of it back as solid tile \u2014 modelled as regolith in and out, since the tile it leaves behind is the same stuff. The headline reason to keep them is the meat: 10 kg a life is the most of any base-game critter.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3946,7 +3966,7 @@ const String oniDataJson = r"""
       "id": "bammoth",
       "name": "Bammoth",
       "kind": "critter",
-      "description": "Eats 30 kg/cycle of Plume Squash or Nosh Bean — the same either way — and gives all of it back as Bammoth Patty, which a Rock Crusher turns into clay and phosphorite. It eats Squash Fries too, and this app has no item for a cooked food. Groomed: one egg every 12 cycles, and 12 s of Duplicant time per cycle. The meat figure is the 22 400 kcal it drops at the end of a 200-cycle life, at the 1 600 kcal a kilogram the game prices meat at, spread across that life. Shearing a grown one gives 5 kg of reed fibre and nobody has published how often, so it is not here.",
+      "description": "Eats 30 kg/cycle of Plume Squash or Nosh Bean \u2014 the same either way \u2014 and gives all of it back as Bammoth Patty, which a Rock Crusher turns into clay and phosphorite. It eats Squash Fries too, and this app has no item for a cooked food. Groomed: one egg every 12 cycles, and 12 s of Duplicant time per cycle. The meat figure is the 22 400 kcal it drops at the end of a 200-cycle life, at the 1 600 kcal a kilogram the game prices meat at, spread across that life. Shearing a grown one gives 5 kg of reed fibre and nobody has published how often, so it is not here.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -4028,7 +4048,7 @@ const String oniDataJson = r"""
       "id": "sweetle",
       "name": "Sweetle",
       "kind": "critter",
-      "description": "Eats 20 kg/cycle of sulfur — solid or liquid, the same either way — and excretes half of it as sucrose: renewable sugar out of a material most bases are throwing away. Three figures agree on the 50 %: the diet, the sucrose page's stated efficiency, and the farm on its own page, 45 of them on 1.5 kg/s of liquid sulfur for 450 kg/cycle. It also eats sucrose at 10 kg/cycle, which is a different recipe and one nobody has published an output for. Groomed: one egg every 4.5 cycles. The meat is the 1 600 kcal it drops at the end of a 75-cycle life, spread across it.",
+      "description": "Eats 20 kg/cycle of sulfur \u2014 solid or liquid, the same either way \u2014 and excretes half of it as sucrose: renewable sugar out of a material most bases are throwing away. Three figures agree on the 50 %: the diet, the sucrose page's stated efficiency, and the farm on its own page, 45 of them on 1.5 kg/s of liquid sulfur for 450 kg/cycle. It also eats sucrose at 10 kg/cycle, which is a different recipe and one nobody has published an output for. Groomed: one egg every 4.5 cycles. The meat is the 1 600 kcal it drops at the end of a 75-cycle life, spread across it.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -4071,7 +4091,7 @@ const String oniDataJson = r"""
       "id": "sweetle_wild",
       "name": "Sweetle (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — every 45 cycles against 4.5, which is the published pair rather than this app's usual assumption. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often \u2014 every 45 cycles against 4.5, which is the published pair rather than this app's usual assumption. What it eats and what it produces are otherwise unchanged.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -4153,7 +4173,7 @@ const String oniDataJson = r"""
       "id": "grubgrub_sulfur_wild",
       "name": "Grubgrub (sulfur, wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — every 90 cycles against 9, which the page states rather than this app assuming it. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often \u2014 every 90 cycles against 9, which the page states rather than this app assuming it. What it eats and what it produces are otherwise unchanged.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -4192,7 +4212,7 @@ const String oniDataJson = r"""
       "id": "grubgrub_sucrose",
       "name": "Grubgrub (sucrose)",
       "kind": "critter",
-      "description": "Eats 30 kg/cycle of sucrose, solid or liquid, and turns all of it into mud — kilogram for kilogram, which is what makes a Sweetle and a Grubgrub together into dirt and water out of sulfur. A different recipe from the sulfur diet rather than a choice on one, because the rates are not the same.",
+      "description": "Eats 30 kg/cycle of sucrose, solid or liquid, and turns all of it into mud \u2014 kilogram for kilogram, which is what makes a Sweetle and a Grubgrub together into dirt and water out of sulfur. A different recipe from the sulfur diet rather than a choice on one, because the rates are not the same.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -4235,7 +4255,7 @@ const String oniDataJson = r"""
       "id": "grubgrub_sucrose_wild",
       "name": "Grubgrub (sucrose, wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — every 90 cycles against 9. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often \u2014 every 90 cycles against 9. What it eats and what it produces are otherwise unchanged.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -4274,7 +4294,7 @@ const String oniDataJson = r"""
       "id": "shine_bug",
       "name": "Shine Bug",
       "kind": "critter",
-      "description": "Eats 200 g/cycle of phosphorite — the one food of its several that the page puts in kilograms rather than calories, and the reason a phosphorite supply is worth keeping beside a bug farm. It produces no material directly: the point is the eggs, which give 5 kg of resin each at an Egg Cracker, about 2.4 kg/cycle from a happy bug. This app has one Egg item and prices every egg as a Hatch's, so that resin is not modelled. Light and decor are not modelled either. It drops no meat.",
+      "description": "Eats 200 g/cycle of phosphorite \u2014 the one food of its several that the page puts in kilograms rather than calories, and the reason a phosphorite supply is worth keeping beside a bug farm. It produces no material directly: the point is the eggs, which give 5 kg of resin each at an Egg Cracker, about 2.4 kg/cycle from a happy bug. This app has one Egg item and prices every egg as a Hatch's, so that resin is not modelled. Light and decor are not modelled either. It drops no meat.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -4555,7 +4575,7 @@ const String oniDataJson = r"""
       "id": "flox",
       "name": "Flox",
       "kind": "critter",
-      "description": "Wood from a critter: shear its antlers for 360 kg every 6 cycles, which averages 60 kg/cycle, plus 5 kg/cycle of dirt. Grazes 20 % of a plant’s maturity a cycle — three fifths of a domesticated Pikeapple Bush.",
+      "description": "Wood from a critter: shear its antlers for 360 kg every 6 cycles, which averages 60 kg/cycle, plus 5 kg/cycle of dirt. Grazes 20 % of a plant\u2019s maturity a cycle \u2014 three fifths of a domesticated Pikeapple Bush.",
       "dupeLabourSecondsPerCycle": 14.0,
       "tags": [
         "ranching",
@@ -4780,7 +4800,7 @@ const String oniDataJson = r"""
       "id": "orehull",
       "name": "Orehull",
       "kind": "critter",
-      "description": "UNVERIFIED: the egg and the raw shellfish are the figures its page does not give. Eats 20 kg/cycle of nori — or two kelpoles — and excretes 50 kg/cycle of polluted mud; shearing yields 250 kg of iron ore every *ten* cycles, which is 25 a cycle and is the reason to keep them. That last figure is on the Iron Ore page rather than this critter’s, which is how it shipped here as ten times itself.",
+      "description": "UNVERIFIED: the egg and the raw shellfish are the figures its page does not give. Eats 20 kg/cycle of nori \u2014 or two kelpoles \u2014 and excretes 50 kg/cycle of polluted mud; shearing yields 250 kg of iron ore every *ten* cycles, which is 25 a cycle and is the reason to keep them. That last figure is on the Iron Ore page rather than this critter\u2019s, which is how it shipped here as ten times itself.",
       "dupeLabourSecondsPerCycle": 24.0,
       "tags": [
         "ranching",
@@ -4829,7 +4849,7 @@ const String oniDataJson = r"""
       "id": "glo_squid",
       "name": "Glo Squid",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: grazes 25 % of a plant’s maturity a cycle, which is two domesticated Tublia at 12.5 % each — or eight wild ones, which ripen four times slower. It excretes abyssalite at the 50 % ratio the documented critters use rather than a published figure, and milks for 200 kg/cycle of squid ink.",
+      "description": "UNVERIFIED OUTPUT: grazes 25 % of a plant\u2019s maturity a cycle, which is two domesticated Tublia at 12.5 % each \u2014 or eight wild ones, which ripen four times slower. It excretes abyssalite at the 50 % ratio the documented critters use rather than a published figure, and milks for 200 kg/cycle of squid ink.",
       "dupeLabourSecondsPerCycle": 24.0,
       "tags": [
         "ranching",
@@ -4878,7 +4898,7 @@ const String oniDataJson = r"""
       "id": "seaquine",
       "name": "Seaquine",
       "kind": "critter",
-      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime — the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. UNVERIFIED OUTPUT still: it is the only source of ovolene, through an Aquatic Milking Station, and nobody has published how much. Milking also halves its breeding, which this model has no way to show.",
+      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime \u2014 the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. UNVERIFIED OUTPUT still: it is the only source of ovolene, through an Aquatic Milking Station, and nobody has published how much. Milking also halves its breeding, which this model has no way to show.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -4922,7 +4942,7 @@ const String oniDataJson = r"""
       "id": "kelpole",
       "name": "Kelpole",
       "kind": "critter",
-      "description": "UNVERIFIED: its page is a stub — the diet and ranching sections are empty headings. Everything here is read off the Tower Kelp and Orehull pages instead. A Tower Kelp spawns kelpoles and a kelpole, killed, gives 10 kg of nori; five cycles of a kelpole is one kelpole in and 10 kg of nori out, which is the same fact from either end. It lays no eggs: kelpoles hatch from the plant, and an Orehull ranch needs Tower Kelp precisely because they do not breed.",
+      "description": "UNVERIFIED: its page is a stub \u2014 the diet and ranching sections are empty headings. Everything here is read off the Tower Kelp and Orehull pages instead. A Tower Kelp spawns kelpoles and a kelpole, killed, gives 10 kg of nori; five cycles of a kelpole is one kelpole in and 10 kg of nori out, which is the same fact from either end. It lays no eggs: kelpoles hatch from the plant, and an Orehull ranch needs Tower Kelp precisely because they do not breed.",
       "dupeLabourSecondsPerCycle": 0.0,
       "tags": [
         "ranching",
@@ -4975,7 +4995,7 @@ const String oniDataJson = r"""
       "id": "beakon_grazing",
       "name": "Beakon (grazing Starnacles)",
       "kind": "critter",
-      "description": "UNVERIFIED OUTPUT: the same Beakon, fed on living Starnacles instead of mined phosphorite. It eats 12.5 % of a plant’s maturity a cycle and a domesticated Starnacle ripens 25 % a cycle, so one plant keeps two Beakons. The lime rate is still the 50 % ratio rather than a published figure.",
+      "description": "UNVERIFIED OUTPUT: the same Beakon, fed on living Starnacles instead of mined phosphorite. It eats 12.5 % of a plant\u2019s maturity a cycle and a domesticated Starnacle ripens 25 % a cycle, so one plant keeps two Beakons. The lime rate is still the 50 % ratio rather than a published figure.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -5014,7 +5034,7 @@ const String oniDataJson = r"""
       "id": "gas_grass",
       "name": "Gas Grass",
       "kind": "plant",
-      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle \u2014 gas, liquid or solid, and this app has the first two \u2014 and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -5051,7 +5071,7 @@ const String oniDataJson = r"""
       "id": "mealwood",
       "name": "Mealwood",
       "kind": "plant",
-      "description": "The starter crop: no irrigation, 10 kg/cycle of dirt, and 200 kcal a cycle once it is being harvested on schedule — five of them keep one Duplicant fed.",
+      "description": "The starter crop: no irrigation, 10 kg/cycle of dirt, and 200 kcal a cycle once it is being harvested on schedule \u2014 five of them keep one Duplicant fed.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -5153,7 +5173,7 @@ const String oniDataJson = r"""
       "id": "arbor_tree_grazed",
       "name": "Arbor Tree (grazed)",
       "kind": "plant",
-      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is percentage points of maturity per cycle, and a tree carries five branches that each regrow over 4.5 cycles — 111.11 points a cycle between them, which is the 12.5 Pips a domestic tree is published as feeding.",
+      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is percentage points of maturity per cycle, and a tree carries five branches that each regrow over 4.5 cycles \u2014 111.11 points a cycle between them, which is the 12.5 Pips a domestic tree is published as feeding.",
       "footprintWidth": 3,
       "footprintHeight": 4,
       "tags": [
@@ -5265,7 +5285,7 @@ const String oniDataJson = r"""
       "id": "gas_grass_grazed",
       "name": "Gas Grass (grazed)",
       "kind": "plant",
-      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing. Grazed rather than harvested: what a critter eats never becomes a crop.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle \u2014 gas, liquid or solid, and this app has the first two \u2014 and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing. Grazed rather than harvested: what a critter eats never becomes a crop.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -5327,7 +5347,7 @@ const String oniDataJson = r"""
       "id": "bristle_blossom_grazed",
       "name": "Bristle Blossom (grazed)",
       "kind": "plant",
-      "description": "Left for a Glossy Drecko or a Flox to graze rather than harvested — its growth goes to the herd, so there is no crop. Growth is published as percentage points of maturity per cycle: this one matures over 6 cycles, so it offers 16.6667 % a cycle.",
+      "description": "Left for a Glossy Drecko or a Flox to graze rather than harvested \u2014 its growth goes to the herd, so there is no crop. Growth is published as percentage points of maturity per cycle: this one matures over 6 cycles, so it offers 16.6667 % a cycle.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -5725,7 +5745,7 @@ const String oniDataJson = r"""
       "id": "thimble_reed",
       "name": "Thimble Reed",
       "kind": "plant",
-      "description": "Reed fibre without a Drecko, at the price of 160 kg/cycle of polluted water — the thirstiest plant in the game, and no fertiliser at all.",
+      "description": "Reed fibre without a Drecko, at the price of 160 kg/cycle of polluted water \u2014 the thirstiest plant in the game, and no fertiliser at all.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -6327,7 +6347,7 @@ const String oniDataJson = r"""
       "id": "cuddle_pip",
       "name": "Cuddle Pip",
       "kind": "critter",
-      "description": "A Pip morph, and one you get whether you meant to or not: an ordinary Pip has a 2 % chance of laying one, and eating Thimble Reed raises it. Same diet as a Pip and a quarter more of it, and five eighths of the dirt — 12.5 kg a cycle against 20. The egg and the meat are unchanged. What it is actually kept for is cuddling eggs, which halves their incubation, and that is not a flow this can carry. Three fit in a stable where one Pip does, so a ranch of them makes more dirt in the same floor even though each makes less.",
+      "description": "A Pip morph, and one you get whether you meant to or not: an ordinary Pip has a 2 % chance of laying one, and eating Thimble Reed raises it. Same diet as a Pip and a quarter more of it, and five eighths of the dirt \u2014 12.5 kg a cycle against 20. The egg and the meat are unchanged. What it is actually kept for is cuddling eggs, which halves their incubation, and that is not a flow this can carry. Three fit in a stable where one Pip does, so a ranch of them makes more dirt in the same floor even though each makes less.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -6369,7 +6389,7 @@ const String oniDataJson = r"""
       "id": "cuddle_pip_wild",
       "name": "Cuddle Pip (wild)",
       "kind": "critter",
-      "description": "A Pip morph, and one you get whether you meant to or not: an ordinary Pip has a 2 % chance of laying one, and eating Thimble Reed raises it. Same diet as a Pip and a quarter more of it, and five eighths of the dirt — 12.5 kg a cycle against 20. The egg and the meat are unchanged. What it is actually kept for is cuddling eggs, which halves their incubation, and that is not a flow this can carry. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often.",
+      "description": "A Pip morph, and one you get whether you meant to or not: an ordinary Pip has a 2 % chance of laying one, and eating Thimble Reed raises it. Same diet as a Pip and a quarter more of it, and five eighths of the dirt \u2014 12.5 kg a cycle against 20. The egg and the meat are unchanged. What it is actually kept for is cuddling eggs, which halves their incubation, and that is not a flow this can carry. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -6449,7 +6469,7 @@ const String oniDataJson = r"""
       "id": "oakshell",
       "name": "Oakshell",
       "kind": "critter",
-      "description": "A Pokeshell morph, which is why it has no page of its own. Eats the same 70 kg/cycle of polluted dirt or rot pile as its cousins and slime besides, and gives a quarter of it back as sand rather than half. What it is kept for is the molt: 100 kg a cycle from a happy, well-fed adult, crushed 1:1 into lumber — wood that costs no polluted water, which is what lets an Arbor Tree and Ethanol Distiller loop close. The wiki puts it at one Oakshell per 2.5 trees. Its egg and its meat are the Pokeshell’s figures, which is why this is unverified; the death drop of 500 kg and the 50 kg it sheds on growing up are not counted here.",
+      "description": "A Pokeshell morph, which is why it has no page of its own. Eats the same 70 kg/cycle of polluted dirt or rot pile as its cousins and slime besides, and gives a quarter of it back as sand rather than half. What it is kept for is the molt: 100 kg a cycle from a happy, well-fed adult, crushed 1:1 into lumber \u2014 wood that costs no polluted water, which is what lets an Arbor Tree and Ethanol Distiller loop close. The wiki puts it at one Oakshell per 2.5 trees. Its egg and its meat are the Pokeshell\u2019s figures, which is why this is unverified; the death drop of 500 kg and the 50 kg it sheds on growing up are not counted here.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -6496,7 +6516,7 @@ const String oniDataJson = r"""
       "id": "oakshell_wild",
       "name": "Oakshell (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. It sheds no Oakshell Molt at all — an Oakshell has to be happy to shed one and a wild one never is, which is the whole reason to ranch them. Unverified for the same reason as the tame one: the egg and the meat are the Pokeshell’s figures, because no page states the morph’s own.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. It sheds no Oakshell Molt at all \u2014 an Oakshell has to be happy to shed one and a wild one never is, which is the whole reason to ranch them. Unverified for the same reason as the tame one: the egg and the meat are the Pokeshell\u2019s figures, because no page states the morph\u2019s own.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -6564,7 +6584,7 @@ const String oniDataJson = r"""
       "id": "plug_slug_wild",
       "name": "Plug Slug (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: eats 60 kg a cycle of any metal ore or any refined metal — the same amount either way — and gives back hydrogen, eggs, meat and power. The power is the awkward one: 1 600 W, but only for the 75 s of each cycle it is awake, so the 200 W here is the average and a build that needs it at a particular moment will not find it there. It also drops to 1 200 W below 5 000 kcal and 800 W below 3 000, which this does not model.",
+      "description": "UNVERIFIED: eats 60 kg a cycle of any metal ore or any refined metal \u2014 the same amount either way \u2014 and gives back hydrogen, eggs, meat and power. The power is the awkward one: 1 600 W, but only for the 75 s of each cycle it is awake, so the 200 W here is the average and a build that needs it at a particular moment will not find it there. It also drops to 1 200 W below 5 000 kcal and 800 W below 3 000, which this does not model.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -7006,7 +7026,7 @@ const String oniDataJson = r"""
       "id": "kelpole_wild",
       "name": "Kelpole (wild)",
       "kind": "critter",
-      "description": "UNVERIFIED: its page is a stub — the diet and ranching sections are empty headings. Everything here is read off the Tower Kelp and Orehull pages instead. A Tower Kelp spawns kelpoles and a kelpole, killed, gives 10 kg of nori; five cycles of a kelpole is one kelpole in and 10 kg of nori out, which is the same fact from either end. It lays no eggs: kelpoles hatch from the plant, and an Orehull ranch needs Tower Kelp precisely because they do not breed. Left untamed: nobody grooms it, so it costs no Duplicant time. What it eats and what it yields are unchanged, since neither ever depended on grooming.",
+      "description": "UNVERIFIED: its page is a stub \u2014 the diet and ranching sections are empty headings. Everything here is read off the Tower Kelp and Orehull pages instead. A Tower Kelp spawns kelpoles and a kelpole, killed, gives 10 kg of nori; five cycles of a kelpole is one kelpole in and 10 kg of nori out, which is the same fact from either end. It lays no eggs: kelpoles hatch from the plant, and an Orehull ranch needs Tower Kelp precisely because they do not breed. Left untamed: nobody grooms it, so it costs no Duplicant time. What it eats and what it yields are unchanged, since neither ever depended on grooming.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",
@@ -7068,7 +7088,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 3,
       "footprintHeight": 4,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no sulfur at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no sulfur at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "farming",
         "aquatic",
@@ -7089,7 +7109,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no lime, salt water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no lime, salt water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "oxygen",
         "farming",
@@ -7111,7 +7131,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 2,
       "footprintHeight": 10,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted dirt, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted dirt, polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "farming",
         "aquatic",
@@ -7132,7 +7152,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted brine, sulfur at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted brine, sulfur at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "farming",
         "aquatic",
@@ -7153,7 +7173,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 1,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no coquina at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no coquina at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "farming",
         "aquatic",
@@ -7172,7 +7192,7 @@ const String oniDataJson = r"""
       "id": "alveo_vera_wild",
       "name": "Alveo Vera (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no carbon dioxide, ice at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no carbon dioxide, ice at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7193,7 +7213,7 @@ const String oniDataJson = r"""
       "id": "gas_grass_wild",
       "name": "Gas Grass (wild)",
       "kind": "plant",
-      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle \u2014 gas, liquid or solid, and this app has the first two \u2014 and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7213,7 +7233,7 @@ const String oniDataJson = r"""
       "id": "mealwood_wild",
       "name": "Mealwood (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7233,7 +7253,7 @@ const String oniDataJson = r"""
       "id": "arbor_tree_wild",
       "name": "Arbor Tree (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 3,
       "footprintHeight": 4,
       "tags": [
@@ -7253,7 +7273,7 @@ const String oniDataJson = r"""
       "id": "pikeapple_bush_wild",
       "name": "Pikeapple Bush (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7274,7 +7294,7 @@ const String oniDataJson = r"""
       "id": "mealwood_grazed_wild",
       "name": "Mealwood (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7294,7 +7314,7 @@ const String oniDataJson = r"""
       "id": "arbor_tree_grazed_wild",
       "name": "Arbor Tree (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt or polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor. A quarter of 111.11 points a cycle is 3.125 Pips to a tree, which is the published 0.32 wild trees per Pip from the other side.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt or polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor. A quarter of 111.11 points a cycle is 3.125 Pips to a tree, which is the published 0.32 wild trees per Pip from the other side.",
       "footprintWidth": 3,
       "footprintHeight": 4,
       "tags": [
@@ -7314,7 +7334,7 @@ const String oniDataJson = r"""
       "id": "pikeapple_bush_grazed_wild",
       "name": "Pikeapple Bush (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7337,7 +7357,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 1,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no coquina at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no coquina at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "farming",
         "aquatic",
@@ -7358,7 +7378,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted brine, sulfur at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "UNVERIFIED: the farmed figures this is derived from are themselves unverified, so this inherits their doubt. Growing where it landed: nobody waters or fertilises it, so it takes no polluted brine, sulfur at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "tags": [
         "farming",
         "aquatic",
@@ -7377,7 +7397,7 @@ const String oniDataJson = r"""
       "id": "gas_grass_grazed_wild",
       "name": "Gas Grass (wild, grazed)",
       "kind": "plant",
-      "description": "Four cycles to grow on 500 g of chlorine a cycle — gas, liquid or solid, and this app has the first two — and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
+      "description": "Four cycles to grow on 500 g of chlorine a cycle \u2014 gas, liquid or solid, and this app has the first two \u2014 and 25 kg of dirt, or of sand. It drops 400 kg of plant husk. Solid chlorine is not modelled here, so a build freezing its chlorine will have to say dirt or gas and mean the other thing.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7397,7 +7417,7 @@ const String oniDataJson = r"""
       "id": "bristle_blossom_wild",
       "name": "Bristle Blossom (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7418,7 +7438,7 @@ const String oniDataJson = r"""
       "id": "bristle_blossom_grazed_wild",
       "name": "Bristle Blossom (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7438,7 +7458,7 @@ const String oniDataJson = r"""
       "id": "dusk_cap_wild",
       "name": "Dusk Cap (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no slime at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no slime at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7459,7 +7479,7 @@ const String oniDataJson = r"""
       "id": "waterweed_wild",
       "name": "Waterweed (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no salt water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no salt water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7480,7 +7500,7 @@ const String oniDataJson = r"""
       "id": "waterweed_grazed_wild",
       "name": "Waterweed (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no salt water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no salt water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7500,7 +7520,7 @@ const String oniDataJson = r"""
       "id": "sleet_wheat_wild",
       "name": "Sleet Wheat (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7521,7 +7541,7 @@ const String oniDataJson = r"""
       "id": "pincha_pepperplant_wild",
       "name": "Pincha Pepperplant (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite, polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7542,7 +7562,7 @@ const String oniDataJson = r"""
       "id": "pincha_pepperplant_grazed_wild",
       "name": "Pincha Pepperplant (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no phosphorite, polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7562,7 +7582,7 @@ const String oniDataJson = r"""
       "id": "thimble_reed_wild",
       "name": "Thimble Reed (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7582,7 +7602,7 @@ const String oniDataJson = r"""
       "id": "thimble_reed_grazed_wild",
       "name": "Thimble Reed (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no polluted water at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 1,
       "tags": [
@@ -7602,7 +7622,7 @@ const String oniDataJson = r"""
       "id": "nosh_sprout_wild",
       "name": "Nosh Sprout (wild)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, ethanol at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, ethanol at all, and it ripens at a quarter of a farmed one\u2019s speed. That is the wild-farming trade \u2014 free, and four times the floor.",
       "footprintWidth": 1,
       "footprintHeight": 3,
       "tags": [
@@ -7629,7 +7649,7 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 1.5,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "The first oxygen anybody makes. 550 g/s of algae for 500 g/s of oxygen at 30 °C — the missing 50 g is the mass the game simply drops.",
+      "description": "The first oxygen anybody makes. 550 g/s of algae for 500 g/s of oxygen at 30 \u00b0C \u2014 the missing 50 g is the mass the game simply drops.",
       "tags": [
         "oxygen",
         "verified"
@@ -7660,7 +7680,7 @@ const String oniDataJson = r"""
       "powerWatts": -850,
       "footprintWidth": 5,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: the turbine flat out — 2 kg/s of steam at 200 C or hotter, for 850 W. Below that it makes less, down to 242 W at its 125 C minimum, and the app has no way to say how hot your steam is. The heat it takes in is the arithmetic rather than a published number: 2 kg/s falling from 200 C to 95 C carries 877.59 kDTU/s. It keeps 4 of that for itself and deletes the rest, which is the only thing in the game that does.",
+      "description": "UNVERIFIED: the turbine flat out \u2014 2 kg/s of steam at 200 C or hotter, for 850 W. Below that it makes less, down to 242 W at its 125 C minimum, and the app has no way to say how hot your steam is. The heat it takes in is the arithmetic rather than a published number: 2 kg/s falling from 200 C to 95 C carries 877.59 kDTU/s. It keeps 4 of that for itself and deletes the rest, which is the only thing in the game that does.",
       "tags": [
         "power",
         "unverified"
@@ -7750,7 +7770,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 24,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "Rotting matter into dirt, one kilogram for one, at 75 °C. No power at all — just a Duplicant turning it over every 50 kg, which is about 24 seconds of somebody’s cycle.",
+      "description": "Rotting matter into dirt, one kilogram for one, at 75 \u00b0C. No power at all \u2014 just a Duplicant turning it over every 50 kg, which is about 24 seconds of somebody\u2019s cycle.",
       "tags": [
         "farming",
         "verified"
@@ -7806,7 +7826,7 @@ const String oniDataJson = r"""
       "id": "slime_offgassing",
       "name": "Slime offgassing",
       "kind": "custom",
-      "description": "A pile of slime turning itself into polluted oxygen: 125 g every 4.8 s, and the slime goes with it. Alone among the offgassing solids its rate does not depend on how big the pile is, so a count here is simply how many piles you keep — which is also why a Conveyor Rail, splitting slime into 20 kg chunks, offgasses it so much faster than one heap.",
+      "description": "A pile of slime turning itself into polluted oxygen: 125 g every 4.8 s, and the slime goes with it. Alone among the offgassing solids its rate does not depend on how big the pile is, so a count here is simply how many piles you keep \u2014 which is also why a Conveyor Rail, splitting slime into 20 kg chunks, offgasses it so much faster than one heap.",
       "tags": [
         "sublimation",
         "verified"
@@ -7828,7 +7848,7 @@ const String oniDataJson = r"""
       "id": "oxylite_sublimation",
       "name": "Oxylite subliming (1000 kg)",
       "kind": "custom",
-      "description": "Oxylite going straight to oxygen. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki’s own figure for 1000 kg, and a count of two is two such piles — not one of 2000 kg, which would offgas less than both. Split the same tonne across fifty conveyor packets and it makes 3950 g/s instead.",
+      "description": "Oxylite going straight to oxygen. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki\u2019s own figure for 1000 kg, and a count of two is two such piles \u2014 not one of 2000 kg, which would offgas less than both. Split the same tonne across fifty conveyor packets and it makes 3950 g/s instead.",
       "tags": [
         "sublimation",
         "verified"
@@ -7850,7 +7870,7 @@ const String oniDataJson = r"""
       "id": "polluted_water_offgassing",
       "name": "Polluted Water offgassing (1000 kg)",
       "kind": "custom",
-      "description": "A bottle or a pool giving off polluted oxygen. Its rate is the one that goes straight with the mass rather than a root of it, so splitting it up buys nothing. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki’s own figure for 1000 kg, and a count of two is two such piles — not one of 2000 kg, which would offgas less than both.",
+      "description": "A bottle or a pool giving off polluted oxygen. Its rate is the one that goes straight with the mass rather than a root of it, so splitting it up buys nothing. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki\u2019s own figure for 1000 kg, and a count of two is two such piles \u2014 not one of 2000 kg, which would offgas less than both.",
       "tags": [
         "sublimation",
         "verified"
@@ -7872,7 +7892,7 @@ const String oniDataJson = r"""
       "id": "bleach_stone_offgassing",
       "name": "Bleach Stone offgassing (1000 kg)",
       "kind": "custom",
-      "description": "Chlorine for disinfecting, and the usual way to fill a room with it is to carry bleach stone through it. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki’s own figure for 1000 kg, and a count of two is two such piles — not one of 2000 kg, which would offgas less than both.",
+      "description": "Chlorine for disinfecting, and the usual way to fill a room with it is to carry bleach stone through it. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki\u2019s own figure for 1000 kg, and a count of two is two such piles \u2014 not one of 2000 kg, which would offgas less than both.",
       "tags": [
         "sublimation",
         "verified"
@@ -7899,7 +7919,7 @@ const String oniDataJson = r"""
       "heatKdtuPerSecond": 2,
       "footprintWidth": 4,
       "footprintHeight": 4,
-      "description": "A kilogram of water a second down the hole, 3.33 kg of crude oil back up at 90 °C, and 33 g of natural gas at 300 °C that is hotter than everything else it does put together. The water is gone for good.",
+      "description": "A kilogram of water a second down the hole, 3.33 kg of crude oil back up at 90 \u00b0C, and 33 g of natural gas at 300 \u00b0C that is hotter than everything else it does put together. The water is gone for good.",
       "tags": [
         "refining",
         "verified"
@@ -7937,7 +7957,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "100 kg of clay and 25 kg of any fuel make 100 kg of ceramic at 80 °C in 40 s, with no Duplicant tied to it.",
+      "description": "100 kg of clay and 25 kg of any fuel make 100 kg of ceramic at 80 \u00b0C in 40 s, with no Duplicant tied to it.",
       "tags": [
         "refining",
         "verified"
@@ -7979,7 +7999,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "125 kg of coal down to 100 kg of refined carbon at 80 °C in 40 s, with no Duplicant tied to it. The other fuels are their own recipes because they are their own amounts.",
+      "description": "125 kg of coal down to 100 kg of refined carbon at 80 \u00b0C in 40 s, with no Duplicant tied to it. The other fuels are their own recipes because they are their own amounts.",
       "tags": [
         "refining",
         "verified"
@@ -8011,7 +8031,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "200 kg of wood down to 100 kg of refined carbon in 40 s. The port takes the class, so lumber and gum wood are both it — the game charges the same 200 kg for either.",
+      "description": "200 kg of wood down to 100 kg of refined carbon in 40 s. The port takes the class, so lumber and gum wood are both it \u2014 the game charges the same 200 kg for either.",
       "tags": [
         "refining",
         "verified"
@@ -8043,7 +8063,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "300 kg of peat down to 100 kg of refined carbon in 40 s — the dearest of the four, and the wiki says so in the same breath.",
+      "description": "300 kg of peat down to 100 kg of refined carbon in 40 s \u2014 the dearest of the four, and the wiki says so in the same breath.",
       "tags": [
         "refining",
         "verified",
@@ -8076,7 +8096,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "100 kg of sand into 25 kg of molten glass at 1942 °C, every 40 s. Three quarters of the sand does not come out the other side.",
+      "description": "100 kg of sand into 25 kg of molten glass at 1942 \u00b0C, every 40 s. Three quarters of the sand does not come out the other side.",
       "tags": [
         "refining",
         "verified"
@@ -8147,7 +8167,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 2,
       "footprintHeight": 3,
-      "description": "UNVERIFIED TIME: 75 kg of dirt and 75 kg of water or mucin make one Mush Bar of 800 kcal. The wiki gives the recipe and not how long it takes, so the rates assume one bar a cycle — which is what this always claimed while shipping an output a thousand times too large.",
+      "description": "UNVERIFIED TIME: 75 kg of dirt and 75 kg of water or mucin make one Mush Bar of 800 kcal. The wiki gives the recipe and not how long it takes, so the rates assume one bar a cycle \u2014 which is what this always claimed while shipping an output a thousand times too large.",
       "tags": [
         "food",
         "unverified"
@@ -8320,7 +8340,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "50 kg of plastic — or of rubber, in the same amount — makes one gasket in 30 seconds. That is the figure four buildings on this list have been waiting on: a Marine Drill wanting a gasket could be priced in gaskets and not in what a gasket costs. A Duplicant runs it the whole time, and the other recipes here make equipment rather than materials: oxygen masks, power banks and boosters, none of which is a flow a pipeline can carry.",
+      "description": "50 kg of plastic \u2014 or of rubber, in the same amount \u2014 makes one gasket in 30 seconds. That is the figure four buildings on this list have been waiting on: a Marine Drill wanting a gasket could be priced in gaskets and not in what a gasket costs. A Duplicant runs it the whole time, and the other recipes here make equipment rather than materials: oxygen masks, power banks and boosters, none of which is a flow a pipeline can carry.",
       "tags": [
         "refining",
         "verified"
@@ -8355,7 +8375,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "UNVERIFIED: a Hatch egg cracks into 1 600 kcal of raw egg and a kilogram of shell, which is the published recipe. Two things are not published: how long an operation takes, assumed here to be the 40 s every other Duplicant-worked crafting step uses, and the power, modelled as none. A bigger critter’s egg gives more — a Bammoth’s is four times a Hatch’s — and this app has one Egg item, so these are Hatch figures.",
+      "description": "UNVERIFIED: a Hatch egg cracks into 1 600 kcal of raw egg and a kilogram of shell, which is the published recipe. Two things are not published: how long an operation takes, assumed here to be the 40 s every other Duplicant-worked crafting step uses, and the power, modelled as none. A bigger critter\u2019s egg gives more \u2014 a Bammoth\u2019s is four times a Hatch\u2019s \u2014 and this app has one Egg item, so these are Hatch figures.",
       "tags": [
         "food",
         "unverified"
@@ -8391,7 +8411,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "150 kg of mud into 60 kg of dirt and 90 kg of water, which is where a Grubgrub ranch stops being a curiosity: sulfur in, dirt and water out. A Duplicant runs it, and how fast depends on their Machinery skill — 7.5 kg/s untrained, 10 with 13 skill and a liquid pipe. The untrained figure is the one here, being the one anybody gets first.",
+      "description": "150 kg of mud into 60 kg of dirt and 90 kg of water, which is where a Grubgrub ranch stops being a curiosity: sulfur in, dirt and water out. A Duplicant runs it, and how fast depends on their Machinery skill \u2014 7.5 kg/s untrained, 10 with 13 skill and a liquid pipe. The untrained figure is the one here, being the one anybody gets first.",
       "tags": [
         "refining",
         "spacedout",
@@ -8466,7 +8486,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "10 kg of uranium ore every 40 seconds becomes 2 kg of enriched uranium and 8 kg of depleted uranium — a fifth of what goes in is the part a reactor runs on, and the rest is a building material with the best radiation shielding of any refined metal. It runs itself, with no Duplicant. What comes out is hot enough that the pipe matters: depleted uranium melts at 132.85 °C. Nothing here burns the enriched half yet — a Research Reactor's page gives its fuel and its waste and never the coolant between them, so the numbers would not add up.",
+      "description": "10 kg of uranium ore every 40 seconds becomes 2 kg of enriched uranium and 8 kg of depleted uranium \u2014 a fifth of what goes in is the part a reactor runs on, and the rest is a building material with the best radiation shielding of any refined metal. It runs itself, with no Duplicant. What comes out is hot enough that the pipe matters: depleted uranium melts at 132.85 \u00b0C. Nothing here burns the enriched half yet \u2014 a Research Reactor's page gives its fuel and its waste and never the coolant between them, so the numbers would not add up.",
       "tags": [
         "refining",
         "spacedout",
@@ -8541,7 +8561,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Five kilograms of egg shell into five of lime, per 40 s operation. This read 100 kg both sides for a long time — the crusher’s usual batch, and not this recipe’s: the table gives each of the lime recipes its own mass, and they are 5 kg, 60 kg and 10 kg rather than a hundred.",
+      "description": "Five kilograms of egg shell into five of lime, per 40 s operation. This read 100 kg both sides for a long time \u2014 the crusher\u2019s usual batch, and not this recipe\u2019s: the table gives each of the lime recipes its own mass, and they are 5 kg, 60 kg and 10 kg rather than a hundred.",
       "tags": [
         "refining",
         "verified"
@@ -8572,7 +8592,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 0,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of wood or peat to do it — the page gives the fuel as \"either Peat or Wood\" in a note under the recipes. Either works in the same amount, so the port takes either and the node says which. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
+      "description": "UNVERIFIED: six kilograms of tough meat make 16 000 kcal of tender brisket over ten cycles, burning 100 kg of wood or peat to do it \u2014 the page gives the fuel as \"either Peat or Wood\" in a note under the recipes. Either works in the same amount, so the port takes either and the node says which. It draws no power and needs a Duplicant to unload it, for a time nobody has published, so the labour is left at nothing rather than guessed.",
       "tags": [
         "food",
         "prehistoric",
@@ -8607,7 +8627,7 @@ const String oniDataJson = r"""
       "id": "sodicane",
       "name": "Sodicane",
       "kind": "plant",
-      "description": "UNVERIFIED: four cycles to ripen on 10 kg of salt a cycle, for one Salty Stick worth 600 kcal. The page says nothing about irrigation, so none is modelled — which is the assumption to check first if a salt farm here looks too cheap.",
+      "description": "UNVERIFIED: four cycles to ripen on 10 kg of salt a cycle, for one Salty Stick worth 600 kcal. The page says nothing about irrigation, so none is modelled \u2014 which is the assumption to check first if a salt farm here looks too cheap.",
       "tags": [
         "farming",
         "aquatic",
@@ -8630,7 +8650,7 @@ const String oniDataJson = r"""
       "id": "clampum",
       "name": "Clampum",
       "kind": "plant",
-      "description": "UNVERIFIED: eight cycles on 35 kg a cycle of sand — molten glass does just as well, in the same amount — for 50 kg of pearl. It also gives off carbon dioxide at a rate nobody has published, so that is missing here rather than guessed. Needs a Wide Hydroponic Farm with all nine tiles under water, which no flow model can tell you about.",
+      "description": "UNVERIFIED: eight cycles on 35 kg a cycle of sand \u2014 molten glass does just as well, in the same amount \u2014 for 50 kg of pearl. It also gives off carbon dioxide at a rate nobody has published, so that is missing here rather than guessed. Needs a Wide Hydroponic Farm with all nine tiles under water, which no flow model can tell you about.",
       "tags": [
         "farming",
         "aquatic",
@@ -8664,7 +8684,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "90 kg of plant husk and 10 kg of resin make 100 kg of plywood in 40 s of Duplicant time, which is a batch — stated here as the continuous rate it comes to, the way the Rock Crusher and the Metal Refinery are.",
+      "description": "90 kg of plant husk and 10 kg of resin make 100 kg of plywood in 40 s of Duplicant time, which is a batch \u2014 stated here as the continuous rate it comes to, the way the Rock Crusher and the Metal Refinery are.",
       "tags": [
         "refining",
         "prehistoric",
@@ -8722,7 +8742,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "A quarter of the tame one, and no refined carbon to feed it — the same as every wild plant here. The page bears it out sideways: eight domestic plants keep a Marine Drill in diamond, and thirty wild ones.",
+      "description": "A quarter of the tame one, and no refined carbon to feed it \u2014 the same as every wild plant here. The page bears it out sideways: eight domestic plants keep a Marine Drill in diamond, and thirty wild ones.",
       "tags": [
         "farming",
         "aquatic",
@@ -8779,7 +8799,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one Pinpoki becomes 7200 kcal of Uni, the densest food in the game. The page does not give the Sushi Bar’s base craft time, so this uses the 50 s the Sushi Roll recipe here already assumes — the two are wrong together or right together.",
+      "description": "UNVERIFIED TIME: one Pinpoki becomes 7200 kcal of Uni, the densest food in the game. The page does not give the Sushi Bar\u2019s base craft time, so this uses the 50 s the Sushi Roll recipe here already assumes \u2014 the two are wrong together or right together.",
       "tags": [
         "food",
         "aquatic",
@@ -9131,7 +9151,7 @@ const String oniDataJson = r"""
     },
     {
       "id": "electric_grill_souffle_pancakes",
-      "name": "Electric Grill (Soufflé Pancakes)",
+      "name": "Electric Grill (Souffl\u00e9 Pancakes)",
       "kind": "building",
       "buildingId": "electric_grill",
       "powerWatts": 60,
@@ -9214,7 +9234,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "Either a kilogram of fish fillet or a kilogram of raw shellfish, and the same 1600 kcal out of both — which is why the catch is a choice on one port rather than two recipes.",
+      "description": "Either a kilogram of fish fillet or a kilogram of raw shellfish, and the same 1600 kcal out of both \u2014 which is why the catch is a choice on one port rather than two recipes.",
       "tags": [
         "food",
         "verified"
@@ -9420,7 +9440,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Two kilograms of Gristle Berry — an Electric Grill dish — and two of peppernut. One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
+      "description": "Two kilograms of Gristle Berry \u2014 an Electric Grill dish \u2014 and two of peppernut. One kilogram out every 50 s, with a Duplicant at it: the rates assume one standing there the whole cycle, and 100 g/s of natural gas burnt for 25 of carbon dioxide whatever is cooking.",
       "tags": [
         "food",
         "verified"
@@ -9759,7 +9779,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 1 kg of Gristle Berry make one 4200 kcal pie in 50 s. The grubfruit is not the choice — the berry is.",
+      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 1 kg of Gristle Berry make one 4200 kcal pie in 50 s. The grubfruit is not the choice \u2014 the berry is.",
       "tags": [
         "food",
         "spacedout",
@@ -9816,7 +9836,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 1.66 kg of Pikeapple Skewer make one 4200 kcal pie in 50 s. The grubfruit is not the choice — the berry is.",
+      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 1.66 kg of Pikeapple Skewer make one 4200 kcal pie in 50 s. The grubfruit is not the choice \u2014 the berry is.",
       "tags": [
         "food",
         "frosty",
@@ -9874,7 +9894,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 6.15 kg of Ovagro Fig make one 4200 kcal pie in 50 s. The grubfruit is not the choice — the berry is.",
+      "description": "Three Sleet Wheat Grain, 4 kg of Grubfruit and 6.15 kg of Ovagro Fig make one 4200 kcal pie in 50 s. The grubfruit is not the choice \u2014 the berry is.",
       "tags": [
         "food",
         "prehistoric",
@@ -9931,7 +9951,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: a nosh bean and a kilogram of salty sticks. The Sushi Bar’s base craft time is published nowhere, so this uses the 50 s the Sushi Roll recipe here already assumes — right or wrong, they are so together.",
+      "description": "UNVERIFIED TIME: a nosh bean and a kilogram of salty sticks. The Sushi Bar\u2019s base craft time is published nowhere, so this uses the 50 s the Sushi Roll recipe here already assumes \u2014 right or wrong, they are so together.",
       "tags": [
         "food",
         "aquatic",
@@ -9968,7 +9988,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: liceloaf, nori and 800 kcal of calamari, which is a kilogram of it. The Sushi Bar’s base craft time is published nowhere; this uses the same 50 s as the rest.",
+      "description": "UNVERIFIED TIME: liceloaf, nori and 800 kcal of calamari, which is a kilogram of it. The Sushi Bar\u2019s base craft time is published nowhere; this uses the same 50 s as the rest.",
       "tags": [
         "food",
         "aquatic",
@@ -10011,7 +10031,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "Six kilograms of fillet — fish or Jawbo, 6000 kcal of either — into four of smoked fish, over the 600 s every Smoker recipe takes, on 100 kg of wood or peat.",
+      "description": "Six kilograms of fillet \u2014 fish or Jawbo, 6000 kcal of either \u2014 into four of smoked fish, over the 600 s every Smoker recipe takes, on 100 kg of wood or peat.",
       "tags": [
         "food",
         "prehistoric",
@@ -10057,7 +10077,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 4,
       "footprintHeight": 3,
-      "description": "Seven kilograms of sweatcorn, pikeapple or spindly grubfruit — 5600 kcal of any of them, and all three are 800 kcal a kilogram, so it really is one rate — into four of poppers, over 600 s, on 100 kg of wood or peat.",
+      "description": "Seven kilograms of sweatcorn, pikeapple or spindly grubfruit \u2014 5600 kcal of any of them, and all three are 800 kcal a kilogram, so it really is one rate \u2014 into four of poppers, over 600 s, on 100 kg of wood or peat.",
       "tags": [
         "food",
         "prehistoric",
@@ -10189,7 +10209,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 2,
       "footprintHeight": 3,
-      "description": "1200 kcal of meal lice — two kilograms — and 50 kg of water or mucin. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "description": "1200 kcal of meal lice \u2014 two kilograms \u2014 and 50 kg of water or mucin. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
       "tags": [
         "food",
         "unverified"
@@ -10350,7 +10370,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 2,
       "footprintHeight": 3,
-      "description": "1600 kcal of meat — a kilogram — and a kilogram of tallow. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
+      "description": "1600 kcal of meat \u2014 a kilogram \u2014 and a kilogram of tallow. UNVERIFIED TIME: the wiki gives the recipe and not how long it takes, so the rates assume one batch a cycle, as the Mush Bar here does.",
       "tags": [
         "food",
         "unverified",
@@ -10383,7 +10403,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 4,
-      "description": "54 kg of chlorine a cycle, drawn straight out of the air around it, for 36 grains every 9 cycles — four a cycle. The grain is not food until it is baked; three of them are a Frost Bun. A wild one takes 36 cycles and 13.5 kg of chlorine a cycle, and is not here: the wild plants in this data take nothing at all, and that one takes chlorine.",
+      "description": "54 kg of chlorine a cycle, drawn straight out of the air around it, for 36 grains every 9 cycles \u2014 four a cycle. The grain is not food until it is baked; three of them are a Frost Bun. A wild one takes 36 cycles and 13.5 kg of chlorine a cycle, and is not here: the wild plants in this data take nothing at all, and that one takes chlorine.",
       "tags": [
         "farming",
         "prehistoric",
@@ -10408,7 +10428,7 @@ const String oniDataJson = r"""
       "kind": "plant",
       "footprintWidth": 1,
       "footprintHeight": 3,
-      "description": "One Spindly Grubfruit of 800 kcal every four cycles, and nothing to feed it — no irrigation, no fertiliser. Five plants keep one Duplicant fed raw, or 3.33 if the fruit is roasted first. The tended form, which a Divergent turns into a proper Grubfruit Plant, needs a critter this app does not model.",
+      "description": "One Spindly Grubfruit of 800 kcal every four cycles, and nothing to feed it \u2014 no irrigation, no fertiliser. Five plants keep one Duplicant fed raw, or 3.33 if the fruit is roasted first. The tended form, which a Divergent turns into a proper Grubfruit Plant, needs a critter this app does not model.",
       "tags": [
         "farming",
         "spacedout",
@@ -10433,7 +10453,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Stuffed Berry — 1.36 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Stuffed Berry \u2014 1.36 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -10486,7 +10506,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Stuffed Berry back — 0.23 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Stuffed Berry back \u2014 0.23 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -10524,7 +10544,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Mushroom Wrap — 1.25 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Mushroom Wrap \u2014 1.25 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -10577,7 +10597,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mushroom Wrap back — 0.21 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mushroom Wrap back \u2014 0.21 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -10615,7 +10635,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Surf'n'Turf — 1.00 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Surf'n'Turf \u2014 1.00 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -10668,7 +10688,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Surf'n'Turf back — 0.17 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Surf'n'Turf back \u2014 0.17 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -10706,7 +10726,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Pepper Bread — 1.50 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Pepper Bread \u2014 1.50 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -10759,7 +10779,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Pepper Bread back — 0.25 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Pepper Bread back \u2014 0.25 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -10797,7 +10817,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Mushroom Quiche — 0.94 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Mushroom Quiche \u2014 0.94 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -10850,7 +10870,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mushroom Quiche back — 0.16 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mushroom Quiche back \u2014 0.16 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -10888,7 +10908,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Curried Beans — 1.20 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Curried Beans \u2014 1.20 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -10941,7 +10961,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Curried Beans back — 0.20 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Curried Beans back \u2014 0.20 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -10979,7 +10999,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Spicy Tofu — 1.50 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Spicy Tofu \u2014 1.50 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -11032,7 +11052,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Spicy Tofu back — 0.25 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Spicy Tofu back \u2014 0.25 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -11070,7 +11090,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Frost Burger — 1.00 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Frost Burger \u2014 1.00 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "verified"
@@ -11123,7 +11143,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Frost Burger back — 0.17 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Frost Burger back \u2014 0.17 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "unverified"
@@ -11161,7 +11181,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 100,
       "footprintWidth": 3,
       "footprintHeight": 3,
-      "description": "6000 kcal of Mixed Berry Pie — 1.43 kg of it — and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 °C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
+      "description": "6000 kcal of Mixed Berry Pie \u2014 1.43 kg of it \u2014 and 12 kg of plastic make six packs that never spoil, giving back 6 kg of water at 95 \u00b0C. 250 s to dry and 50 s for a Duplicant to unload, so 300 s a batch and two batches a cycle; the labour is the 50 s of it.",
       "tags": [
         "food",
         "spacedout",
@@ -11215,7 +11235,7 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 1,
       "footprintHeight": 2,
-      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mixed Berry Pie back — 0.24 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
+      "description": "UNVERIFIED TIME: one pack and a kilogram of water make the 1000 kcal of Mixed Berry Pie back \u2014 0.24 kg of it. The page gives no time because a Duplicant does this in their own downtime, so this assumes the 50 s every other kitchen batch takes.",
       "tags": [
         "food",
         "spacedout",
@@ -11244,6 +11264,6 @@ const String oniDataJson = r"""
       }
     }
   ],
-  "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
+  "verifiedAgainst": "https://oxygennotincluded.wiki.gg \u2014 checked 2026-08-21"
 }
 """;
