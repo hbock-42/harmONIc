@@ -30,6 +30,29 @@ String? paletteWhy(ProcessSpec spec, String query, GameDatabase database) {
   return takes;
 }
 
+/// What a thing is for, in one line: the first sentence of what the recipe
+/// already says about itself.
+///
+/// The first question anybody asked was "I'm unsure how to make use of Arbor
+/// Tree vs Arbor Tree (grazed)", and the answer was already written on the
+/// spec — *the same plant, left for a critter to graze instead of harvested*.
+/// The list showed the name and nothing else, so the sentence that answers it
+/// was a click away at the moment it was being asked.
+///
+/// Not for supplies and outputs: there are hundreds of them, their names say
+/// what they are, and a hundred identical lines saying "whatever brings this
+/// into the build" is furniture rather than help.
+String? paletteHint(ProcessSpec spec) {
+  if (spec.kind == ProcessKind.source || spec.kind == ProcessKind.sink) {
+    return null;
+  }
+  final text = spec.description?.trim();
+  if (text == null || text.isEmpty) return null;
+  final stop = RegExp(r'[.!?](\s|$)').firstMatch(text);
+  final sentence = stop == null ? text : text.substring(0, stop.start + 1);
+  return sentence.replaceAll('**', '').replaceAll('*', '').replaceAll('`', '');
+}
+
 /// 0 for a name, 1 for something that makes it, 2 for something that eats it,
 /// and 3 for no match at all. Somebody typing "oxygen" wants the Electrolyzer
 /// above the Duplicant that breathes it.
@@ -304,8 +327,12 @@ class _PalettePanelState extends State<PalettePanel> {
                       spec: spec,
                       database: widget.database,
                       pointedAt: spec.id == widget.pointingAt,
-                      why: paletteWhy(spec,
-                          _search.text.trim().toLowerCase(), widget.database),
+                      // Why it is in a filtered list wins over what it is
+                      // for: somebody who searched "oxygen" is owed the
+                      // reason a Duplicant came back before anything else.
+                      why: paletteWhy(spec, _search.text.trim().toLowerCase(),
+                              widget.database) ??
+                          paletteHint(spec),
                       onTap: () => widget.onAdd(spec.id),
                       onEdit: () => widget.onEditRecipe(spec),
                     ),

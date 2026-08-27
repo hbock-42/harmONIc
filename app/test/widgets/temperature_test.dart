@@ -77,7 +77,16 @@ void main() {
 
     // Only the two published 70 °C outputs. Nobody has said what temperature
     // the water is, so nothing pretends to know.
-    expect(find.textContaining('°C'), findsNWidgets(2));
+    //
+    // In the inspector, not on the screen: the palette says what each recipe
+    // is for now, and several of those sentences have a temperature in them.
+    expect(
+      find.descendant(
+        of: find.byType(InspectorPanel),
+        matching: find.textContaining('°C'),
+      ),
+      findsNWidgets(2),
+    );
   });
 
   testWidgets('saying what the supply arrives at carries it downstream',

@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — The palette says what a thing is for
+
+Every recipe already carried a sentence about itself, and the list showed only
+its name.
+
+- **Arbor Tree** and **Arbor Tree (grazed)** now say which is which — *the same
+  plant, left for a critter to graze instead of harvested* — which was the
+  first question anybody asked about this app.
+- A recipe whose figures are a guess says so before you place it, rather than
+  after.
+- Supplies and outputs stay quiet: there are hundreds of them and their names
+  already say what they are.
+
 ## 27 August 2026 — Being told about it
 
 The notice that tells you a release has happened could not tell you about the
