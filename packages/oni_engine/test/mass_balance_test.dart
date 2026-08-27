@@ -78,20 +78,11 @@ void main() {
   final db = loadDefaultDatabase();
 
   /// Matter in and out, ignoring power, heat, calories, growth and grooming.
-  (double, double) massOf(ProcessSpec spec) {
-    var input = 0.0;
-    var output = 0.0;
-    for (final port in spec.ports) {
-      final item = db.item(port.itemId);
-      if (item == null || !item.hasMass) continue;
-      if (port.isInput) {
-        input += port.ratePerSecond;
-      } else {
-        output += port.ratePerSecond;
-      }
-    }
-    return (input, output);
-  }
+  // The arithmetic itself lives in the engine, because the app shows it to
+  // anybody checking a recipe: what they read and what this asserts have to
+  // be the same sum.
+  ({double input, double output}) massFor(ProcessSpec spec) =>
+      massOf(db, spec);
 
   /// Only meaningful where matter goes in *and* comes out. A geyser creates it,
   /// a grill turns grain into calories, a grazed plant turns water into growth —
@@ -100,15 +91,11 @@ void main() {
         if (spec.tags.contains('source') || spec.tags.contains('sink')) {
           return false;
         }
-        final (input, output) = massOf(spec);
-        return input > 0 && output > 0;
+        final mass = massFor(spec);
+        return mass.input > 0 && mass.output > 0;
       });
 
-  double driftOf(ProcessSpec spec) {
-    final (input, output) = massOf(spec);
-    final biggest = input > output ? input : output;
-    return (output - input) / biggest;
-  }
+  double driftOf(ProcessSpec spec) => massDrift(db, spec) ?? 0;
 
   test('matter balances unless somebody chose otherwise', () {
     final unexplained = <String>[];

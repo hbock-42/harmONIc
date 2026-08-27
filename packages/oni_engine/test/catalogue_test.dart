@@ -72,4 +72,54 @@ void main() {
       expect(listed, contains(spec.id), reason: spec.id);
     }
   });
+  group('the other way round', () {
+    final eaters = usedBy(db);
+
+    UsedBy of(String itemId) =>
+        eaters.firstWhere((entry) => entry.itemId == itemId);
+
+    test('says what eats a thing, biggest first', () {
+      final nori = of('nori');
+      final rates = [for (final t in nori.takers) t.takes.ratePerSecond];
+
+      expect(rates.length, greaterThan(1));
+      for (var i = 1; i < rates.length; i++) {
+        expect(rates[i], lessThanOrEqualTo(rates[i - 1]));
+      }
+      // The reason this view exists: checking an Orehull's 20 kg of nori a
+      // cycle means seeing it beside everything else that eats nori.
+      expect([for (final t in nori.takers) t.spec.id], contains('orehull'));
+    });
+
+    test('and what the eating buys, so a cost has something beside it', () {
+      final orehull = of('nori').takers.firstWhere((t) => t.spec.id == 'orehull');
+
+      expect([for (final port in orehull.makes) port.itemId],
+          contains('iron_ore'));
+    });
+
+    test('and Duplicant time is not a thing anybody eats', () {
+      expect(eaters.map((e) => e.itemId), isNot(contains('grooming')));
+      expect(eaters.map((e) => e.itemId), isNot(contains('shearing')));
+    });
+  });
+
+  group('what a recipe does to matter', () {
+    test('is the same sum the audit runs', () {
+      // A Rock Crusher turns 100 kg of rock into 100 kg of sand.
+      expect(massDrift(db, db.processOrThrow('rock_crusher_sand')),
+          closeTo(0, 1e-9));
+      // A Hatch gives back half of what it eats, which is the point of it.
+      expect(massDrift(db, db.processOrThrow('hatch')), closeTo(-0.5, 0.01));
+    });
+
+    test('and is not asked where it would be a lie', () {
+      // A geyser makes matter out of the world, a grill turns grain into
+      // calories: neither is meant to balance, and a number beside them would
+      // read as a fault.
+      expect(massDrift(db, db.processOrThrow(sourceSpecId('water'))), isNull);
+      expect(massDrift(db, db.processOrThrow('water_geyser')), isNull);
+    });
+  });
+
 }

@@ -298,11 +298,23 @@ date.
 
 Read down a list rather than across it. Two things that make the same stuff
 should be within reach of each other, and the one that is not is the one to
-check. A row marked *unverified* is one where a figure is a judgement rather
-than something the game publishes.
+check.
 
-If one is wrong, **wrong?** on the row opens a report with the recipe already
-named.
+- **What makes it** and **What eats it** are the same catalogue from either
+  end. A figure means little alone and a lot beside its neighbours.
+- **Cards, Rows, Table** — how much of each row to show. Table is for scanning
+  a column; cards are for reading one.
+- **Published** or **judged** — whether a figure is the game's or ours.
+- **×2 ×5 ×10** scales everything at once, for checking a ratio without doing
+  the multiplication.
+
+Click a row to see that recipe whole: what it takes, what it gives, and what it
+does to matter — how many kilograms go in against how many come out. A recipe
+that makes matter is not always wrong (a Hatch gives back half of what it eats,
+and that is the point of it) but it is the first thing to check.
+
+If a figure is wrong, **wrong?** on the row opens a report with the recipe
+already named.
 
 ## What has changed
 

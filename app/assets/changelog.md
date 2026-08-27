@@ -13,11 +13,15 @@ admit it is worse than one that never claimed to be right.
 **Figures**, on the toolbar: everything the app knows, grouped by what comes
 out and sorted by how much.
 
-- Read down a list rather than across it. Two things making the same stuff
-  belong near each other, and the one that is not is the one to check.
+- **What makes it** and **What eats it**: the same catalogue from either end.
+  A figure means little alone and a lot beside its neighbours.
+- **Cards, Rows or Table** — table for scanning a column, cards for reading
+  one.
+- **Published** or **judged**, so you can tell the game's figures from ours.
+- **×2 ×5 ×10** scales everything at once, for checking a ratio in your head.
+- Click a row for the recipe whole, including **what it does to matter**: kg in
+  against kg out, which is how a recipe that invents matter shows itself.
 - Rates are per cycle, which is how the game quotes them.
-- A row marked *unverified* is a figure that is a judgement rather than
-  something the game publishes.
 - **wrong?** on a row opens a report with the recipe already named.
 
 It is read off the data the solver is using rather than written down anywhere,

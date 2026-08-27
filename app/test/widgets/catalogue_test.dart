@@ -50,7 +50,9 @@ void main() {
     await search(tester, 'iron ore');
 
     expect(textContaining('Orehull'), findsWidgets);
-    expect(textContaining('unverified'), findsWidgets);
+    // "Judged" rather than "unverified": the reader has not met that word and
+    // what it means is that somebody decided the figure rather than read it.
+    expect(textContaining('judged'), findsWidgets);
   });
 
   testWidgets('and offers to say a figure is wrong', (tester) async {
@@ -100,6 +102,61 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(CataloguePanel), findsOneWidget);
+  });
+
+  testWidgets('turns round to say what eats a thing', (tester) async {
+    // The half that was missing: an Orehull eating 20 kg of nori a cycle
+    // means nothing on its own and something beside everything else that
+    // eats nori.
+    await pumpCatalogue(tester);
+    await tester.tap(find.text('What eats it'));
+    await tester.pumpAndSettle();
+    await search(tester, 'nori');
+
+    expect(textContaining('Orehull'), findsWidgets);
+    // And what the eating buys, so the cost has something beside it.
+    expect(textContaining('Iron Ore'), findsWidgets);
+  });
+
+  testWidgets('scales everything at once, for checking a ratio',
+      (tester) async {
+    await pumpCatalogue(tester);
+    await search(tester, 'dirt');
+    expect(textContaining('20.00 kg'), findsWidgets);
+
+    await tester.tap(find.text('×5'));
+    await tester.pumpAndSettle();
+
+    expect(textContaining('100.00 kg'), findsWidgets);
+  });
+
+  testWidgets('and shows one recipe whole, with what it does to matter',
+      (tester) async {
+    await pumpCatalogue(tester);
+    await search(tester, 'coal');
+    await tester.tap(textContaining('Hatch').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('TAKES'), findsOneWidget);
+    expect(find.text('GIVES'), findsOneWidget);
+    // A Hatch gives back half of what it eats, which is the point of it.
+    expect(textContaining('WHAT IT DOES TO MATTER'), findsOneWidget);
+    expect(textContaining('kg in'), findsOneWidget);
+  });
+
+  testWidgets('and keeps the judged figures apart from the published ones',
+      (tester) async {
+    await pumpCatalogue(tester);
+    await tester.tap(find.text('Judged'));
+    await tester.pumpAndSettle();
+    await search(tester, 'iron ore');
+
+    expect(textContaining('Orehull'), findsWidgets);
+
+    await tester.tap(find.text('Published'));
+    await tester.pumpAndSettle();
+
+    expect(textContaining('Orehull'), findsNothing);
   });
 
 }
