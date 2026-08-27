@@ -403,4 +403,55 @@ void main() {
     });
   });
 
+  group('a power network', () {
+    /// The first issue anybody opened, and it was right: in the game a grid is
+    /// one shared bus, and "which generator feeds which building" is a
+    /// question the game never asks. Wired directly it was six wires between
+    /// two generators and three consumers, three even-split warnings and no
+    /// answer at all.
+    late PipelineSolution solution;
+
+    setUp(() {
+      final pipeline = (PipelineBuilder(db, name: 'grid')
+            ..add('petroleum_generator', nodeId: 'pgen')
+            ..add('natural_gas_generator', nodeId: 'ngen')
+            ..add('power_network', nodeId: 'grid')
+            ..add('oil_refinery', nodeId: 'refinery')
+            ..add('water_sieve', nodeId: 'sieve')
+            ..addSink('power')
+            // Each generator hands over everything it makes...
+            ..connect('pgen', 'power_out', 'grid', 'in', mode: EdgeMode.push)
+            ..connect('ngen', 'power_out', 'grid', 'in', mode: EdgeMode.push)
+            // ...and everything else takes what it needs off the one bus.
+            ..connect('grid', 'out', 'refinery', 'power_in')
+            ..connect('grid', 'out', 'sieve', 'power_in')
+            ..connect('grid', 'out', 'sink_power', 'in')
+            ..pinCount('pgen', 2)
+            ..pinCount('ngen', 1)
+            ..pinCount('refinery', 1)
+            ..pinCount('sieve', 1))
+          .build();
+      solution = solver.solve(pipeline);
+      expect(solution.status, SolveStatus.solved);
+    });
+
+    test('is generation minus consumption, and nobody divides anything', () {
+      // Two Petroleum Generators at 2 kW and one Natural Gas at 800 W.
+      expect(solution.nodes['grid']!.count, closeTo(4800, 1e-6));
+
+      // An Oil Refinery draws 480 W and a Water Sieve 120.
+      expect(solution.nodes['sink_power']!.count, closeTo(4800 - 600, 1e-6));
+    });
+
+    test('and the bus costs nothing to have', () {
+      // It is the wires you were going to run anyway: no power of its own, no
+      // heat, no floor. A grid that showed up in the totals would be a grid
+      // that changed the answer by being drawn.
+      final grid = db.processOrThrow('power_network');
+      expect(grid.netPowerWatts, 0);
+      expect(grid.netHeatKdtu, 0);
+      expect(grid.footprintTiles, 0);
+    });
+  });
+
 }

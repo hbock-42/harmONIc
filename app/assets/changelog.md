@@ -28,6 +28,11 @@ itself.
   answer really does leave something spare, the port is marked as venting, where
   you can see it.
 
+- There is a **Power Network** node. A grid in the game is one shared bus, so
+  two generators and three consumers should be generation minus consumption —
+  not six wires and an even split nobody asked for. Put one in the middle, run
+  the generators into it as *the producer*, and a Power output on the end is
+  what the grid has spare. Raised as the first issue anybody opened.
 - A count nothing sets now says **any amount** rather than a number. A
   spare-power outlet reading "0.0 W" reads as *no spare power*, when what it
   meant was that nothing in the build said how big the generator was — and the

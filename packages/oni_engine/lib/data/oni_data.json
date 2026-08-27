@@ -2130,6 +2130,30 @@
       }
     },
     {
+      "id": "power_network",
+      "name": "Power Network",
+      "kind": "custom",
+      "description": "The grid itself. In the game every wire that touches is one network, and what matters is generation minus consumption — not which generator feeds which building, which is a question the game never asks. Wiring each generator to each consumer asks it, and the answer is a guess: two generators into one machine split its draw evenly, and nothing about that is right.\n\nSo put one of these in the middle. Generators go into it set to \"the producer\", because each hands over everything it makes; everything that draws power comes off it and takes what it needs; and a Power output on the end is what the grid has spare. A build with two separate grids has two of these.\n\nIt costs nothing and stands nowhere: it is the wires you were going to run anyway.",
+      "tags": [
+        "power",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "in",
+          "item": "power",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "id": "out",
+          "item": "power",
+          "direction": "output",
+          "rate": 1
+        }
+      ]
+    },
+    {
       "id": "petroleum_generator",
       "name": "Petroleum Generator",
       "kind": "building",

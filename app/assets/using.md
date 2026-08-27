@@ -179,6 +179,20 @@ A Duplicant eats 1 000 kcal a cycle. A Mush Bar is 800, so it takes 1.25
 Microbe Mushers to keep one person fed; a Frost Bun is 1 200 and a Uni is 7 200,
 which is the densest food in the game.
 
+## Power
+
+A grid in the game is one shared network: every wire that touches is the same
+bus, and *which generator feeds which building* is a question the game never
+asks. Wiring each generator to each consumer asks it, and the answer is a guess.
+
+So there is a **Power Network** node. Put one in the middle, run the generators
+into it set to *the producer* — each hands over everything it makes — and take
+everything that draws power off it. A **Power output** on the end is what the
+grid has spare. Two separate grids means two of these.
+
+It costs nothing and stands nowhere. It is the wires you were going to run
+anyway.
+
 ## Wires
 
 A wire is **pull** by default: the consumer decides, and the producer is sized to
