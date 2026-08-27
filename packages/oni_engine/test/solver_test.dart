@@ -892,4 +892,50 @@ void main() {
     });
   });
 
+  group('a vented port', () {
+    // Venting an output drops its balance equation, which is how the surplus
+    // is allowed to go to waste. It used to drop the equation altogether,
+    // which also allowed the *shortfall* to be conjured — found in a build
+    // sent in from the Discord, where three wires drew more sulfur out of a
+    // Marine Drill than it makes and every count downstream was 4.6 %
+    // optimistic under a clean "solved".
+    // Push shares over 100 % are rejected before the solve, so this is the
+    // shape that gets through: two producer-driven wires taking their share,
+    // and a third consumer-driven one helping itself on top.
+    Pipeline drawing(double share) {
+      final base = (PipelineBuilder(db, name: 'sulfur')
+            ..add('marine_drill', nodeId: 'drill')
+            ..add('tublia', nodeId: 'a')
+            ..add('tublia', nodeId: 'b')
+            ..add('gum_palm', nodeId: 'palm')
+            ..connectItem('drill', 'a', 'sulfur',
+                mode: EdgeMode.push, share: share)
+            ..connectItem('drill', 'b', 'sulfur',
+                mode: EdgeMode.push, share: share)
+            ..connectItem('drill', 'palm', 'sulfur')
+            ..pinCount('palm', 3)
+            ..pinCount('drill', 6))
+          .build();
+      return base.copyWith(nodes: [
+        for (final n in base.nodes)
+          if (n.id == 'drill') n.copyWith(ventedPorts: {'sulfur'}) else n,
+      ]);
+    }
+
+    test('lets what is spare go to waste', () {
+      final s = solver.solve(drawing(0.4));
+      expect(s.status, SolveStatus.solved);
+    });
+
+    test('and says so when more is drawn than made', () {
+      final s = solver.solve(drawing(0.5));
+
+      expect(s.status, SolveStatus.inconsistent);
+      expect(
+        s.issues.map((i) => i.message).join(),
+        contains('More is being drawn from the Marine Drill\u2019s sulfur'),
+      );
+    });
+  });
+
 }

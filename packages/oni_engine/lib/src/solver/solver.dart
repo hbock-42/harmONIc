@@ -269,13 +269,33 @@ class PipelineSolver {
             : pipeline
                 .edgesOutOf(ref)
                 .fold<double>(0, (sum, e) => sum + (edgeFlows[e.id] ?? 0));
+        final made = rateOf(node, port) * count;
         portBalances.add(PortBalance(
           ref: ref,
           itemId: itemFlowingIn(database, node, spec, port),
           direction: port.direction,
-          rate: rateOf(node, port) * count,
+          rate: made,
           linkedRate: linked,
         ));
+
+        // Venting an output port drops its balance equation, which is what
+        // lets the surplus go. It does not let the *shortfall* be conjured:
+        // without this, three wires drawing 4.83 kg/s of sulfur out of a
+        // drill making 4.62 solved cleanly, and every count downstream of it
+        // was 4.6 % optimistic.
+        if (port.isOutput &&
+            node.ventsPort(port.id) &&
+            linked > made * (1 + 1e-9) + 1e-9) {
+          resolvedIssues.add(PipelineIssue(
+            IssueSeverity.error,
+            'More is being drawn from the ${_portDescription(pipeline, ref)} '
+            'than it makes: ${_amount(linked)} against ${_amount(made)}. '
+            'Venting lets what is spare go to waste — it cannot make up the '
+            'difference.',
+            nodeId: node.id,
+          ));
+          status = SolveStatus.inconsistent;
+        }
       }
     }
 
@@ -464,6 +484,13 @@ class PipelineSolver {
 
   /// "Hydrogen Generator's power", for a sentence about a port. A port has no
   /// name of its own — what it carries is the name anybody would use for it.
+  /// A flow, in whichever of grams or kilograms a second reads as a number
+  /// somebody would say out loud.
+  static String _amount(double gramsPerSecond) =>
+      gramsPerSecond.abs() >= 1000
+          ? '${(gramsPerSecond / 1000).toStringAsFixed(2)} kg/s'
+          : '${gramsPerSecond.toStringAsFixed(1)} g/s';
+
   String _portDescription(Pipeline pipeline, PortRef ref) {
     final node = pipeline.node(ref.nodeId);
     final spec = node == null ? null : database.process(node.specId);
