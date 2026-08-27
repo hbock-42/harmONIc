@@ -135,6 +135,20 @@ Plants grow crops rather than calories.
 
     expect(find.byType(ChangelogPanel), findsOneWidget);
     expect(textContaining('26 August 2026 — Food'), findsWidgets);
+
+    // On top of the guide, not under it. Opened from the guide's own footer,
+    // it went into the stack before the guide did and the guide painted over
+    // it — so it was there, and reading it meant closing the thing that had
+    // just offered it. Tapping an entry proves it is the one taking clicks.
+    await tester.tap(find.text('26 August 2026 — Food').first);
+    await tester.pumpAndSettle();
+    // The body is rich text — the renderer builds spans so bold and code
+    // work — so a plain text finder cannot see it.
+    expect(
+      find.textContaining('Plants grow crops rather than calories',
+          findRichText: true),
+      findsWidgets,
+    );
   });
 
   test('the shipped changelog is the one in docs, to the byte', () {

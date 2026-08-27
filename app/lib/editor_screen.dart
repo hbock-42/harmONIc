@@ -449,18 +449,6 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
               ),
               ?_pipelinesMenu(),
-              if (_changelogOpen)
-                Positioned.fill(
-                  child: ChangelogPanel(
-                    onClose: () => setState(() => _changelogOpen = false),
-                    // Already in hand: the controller read it to work out
-                    // whether there was anything to say.
-                    load: switch (widget.news?.changelog) {
-                      final String text => () async => text,
-                      null => null,
-                    },
-                  ),
-                ),
               if (_guideOpen)
                 Positioned.fill(
                   child: GuidePanel(
@@ -479,6 +467,20 @@ class _EditorScreenState extends State<EditorScreen> {
                       // changelog puts somebody back where they were.
                       onWhatsNew: () => setState(() => _changelogOpen = true),
                     ),
+                  ),
+                ),
+              // After the guide, because a Stack paints its last child on top
+              // and the way in here is at the foot of the guide.
+              if (_changelogOpen)
+                Positioned.fill(
+                  child: ChangelogPanel(
+                    onClose: () => setState(() => _changelogOpen = false),
+                    // Already in hand: the controller read it to work out
+                    // whether there was anything to say.
+                    load: switch (widget.news?.changelog) {
+                      final String text => () async => text,
+                      null => null,
+                    },
                   ),
                 ),
               if (_keysPinned || _keysHeld)
