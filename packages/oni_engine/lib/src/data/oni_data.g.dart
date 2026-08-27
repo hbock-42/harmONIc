@@ -3485,6 +3485,11 @@ const String oniDataJson = r"""
           "rate": 0.4167
         },
         {
+          "item": "phosphorite",
+          "direction": "output",
+          "rate": 16.666666666666668
+        },
+        {
           "item": "egg",
           "direction": "output",
           "rate": 0.000185
@@ -3526,6 +3531,11 @@ const String oniDataJson = r"""
           "item": "plastic",
           "direction": "output",
           "rate": 83.3333
+        },
+        {
+          "item": "phosphorite",
+          "direction": "output",
+          "rate": 15.0
         },
         {
           "item": "egg",
@@ -6125,6 +6135,11 @@ const String oniDataJson = r"""
           "rate": 0.0416666667
         },
         {
+          "item": "phosphorite",
+          "direction": "output",
+          "rate": 16.666666666666668
+        },
+        {
           "item": "egg",
           "direction": "output",
           "rate": 1.85e-05
@@ -6152,6 +6167,11 @@ const String oniDataJson = r"""
           "item": "mealwood_growth",
           "direction": "input",
           "rate": 0.0555555556
+        },
+        {
+          "item": "phosphorite",
+          "direction": "output",
+          "rate": 15.0
         },
         {
           "item": "egg",

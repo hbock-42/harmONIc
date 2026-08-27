@@ -1539,4 +1539,24 @@ void main() {
     });
   });
 
+  test('a Drecko excretes phosphorite, which is what it is kept for', () {
+    // "Drecko is a renewable source of Phosphorite" is the first line of its
+    // page, and it had none here for as long as it has existed. The rate is
+    // not on that page: it is on Phosphorite's, which is why nobody checking
+    // the Drecko found it.
+    double perCycle(String id) => db
+        .processOrThrow(id)
+        .outputs
+        .firstWhere((p) => p.itemId == 'phosphorite')
+        .ratePerSecond *
+        secondsPerCycle /
+        1000;
+
+    expect(perCycle('drecko'), closeTo(10, 1e-9));
+    expect(perCycle('glossy_drecko'), closeTo(9, 1e-9));
+    // A wild one is not groomed and not sheared, and excretes the same.
+    expect(perCycle('drecko_wild'), closeTo(10, 1e-9));
+    expect(perCycle('glossy_drecko_wild'), closeTo(9, 1e-9));
+  });
+
 }
