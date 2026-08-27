@@ -899,10 +899,11 @@ void main() {
     // sent in from the Discord, where three wires drew more sulfur out of a
     // Marine Drill than it makes and every count downstream was 4.6 %
     // optimistic under a clean "solved".
-    // Push shares over 100 % are rejected before the solve, so this is the
-    // shape that gets through: two producer-driven wires taking their share,
-    // and a third consumer-driven one helping itself on top.
-    Pipeline drawing(double share) {
+    // Push shares over 100 % are rejected before the solve, and so is a port
+    // whose shares come to all of it with a consumer-driven wire still on it.
+    // So this is the shape that gets through: producer-driven wires leaving
+    // something, and a consumer-driven one helping itself to more than that.
+    Pipeline drawing(double share, double palms) {
       final base = (PipelineBuilder(db, name: 'sulfur')
             ..add('marine_drill', nodeId: 'drill')
             ..add('tublia', nodeId: 'a')
@@ -913,7 +914,7 @@ void main() {
             ..connectItem('drill', 'b', 'sulfur',
                 mode: EdgeMode.push, share: share)
             ..connectItem('drill', 'palm', 'sulfur')
-            ..pinCount('palm', 3)
+            ..pinCount('palm', palms)
             ..pinCount('drill', 6))
           .build();
       return base.copyWith(nodes: [
@@ -923,18 +924,66 @@ void main() {
     }
 
     test('lets what is spare go to waste', () {
-      final s = solver.solve(drawing(0.4));
+      // 90 % pushed leaves 461 g/s of sulfur, and three Gum Palms want 100.
+      final s = solver.solve(drawing(0.45, 3));
       expect(s.status, SolveStatus.solved);
     });
 
     test('and says so when more is drawn than made', () {
-      final s = solver.solve(drawing(0.5));
+      // The same 461 g/s left, and twenty Gum Palms wanting 667.
+      final s = solver.solve(drawing(0.45, 20));
 
       expect(s.status, SolveStatus.inconsistent);
       expect(
         s.issues.map((i) => i.message).join(),
         contains('More is being drawn from the Marine Drill\u2019s sulfur'),
       );
+    });
+  });
+
+  group('a port already divided', () {
+    // Reported from a sixty-node build: seven nodes solved to negative
+    // amounts, none of them the one at fault, and the only advice was "check
+    // the edge shares". One port explained all of it.
+    Pipeline sharedOut({required int extra}) {
+      final b = PipelineBuilder(db, name: 'grid')
+        ..add('natural_gas_generator', nodeId: 'gen')
+        ..addSink('power')
+        ..connect('gen', 'power_out', 'sink_power', 'in',
+            mode: EdgeMode.push, share: 1)
+        ..pinCount('gen', 1);
+      // A wire added afterwards, the ordinary way, with nothing said about
+      // it — which is what somebody does when the build grows.
+      if (extra > 0) {
+        b
+          ..add('rock_crusher_sand', nodeId: 'crusher')
+          ..addSource('raw_mineral')
+          ..addSink('sand')
+          ..connectItem('src_raw_mineral', 'crusher', 'raw_mineral')
+          ..connectItem('crusher', 'sink_sand', 'sand')
+          ..connect('gen', 'power_out', 'crusher', 'power_in')
+          ..pinCount('crusher', 1);
+      }
+      return b.build();
+    }
+
+    test('has nothing left for a wire added afterwards, and says which', () {
+      final s = solver.solve(sharedOut(extra: 1));
+
+      expect(s.status, SolveStatus.invalid);
+      final said = s.issues.map((i) => i.message).join();
+      // The port, not the seven nodes downstream of it.
+      expect(said, contains('Natural Gas Generator\u2019s power'));
+      expect(said, contains('100 %'));
+      expect(said, contains('nothing to take'));
+      // And no talk of negative amounts, which was the symptom.
+      expect(said, isNot(contains('negative')));
+    });
+
+    test('and is fine when nothing else is attached to it', () {
+      // A port shared out completely is not a problem. It is a problem only
+      // for the wire that arrives after it and finds nothing left.
+      expect(solver.solve(sharedOut(extra: 0)).status, SolveStatus.solved);
     });
   });
 

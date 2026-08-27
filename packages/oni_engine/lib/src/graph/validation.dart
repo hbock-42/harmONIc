@@ -189,6 +189,50 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
         : PortRef(edge.toNodeId, edge.toPortId);
     claims[ref] = (claims[ref] ?? 0) + edge.share!;
   }
+  // A port whose fixed shares already come to all of it, with other wires
+  // still attached.
+  //
+  // Six producer-driven wires off one generator's power claiming 100 % between
+  // them, and three consumer-driven ones added afterwards: there is nothing
+  // left for the three to take, and the only way the sums balance is for them
+  // to run backwards. That is what a negative amount is, and it spreads —
+  // seven nodes in the build this was reported from, none of which was the
+  // one at fault. "Check the edge shares" was all it said.
+  for (final node in pipeline.nodes) {
+    final spec = db.process(node.specId);
+    if (spec == null) continue;
+    for (final port in spec.ports) {
+      if (!port.isOutput) continue;
+      final ref = PortRef(node.id, port.id);
+      final out = pipeline.edgesOutOf(ref);
+      final fixed = [
+        for (final edge in out)
+          if (edge.mode == EdgeMode.push && edge.share != null) edge.share!,
+      ];
+      // Only the consumer-driven ones. A producer-driven line with no share
+      // takes what is left, and where nothing is left it carries nothing,
+      // which is what the optimiser writes when its answer does not need a
+      // line. A consumer-driven one insists on its target's whole demand, and
+      // that is what cannot be met.
+      final pulling =
+          out.where((edge) => edge.mode == EdgeMode.pull).length;
+      if (pulling == 0) continue;
+      final claimed = fixed.fold<double>(0, (sum, share) => sum + share);
+      if (claimed < 1 - _shareSlack) continue;
+      final others = pulling;
+      issues.add(PipelineIssue(
+        IssueSeverity.error,
+        '${_describe(pipeline, db, ref)} is already divided among '
+        '${fixed.length} lines that take a fixed share of it, '
+        '${(claimed * 100).toStringAsFixed(0)} % between them — so the '
+        '${others == 1 ? 'other line has' : '$others other lines have'} '
+        'nothing to take. Lower one of the shares, or give '
+        '${others == 1 ? 'that line' : 'those lines'} a share too.',
+        nodeId: node.id,
+      ));
+    }
+  }
+
   claims.forEach((ref, total) {
     if (total > 1 + _shareSlack) {
       issues.add(PipelineIssue(
@@ -208,3 +252,14 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
 /// Wide enough for a double divided by a double, and far narrower than any
 /// share anybody would set on purpose.
 const double _shareSlack = 1e-7;
+
+/// "the Natural Gas Generator's power", for a message somebody reads rather
+/// than a pair of ids.
+String _describe(Pipeline pipeline, GameDatabase db, PortRef ref) {
+  final node = pipeline.node(ref.nodeId);
+  final spec = node == null ? null : db.process(node.specId);
+  final port = spec?.portById(ref.portId);
+  final item = port == null ? null : db.item(port.itemId);
+  if (spec == null) return 'Port $ref';
+  return 'The ${spec.name}\u2019s ${item?.name.toLowerCase() ?? ref.portId}';
+}

@@ -31,6 +31,12 @@ itself.
   spare-power outlet reading "0.0 W" reads as *no spare power*, when what it
   meant was that nothing in the build said how big the generator was — and the
   app cannot know until you say.
+- A port whose wires already share out all of it now says so, instead of
+  solving to negative amounts. Six wires taking a fixed share of one
+  generator's power leave nothing for a seventh, and the sums could only
+  balance by running it backwards — which spread to seven nodes, none of them
+  the one at fault, under the advice "check the edge shares". It names the
+  port and how much is left.
 - A build shared from a newer version says what it could not open. It arrives
   with a node this app has never heard of, and every wire that touched it goes
   too — which can be all of them. The note named the node and stopped there, so
