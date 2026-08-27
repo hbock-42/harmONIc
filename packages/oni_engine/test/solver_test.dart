@@ -1213,4 +1213,51 @@ void main() {
     expect(answered.nodes['crusher']!.count, closeTo(1600 / 240, 1e-6));
   });
 
+  group('an amount on a supply', () {
+    // Asked three times how to solve a build from known inputs. The natural
+    // reading of "I have this much" is "up to this much", and the pin means
+    // "exactly this much flows" — so giving every supply its figure breaks
+    // the build on the one you have plenty of.
+    Pipeline refining({required double water}) => (PipelineBuilder(db, name: 'ore')
+          ..add('metal_refinery', nodeId: 'refinery')
+          ..addSource('metal_ore')
+          ..addSource('water')
+          ..addSink('refined_metal')
+          ..addSink('water')
+          ..connectItem('src_metal_ore', 'refinery', 'metal_ore')
+          ..connect('src_water', 'out', 'refinery', 'coolant_in')
+          ..connect('refinery', 'coolant_out', 'sink_water', 'in')
+          ..connectItem('refinery', 'sink_refined_metal', 'refined_metal')
+          ..pinRate('src_metal_ore', 'out', 1200)
+          ..pinRate('src_water', 'out', water))
+        .build();
+
+    test('is exactly that much, and says so when that is the problem', () {
+      // A refinery on 1.2 kg/s of ore wants 4.8 kg/s of coolant. Ten is not
+      // six spare; it is a contradiction.
+      final s = solver.solve(refining(water: 10000));
+
+      expect(s.status, SolveStatus.inconsistent);
+      final said = s.issues.map((i) => i.message).join(' ');
+      expect(said, contains('exactly that much flows'));
+      expect(said, contains('valve'));
+    });
+
+    test('and the same build comes out when it is the right amount', () {
+      expect(solver.solve(refining(water: 4800)).status, SolveStatus.solved);
+    });
+
+    test('or when the supply is left to be asked', () {
+      final base = refining(water: 4800);
+      final loose = base.copyWith(
+        pins: [for (final pin in base.pins) if (pin.nodeId != 'src_water') pin],
+      );
+
+      final s = solver.solve(loose);
+      expect(s.status, SolveStatus.solved);
+      // It works out the 4.8 kg/s for itself, which is the point of leaving it.
+      expect(s.nodes['src_water']!.count, closeTo(4800, 1e-6));
+    });
+  });
+
 }

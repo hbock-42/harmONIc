@@ -486,7 +486,8 @@ class PipelineSolver {
           'Nothing here can take all the ${_portDescription(pipeline, ref)}. '
           'Everything drawing from that port pulls, so it has to hand over '
           'exactly what it makes, and no size of this build makes that add up. '
-          'Send the surplus to an output node, or mark the port as venting.',
+          '${_supplyAdvice(pipeline, database, ref) ?? 'Send the surplus to an '
+              'output node, or mark the port as venting.'}',
           nodeId: ref.nodeId,
         ),
       ];
@@ -560,6 +561,33 @@ class PipelineSolver {
   static String _sentenceList(List<String> parts) {
     if (parts.length == 1) return parts.single;
     return '${parts.take(parts.length - 1).join(', ')} and ${parts.last}';
+  }
+
+  /// What to do when the port that cannot be emptied belongs to a supply
+  /// somebody has given an amount to.
+  ///
+  /// The field says "I have this much" and the pin means "exactly this much
+  /// flows", and those are not the same thing. Somebody planning from what
+  /// they have gives every supply its figure — which is the natural reading —
+  /// and the one they have plenty of breaks the build, because a supply with
+  /// more than the build needs is a contradiction rather than a spare.
+  ///
+  /// Asked three times how to solve a build from known inputs before this said
+  /// anything about it.
+  String? _supplyAdvice(
+    Pipeline pipeline,
+    GameDatabase database,
+    PortRef ref,
+  ) {
+    final node = pipeline.node(ref.nodeId);
+    if (node == null) return null;
+    if (database.process(node.specId)?.kind != ProcessKind.source) return null;
+    if (!pipeline.pins.any((pin) => pin.nodeId == node.id)) return null;
+    return 'An amount on a supply means exactly that much flows, not "up to '
+        'this much" — so a supply with more than the build needs contradicts '
+        'it rather than leaving a spare. Clear the amount and let the build '
+        'ask for what it wants, or put the figure on the wire as a valve, '
+        'which does mean "at most".';
   }
 
   /// The build as it would stand if this one port were allowed to overflow.

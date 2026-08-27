@@ -37,6 +37,12 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- A supply whose amount is more than the build needs now says what is wrong.
+  The field reads "I have this much" and the amount means *exactly this much
+  flows*, so a supply you have plenty of contradicts the build rather than
+  leaving a spare — set a pool of water to 10 kg/s beside a refinery wanting
+  4.8 and nothing would solve. It says so, and says to clear the amount or put
+  the figure on the wire as a valve, which does mean "at most".
 - A build that cannot be sized yet points at its supplies. Being told to name
   an amount for the Sand output is no help to somebody planning from what they
   have — the amount is the thing they came to find out. Giving every supply an

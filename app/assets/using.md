@@ -186,9 +186,16 @@ Saying what you *have* — 180 g/s of natural gas, a geyser's output, a stockpil
 thing feeds several, how much goes where is a choice rather than arithmetic, and
 the app will not invent it.
 
-**Give every supply an amount.** That is what "planning from what I have"
-means, and it is often the whole answer: a build with three supplies and two
-loose ends comes out the moment all three are set.
+**An amount on a supply means exactly that much flows.** Not "up to this much".
+So give an amount to the supplies you are actually short of — the geyser, the
+gas fissure, the thing you are planning around — and leave alone the ones you
+have plenty of. A supply with more than the build needs is a contradiction, not
+a spare: set a pool of water to 10 kg/s and a refinery wanting 4.8 will refuse
+to solve.
+
+Left alone, a supply is asked for what the build needs and tells you the answer,
+which is usually what you wanted from it. Where you really do mean "at most",
+put the figure on the wire as a **valve**.
 
 Where something is still divided after that, three ways to say how:
 
