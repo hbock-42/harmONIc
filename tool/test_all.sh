@@ -11,8 +11,8 @@ echo "== app =="
 
 echo "== shipped docs =="
 (./tool/copy_docs.sh >/dev/null &&
-  git diff --exit-code app/assets/using.md >/dev/null &&
-  echo "app/assets/using.md matches docs/USING.md")
+  git diff --exit-code app/assets/using.md app/assets/changelog.md >/dev/null &&
+  echo "app/assets matches docs/")
 
 # The same check CI makes: the committed generated data has to match the JSON
 # it was generated from, or the app and the source of truth have drifted.

@@ -7,5 +7,7 @@
 # tool/test_all.sh checks it has not.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-cp docs/USING.md app/assets/using.md
-echo "copied docs/USING.md -> app/assets/using.md"
+for doc in USING CHANGELOG; do
+  cp "docs/$doc.md" "app/assets/$(echo "$doc" | tr '[:upper:]' '[:lower:]').md"
+  echo "copied docs/$doc.md -> app/assets/$(echo "$doc" | tr '[:upper:]' '[:lower:]').md"
+done

@@ -11,9 +11,30 @@ import '../design/widgets.dart';
 /// rather than a second copy of the same words written for a screen. Two
 /// explanations of one thing disagree within a fortnight.
 class GuidePanel extends StatefulWidget {
-  const GuidePanel({required this.onClose, this.load, this.footer, super.key});
+  const GuidePanel({
+    required this.onClose,
+    this.load,
+    this.footer,
+    this.title = 'How this works',
+    this.backLabel = '← All topics',
+    this.source = 'docs/USING.md',
+    super.key,
+  });
 
   final VoidCallback onClose;
+
+  /// What the panel is called, and what the button back to the list says.
+  ///
+  /// The changelog is the same panel over a different Markdown file: a list of
+  /// sections, each of which opens. Making it a second widget would have been
+  /// two renderers for one job, and they disagree within a fortnight — which
+  /// is the reason this panel renders `docs/USING.md` rather than a second
+  /// copy of it in the first place.
+  final String title;
+  final String backLabel;
+
+  /// Where the file lives in the repository, for when it will not load.
+  final String source;
 
   /// What sits under the text — how to report a bug, and which build this is.
   ///
@@ -77,14 +98,14 @@ class _GuidePanelState extends State<GuidePanel> {
           child: GestureDetector(
             onTap: () {},
             child: OniPanel(
-              title: _open?.title ?? 'How this works',
+              title: _open?.title ?? widget.title,
               width: 640,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (_open != null) ...[
                     OniButton(
-                      label: '← All topics',
+                      label: widget.backLabel,
                       compact: true,
                       onPressed: () => setState(() => _open = null),
                     ),
@@ -105,7 +126,7 @@ class _GuidePanelState extends State<GuidePanel> {
                             padding: const EdgeInsets.all(OniSpacing.lg),
                             child: Text(
                               'The guide did not load: $_failed\n\n'
-                              'It also lives at docs/USING.md in the '
+                              'It also lives at ${widget.source} in the '
                               'repository.',
                               style: OniType.body
                                   .copyWith(color: OniColors.warning),
@@ -202,6 +223,17 @@ class _TopicRowState extends State<_TopicRow> {
 }
 
 Future<String> _fromBundle() => rootBundle.loadString('assets/using.md');
+
+/// The newest entry's heading, which is what "the version somebody has seen"
+/// means.
+///
+/// Not the build. A deploy that fixed a typo has nothing to tell anybody, and
+/// interrupting them to say so is how a notice becomes something people learn
+/// to dismiss without reading. No entry, no news.
+String? latestRelease(String changelog) {
+  final entries = splitGuide(changelog).topics;
+  return entries.isEmpty ? null : entries.first.title;
+}
 
 /// One section of the guide: a heading, and everything under it.
 class GuideTopic {

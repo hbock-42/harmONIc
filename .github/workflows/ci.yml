@@ -50,10 +50,10 @@ jobs:
           flutter analyze --fatal-infos
           flutter test
 
-      - name: The shipped guide matches the one in docs
+      - name: The shipped docs match the ones in docs/
         run: |
           ./tool/copy_docs.sh
-          git diff --exit-code app/assets/using.md
+          git diff --exit-code app/assets/using.md app/assets/changelog.md
 
       - name: The generated data matches its source
         working-directory: packages/oni_engine

@@ -228,6 +228,18 @@ remembered. The light palette is not the dark one inverted — every colour is
 picked for the background it sits on, because a hue that reads on near-black is
 usually too pale to read on near-white.
 
+## What has changed
+
+The app says so when there is something new to read, once, with a line at the
+top of the canvas naming the release. Click **What's new** to read it, or
+**Dismiss** — either way it does not ask again. The panel holds every entry, so
+it is the history as well as the news.
+
+It is driven by `docs/CHANGELOG.md` rather than by the build: a deploy that
+fixed a typo has nothing to tell you, and the app would rather say nothing than
+teach you to dismiss it without reading. Arriving for the first time shows
+nothing at all, since all of it would be new.
+
 ## Being shown
 
 **Watch a demo**, at the foot of this guide or on an empty canvas, builds one

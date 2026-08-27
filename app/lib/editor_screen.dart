@@ -22,10 +22,12 @@ import 'panels/inspector_panel.dart';
 import 'panels/palette_panel.dart';
 import 'panels/pipelines_menu.dart';
 import 'panels/process_editor.dart';
+import 'panels/changelog_panel.dart';
 import 'panels/problems_panel.dart';
 import 'panels/summary_bar.dart';
 import 'state/display_controller.dart';
 import 'state/library_controller.dart';
+import 'state/news_controller.dart';
 import 'state/pipeline_controller.dart';
 import 'state/workspace_controller.dart';
 
@@ -38,6 +40,7 @@ class EditorScreen extends StatefulWidget {
     required this.workspace,
     required this.displaySettings,
     this.loadGuide,
+    this.news,
     this.apple,
     this.openLink,
     this.demoPlayer,
@@ -54,6 +57,10 @@ class EditorScreen extends StatefulWidget {
 
   /// Where the guide's text comes from; the asset unless a test says otherwise.
   final Future<String> Function()? loadGuide;
+
+  /// Whether there is a changelog entry nobody here has read. Null in tests
+  /// that are not about it, and on a platform with nowhere to remember.
+  final NewsController? news;
 
   /// Whether this is somebody's first time here — nothing was restored from
   /// the last session, because there was no last session.
@@ -191,6 +198,7 @@ class _EditorScreenState extends State<EditorScreen> {
   ProcessSpec? _editing;
   bool _pipelinesOpen = false;
   bool _guideOpen = false;
+  bool _changelogOpen = false;
 
   /// The keys card. Two ways in, and they behave differently on purpose: the
   /// button pins it open until dismissed, and holding ? shows it only for as
@@ -204,12 +212,14 @@ class _EditorScreenState extends State<EditorScreen> {
     super.initState();
     widget.library.addListener(_onLibraryChanged);
     widget.demoPlayer?.addListener(_demoChanged);
+    widget.news?.addListener(_onNews);
   }
 
   @override
   void dispose() {
     widget.library.removeListener(_onLibraryChanged);
     widget.demoPlayer?.removeListener(_demoChanged);
+    widget.news?.removeListener(_onNews);
     super.dispose();
   }
 
@@ -241,6 +251,11 @@ class _EditorScreenState extends State<EditorScreen> {
         widget.demoHands?.aimAt(player.run!.next, player.run!.stage);
       }
     });
+  }
+
+  /// The changelog arrives after the canvas does, on purpose.
+  void _onNews() {
+    if (mounted) setState(() {});
   }
 
   void _onLibraryChanged() =>
@@ -354,6 +369,16 @@ class _EditorScreenState extends State<EditorScreen> {
                         onDismiss: () =>
                             setState(() => _offerDeclined = true),
                       ),
+                    if (widget.news?.unread case final String release)
+                      _WhatsNewNotice(
+                        release: release,
+                        onRead: () {
+                          setState(() => _changelogOpen = true);
+                          unawaited(widget.news!.markSeen());
+                        },
+                        onDismiss: () =>
+                            unawaited(widget.news!.markSeen()),
+                      ),
                     _RepairNotice(workspace: widget.workspace),
                     ProblemsBanner(controller: controller),
                     Expanded(
@@ -424,6 +449,18 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
               ),
               ?_pipelinesMenu(),
+              if (_changelogOpen)
+                Positioned.fill(
+                  child: ChangelogPanel(
+                    onClose: () => setState(() => _changelogOpen = false),
+                    // Already in hand: the controller read it to work out
+                    // whether there was anything to say.
+                    load: switch (widget.news?.changelog) {
+                      final String text => () async => text,
+                      null => null,
+                    },
+                  ),
+                ),
               if (_guideOpen)
                 Positioned.fill(
                   child: GuidePanel(
@@ -1124,6 +1161,54 @@ class _EmptyCanvas extends StatelessWidget {
 /// An offer and not an interruption: nothing plays until it is asked to, and
 /// waving it away is a button rather than a thing to hunt for. It sits under
 /// the tabs, above the build, in the place notices already appear.
+/// A line saying the app has changed since somebody was last here.
+///
+/// Dismissing it counts as having read it: somebody who does not care that
+/// there is news should not be asked twice.
+class _WhatsNewNotice extends StatelessWidget {
+  const _WhatsNewNotice({
+    required this.release,
+    required this.onRead,
+    required this.onDismiss,
+  });
+
+  final String release;
+  final VoidCallback onRead;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+            horizontal: OniSpacing.lg, vertical: OniSpacing.sm),
+        decoration: BoxDecoration(
+          color: OniColors.accent.withValues(alpha: 0.1),
+          border: Border(
+            bottom: BorderSide(color: OniColors.accent.withValues(alpha: 0.4)),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'harmONIc has changed since you were last here — $release.',
+                style: OniType.body.copyWith(fontSize: 12),
+              ),
+            ),
+            const SizedBox(width: OniSpacing.md),
+            OniButton(
+              label: "What's new",
+              compact: true,
+              tone: OniButtonTone.accent,
+              onPressed: onRead,
+            ),
+            const SizedBox(width: OniSpacing.xs),
+            OniButton(label: 'Dismiss', compact: true, onPressed: onDismiss),
+          ],
+        ),
+      );
+}
+
 class _FirstVisitOffer extends StatelessWidget {
   const _FirstVisitOffer({
     required this.demo,

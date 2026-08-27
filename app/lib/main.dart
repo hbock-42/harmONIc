@@ -12,6 +12,7 @@ import 'design/tokens.dart';
 import 'editor_screen.dart';
 import 'state/display_controller.dart';
 import 'state/library_controller.dart';
+import 'state/news_controller.dart';
 import 'state/pipeline_controller.dart';
 import 'state/workspace_controller.dart';
 import 'storage/json_store.dart';
@@ -27,10 +28,15 @@ Future<void> main() async {
   await library.load();
   final display = DisplayController(jsonStoreNamed('settings.json'));
   await display.load();
+  final news = NewsController(store: jsonStoreNamed('whats_new.json'));
+  // Not awaited: the changelog is the least urgent thing on the page, and
+  // waiting on it would hold up the canvas.
+  unawaited(news.load());
   runApp(OniPipelineApp(
     library: library,
     pipelineStore: jsonStoreNamed('pipelines.json'),
     displaySettings: display,
+    news: news,
   ));
 }
 
@@ -42,6 +48,7 @@ class OniPipelineApp extends StatefulWidget {
     required this.pipelineStore,
     this.displaySettings,
     this.initial,
+    this.news,
     super.key,
   });
 
@@ -49,6 +56,7 @@ class OniPipelineApp extends StatefulWidget {
   final JsonStore pipelineStore;
   final DisplayController? displaySettings;
   final Pipeline? initial;
+  final NewsController? news;
 
   @override
   State<OniPipelineApp> createState() => _OniPipelineAppState();
@@ -154,6 +162,7 @@ class _OniPipelineAppState extends State<OniPipelineApp> {
                 demoHands: _demoHands,
                 canvasKey: _canvasKey,
                 firstVisit: _firstVisit,
+                news: widget.news,
               )
             : ColoredBox(color: OniColors.background),
       );
