@@ -7653,7 +7653,7 @@
       "heatKdtuPerSecond": 1.5,
       "footprintWidth": 2,
       "footprintHeight": 2,
-      "description": "A kilogram of polluted dirt a second becomes 660 g of polluted oxygen. The third of it that goes missing is the game deleting mass, not an error here.",
+      "description": "A kilogram of polluted dirt a second becomes 660 g of polluted oxygen. The third of it that goes missing is the game deleting mass, not an error here. It is the only way worth planning around: polluted dirt left in a heap does offgas by itself, but at two thirds of a gram a second from a whole tonne, so this building is 1600 heaps in two tiles.",
       "tags": [
         "oxygen",
         "verified"
@@ -7673,6 +7673,94 @@
       "build": {
         "metal_ore": 200
       }
+    },
+    {
+      "id": "slime_offgassing",
+      "name": "Slime offgassing",
+      "kind": "custom",
+      "description": "A pile of slime turning itself into polluted oxygen: 125 g every 4.8 s, and the slime goes with it. Alone among the offgassing solids its rate does not depend on how big the pile is, so a count here is simply how many piles you keep — which is also why a Conveyor Rail, splitting slime into 20 kg chunks, offgasses it so much faster than one heap.",
+      "tags": [
+        "sublimation",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "slime",
+          "direction": "input",
+          "rate": 26.041666666666668
+        },
+        {
+          "item": "polluted_oxygen",
+          "direction": "output",
+          "rate": 26.041666666666668
+        }
+      ]
+    },
+    {
+      "id": "oxylite_sublimation",
+      "name": "Oxylite subliming (1000 kg)",
+      "kind": "custom",
+      "description": "Oxylite going straight to oxygen. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki’s own figure for 1000 kg, and a count of two is two such piles — not one of 2000 kg, which would offgas less than both. Split the same tonne across fifty conveyor packets and it makes 3950 g/s instead.",
+      "tags": [
+        "sublimation",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "oxylite",
+          "direction": "input",
+          "rate": 1256.0
+        },
+        {
+          "item": "oxygen",
+          "direction": "output",
+          "rate": 1256.0
+        }
+      ]
+    },
+    {
+      "id": "polluted_water_offgassing",
+      "name": "Polluted Water offgassing (1000 kg)",
+      "kind": "custom",
+      "description": "A bottle or a pool giving off polluted oxygen. Its rate is the one that goes straight with the mass rather than a root of it, so splitting it up buys nothing. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki’s own figure for 1000 kg, and a count of two is two such piles — not one of 2000 kg, which would offgas less than both.",
+      "tags": [
+        "sublimation",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 40.0
+        },
+        {
+          "item": "polluted_oxygen",
+          "direction": "output",
+          "rate": 40.0
+        }
+      ]
+    },
+    {
+      "id": "bleach_stone_offgassing",
+      "name": "Bleach Stone offgassing (1000 kg)",
+      "kind": "custom",
+      "description": "Chlorine for disinfecting, and the usual way to fill a room with it is to carry bleach stone through it. A pile offgasses faster the bigger it is, but not in proportion: the rate goes as a power of the mass, so it only means anything against a stated one. This is the wiki’s own figure for 1000 kg, and a count of two is two such piles — not one of 2000 kg, which would offgas less than both.",
+      "tags": [
+        "sublimation",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "bleach_stone",
+          "direction": "input",
+          "rate": 6.325
+        },
+        {
+          "item": "chlorine",
+          "direction": "output",
+          "rate": 6.325
+        }
+      ]
     },
     {
       "id": "oil_well",

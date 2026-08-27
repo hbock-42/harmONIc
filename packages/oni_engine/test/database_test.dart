@@ -1460,4 +1460,36 @@ void main() {
       }
     });
   });
+  group('sublimation', () {
+    // Requested: a node for offgassing that eats the thing that offgasses,
+    // rather than conjuring polluted oxygen out of a supply node.
+    test('costs exactly what it makes', () {
+      final subliming =
+          db.processes.where((p) => p.tags.contains('sublimation'));
+      expect(subliming, isNotEmpty);
+
+      for (final spec in subliming) {
+        expect(spec.inputs, hasLength(1), reason: spec.id);
+        expect(spec.outputs, hasLength(1), reason: spec.id);
+        // A gram of slime is a gram of polluted oxygen. Offgassing moves mass
+        // from one state to another; it does not make any.
+        expect(spec.outputs.single.ratePerSecond,
+            closeTo(spec.inputs.single.ratePerSecond, 1e-9),
+            reason: spec.id);
+      }
+    });
+
+    test('and the one that does not care how big the pile is says so', () {
+      // Slime alone emits at a flat 125 g every 4.8 s whatever it weighs.
+      // The others go as a power of the mass, so their names carry the mass
+      // they were worked out at — otherwise the number means nothing.
+      for (final spec in db.processes.where((p) => p.tags.contains('sublimation'))) {
+        expect(spec.name.contains('1000 kg'), spec.id != 'slime_offgassing',
+            reason: spec.id);
+      }
+      expect(db.processOrThrow('slime_offgassing').outputs.single.ratePerSecond,
+          closeTo(125 / 4.8, 1e-9));
+    });
+  });
+
 }
