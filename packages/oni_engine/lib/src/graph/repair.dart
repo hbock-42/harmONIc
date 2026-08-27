@@ -88,7 +88,9 @@ PipelineRepair repairPipeline(Pipeline pipeline, GameDatabase database) {
         ? ' This build was drawn against data ${pipeline.dataVersion} and this '
             'is ${database.dataVersion}, so it may have been made with a newer '
             'version of the app.'
-        : ' Nothing here knows what that is.';
+        : unknown.length == 1
+            ? ' Nothing here knows what that is.'
+            : ' Nothing here knows what those are.';
     notes.add('Removed "$named"$wires.$elsewhere');
   }
 

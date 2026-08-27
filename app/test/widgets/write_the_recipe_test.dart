@@ -175,8 +175,14 @@ void main() {
       final repair = repairPipeline(pipeline, library.database);
 
       expect(repair.pipeline.nodes, isEmpty);
-      expect(repair.notes, hasLength(3));
-      expect(repair.notes.join(' '), contains('no longer in the database'));
+      // Both of them, and the wire between them, said in one line rather than
+      // one line each — a build shared from a newer version could lose every
+      // wire it had to a single missing node, and a note per node buried that.
+      final said = repair.notes.join(' ');
+      expect(said, contains('source:unobtanium'));
+      expect(said, contains('my_forge'));
+      expect(said, contains('the connection to them'));
+      expect(said, contains('pin that no longer refers to anything'));
     });
 
     test('and a bundled material is never forgotten', () async {
