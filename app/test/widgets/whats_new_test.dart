@@ -203,4 +203,71 @@ Plants grow crops rather than calories.
       expect(entry.hint, isNotEmpty, reason: entry.title);
     }
   });
+  group('the shape an entry has to have', () {
+    // The panel reads this file rather than being told about it, so the
+    // conventions are load-bearing rather than tidy: the cut between read and
+    // unread is a heading, and the line under each entry in the list is its
+    // own first sentence. A malformed entry does not look wrong in the
+    // repository — it looks wrong to somebody who has just reloaded the app.
+    final text = File('../docs/CHANGELOG.md').readAsStringSync();
+    final entries = splitGuide(text).topics;
+
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+
+    DateTime? dateOf(String title) {
+      final match = RegExp(r'^(\d{1,2}) (\w+) (\d{4}) — .+').firstMatch(title);
+      if (match == null) return null;
+      final month = months.indexOf(match.group(2)!) + 1;
+      if (month == 0) return null;
+      return DateTime(int.parse(match.group(3)!), month,
+          int.parse(match.group(1)!));
+    }
+
+    test('a date, an em dash and a title', () {
+      for (final entry in entries) {
+        // "Earlier" is the one exception, and it is the last one: everything
+        // before the app had readers is one paragraph, not a series of dates
+        // nobody was there for.
+        if (entry.title == 'Earlier') {
+          expect(entry, entries.last, reason: '"Earlier" comes last');
+          continue;
+        }
+        expect(dateOf(entry.title), isNotNull,
+            reason: '"${entry.title}" should read like '
+                '"27 August 2026 — What the players found"');
+      }
+    });
+
+    test('newest first, which is what the cut depends on', () {
+      // Everything above the entry somebody last read is what is new to them.
+      // Out of order, that shows them things they have already seen and hides
+      // things they have not.
+      final dates = [
+        for (final entry in entries)
+          if (dateOf(entry.title) case final DateTime date) date,
+      ];
+      expect(dates, isNotEmpty);
+      for (var i = 1; i < dates.length; i++) {
+        expect(dates[i].isBefore(dates[i - 1]), isTrue,
+            reason: '${entries[i].title} is not older than '
+                '${entries[i - 1].title}');
+      }
+    });
+
+    test('and a sentence before any bullets', () {
+      // The list shows each entry's first sentence under its heading. An entry
+      // that opens with a bullet has nothing to show there, and an entry whose
+      // first sentence is 200 characters long has too much.
+      for (final entry in entries) {
+        expect(entry.hint, isNotEmpty, reason: entry.title);
+        expect(entry.hint.length, lessThan(160),
+            reason: '${entry.title} opens with a paragraph, not a sentence');
+        expect(entry.hint.startsWith('- '), isFalse, reason: entry.title);
+      }
+    });
+  });
+
 }

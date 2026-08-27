@@ -68,3 +68,15 @@ something you draw rather than something the app assumes.
 harmONIc went public in August 2026. Before that there is a repository full of
 commits and no changelog, which is the honest way to say that nobody was reading
 it yet.
+
+---
+
+*Adding an entry: put a new `## <day> <Month> <year> — <title>` section at the
+top of this file, open it with one plain sentence — that sentence is what the
+app shows under the heading in its list — and then use bullets, because six
+things fixed reads as six things when it is six lines and as a wall when it is a
+paragraph. Run `tool/copy_docs.sh`. Entries are newest first and headings are
+identifiers once shipped: the app decides what somebody has already read by
+matching a heading, so renaming one shows them the whole history again. Ship
+nothing here for a change nobody using the app would notice — a release with no
+entry says nothing, which is the point.*
