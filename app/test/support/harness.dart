@@ -85,13 +85,19 @@ Pipeline testPipeline() => (PipelineBuilder(testDatabase, name: 'Test build')
 
 /// Matches a real [Text] with exactly this content — unlike `find.text`, which
 /// also matches the [EditableText] inside a search box showing the same string.
+/// What a [Text] reads, whether it was given a string or a run of spans.
+///
+/// A figure set in two weights — the number loud, its unit quiet — is one
+/// string to everybody except a finder that only looks at [Text.data].
+String _reads(Text text) => text.data ?? text.textSpan?.toPlainText() ?? '';
+
 Finder textLabel(String label) => find.byWidgetPredicate(
-      (w) => w is Text && w.data == label,
+      (w) => w is Text && _reads(w) == label,
       description: 'Text("$label")',
     );
 
 /// Finds the first widget of type [T] whose text contains [needle].
 Finder textContaining(String needle) => find.byWidgetPredicate(
-      (w) => w is Text && (w.data ?? '').contains(needle),
+      (w) => w is Text && _reads(w).contains(needle),
       description: 'Text containing "$needle"',
     );

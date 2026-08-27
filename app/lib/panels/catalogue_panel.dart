@@ -348,6 +348,7 @@ class _CataloguePanelState extends State<CataloguePanel> {
   Widget _filters() => Container(
         padding: const EdgeInsets.all(OniSpacing.md),
         decoration: BoxDecoration(
+          color: OniColors.surface,
           border: Border(bottom: BorderSide(color: OniColors.border)),
         ),
         child: Column(
@@ -380,10 +381,10 @@ class _CataloguePanelState extends State<CataloguePanel> {
                   ),
                 ),
                 const SizedBox(width: OniSpacing.sm),
-                OniButton(
+                _Chip(
                   label: _folded.isEmpty ? 'Fold all' : 'Unfold all',
-                  compact: true,
-                  onPressed: () => setState(() {
+                  on: false,
+                  onTap: () => setState(() {
                     if (_folded.isEmpty) {
                       _folded.addAll(_groups(_family).map((g) => g.itemId));
                     } else {
@@ -450,6 +451,26 @@ class _CataloguePanelState extends State<CataloguePanel> {
       );
 }
 
+
+/// Split "75000.00 kg/cycle" into the figure and its unit, so the figure can
+/// be set large and the unit stay quiet beside it. The figure is the thing
+/// somebody came to read; the unit is the same on every card in the group.
+(String, String) _figure(String formatted) {
+  final space = formatted.indexOf(' ');
+  if (space < 0) return (formatted, '');
+  return (formatted.substring(0, space), formatted.substring(space + 1));
+}
+
+/// Which family a recipe belongs to, for the line under its name.
+String _familyOf(ProcessSpec spec) {
+  for (final family in _Family.values) {
+    if (family != _Family.everything && family.matches(spec)) {
+      return family.label;
+    }
+  }
+  return 'Other';
+}
+
 /// A filter chip, with how many are behind it where that is worth knowing.
 class _Chip extends StatelessWidget {
   const _Chip({
@@ -465,11 +486,112 @@ class _Chip extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => OniButton(
-        label: count == null ? label : '$label  $count',
-        compact: true,
-        tone: on ? OniButtonTone.accent : OniButtonTone.neutral,
-        onPressed: onTap,
+  Widget build(BuildContext context) {
+    final tint = on ? OniColors.accent : OniColors.textMuted;
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+        decoration: BoxDecoration(
+          // A pill, and a tinted one when it is on: a chip that only changes
+          // its text colour is a chip nobody can see the state of.
+          color: on
+              ? OniColors.accent.withValues(alpha: 0.12)
+              : OniColors.surfaceRaised,
+          border: Border.all(
+            color: on
+                ? OniColors.accent.withValues(alpha: 0.55)
+                : OniColors.border,
+          ),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: OniType.body.copyWith(
+                fontSize: 12,
+                color: on ? OniColors.accent : OniColors.textMuted,
+                fontWeight: on ? FontWeight.w600 : FontWeight.w400,
+              ),
+            ),
+            if (count case final int many) ...[
+              const SizedBox(width: 7),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: tint.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text('$many',
+                    style: OniType.numberSmall.copyWith(color: tint)),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The ×1 ×2 ×5 ×10 run, as one control rather than four loose buttons.
+class _Times extends StatelessWidget {
+  const _Times({
+    required this.itemId,
+    required this.spec,
+    required this.times,
+    required this.onTimes,
+  });
+
+  final String itemId;
+  final ProcessSpec spec;
+  final int times;
+  final ValueChanged<int> onTimes;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: OniColors.surface,
+          border: Border.all(color: OniColors.border),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final n in const [1, 2, 5, 10])
+              GestureDetector(
+                // Keyed by the group as well as the recipe: one thing turns up
+                // under everything it makes, so the recipe alone names several.
+                key: ValueKey('times:$itemId:${spec.id}:$n'),
+                onTap: () => onTimes(n),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: n == times
+                        ? OniColors.accent.withValues(alpha: 0.9)
+                        : null,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    '×$n',
+                    style: OniType.numberSmall.copyWith(
+                      fontSize: 11.5,
+                      color: n == times
+                          ? OniColors.background
+                          : OniColors.textMuted,
+                      fontWeight:
+                          n == times ? FontWeight.w700 : FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       );
 }
 
@@ -483,11 +605,12 @@ class _Guidelines extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
+          color: OniColors.surface,
           border: Border.all(color: OniColors.border),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(10),
         ),
         padding: const EdgeInsets.symmetric(
-            horizontal: OniSpacing.md, vertical: OniSpacing.sm),
+            horizontal: OniSpacing.md, vertical: OniSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -496,9 +619,18 @@ class _Guidelines extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               child: Row(
                 children: [
-                  Text(open ? '▾' : '▸', style: OniType.label),
-                  const SizedBox(width: 6),
-                  Text('HOW TO READ THESE', style: OniType.label),
+                  Text('ⓘ',
+                      style: OniType.label.copyWith(color: OniColors.accent)),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Text('How to read these figures',
+                        style: OniType.body.copyWith(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                            color: OniColors.accent)),
+                  ),
+                  Text(open ? '▾' : '▸',
+                      style: OniType.label.copyWith(color: OniColors.accent)),
                 ],
               ),
             ),
@@ -555,12 +687,14 @@ class _GroupCard extends StatelessWidget {
     final item = database.item(group.itemId);
     final colour = OniItemColors.ofItem(item);
     final best = group.rows.first;
+    final (most, unit) = _figure(rate(group.itemId, best.rate));
 
     return Container(
       margin: const EdgeInsets.only(bottom: OniSpacing.md),
       decoration: BoxDecoration(
+        color: OniColors.surface,
         border: Border.all(color: OniColors.border),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -569,17 +703,26 @@ class _GroupCard extends StatelessWidget {
             onTap: onFold,
             behavior: HitTestBehavior.opaque,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: OniSpacing.md, vertical: OniSpacing.sm),
+              padding: const EdgeInsets.fromLTRB(
+                  OniSpacing.md, OniSpacing.md, OniSpacing.md, OniSpacing.md),
               child: Row(
                 children: [
-                  Text(folded ? '▸' : '▾', style: OniType.label),
-                  const SizedBox(width: OniSpacing.sm),
-                  Container(width: 3, height: 14, color: colour),
+                  Text(folded ? '▸' : '▾',
+                      style: OniType.label.copyWith(color: colour)),
                   const SizedBox(width: OniSpacing.sm),
                   Flexible(
-                    child: Text(group.title.toUpperCase(),
-                        style: OniType.heading, overflow: TextOverflow.ellipsis),
+                    child: Text(
+                      group.title.toUpperCase(),
+                      style: OniType.heading.copyWith(letterSpacing: 1.1),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: OniSpacing.sm),
+                  // What state the thing is in, in its own hue — the same hue
+                  // its ports carry on the canvas.
+                  _Badge(
+                    (item?.category.name ?? 'other').toUpperCase(),
+                    colour: colour,
                   ),
                   const SizedBox(width: OniSpacing.sm),
                   Text(
@@ -589,11 +732,36 @@ class _GroupCard extends StatelessWidget {
                         .copyWith(color: OniColors.textFaint),
                   ),
                   const Spacer(),
-                  Text(
-                    'most ${rate(group.itemId, best.rate)} · ${best.spec.name}',
-                    style: OniType.numberSmall
-                        .copyWith(color: OniColors.textFaint),
-                    overflow: TextOverflow.ellipsis,
+                  // The best in the group, boxed: the figure a reader checks
+                  // the others against without scrolling the group.
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: OniSpacing.sm, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: OniColors.surfaceRaised,
+                        border: Border.all(color: OniColors.border),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text.rich(
+                        TextSpan(
+                          style: OniType.numberSmall
+                              .copyWith(color: OniColors.textFaint),
+                          children: [
+                            const TextSpan(text: 'most '),
+                            TextSpan(
+                              text: '$most $unit',
+                              style: TextStyle(
+                                  color: OniColors.text,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                            TextSpan(text: ' · ${best.spec.name}'),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -681,118 +849,179 @@ class _ProducerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final spec = row.spec;
     final share = of <= 0 ? 0.0 : (row.rate / of).clamp(0.0, 1.0);
-    final badges = <String>[
-      if (spec.tags.contains('wild')) 'wild',
-      if (spec.id.contains('grazed')) 'grazed',
-      if (spec.tags.contains('unverified')) 'judged',
+    final (figure, unit) = _figure(rate(row.itemId, row.rate, times));
+    final badges = <(String, Color)>[
+      if (spec.tags.contains('wild')) ('wild', OniColors.ok),
+      if (spec.id.contains('grazed')) ('grazed', OniItemColors.of(ItemCategory.entity)),
+      if (spec.tags.contains('unverified')) ('judged', OniColors.warning),
     ];
 
     return Container(
       decoration: BoxDecoration(
+        color: OniColors.surfaceRaised,
         border: Border.all(color: OniColors.border),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.all(OniSpacing.md),
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(rate(row.itemId, row.rate, times), style: OniType.number),
-          const SizedBox(height: 4),
-          // How much of the best in this group, which is the comparison
-          // somebody is making anyway.
-          ClipRRect(
-            borderRadius: BorderRadius.circular(2),
-            child: Container(
-              height: 3,
-              color: OniColors.border,
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: share,
-                child: Container(color: colour),
-              ),
-            ),
-          ),
-          const SizedBox(height: OniSpacing.sm),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                child: Text(spec.name,
-                    style: OniType.body.copyWith(fontSize: 12),
-                    overflow: TextOverflow.ellipsis),
-              ),
-              for (final badge in badges) ...[
-                const SizedBox(width: 4),
-                _Badge(badge),
-              ],
-            ],
-          ),
-          const SizedBox(height: OniSpacing.sm),
-          Wrap(
-            spacing: OniSpacing.xs,
-            children: [
-              for (final n in const [1, 2, 5, 10])
-                OniButton(
-                  // Keyed by the group as well as the recipe: one thing turns
-                  // up under everything it makes, so the recipe alone names
-                  // several buttons.
-                  key: ValueKey('times:${row.itemId}:${spec.id}:$n'),
-                  label: '×$n',
-                  compact: true,
-                  tone: n == times
-                      ? OniButtonTone.accent
-                      : OniButtonTone.neutral,
-                  onPressed: () => onTimes(n),
-                ),
-            ],
-          ),
-          const SizedBox(height: OniSpacing.sm),
-          Text(lead.toUpperCase(), style: OniType.label),
-          const SizedBox(height: 4),
-          if (row.others.isEmpty)
-            Text('nothing at all',
-                style: OniType.body
-                    .copyWith(fontSize: 11.5, color: OniColors.textFaint))
-          else
-            Wrap(
-              spacing: OniSpacing.xs,
-              runSpacing: OniSpacing.xs,
-              children: [
-                for (final port in row.others)
-                  _Pill(
-                    name: _itemName(port.itemId),
-                    rate: rate(port.itemId, port.ratePerSecond, times),
-                    colour: OniItemColors.ofItem(database.item(port.itemId)),
-                    // Clicking a thing it takes searches for that thing, which
-                    // is how somebody walks a chain backwards.
-                    onTap: () => onSearch(_itemName(port.itemId)),
+              // The figure large and in the thing's own hue, the unit quiet
+              // beside it: the unit is the same on every card in the group and
+              // the figure is what somebody came to check.
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // One run rather than two Texts: the unit reads quiet but
+                  // the figure and its unit are still one string, which is
+                  // what anybody selecting or searching the page expects.
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: figure,
+                          style: OniType.number.copyWith(
+                              fontSize: 24,
+                              height: 1.0,
+                              fontWeight: FontWeight.w700,
+                              color: colour),
+                        ),
+                        TextSpan(
+                          text: ' $unit',
+                          style: OniType.numberSmall
+                              .copyWith(color: OniColors.textFaint),
+                        ),
+                      ],
+                    ),
                   ),
-              ],
-            ),
-          if (spec.description case final String said) ...[
-            const SizedBox(height: OniSpacing.sm),
-            Text(said,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: OniType.body
-                    .copyWith(fontSize: 11, color: OniColors.textFaint)),
-          ],
+                  const SizedBox(height: 7),
+                  // How much of the best in this group, which is the
+                  // comparison somebody is making anyway.
+                  SizedBox(
+                    width: 132,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: Container(
+                        height: 4,
+                        color: OniColors.border,
+                        child: FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: share,
+                          child: Container(color: colour),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: OniSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(spec.name,
+                            style: OniType.title.copyWith(fontSize: 13)),
+                        for (final (label, tint) in badges)
+                          _Badge(label, colour: tint),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      '${_familyOf(spec)} · ${spec.kind.name}',
+                      style: OniType.body.copyWith(
+                          fontSize: 11, color: OniColors.textFaint),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: OniSpacing.md),
+          _Times(
+            itemId: row.itemId,
+            spec: spec,
+            times: times,
+            onTimes: onTimes,
+          ),
+          const SizedBox(height: OniSpacing.md),
+          Container(height: 1, color: OniColors.border),
+          const SizedBox(height: OniSpacing.md),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 4, right: OniSpacing.sm),
+                child: Text('${lead.toUpperCase()}:', style: OniType.label),
+              ),
+              Expanded(
+                child: row.others.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text('nothing at all',
+                            style: OniType.body.copyWith(
+                                fontSize: 11.5, color: OniColors.textFaint)),
+                      )
+                    : Wrap(
+                        spacing: OniSpacing.xs,
+                        runSpacing: OniSpacing.xs,
+                        children: [
+                          for (final port in row.others)
+                            _Pill(
+                              name: _itemName(port.itemId),
+                              rate: rate(
+                                  port.itemId, port.ratePerSecond, times),
+                              colour: OniItemColors.ofItem(
+                                  database.item(port.itemId)),
+                              // Clicking a thing it takes searches for that
+                              // thing, which is how somebody walks a chain
+                              // backwards.
+                              onTap: () => onSearch(_itemName(port.itemId)),
+                            ),
+                        ],
+                      ),
+              ),
+            ],
+          ),
+          const SizedBox(height: OniSpacing.md),
+          Container(height: 1, color: OniColors.border),
           const SizedBox(height: OniSpacing.sm),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              OniButton(
+              Expanded(
+                child: Text(
+                  spec.description ?? '',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: OniType.body.copyWith(
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic,
+                      color: OniColors.textFaint),
+                ),
+              ),
+              const SizedBox(width: OniSpacing.sm),
+              _Link(
                 key: ValueKey('inspect:${row.itemId}:${spec.id}'),
                 label: 'Inspect',
-                compact: true,
-                onPressed: onInspect,
+                onTap: onInspect,
               ),
               if (onReport != null) ...[
-                const SizedBox(width: OniSpacing.xs),
-                OniButton(
+                const SizedBox(width: OniSpacing.md),
+                _Link(
                   key: ValueKey('wrong:${row.itemId}:${spec.id}'),
                   label: 'Wrong?',
-                  compact: true,
-                  onPressed: () => onReport!(spec),
+                  colour: OniColors.warning,
+                  onTap: () => onReport!(spec),
                 ),
               ],
             ],
@@ -803,35 +1032,59 @@ class _ProducerCard extends StatelessWidget {
   }
 }
 
-class _Badge extends StatelessWidget {
-  const _Badge(this.label);
+/// A quiet text action, for the things a card offers rather than asks.
+class _Link extends StatelessWidget {
+  const _Link({
+    required this.label,
+    required this.onTap,
+    this.colour,
+    super.key,
+  });
 
   final String label;
+  final VoidCallback onTap;
+  final Color? colour;
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(3),
-          border: Border.all(
-            color: label == 'judged'
-                ? OniColors.warning
-                : OniColors.borderStrong,
-          ),
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
         child: Text(
           label,
-          style: OniType.numberSmall.copyWith(
-            fontSize: 9.5,
-            color: label == 'judged'
-                ? OniColors.warning
-                : OniColors.textFaint,
-          ),
+          style: OniType.body.copyWith(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: colour ?? OniColors.accent),
         ),
       );
 }
 
-/// A thing and how much of it, as one clickable pill.
+class _Badge extends StatelessWidget {
+  const _Badge(this.label, {required this.colour});
+
+  final String label;
+  final Color colour;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+        decoration: BoxDecoration(
+          color: colour.withValues(alpha: 0.14),
+          border: Border.all(color: colour.withValues(alpha: 0.4)),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          label,
+          style: OniType.numberSmall.copyWith(
+              fontSize: 9.5,
+              letterSpacing: 0.6,
+              fontWeight: FontWeight.w700,
+              color: colour),
+        ),
+      );
+}
+
+/// One thing on the other side of a recipe, with its hue and its figure.
 class _Pill extends StatelessWidget {
   const _Pill({
     required this.name,
@@ -846,36 +1099,62 @@ class _Pill extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-              border: Border.all(color: OniColors.border),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(width: 6, height: 6, color: colour),
-                const SizedBox(width: 5),
-                Text(name,
-                    style: OniType.body
-                        .copyWith(fontSize: 11, color: OniColors.textFaint)),
-                const SizedBox(width: 5),
-                Text(rate, style: OniType.numberSmall.copyWith(fontSize: 11)),
-              ],
-            ),
-          ),
+  Widget build(BuildContext context) {
+    final (figure, unit) = _figure(rate);
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+        decoration: BoxDecoration(
+          color: OniColors.surface,
+          border: Border.all(color: OniColors.border),
+          borderRadius: BorderRadius.circular(6),
         ),
-      );
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 7,
+              height: 7,
+              decoration:
+                  BoxDecoration(color: colour, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: OniType.body
+                      .copyWith(fontSize: 11.5, color: OniColors.textMuted)),
+            ),
+            const SizedBox(width: 6),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: figure,
+                    style: OniType.numberSmall.copyWith(
+                        fontSize: 11,
+                        color: OniColors.text,
+                        fontWeight: FontWeight.w700),
+                  ),
+                  if (unit.isNotEmpty)
+                    TextSpan(
+                      text: ' $unit',
+                      style: OniType.numberSmall
+                          .copyWith(fontSize: 10, color: OniColors.textFaint),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-/// One recipe, whole: what goes in, what comes out, and what it does to
-/// matter on the way through.
 class _Inspect extends StatelessWidget {
   const _Inspect({
     required this.database,
