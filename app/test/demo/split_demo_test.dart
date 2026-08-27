@@ -56,13 +56,25 @@ void main() {
     // The claim in the last line. Everything to the refinery, nothing to the
     // crusher — written back as numbers somebody could have typed, which is
     // why the ordinary solver still produces every figure on screen.
+    //
+    // "Nothing to the crusher" is a wire left alone rather than a wire set to
+    // zero. A share of zero locks a wire shut, and a locked wire broke a
+    // player's build: an outlet the answer did not need could never be used
+    // again. An unshared wire takes what is left, and here nothing is.
     final controller = blank();
     await DemoRun(letItChooseTheSplit, controller).runToEnd();
 
     final shares = controller.pipeline.edges.map((e) => e.share).toList();
-    expect(shares, everyElement(isNotNull));
-    expect(shares.where((s) => s == 1.0), hasLength(2));
-    expect(shares.where((s) => s == 0.0), hasLength(2));
+    expect(shares.where((s) => s == 1.0), hasLength(2),
+        reason: 'everything down the refinery line');
+    expect(shares.where((s) => s == null), hasLength(2));
+
+    // And nothing is what those two carry, which is the part that matters.
+    final flows = controller.solution.edgeFlows;
+    for (final edge in controller.pipeline.edges) {
+      if (edge.share != null) continue;
+      expect(flows[edge.id], closeTo(0, 1e-9), reason: edge.id);
+    }
   });
 
   test('it is the same ore either way', () async {
