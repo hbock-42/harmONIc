@@ -79,6 +79,7 @@ class ReportFooter extends StatefulWidget {
     required this.controller,
     this.open,
     this.onWatch,
+    this.onWhatsNew,
     super.key,
   });
 
@@ -87,6 +88,12 @@ class ReportFooter extends StatefulWidget {
   /// Play a demo, and close the guide on the way. Null when the app was built
   /// without a player.
   final VoidCallback? onWatch;
+
+  /// Read what changed. Beside the build stamp, because "which build is this"
+  /// and "what changed in it" are the same question asked twice — and because
+  /// the notice that announces a release is dismissible and never comes back,
+  /// so without this there would be no way in at all.
+  final VoidCallback? onWhatsNew;
 
   /// How a link is opened. The browser, unless a test says otherwise — a
   /// widget test has no browser and no desktop to hand one to.
@@ -182,6 +189,14 @@ class _ReportFooterState extends State<ReportFooter> {
                   onPressed: () => _report('idea.yml'),
                 ),
                 const Spacer(),
+                if (widget.onWhatsNew case final VoidCallback read) ...[
+                  OniButton(
+                    label: "What's new",
+                    compact: true,
+                    onPressed: read,
+                  ),
+                  const SizedBox(width: OniSpacing.sm),
+                ],
                 // The version, where a report can quote it and where somebody
                 // can check they are looking at what everybody else is.
                 Text(

@@ -119,6 +119,24 @@ Plants grow crops rather than calories.
     expect(find.byType(ChangelogPanel), findsNothing);
   });
 
+  testWidgets('and there is a way in when there is no notice', (tester) async {
+    // The notice is dismissible and never comes back, and somebody arriving
+    // for the first time never gets one at all — so without this the history
+    // would be unreachable for everybody who most wanted it.
+    await pumpEditor(tester, await newsWith(null));
+    expect(find.text('Dismiss'), findsNothing);
+
+    await tester.ensureVisible(find.text('Guide'));
+    await tester.pump();
+    await tester.tap(find.text('Guide'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("What's new"));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ChangelogPanel), findsOneWidget);
+    expect(textContaining('26 August 2026 — Food'), findsWidgets);
+  });
+
   test('the shipped changelog is the one in docs, to the byte', () {
     // The same rule as the guide: docs/CHANGELOG.md is the copy people read in
     // the repository, and tool/copy_docs.sh makes the second one.

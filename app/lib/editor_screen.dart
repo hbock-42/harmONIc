@@ -475,6 +475,9 @@ class _EditorScreenState extends State<EditorScreen> {
                               setState(() => _guideOpen = false);
                               unawaited(widget.demoPlayer!.start(kDemos.first));
                             },
+                      // Over the guide rather than instead of it: closing the
+                      // changelog puts somebody back where they were.
+                      onWhatsNew: () => setState(() => _changelogOpen = true),
                     ),
                   ),
                 ),

@@ -240,6 +240,10 @@ fixed a typo has nothing to tell you, and the app would rather say nothing than
 teach you to dismiss it without reading. Arriving for the first time shows
 nothing at all, since all of it would be new.
 
+The notice never comes back once it has been answered, so the way in afterwards
+is at the foot of this guide, next to the build number — which is the same
+question asked twice: *which build is this, and what changed in it*.
+
 ## Being shown
 
 **Watch a demo**, at the foot of this guide or on an empty canvas, builds one
