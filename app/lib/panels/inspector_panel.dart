@@ -321,6 +321,10 @@ class _NodeInspectorState extends State<_NodeInspector> {
             ),
           ],
         ),
+        if (spec.kind == ProcessKind.source) ...[
+          const SizedBox(height: OniSpacing.md),
+          _AtMost(controller: controller, node: node, unit: unit),
+        ],
         if (_isBoundary) ...[
           const SizedBox(height: OniSpacing.sm),
           _Stockpile(
@@ -1400,6 +1404,95 @@ class _EdgeInspector extends StatelessWidget {
 /// cannot — not "what rate do I have" but "I have two tonnes of coal in a
 /// store, how big a build will that keep running for twenty cycles?" — and a
 /// rate is what it works out for you.
+/// The other reading of "I have this much": a ceiling rather than an amount.
+///
+/// An amount on a supply means *exactly* that much flows, which is what gives
+/// a build its scale and is not what somebody means by "I have 10 kg/s of
+/// water". Both readings are real and the app had only one of them, which cost
+/// a long afternoon of a build refusing to solve because a supply had more
+/// than the build needed.
+class _AtMost extends StatefulWidget {
+  const _AtMost({required this.controller, required this.node, this.unit});
+
+  final PipelineController controller;
+  final PipelineNode node;
+  final Unit? unit;
+
+  @override
+  State<_AtMost> createState() => _AtMostState();
+}
+
+class _AtMostState extends State<_AtMost> {
+  late final TextEditingController _rate = TextEditingController(text: _current);
+
+  String get _current {
+    final ceiling = widget.controller.supplyCeiling(widget.node.id);
+    return ceiling == null ? '' : ceiling.toStringAsFixed(0);
+  }
+
+  @override
+  void dispose() {
+    _rate.dispose();
+    super.dispose();
+  }
+
+  void _apply(String raw) {
+    final value = double.tryParse(raw.trim());
+    widget.controller.setSupplyCeiling(
+        widget.node.id, raw.trim().isEmpty || value == null ? null : value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lines = widget.controller.linesFrom(widget.node.id);
+    if (lines == 0) return const SizedBox.shrink();
+    final set = widget.controller.supplyCeiling(widget.node.id) != null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('OR AT MOST THIS MUCH  (${widget.unit?.symbol ?? 'g/s'})',
+            style: OniType.label),
+        const SizedBox(height: OniSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: OniField(
+                controller: _rate,
+                hint: 'ceiling',
+                onChanged: _apply,
+                onSubmitted: _apply,
+              ),
+            ),
+            const SizedBox(width: OniSpacing.sm),
+            OniButton(
+              label: 'Clear',
+              compact: true,
+              onPressed: set
+                  ? () {
+                      widget.controller.setSupplyCeiling(widget.node.id, null);
+                      setState(() => _rate.text = '');
+                    }
+                  : null,
+            ),
+          ],
+        ),
+        const SizedBox(height: OniSpacing.xs),
+        Text(
+          lines == 1
+              ? 'What you have, rather than what flows: the build takes what it '
+                  'needs up to this and says so if it needs more. An amount '
+                  'above means exactly that much flows, which is stricter.'
+              : 'A ceiling on each of the $lines lines leaving this, not on '
+                  'their total — the same valve, set from here.',
+          style:
+              OniType.body.copyWith(fontSize: 11.5, color: OniColors.textFaint),
+        ),
+      ],
+    );
+  }
+}
+
 class _Stockpile extends StatefulWidget {
   const _Stockpile({
     required this.controller,

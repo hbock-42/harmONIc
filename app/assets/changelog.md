@@ -8,6 +8,20 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — A supply says what you have, or what flows
+
+Two different things, and the app had one of them.
+
+- **I have this much** is an amount, and always meant *exactly that much
+  flows*. That is what gives a build its scale, and it is why a supply set
+  higher than the build needs would refuse to solve.
+- **Or at most this much** is new: a ceiling. The build takes what it needs up
+  to it and says so if it needs more.
+
+Put a ceiling on each supply and ask what comes out for as much as possible,
+and you have "what can I make from what I have" — which took a long afternoon
+to answer before.
+
 ## 27 August 2026 — The palette says what a thing is for
 
 Every recipe already carried a sentence about itself, and the list showed only

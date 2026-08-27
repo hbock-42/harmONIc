@@ -186,11 +186,19 @@ Saying what you *have* — 180 g/s of natural gas, a geyser's output, a stockpil
 thing feeds several, how much goes where is a choice rather than arithmetic, and
 the app will not invent it.
 
-**If you know your inputs and not your outputs**, this is the shape:
+A supply asks you two different questions and they are both on the node:
 
-- Put a **valve** on each supply's wire — the figure you have. A valve means
-  *at most*, which is what having something means.
-- Then select what comes out and press **Get as much as possible**.
+- **I have this much** is an amount, and it means *exactly that much flows*.
+  It is what gives a build its scale — a geyser at 1800 g/s sizes everything
+  downstream of it. A supply set higher than the build needs contradicts the
+  build rather than leaving a spare.
+- **Or at most this much** is a ceiling. The build takes what it needs up to
+  it and says so if it needs more. Nothing is sized by a ceiling; it only
+  says what you have.
+
+**If you know your inputs and not your outputs**, use the second and then ask:
+put a ceiling on each supply, select what comes out, and press **Get as much as
+possible**. It works the whole build out inside those ceilings.
 
 It works out the whole build inside those valves and writes the answer down, so
 the amount you did not know is the one it gives you back.

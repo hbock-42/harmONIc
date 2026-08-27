@@ -818,6 +818,43 @@ class PipelineController extends ChangeNotifier {
   /// The solver holds equations, so this does not change what the build needs
   /// — it changes whether the build says you have allowed enough. Null takes
   /// the valve off again.
+  /// The most a supply can give, as a ceiling on every line leaving it.
+  ///
+  /// An amount on a supply means *exactly* that much flows, which is what
+  /// gives a build its scale — and is not what "I have 10 kg/s of water"
+  /// means. A ceiling is the other reading: take what you need up to this.
+  ///
+  /// It is the same valve that lives on a wire, set from the node instead,
+  /// because that is where somebody is when they are saying what they have.
+  /// Where a supply feeds several lines it caps each of them, which is worth
+  /// knowing and is said on screen.
+  void setSupplyCeiling(String nodeId, double? ratePerSecond) {
+    _apply(_pipeline.copyWith(edges: [
+      for (final edge in _pipeline.edges)
+        if (edge.fromNodeId == nodeId)
+          (ratePerSecond == null
+              ? edge.copyWith(clearCap: true)
+              : edge.copyWith(capPerSecond: ratePerSecond))
+        else
+          edge,
+    ]));
+  }
+
+  /// The ceiling on a supply, when its lines agree on one. Null when they do
+  /// not, or when there is none.
+  double? supplyCeiling(String nodeId) {
+    final caps = [
+      for (final edge in _pipeline.edges)
+        if (edge.fromNodeId == nodeId) edge.capPerSecond,
+    ];
+    if (caps.isEmpty || caps.any((cap) => cap == null)) return null;
+    return caps.every((cap) => cap == caps.first) ? caps.first : null;
+  }
+
+  /// How many lines leave [nodeId], so the ceiling can say what it caps.
+  int linesFrom(String nodeId) =>
+      _pipeline.edges.where((e) => e.fromNodeId == nodeId).length;
+
   void setEdgeCap(String edgeId, double? capPerSecond) =>
       _apply(_pipeline.copyWith(
         edges: [
