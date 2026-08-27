@@ -188,9 +188,9 @@ the app will not invent it.
 
 **If you know your inputs and not your outputs**, this is the shape:
 
-1. Put a **valve** on each supply's wire — the figure you have. A valve means
-   *at most*, which is what having something means.
-2. Select what comes out and press **Get as much as possible**.
+- Put a **valve** on each supply's wire — the figure you have. A valve means
+  *at most*, which is what having something means.
+- Then select what comes out and press **Get as much as possible**.
 
 It works out the whole build inside those valves and writes the answer down, so
 the amount you did not know is the one it gives you back.
