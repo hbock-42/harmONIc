@@ -37,6 +37,9 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- A build with two loose ends says it needs two amounts. It used to say "give
+  an amount for one of: Sand output, Water output", which reads as a menu —
+  and giving one left the build exactly as stuck, naming the other.
 - Nothing comes out below zero without saying why. A build could report a Rock
   Crusher at minus five, and six other nodes downstream of it, each with its
   own line saying "check the edge shares" — true, and no help. It is one line

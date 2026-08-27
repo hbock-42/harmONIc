@@ -1078,4 +1078,68 @@ void main() {
     });
   });
 
+  group('a build with more than one loose end', () {
+    // Reported as "why cannot solve?": the message said "give an amount for
+    // one of: Sand output, Water output", which reads as a menu. Giving one
+    // left the build exactly as stuck, naming the other.
+    Pipeline twoLooseEnds() => (PipelineBuilder(db, name: 'two ends')
+          ..add('natural_gas_generator', nodeId: 'gen')
+          ..addSource('natural_gas')
+          ..addSink('power')
+          ..add('rock_crusher_sand', nodeId: 'crusher')
+          ..addSource('raw_mineral')
+          ..addSink('sand')
+          ..add('metal_refinery', nodeId: 'refinery')
+          ..addSource('metal_ore')
+          ..addSource('water')
+          ..addSink('refined_metal')
+          ..addSink('water')
+          ..connectItem('src_natural_gas', 'gen', 'natural_gas')
+          ..connect('gen', 'power_out', 'sink_power', 'in')
+          ..connect('gen', 'power_out', 'crusher', 'power_in')
+          ..connect('gen', 'power_out', 'refinery', 'power_in')
+          ..connectItem('src_raw_mineral', 'crusher', 'raw_mineral')
+          ..connectItem('crusher', 'sink_sand', 'sand')
+          ..connectItem('src_metal_ore', 'refinery', 'metal_ore')
+          ..connect('src_water', 'out', 'refinery', 'coolant_in')
+          ..connect('refinery', 'coolant_out', 'sink_water', 'in')
+          ..connectItem('refinery', 'sink_refined_metal', 'refined_metal')
+          ..pinRate('src_natural_gas', 'out', 180))
+        .build();
+
+    test('says how many amounts it needs, not which one to pick', () {
+      final s = solver.solve(twoLooseEnds());
+
+      expect(s.status, SolveStatus.underdetermined);
+      expect(s.freeNodeIds, hasLength(2));
+      final said = s.issues.map((i) => i.message).join();
+      expect(said, contains('2 loose ends'));
+      expect(said, contains('an amount for each'));
+      // The phrase that read as a menu, rather than the words in it.
+      expect(said, isNot(contains('an amount for one of')));
+    });
+
+    test('and giving that many is what solves it', () {
+      // The claim in the message, taken at its word: pin every loose end it
+      // names and the build comes out. One was never enough, which is the
+      // whole of the report.
+      var pipeline = twoLooseEnds();
+      final free = solver.solve(pipeline).freeNodeIds;
+      expect(solver.solve(pipeline).status, SolveStatus.underdetermined);
+
+      pipeline = pipeline.copyWith(pins: [
+        ...pipeline.pins,
+        PortRatePin(nodeId: free.first, portId: 'in', ratePerSecond: 1000),
+      ]);
+      expect(solver.solve(pipeline).status, SolveStatus.underdetermined,
+          reason: 'one is not enough, which is what "one of" promised');
+
+      pipeline = pipeline.copyWith(pins: [
+        ...pipeline.pins,
+        PortRatePin(nodeId: free.last, portId: 'in', ratePerSecond: 1000),
+      ]);
+      expect(solver.solve(pipeline).status, SolveStatus.solved);
+    });
+  });
+
 }

@@ -154,13 +154,20 @@ class PipelineSolver {
         ];
         resolvedIssues.add(PipelineIssue(
           IssueSeverity.warning,
+          // How many amounts it needs, not a menu to choose one from.
+          //
+          // "Give an amount for one of: Sand output, Water output" was read
+          // as an invitation to pick, and giving one left the build exactly
+          // as stuck, naming the other. There are as many loose ends as there
+          // are amounts to give, and they all have to be given.
           names.length == 1
               ? 'Nothing sets the size of this build yet, so every amount in it '
                   'could be anything. Give an amount for the ${names.single} '
                   'and everything else follows from it.'
-              : 'Nothing sets the size of this build yet, so every amount in it '
-                  'could be anything. Give an amount for one of: '
-                  '${names.join(', ')}.',
+              : 'Nothing sets the size of this build yet, so every amount in '
+                  'it could be anything. It has ${names.length} loose ends and '
+                  'needs an amount for each: ${_sentenceList(names)}. Any node '
+                  'on the same run as one of them will do instead.',
         ));
       case LinearSolveStatus.inconsistent:
         status = SolveStatus.inconsistent;
