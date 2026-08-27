@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/widgets.dart';
+import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/panels/catalogue_panel.dart';
 
 import '../support/harness.dart';
@@ -79,4 +80,26 @@ void main() {
 
     expect(reported?.id, 'orehull');
   });
+  testWidgets('and it is a button on the toolbar, not a page in the guide',
+      (tester) async {
+    // Checking a figure is not reading the manual: it happens mid-build, when
+    // a number on the canvas looks wrong, and it was two clicks deep inside
+    // the guide.
+    await useDesktopSurface(tester);
+    final controller = testController();
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+
+    await tester.ensureVisible(find.text('Figures'));
+    await tester.pump();
+    await tester.tap(find.text('Figures'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CataloguePanel), findsOneWidget);
+  });
+
 }

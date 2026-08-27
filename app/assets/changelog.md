@@ -10,8 +10,8 @@ admit it is worse than one that never claimed to be right.
 
 ## 27 August 2026 — Every figure, where you can check it
 
-**Every figure**, at the foot of the guide: everything the app knows, grouped
-by what comes out and sorted by how much.
+**Figures**, on the toolbar: everything the app knows, grouped by what comes
+out and sorted by how much.
 
 - Read down a list rather than across it. Two things making the same stuff
   belong near each other, and the one that is not is the one to check.

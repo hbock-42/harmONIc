@@ -291,8 +291,8 @@ usually too pale to read on near-white.
 
 ## Checking the figures
 
-**Every figure** at the foot of this guide lists what the app knows, grouped by
-what comes out and sorted by how much. It is not a document — it is read
+**Figures** on the toolbar lists what the app knows, grouped by what comes out
+and sorted by how much. It is not a document — it is read
 straight off the data the solver is using, so there is nothing to be out of
 date.
 

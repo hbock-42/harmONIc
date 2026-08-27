@@ -362,6 +362,8 @@ class _EditorScreenState extends State<EditorScreen> {
                       onTogglePipelines: () =>
                           setState(() => _pipelinesOpen = !_pipelinesOpen),
                       onOpenGuide: () => setState(() => _guideOpen = true),
+                      onOpenFigures: () =>
+                          setState(() => _catalogueOpen = true),
                       onOpenKeys: () => setState(() => _keysPinned = true),
                     ),
                     _Tabs(workspace: widget.workspace),
@@ -888,6 +890,7 @@ class _TopBar extends StatefulWidget {
     required this.displaySettings,
     required this.onTogglePipelines,
     required this.onOpenGuide,
+    required this.onOpenFigures,
     required this.onOpenKeys,
     required this.apple,
   });
@@ -901,6 +904,9 @@ class _TopBar extends StatefulWidget {
   final DisplayController displaySettings;
   final VoidCallback onTogglePipelines;
   final VoidCallback onOpenGuide;
+
+  /// Every figure the app uses, for when one on the canvas looks wrong.
+  final VoidCallback onOpenFigures;
 
   /// The keys card, for anybody who would rather press a button than know to
   /// hold a key — which is everybody, the first time.
@@ -1096,6 +1102,15 @@ class _TopBarState extends State<_TopBar> {
               label: 'Keys  ?',
               compact: true,
               onPressed: widget.onOpenKeys,
+            ),
+            const SizedBox(width: OniSpacing.xs),
+            OniButton(
+              // Beside the guide rather than inside it. Checking a figure is
+              // not reading the manual: it is a thing somebody does mid-build,
+              // when a number on the canvas looks wrong.
+              label: 'Figures',
+              compact: true,
+              onPressed: widget.onOpenFigures,
             ),
             const SizedBox(width: OniSpacing.xs),
             OniButton(
