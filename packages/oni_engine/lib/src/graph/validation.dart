@@ -222,9 +222,11 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
       final others = pulling;
       issues.add(PipelineIssue(
         IssueSeverity.error,
-        '${_describe(pipeline, db, ref)} is already divided among '
-        '${fixed.length} lines that take a fixed share of it, '
-        '${(claimed * 100).toStringAsFixed(0)} % between them — so the '
+        '${_describe(pipeline, db, ref)} is already '
+        '${fixed.length == 1 ? 'taken by one line' : 'divided among ${fixed.length} lines'} '
+        'that ${fixed.length == 1 ? 'takes' : 'take'} a fixed share of it, '
+        '${(claimed * 100).toStringAsFixed(0)} %'
+        '${fixed.length == 1 ? '' : ' between them'} — so the '
         '${others == 1 ? 'other line has' : '$others other lines have'} '
         'nothing to take. Lower one of the shares, or give '
         '${others == 1 ? 'that line' : 'those lines'} a share too.',
