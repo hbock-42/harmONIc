@@ -189,8 +189,8 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
         : PortRef(edge.toNodeId, edge.toPortId);
     claims[ref] = (claims[ref] ?? 0) + edge.share!;
   }
-  // A port whose fixed shares already come to all of it, with other wires
-  // still attached.
+  // A port whose producer-driven lines already come to all of it, with
+  // consumer-driven ones still attached.
   //
   // Six producer-driven wires off one generator's power claiming 100 % between
   // them, and three consumer-driven ones added afterwards: there is nothing
@@ -198,6 +198,13 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
   // to run backwards. That is what a negative amount is, and it spreads —
   // seven nodes in the build this was reported from, none of which was the
   // one at fault. "Check the edge shares" was all it said.
+  //
+  // "All of it" is not only shares that add to 100 %. A producer-driven line
+  // with no share of its own takes what the named ones leave, so *any* of
+  // those makes the group come to all of it however little is named — and one
+  // such line, with nothing named at all, quietly takes the lot. That was the
+  // shape the first version of this check missed, on the very build written
+  // to demonstrate it.
   for (final node in pipeline.nodes) {
     final spec = db.process(node.specId);
     if (spec == null) continue;
@@ -205,31 +212,34 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
       if (!port.isOutput) continue;
       final ref = PortRef(node.id, port.id);
       final out = pipeline.edgesOutOf(ref);
-      final fixed = [
-        for (final edge in out)
-          if (edge.mode == EdgeMode.push && edge.share != null) edge.share!,
+      final pushing = out.where((edge) => edge.mode == EdgeMode.push);
+      // Only the consumer-driven ones are victims. A producer-driven line
+      // with no share takes what is left, and where nothing is left it
+      // carries nothing — which is what the optimiser writes when its answer
+      // does not need a line. A consumer-driven one insists on its target's
+      // whole demand, and that is what cannot be met.
+      final starved = out.where((edge) => edge.mode == EdgeMode.pull).length;
+      if (starved == 0 || pushing.isEmpty) continue;
+
+      final named = [
+        for (final edge in pushing)
+          if (edge.share case final double share) share,
       ];
-      // Only the consumer-driven ones. A producer-driven line with no share
-      // takes what is left, and where nothing is left it carries nothing,
-      // which is what the optimiser writes when its answer does not need a
-      // line. A consumer-driven one insists on its target's whole demand, and
-      // that is what cannot be met.
-      final pulling =
-          out.where((edge) => edge.mode == EdgeMode.pull).length;
-      if (pulling == 0) continue;
-      final claimed = fixed.fold<double>(0, (sum, share) => sum + share);
-      if (claimed < 1 - _shareSlack) continue;
-      final others = pulling;
+      final unnamed = pushing.length - named.length;
+      final claimed = named.fold<double>(0, (sum, share) => sum + share);
+      if (unnamed == 0 && claimed < 1 - _shareSlack) continue;
+
       issues.add(PipelineIssue(
         IssueSeverity.error,
-        '${_describe(pipeline, db, ref)} is already '
-        '${fixed.length == 1 ? 'taken by one line' : 'divided among ${fixed.length} lines'} '
-        'that ${fixed.length == 1 ? 'takes' : 'take'} a fixed share of it, '
-        '${(claimed * 100).toStringAsFixed(0)} %'
-        '${fixed.length == 1 ? '' : ' between them'} — so the '
-        '${others == 1 ? 'other line has' : '$others other lines have'} '
-        'nothing to take. Lower one of the shares, or give '
-        '${others == 1 ? 'that line' : 'those lines'} a share too.',
+        '${_describe(pipeline, db, ref)} is already spoken for: its '
+        '${pushing.length == 1 ? 'one producer-driven line takes' : '${pushing.length} producer-driven lines take'} '
+        'all of it'
+        '${unnamed == 0 && pushing.length > 1 ? ', ${(claimed * 100).toStringAsFixed(0)} % between them' : ''}, '
+        'so the '
+        '${starved == 1 ? 'other line has' : '$starved other lines have'} '
+        'nothing to take. '
+        '${unnamed > 0 ? 'Give the producer-driven ${unnamed == 1 ? 'line a share that leaves' : 'lines shares that leave'} something over, or make ' : 'Lower one of the shares, or make '}'
+        '${starved == 1 ? 'that line' : 'those lines'} producer-driven too.',
         nodeId: node.id,
       ));
     }

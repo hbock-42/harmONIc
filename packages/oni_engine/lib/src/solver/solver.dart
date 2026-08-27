@@ -174,16 +174,53 @@ class PipelineSolver {
         }
     }
 
+    // Anything that came out negative, said once and blamed on the port that
+    // could not supply it.
+    //
+    // A negative count is never a fact about a base — nothing is built minus
+    // five times. It means something is drawn harder than it is made, and it
+    // spreads: seven nodes in the build this was reported from, none of them
+    // the one at fault, each with its own line saying "check the edge shares".
+    // That is true and it is no help at all.
+    final negative = <String>[];
     for (var i = 0; i < counts.length; i++) {
       if (counts[i] < -1e-6) {
-        resolvedIssues.add(PipelineIssue(
-          IssueSeverity.error,
-          'Node "${nodes[i].id}" solved to a negative amount '
-          '(${counts[i].toStringAsFixed(3)}) — check the edge shares.',
-          nodeId: nodes[i].id,
-        ));
+        negative.add(nodes[i].id);
         status = SolveStatus.inconsistent;
       }
+    }
+    if (negative.isNotEmpty) {
+      // The ports feeding them, which is where the arithmetic ran out.
+      // Only ports on nodes that are not themselves below zero. A negative
+      // count spreads to everything downstream of it, and those nodes'
+      // ports are victims — naming them alongside the cause is how seven
+      // messages came to point at six innocent nodes.
+      final blame = <PortRef>{};
+      for (final id in negative) {
+        for (final edge in pipeline.edges) {
+          if (edge.toNodeId != id) continue;
+          if (negative.contains(edge.fromNodeId)) continue;
+          blame.add(PortRef(edge.fromNodeId, edge.fromPortId));
+        }
+      }
+      final names = [
+        for (final id in negative)
+          database.process(pipeline.nodeOrThrow(id).specId)?.name ?? id,
+      ];
+      resolvedIssues.add(PipelineIssue(
+        IssueSeverity.error,
+        '${_sentenceList(names.toSet().toList())} '
+        '${names.length == 1 ? 'came' : 'come'} out below zero, which is not '
+        'a thing a base can do. More is being drawn from '
+        '${_sentenceList([for (final ref in blame) _portDescription(pipeline, ref)])} '
+        'than ${blame.length == 1 ? 'it makes' : 'they make'}: the shares on '
+        'the lines off '
+        '${blame.length == 1 ? 'it' : 'them'} leave less than what the rest '
+        'of the build asks for.',
+        nodeId: negative.first,
+      ));
+    }
+    for (var i = 0; i < counts.length; i++) {
       if (counts[i].isNaN || counts[i].isInfinite) {
         counts[i] = 0;
       }

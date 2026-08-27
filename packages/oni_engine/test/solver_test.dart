@@ -974,10 +974,101 @@ void main() {
       final said = s.issues.map((i) => i.message).join();
       // The port, not the seven nodes downstream of it.
       expect(said, contains('Natural Gas Generator\u2019s power'));
-      expect(said, contains('100 %'));
       expect(said, contains('nothing to take'));
       // And no talk of negative amounts, which was the symptom.
       expect(said, isNot(contains('negative')));
+    });
+
+    test('and "whatever is left" is also all of it, when it is alone', () {
+      // The shape the first version of this check missed, on the very build
+      // written to demonstrate it: a producer-driven line with no share takes
+      // what the named ones leave, and where none are named that is the lot.
+      // It reads as an unset field and behaves as 100 %.
+      final base = sharedOut(extra: 1);
+      final loose = base.copyWith(edges: [
+        for (final e in base.edges)
+          if (e.toNodeId == 'sink_power') e.copyWith(clearShare: true) else e,
+      ]);
+
+      final s = solver.solve(loose);
+
+      expect(s.status, SolveStatus.invalid);
+      expect(s.issues.map((i) => i.message).join(),
+          contains('takes all of it'));
+    });
+
+    test('and no arrangement of shares leaves a negative unexplained', () {
+      // The guarantee, rather than the shapes I happened to think of.
+      //
+      // This check shipped once catching only shares that added to 100 %, and
+      // the build written to demonstrate it still went negative — because a
+      // producer-driven line with no share also takes everything, and reads
+      // as an unset field. Enumerating the arrangements is what would have
+      // caught that, so it is what runs now.
+      //
+      // A negative count is never a fact about a base. Whatever comes back,
+      // it is either an answer with no negative in it or a refusal that says
+      // why.
+      const shares = <double?>[null, 0.25, 0.5, 1];
+      var arrangements = 0;
+
+      for (final first in shares) {
+        for (final second in shares) {
+          for (final pinnedConsumer in [true, false]) {
+            for (final secondPush in [true, false]) {
+              final b = PipelineBuilder(db, name: 'shares')
+                ..add('natural_gas_generator', nodeId: 'gen')
+                ..addSink('power')
+                ..add('rock_crusher_sand', nodeId: 'crusher')
+                ..addSource('raw_mineral')
+                ..addSink('sand')
+                ..add('metal_refinery', nodeId: 'refinery')
+                ..addSource('metal_ore')
+                ..addSource('water')
+                ..addSink('refined_metal')
+                ..addSink('water')
+                ..connect('gen', 'power_out', 'sink_power', 'in',
+                    mode: EdgeMode.push, share: first)
+                ..connect('gen', 'power_out', 'crusher', 'power_in',
+                    mode: secondPush ? EdgeMode.push : EdgeMode.pull,
+                    share: secondPush ? second : null)
+                ..connect('gen', 'power_out', 'refinery', 'power_in')
+                ..connectItem('src_raw_mineral', 'crusher', 'raw_mineral')
+                ..connectItem('crusher', 'sink_sand', 'sand')
+                ..connectItem('src_metal_ore', 'refinery', 'metal_ore')
+                ..connect('src_water', 'out', 'refinery', 'coolant_in')
+                ..connect('refinery', 'coolant_out', 'sink_water', 'in')
+                ..connectItem('refinery', 'sink_refined_metal', 'refined_metal')
+                ..pinCount('gen', 1);
+              if (pinnedConsumer) b.pinCount('refinery', 1);
+
+              arrangements++;
+              final where = 'first=$first second=$second '
+                  'secondPush=$secondPush pinned=$pinnedConsumer';
+              final solution = solver.solve(b.build());
+              final wentNegative = solution.nodes.values
+                  .where((n) => n.count < -1e-9)
+                  .isNotEmpty;
+              if (!wentNegative) continue;
+
+              // Where the arithmetic does run backwards — and it can, once a
+              // pinned consumer wants more than the shares leave it — the
+              // build is refused and the message names the port that could
+              // not supply it. Never "check the edge shares", which was true
+              // of every one of these and no help in any of them.
+              expect(solution.status, isNot(SolveStatus.solved), reason: where);
+              final said = solution.issues.map((i) => i.message).join(' ');
+              expect(said, contains('below zero'), reason: where);
+              expect(said, contains('Natural Gas Generator\u2019s power'),
+                  reason: where);
+              expect(said, isNot(contains('check the edge shares')),
+                  reason: where);
+            }
+          }
+        }
+      }
+
+      expect(arrangements, 64);
     });
 
     test('and is fine when nothing else is attached to it', () {

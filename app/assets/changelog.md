@@ -37,6 +37,11 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- Nothing comes out below zero without saying why. A build could report a Rock
+  Crusher at minus five, and six other nodes downstream of it, each with its
+  own line saying "check the edge shares" — true, and no help. It is one line
+  now, naming the port that could not supply them, and not naming the nodes
+  that merely inherited the problem.
 - A wire's share counts the wires that are actually there. "Taking everything
   the port makes, since nothing else is asking for it" was said with two other
   wires asking for it: only the producer-driven ones were counted, so the
