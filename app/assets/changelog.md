@@ -8,6 +8,21 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — Every figure, where you can check it
+
+**Every figure**, at the foot of the guide: everything the app knows, grouped
+by what comes out and sorted by how much.
+
+- Read down a list rather than across it. Two things making the same stuff
+  belong near each other, and the one that is not is the one to check.
+- Rates are per cycle, which is how the game quotes them.
+- A row marked *unverified* is a figure that is a judgement rather than
+  something the game publishes.
+- **wrong?** on a row opens a report with the recipe already named.
+
+It is read off the data the solver is using rather than written down anywhere,
+so it cannot be out of date.
+
 ## 27 August 2026 — A supply says what you have, or what flows
 
 Two different things, and the app had one of them.

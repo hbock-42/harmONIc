@@ -80,6 +80,7 @@ class ReportFooter extends StatefulWidget {
     this.open,
     this.onWatch,
     this.onWhatsNew,
+    this.onEveryFigure,
     super.key,
   });
 
@@ -94,6 +95,11 @@ class ReportFooter extends StatefulWidget {
   /// the notice that announces a release is dismissible and never comes back,
   /// so without this there would be no way in at all.
   final VoidCallback? onWhatsNew;
+
+  /// Read every figure the app uses, for somebody checking them. Beside the
+  /// reporting, because checking a number and saying it is wrong are the same
+  /// errand.
+  final VoidCallback? onEveryFigure;
 
   /// How a link is opened. The browser, unless a test says otherwise — a
   /// widget test has no browser and no desktop to hand one to.
@@ -175,28 +181,36 @@ class _ReportFooterState extends State<ReportFooter> {
               style: OniType.body.copyWith(fontSize: 12),
             ),
             const SizedBox(height: OniSpacing.md),
-            Row(
+            // Wrapped rather than in a row: there are four of these now, and
+            // a footer that overflows by 150 px on a narrow panel is a footer
+            // nobody can reach the last button of.
+            Wrap(
+              spacing: OniSpacing.sm,
+              runSpacing: OniSpacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 OniButton(
                   label: 'Report a bug',
                   compact: true,
                   onPressed: () => _report('bug.yml'),
                 ),
-                const SizedBox(width: OniSpacing.sm),
                 OniButton(
                   label: 'Suggest something',
                   compact: true,
                   onPressed: () => _report('idea.yml'),
                 ),
-                const Spacer(),
-                if (widget.onWhatsNew case final VoidCallback read) ...[
+                if (widget.onEveryFigure case final VoidCallback figures)
+                  OniButton(
+                    label: 'Every figure',
+                    compact: true,
+                    onPressed: figures,
+                  ),
+                if (widget.onWhatsNew case final VoidCallback read)
                   OniButton(
                     label: "What's new",
                     compact: true,
                     onPressed: read,
                   ),
-                  const SizedBox(width: OniSpacing.sm),
-                ],
                 // The version, where a report can quote it and where somebody
                 // can check they are looking at what everybody else is.
                 Text(

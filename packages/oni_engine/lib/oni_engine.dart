@@ -5,6 +5,7 @@
 /// [PipelineSolver] scales every other node to match.
 library;
 
+export 'src/data/catalogue.dart';
 export 'src/data/default_database.dart';
 export 'src/data/templates.dart';
 export 'src/graph/as_recipe.dart';

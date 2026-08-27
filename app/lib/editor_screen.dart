@@ -22,6 +22,7 @@ import 'panels/inspector_panel.dart';
 import 'panels/palette_panel.dart';
 import 'panels/pipelines_menu.dart';
 import 'panels/process_editor.dart';
+import 'panels/catalogue_panel.dart';
 import 'panels/changelog_panel.dart';
 import 'panels/problems_panel.dart';
 import 'panels/summary_bar.dart';
@@ -199,6 +200,7 @@ class _EditorScreenState extends State<EditorScreen> {
   bool _pipelinesOpen = false;
   bool _guideOpen = false;
   bool _changelogOpen = false;
+  bool _catalogueOpen = false;
 
   /// The entry somebody had read when they opened the changelog, so what they
   /// see is what came after it. Cleared when they open it from the guide.
@@ -471,6 +473,8 @@ class _EditorScreenState extends State<EditorScreen> {
                               setState(() => _guideOpen = false);
                               unawaited(widget.demoPlayer!.start(kDemos.first));
                             },
+                      onEveryFigure: () =>
+                          setState(() => _catalogueOpen = true),
                       // Over the guide rather than instead of it: closing the
                       // changelog puts somebody back where they were.
                       onWhatsNew: () => setState(() {
@@ -482,6 +486,13 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
               // After the guide, because a Stack paints its last child on top
               // and the way in here is at the foot of the guide.
+              if (_catalogueOpen)
+                Positioned.fill(
+                  child: CataloguePanel(
+                    database: widget.library.database,
+                    onClose: () => setState(() => _catalogueOpen = false),
+                  ),
+                ),
               if (_changelogOpen)
                 Positioned.fill(
                   child: ChangelogPanel(

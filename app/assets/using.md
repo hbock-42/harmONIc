@@ -289,6 +289,21 @@ remembered. The light palette is not the dark one inverted — every colour is
 picked for the background it sits on, because a hue that reads on near-black is
 usually too pale to read on near-white.
 
+## Checking the figures
+
+**Every figure** at the foot of this guide lists what the app knows, grouped by
+what comes out and sorted by how much. It is not a document — it is read
+straight off the data the solver is using, so there is nothing to be out of
+date.
+
+Read down a list rather than across it. Two things that make the same stuff
+should be within reach of each other, and the one that is not is the one to
+check. A row marked *unverified* is one where a figure is a judgement rather
+than something the game publishes.
+
+If one is wrong, **wrong?** on the row opens a report with the recipe already
+named.
+
 ## What has changed
 
 The app says so when there is something new to read, once, with a line at the

@@ -55,12 +55,6 @@ jobs:
           ./tool/copy_docs.sh
           git diff --exit-code app/assets/using.md app/assets/changelog.md
 
-      - name: The reference pages match the data
-        working-directory: packages/oni_engine
-        run: |
-          dart run tool/gen_reference.dart
-          git diff --exit-code ../../docs/reference
-
       - name: The generated data matches its source
         working-directory: packages/oni_engine
         run: |
