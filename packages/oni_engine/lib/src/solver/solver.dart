@@ -183,6 +183,11 @@ class PipelineSolver {
         }
     }
 
+    // Whatever the status: an output node several lines pull into is a mistake
+    // in what was drawn, and a build with one can solve perfectly well and
+    // still be wrong.
+    if (explain) resolvedIssues.addAll(_outputNodeShares(pipeline));
+
     // Anything that came out negative, said once and blamed on the port that
     // could not supply it.
     //
@@ -397,6 +402,59 @@ class PipelineSolver {
   /// Saying "the producer decides" on both wires expresses it exactly, and
   /// solves: 750 g/s from the generator and 90 topped up. Two people found
   /// this the hard way in one build, so the app says it out loud now.
+  /// An output node is a bucket, not a customer.
+  ///
+  /// It has no size of its own, so "half of what it wants" means "half of
+  /// whatever the other line brings" -- which quietly holds every supplier
+  /// feeding it to the same amount. Reported as resources going negative for
+  /// no visible reason, and the reader was being told to divide something that
+  /// has nothing to divide.
+  ///
+  /// Said whatever the build's status, unlike the hints beside it: this is a
+  /// mistake in what was drawn, not an explanation of a failure, and a build
+  /// with it can solve perfectly well and be wrong.
+  List<PipelineIssue> _outputNodeShares(Pipeline pipeline) {
+    final issues = <PipelineIssue>[];
+    for (final node in pipeline.nodes) {
+      final spec = database.process(node.specId);
+      if (spec == null || spec.kind != ProcessKind.sink) continue;
+      for (final port in spec.ports) {
+        if (!port.isInput) continue;
+        final incoming = pipeline.edgesInto(PortRef(node.id, port.id));
+        if (incoming.length < 2) continue;
+        if (incoming.any((e) => e.mode != EdgeMode.pull || e.share != null)) {
+          continue;
+        }
+        final item =
+            database.item(port.itemId)?.name.toLowerCase() ?? port.itemId;
+        issues.add(PipelineIssue(
+          IssueSeverity.warning,
+          '${incoming.length} wires bring $item into this output node, and an '
+          'output node has no size of its own — so each of them is reading its '
+          'share as a share of whatever the others bring, which holds all '
+          '${incoming.length} to the same amount. That is almost never what an '
+          'output is for. Set these wires to "the producer" and each will '
+          'simply hand over what it makes.',
+          nodeId: node.id,
+          targets: [
+            IssueTarget('the ${spec.name}', nodeId: node.id, portId: port.id),
+            for (final edge in incoming)
+              IssueTarget(
+                  'the line from ${_nodeName(pipeline, edge.fromNodeId)}',
+                  edgeId: edge.id),
+          ],
+          fix: IssueFix(
+            incoming.length == 2
+                ? 'Set both to the producer'
+                : 'Set all ${incoming.length} to the producer',
+            producerDrivenEdgeIds: [for (final e in incoming) e.id],
+          ),
+        ));
+      }
+    }
+    return issues;
+  }
+
   List<PipelineIssue> _evenlySplitInputHints(Pipeline pipeline) {
     final issues = <PipelineIssue>[];
     for (final node in pipeline.nodes) {
@@ -414,6 +472,13 @@ class PipelineSolver {
         }
         final item =
             database.item(port.itemId)?.name.toLowerCase() ?? port.itemId;
+        final targets = [
+          IssueTarget('the ${spec.name}', nodeId: node.id, portId: port.id),
+          for (final edge in incoming)
+            IssueTarget('the line from ${_nodeName(pipeline, edge.fromNodeId)}',
+                edgeId: edge.id),
+        ];
+        if (spec.kind == ProcessKind.sink) continue;
         issues.add(PipelineIssue(
           IssueSeverity.info,
           '${incoming.length} wires bring $item into the ${spec.name}, and '
@@ -422,6 +487,7 @@ class PipelineSolver {
           'makes and one of them take up the slack, set every one of these '
           'wires to "the producer".',
           nodeId: node.id,
+          targets: targets,
         ));
       }
     }
@@ -640,6 +706,11 @@ class PipelineSolver {
       gramsPerSecond.abs() >= 1000
           ? '${(gramsPerSecond / 1000).toStringAsFixed(2)} kg/s'
           : '${gramsPerSecond.toStringAsFixed(1)} g/s';
+
+  String _nodeName(Pipeline pipeline, String nodeId) {
+    final node = pipeline.node(nodeId);
+    return node?.label ?? database.process(node?.specId ?? '')?.name ?? nodeId;
+  }
 
   String _portDescription(Pipeline pipeline, PortRef ref) {
     final node = pipeline.node(ref.nodeId);

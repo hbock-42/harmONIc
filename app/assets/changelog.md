@@ -8,6 +8,21 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — Output nodes, and what an even split really splits
+
+- **Several wires into one output node is now a warning, with a button that
+  fixes it.** An output node has no size of its own, so two consumer-driven
+  lines into one read their shares as shares of *each other* — which quietly
+  holds every supplier feeding it to the same amount. That is where "unsure
+  why the negative draws keep happening" came from. It is said whether or not
+  the build solves, because a build with it can solve perfectly well and still
+  be wrong, and **Set all 4 to the producer** does it in one step you can undo.
+- **The tutorial was telling you the wrong thing.** "Let it choose the split"
+  said the app had split the ore evenly. It had not: the ore goes 3.33 one way
+  and 6.67 the other. What comes out even is the *iron*, held there by exactly
+  the trap above. The same shape people were reporting was sitting in the
+  app's own worked example, described backwards. It says what it does now.
+
 ## 27 August 2026 — Finding things
 
 Two ways to stop hunting a canvas bigger than the window.

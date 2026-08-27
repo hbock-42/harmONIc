@@ -143,8 +143,11 @@ const Demo letItChooseTheSplit = Demo(
       does: PinAmount(node: 'ore', portId: sourcePortId, rate: 10000),
     ),
     DemoStep(
-      says: '6.67 kg/s of iron. Nobody said how the ore divides, so the app '
-          'split it evenly — a fair guess, and rarely the best one.',
+      says: '6.67 kg/s of iron — and 3.33 of it from each, because both '
+          'lines into the output are consumer-driven and neither says a '
+          'share, so each takes half of what turns up. That holds the two to '
+          'the same amount of iron whatever it costs in ore. A fair guess, '
+          'and rarely the best one.',
     ),
     DemoStep(
       says: 'So ask for the best: select the iron coming out and press Get as '

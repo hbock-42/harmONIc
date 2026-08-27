@@ -184,6 +184,19 @@ class _Places extends StatelessWidget {
         runSpacing: OniSpacing.xs,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
+          // The change itself, where the message knows one: four wires to set
+          // by hand is four trips, and the reader has already been told what
+          // to do. One step on the undo stack, so it is a shortcut and not an
+          // authority.
+          if (issue.fix case final IssueFix fix)
+            if (!fix.isEmpty)
+              OniButton(
+                key: ValueKey('fix:${issue.nodeId ?? issue.edgeId}'),
+                label: fix.label,
+                compact: true,
+                tone: OniButtonTone.accent,
+                onPressed: () => controller.applyFix(fix),
+              ),
           Text(
             places.length == 1 ? 'SHOW ME' : 'SHOW ME ONE OF',
             style: OniType.label,

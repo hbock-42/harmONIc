@@ -427,6 +427,22 @@ class PipelineController extends ChangeNotifier {
     select(EdgeSelection(edge.id));
   }
 
+  /// Carries out what an issue offered to do.
+  ///
+  /// One step on the undo stack, so a reader who did not like it gets a single
+  /// ⌘Z back — this is a shortcut for a few clicks, not an authority.
+  void applyFix(IssueFix fix) {
+    if (fix.isEmpty) return;
+    final wanted = fix.producerDrivenEdgeIds.toSet();
+    _apply(_pipeline.copyWith(edges: [
+      for (final edge in _pipeline.edges)
+        if (wanted.contains(edge.id))
+          edge.copyWith(mode: EdgeMode.push, clearShare: true)
+        else
+          edge,
+    ]));
+  }
+
   /// Everything that could sit on the other end of [ref].
   ///
   /// For an input port that means anything producing the item (plus the supply

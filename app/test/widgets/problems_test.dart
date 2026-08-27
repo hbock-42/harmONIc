@@ -277,4 +277,56 @@ void main() {
       expect(find.text('SHOW ME ONE OF'), findsNothing);
     });
   });
+
+  /// An output node fed by several consumer-driven lines.
+  ///
+  /// Reported as "unsure why the negative draws of resources keep happening".
+  /// An output has no size of its own, so each line reads its share as a share
+  /// of whatever the others bring, which holds every supplier to the same
+  /// amount.
+  group('an output node several wires pull into', () {
+    Pipeline oneBucketTwoTaps() =>
+        (PipelineBuilder(testDatabase, name: 'one bucket')
+              ..addSource('water', x: 0, y: 0)
+              ..add('electrolyzer', nodeId: 'elec', x: 340, y: 0)
+              ..add('electrolyzer', nodeId: 'elec2', x: 340, y: 300)
+              ..addSink('oxygen', nodeId: 'out', x: 700, y: 150)
+              ..connectItem('src_water', 'elec', 'water')
+              ..connectItem('src_water', 'elec2', 'water')
+              ..connectItem('elec', 'out', 'oxygen')
+              ..connectItem('elec2', 'out', 'oxygen')
+              ..pinCount('elec', 2))
+            .build();
+
+    testWidgets('is warned about, and offered as one click', (tester) async {
+      final controller =
+          await pumpEditor(tester, pipeline: oneBucketTwoTaps());
+      await tester.pump();
+
+      final issue = controller.solution.issues.firstWhere(
+          (i) => i.message.contains('an output node has no size of its own'));
+      expect(issue.fix, isNotNull);
+
+      await tester.tap(find.byKey(const ValueKey('fix:out')));
+      await tester.pumpAndSettle();
+
+      final into = controller.pipeline.edges.where((e) => e.toNodeId == 'out');
+      expect(into.every((e) => e.mode == EdgeMode.push), isTrue);
+      // And it is one step back, not four.
+      controller.undo();
+      expect(controller.pipeline.edges.where((e) => e.toNodeId == 'out')
+          .every((e) => e.mode == EdgeMode.pull), isTrue);
+    });
+
+    testWidgets('and it is said even when the build solves', (tester) async {
+      // The trap does not stop a build solving. It makes it quietly wrong,
+      // which is why this one is said whatever the status.
+      final controller =
+          await pumpEditor(tester, pipeline: oneBucketTwoTaps());
+      await tester.pump();
+      expect(controller.solution.status, SolveStatus.solved);
+      expect(textContaining('an output node has no size of its own'),
+          findsOneWidget);
+    });
+  });
 }

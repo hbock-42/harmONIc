@@ -104,4 +104,39 @@ void main() {
     expect(asShare(0.99999999999999911), 1);
     expect(asShare(0.25), 0.25);
   });
+
+  test('an output node fed by several wires says what is really wrong', () {
+    // Reported: "unsure why the negative draws of resources keep happening",
+    // on a build whose four carbon dioxide lines all ran into one output node.
+    // An output has no size of its own, so each line reading "half of what it
+    // wants" means "half of whatever the other brings" -- which holds all four
+    // suppliers to the same amount for ever after.
+    final builder = PipelineBuilder(db, name: 'one bucket, four taps')
+      ..add('natural_gas_generator', nodeId: 'gen')
+      ..add('petroleum_generator', nodeId: 'pgen')
+      ..addSource('natural_gas')
+      ..addSource('petroleum')
+      ..addSink('carbon_dioxide')
+      ..addSink('power')
+      ..connectItem('src_natural_gas', 'gen', 'natural_gas')
+      ..connect('src_petroleum', 'out', 'pgen', 'fuel')
+      ..connect('gen', 'power_out', 'sink_power', 'in')
+      ..connect('pgen', 'power_out', 'sink_power', 'in')
+      ..connectItem('gen', 'sink_carbon_dioxide', 'carbon_dioxide')
+      ..connectItem('pgen', 'sink_carbon_dioxide', 'carbon_dioxide');
+    final solution = PipelineSolver(db).solve(builder.build());
+
+    final bucket = solution.issues.where(
+        (i) => i.message.contains('an output node has no size of its own'));
+    expect(bucket, isNotEmpty,
+        reason: 'the old wording told the reader to divide something that has '
+            'nothing to divide');
+
+    // And it offers to do it, because four wires is four trips otherwise.
+    final fix = bucket.first.fix;
+    expect(fix, isNotNull);
+    expect(fix!.producerDrivenEdgeIds.length, greaterThanOrEqualTo(2));
+    // The wires are named as places to go, not only the node.
+    expect(bucket.first.places.where((p) => p.edgeId != null), isNotEmpty);
+  });
 }

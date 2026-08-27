@@ -24,6 +24,23 @@ class IssueTarget {
   final String? portId;
 }
 
+/// A change that would settle a message, for anything able to offer to make it.
+///
+/// Only ever a change somebody could make by hand in a few clicks; this is a
+/// shortcut, not an authority. The reader still sees what it did and can undo
+/// it.
+class IssueFix {
+  const IssueFix(this.label, {this.producerDrivenEdgeIds = const []});
+
+  /// What the button says, in the imperative: "Set them to the producer".
+  final String label;
+
+  /// Wires to make producer-driven.
+  final List<String> producerDrivenEdgeIds;
+
+  bool get isEmpty => producerDrivenEdgeIds.isEmpty;
+}
+
 /// Something wrong (or merely suspicious) about a pipeline, addressed to the user.
 class PipelineIssue {
   const PipelineIssue(
@@ -32,12 +49,16 @@ class PipelineIssue {
     this.nodeId,
     this.edgeId,
     this.targets = const [],
+    this.fix,
   });
 
   final IssueSeverity severity;
   final String message;
   final String? nodeId;
   final String? edgeId;
+
+  /// The change that would settle it, where there is one worth offering.
+  final IssueFix? fix;
 
   /// The things this message names, for anything that can go and show them.
   ///
