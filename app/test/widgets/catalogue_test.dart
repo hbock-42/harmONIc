@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
@@ -23,6 +22,34 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// Narrow before looking: the panel opens on everything, and a list of
+  /// hundreds keeps what a test is after below the fold.
+  Future<void> family(WidgetTester tester, String label) async {
+    await tester.tap(find.textContaining(label).first);
+    await tester.pumpAndSettle();
+  }
+
+  /// Drag until it is built. A lazy list has not made what is below the fold,
+  /// so a finder for it comes back empty rather than merely off screen.
+  Future<void> scrollTo(WidgetTester tester, Key key) async {
+    for (var i = 0; i < 60; i++) {
+      if (find.byKey(key).evaluate().isNotEmpty) {
+        await tester.ensureVisible(find.byKey(key));
+        await tester.pumpAndSettle();
+        return;
+      }
+      await tester.drag(
+        find.descendant(
+          of: find.byType(CataloguePanel),
+          matching: find.byType(ListView),
+        ),
+        const Offset(0, -300),
+      );
+      await tester.pump();
+    }
+    fail('never scrolled as far as $key');
+  }
+
   Future<void> search(WidgetTester tester, String query) async {
     await tester.enterText(
       find.descendant(
@@ -37,6 +64,7 @@ void main() {
   testWidgets('shows what makes a thing, in the game\'s own units',
       (tester) async {
     await pumpCatalogue(tester);
+    await family(tester, 'Critters');
     await search(tester, 'dirt');
 
     // Per cycle, which is how the game quotes a critter: a Pip makes 20 kg of
@@ -47,6 +75,7 @@ void main() {
 
   testWidgets('and says which figures are a judgement', (tester) async {
     await pumpCatalogue(tester);
+    await family(tester, 'Critters');
     await search(tester, 'iron ore');
 
     expect(textContaining('Orehull'), findsWidgets);
@@ -64,24 +93,18 @@ void main() {
       onReport: (spec) => reported = spec,
     )));
     await tester.pumpAndSettle();
+    await family(tester, 'Critters');
     await search(tester, 'iron ore');
 
-    // The affordance appears on hover, where the row is.
-    final row = find.ancestor(
-      of: textContaining('Orehull'),
-      matching: find.byType(MouseRegion),
-    );
-    final gesture =
-        await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: tester.getCenter(row.first));
-    addTearDown(gesture.removePointer);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('wrong?').first);
+    // On the card rather than on hover: something you can see is there is
+    // something somebody will use.
+    await scrollTo(tester, const ValueKey('wrong:iron_ore:orehull'));
+    await tester.tap(find.byKey(const ValueKey('wrong:iron_ore:orehull')));
     await tester.pumpAndSettle();
 
     expect(reported?.id, 'orehull');
   });
+
   testWidgets('and it is a button on the toolbar, not a page in the guide',
       (tester) async {
     // Checking a figure is not reading the manual: it happens mid-build, when
@@ -109,6 +132,7 @@ void main() {
     // means nothing on its own and something beside everything else that
     // eats nori.
     await pumpCatalogue(tester);
+    await family(tester, 'Critters');
     await tester.tap(find.text('What eats it'));
     await tester.pumpAndSettle();
     await search(tester, 'nori');
@@ -118,23 +142,29 @@ void main() {
     expect(textContaining('Iron Ore'), findsWidgets);
   });
 
-  testWidgets('scales everything at once, for checking a ratio',
-      (tester) async {
+  testWidgets('scales one card at a time, for checking a ratio', (tester) async {
+    // Per card rather than across the page: comparing two ways of getting a
+    // thing means holding one still while the other moves.
     await pumpCatalogue(tester);
+    await family(tester, 'Critters');
     await search(tester, 'dirt');
-    expect(textContaining('20.00 kg'), findsWidgets);
+    // A Slogo gives 50 kg of dirt a cycle and is the largest, so it leads.
+    expect(textContaining('50.00 kg'), findsWidgets);
 
-    await tester.tap(find.text('×5'));
+    await scrollTo(tester, const ValueKey('times:dirt:slogo:5'));
+    await tester.tap(find.byKey(const ValueKey('times:dirt:slogo:5')));
     await tester.pumpAndSettle();
 
-    expect(textContaining('100.00 kg'), findsWidgets);
+    expect(textContaining('250.00 kg'), findsWidgets);
   });
 
   testWidgets('and shows one recipe whole, with what it does to matter',
       (tester) async {
     await pumpCatalogue(tester);
+    await family(tester, 'Critters');
     await search(tester, 'coal');
-    await tester.tap(textContaining('Hatch').first);
+    await scrollTo(tester, const ValueKey('inspect:coal:hatch'));
+    await tester.tap(find.byKey(const ValueKey('inspect:coal:hatch')));
     await tester.pumpAndSettle();
 
     expect(find.text('TAKES'), findsOneWidget);
@@ -147,6 +177,7 @@ void main() {
   testWidgets('and keeps the judged figures apart from the published ones',
       (tester) async {
     await pumpCatalogue(tester);
+    await family(tester, 'Critters');
     await tester.tap(find.text('Judged'));
     await tester.pumpAndSettle();
     await search(tester, 'iron ore');
