@@ -1115,6 +1115,9 @@ void main() {
       final said = s.issues.map((i) => i.message).join();
       expect(said, contains('2 loose ends'));
       expect(said, contains('an amount for each'));
+      // And the other way out, since somebody who has said what they *have*
+      // does not yet know the amount they are being asked for.
+      expect(said, contains('as much as possible'));
       // The phrase that read as a menu, rather than the words in it.
       expect(said, isNot(contains('an amount for one of')));
     });
@@ -1140,6 +1143,38 @@ void main() {
       ]);
       expect(solver.solve(pipeline).status, SolveStatus.solved);
     });
+  });
+
+  test('and asking for as much as possible is a way out of it', () {
+    // The route the message offers, taken. Somebody who has said what they
+    // have — 180 g/s of gas — has sized the generators and nothing else; the
+    // split between three consumers is a choice, and this is one way of
+    // making it.
+    final pipeline = (PipelineBuilder(db, name: 'supply-led')
+          ..add('natural_gas_generator', nodeId: 'gen')
+          ..addSource('natural_gas')
+          ..addSink('power')
+          ..add('rock_crusher_sand', nodeId: 'crusher')
+          ..addSource('raw_mineral')
+          ..addSink('sand')
+          ..connectItem('src_natural_gas', 'gen', 'natural_gas')
+          ..connect('gen', 'power_out', 'sink_power', 'in')
+          ..connect('gen', 'power_out', 'crusher', 'power_in')
+          ..connectItem('src_raw_mineral', 'crusher', 'raw_mineral')
+          ..connectItem('crusher', 'sink_sand', 'sand')
+          ..pinRate('src_natural_gas', 'out', 180))
+        .build();
+
+    expect(solver.solve(pipeline).status, SolveStatus.underdetermined);
+
+    final best = mostOf(pipeline, db, 'sand');
+    expect(best.isAnswer, isTrue);
+    final answered = solver.solve(withShares(pipeline, db, best));
+
+    expect(answered.status, SolveStatus.solved);
+    // Two generators from 180 g/s of gas, and all 1.6 kW into crushers.
+    expect(answered.nodes['gen']!.count, closeTo(2, 1e-6));
+    expect(answered.nodes['crusher']!.count, closeTo(1600 / 240, 1e-6));
   });
 
 }

@@ -179,6 +179,22 @@ A Duplicant eats 1 000 kcal a cycle. A Mush Bar is 800, so it takes 1.25
 Microbe Mushers to keep one person fed; a Frost Bun is 1 200 and a Uni is 7 200,
 which is the densest food in the game.
 
+## Planning from what you have
+
+Saying what you *have* — 180 g/s of natural gas, a geyser's output, a stockpile
+— sizes everything that follows from it. It does not size everything: where one
+thing feeds several, how much goes where is a choice rather than arithmetic, and
+the app will not invent it.
+
+Three ways to make that choice, and they are all the same choice:
+
+- **Say how much you want** of what comes out, on any node downstream.
+- **Say the split**, on the wires, as shares.
+- **Ask an output node for as much as possible**, and it works the split out.
+  This is the one for "I have this much gas, what is the most sand I can get?" —
+  and the answer comes back as ordinary shares on the wires, which you can then
+  change.
+
 ## Power
 
 A grid in the game is one shared network: every wire that touches is the same

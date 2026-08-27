@@ -37,6 +37,11 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- A build with two loose ends says it needs two amounts, and now also mentions
+  the other way out: asking an output node for as much as possible works the
+  split out for you. Saying what you *have* sizes what follows from it, but not
+  how a thing that feeds several others divides between them — and being asked
+  for an amount you do not know yet is no help.
 - A build with two loose ends says it needs two amounts. It used to say "give
   an amount for one of: Sand output, Water output", which reads as a menu —
   and giving one left the build exactly as stuck, naming the other.

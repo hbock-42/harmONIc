@@ -167,7 +167,9 @@ class PipelineSolver {
               : 'Nothing sets the size of this build yet, so every amount in '
                   'it could be anything. It has ${names.length} loose ends and '
                   'needs an amount for each: ${_sentenceList(names)}. Any node '
-                  'on the same run as one of them will do instead.',
+                  'on the same run as one of them will do instead.'
+                  '${_hasASplit(pipeline) ? ' Or ask one of them for as much '
+                      'as possible, and it will choose the split for you.' : ''}',
         ));
       case LinearSolveStatus.inconsistent:
         status = SolveStatus.inconsistent;
@@ -505,6 +507,22 @@ class PipelineSolver {
         nodeId: named.first.nodeId,
       ),
     ];
+  }
+
+  /// Whether anything in the build is divided between several lines.
+  ///
+  /// Where something is, "how much of it goes where" is a choice rather than
+  /// arithmetic, and an amount is not the only way to make it: asking an
+  /// output node for as much as possible makes it too. Somebody who has said
+  /// what they *have* — 180 g/s of gas, say — has sized the generators and
+  /// nothing else, and is owed that second route rather than being told again
+  /// to name an amount they do not know yet.
+  static bool _hasASplit(Pipeline pipeline) {
+    final seen = <PortRef>{};
+    for (final edge in pipeline.edges) {
+      if (!seen.add(PortRef(edge.fromNodeId, edge.fromPortId))) return true;
+    }
+    return false;
   }
 
   /// "a, b and c", so a list of ports reads as a sentence rather than as
