@@ -79,6 +79,36 @@ Plants grow crops rather than calories.
     expect(news.unreadCount, 2);
   });
 
+  test('two releases in one day are two releases', () async {
+    // Reported before it could bite: several ships in a day is normal, and
+    // the day is not what tells them apart.
+    const sameDay = '''
+# What's new
+
+What has changed, newest first.
+
+## 28 August 2026 — The changelog only shows what is new
+
+Opening the notice shows what you have not read.
+
+## 28 August 2026 — Wires
+
+Two wires into one port say what they are doing.
+
+## 27 August 2026 — Food
+
+Plants grow crops rather than calories.
+''';
+    final news = NewsController(
+      store: MemoryJsonStore({'seen': '28 August 2026 — Wires'}),
+      load: () async => sameDay,
+    );
+    await news.load();
+
+    expect(news.unread, '28 August 2026 — The changelog only shows what is new');
+    expect(news.unreadCount, 1);
+  });
+
   test('an entry that has since been renamed cannot be counted', () async {
     // A wrong count is worse than none, and a wrong cut would hide entries.
     final news = await newsWith('25 August 2026 — A release that was renamed');
@@ -245,16 +275,27 @@ Plants grow crops rather than calories.
       // Everything above the entry somebody last read is what is new to them.
       // Out of order, that shows them things they have already seen and hides
       // things they have not.
+      //
+      // Same day is allowed, and has to be: there can be several releases in
+      // one day. What separates them is the title, which is why a heading is
+      // a date *and* a title — the date alone was never the identifier.
       final dates = [
         for (final entry in entries)
           if (dateOf(entry.title) case final DateTime date) date,
       ];
       expect(dates, isNotEmpty);
       for (var i = 1; i < dates.length; i++) {
-        expect(dates[i].isBefore(dates[i - 1]), isTrue,
-            reason: '${entries[i].title} is not older than '
+        expect(dates[i].isAfter(dates[i - 1]), isFalse,
+            reason: '${entries[i].title} is newer than '
                 '${entries[i - 1].title}');
       }
+    });
+
+    test('and no two entries share a heading', () {
+      // The heading is how the app tells what somebody has already read. Two
+      // the same would make one of them unreachable and the other permanent.
+      final titles = [for (final entry in entries) entry.title];
+      expect(titles.toSet(), hasLength(titles.length));
     });
 
     test('and a sentence before any bullets', () {

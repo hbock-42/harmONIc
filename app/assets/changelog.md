@@ -75,8 +75,14 @@ it yet.
 top of this file, open it with one plain sentence — that sentence is what the
 app shows under the heading in its list — and then use bullets, because six
 things fixed reads as six things when it is six lines and as a wall when it is a
-paragraph. Run `tool/copy_docs.sh`. Entries are newest first and headings are
-identifiers once shipped: the app decides what somebody has already read by
-matching a heading, so renaming one shows them the whole history again. Ship
-nothing here for a change nobody using the app would notice — a release with no
-entry says nothing, which is the point.*
+paragraph. Run `tool/copy_docs.sh`.*
+
+*Entries run newest first, and several in one day is normal: the date is not
+what tells them apart, the title is. That is why a heading is both. Two entries
+must never share a heading — the app decides what somebody has already read by
+matching one, so a duplicate would make one of them unreachable and the other
+permanent, and renaming a shipped heading shows everybody the whole history
+again. Bodies can be edited freely; headings are fixed once they ship.*
+
+*Ship nothing here for a change nobody using the app would notice. A release
+with no entry says nothing, which is the point.*
