@@ -397,6 +397,10 @@ than the one this was written on.
 - **⌫** delete what is selected — a node, several, or a wire.
 - **esc** select nothing, which is also how you get the totals back to
   describing the whole canvas.
+- **⌘F** find a node in this build. Type and the first match comes to you;
+  Enter for the next one, ⇧Enter for the one before. It searches what a node
+  is called and also what it makes or takes, so "sulfur" finds everything on
+  that chain and not only the node with the word in its name.
 - **⌘C** copy the selected nodes and **⌘V** paste them, into this build or
   another one. The wires between what you copied come with them.
 - **⌘=** zoom in, **⌘−** out, **⌘0** back to life size.

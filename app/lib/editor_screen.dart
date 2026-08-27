@@ -25,6 +25,7 @@ import 'panels/process_editor.dart';
 import 'panels/catalogue_panel.dart';
 import 'panels/changelog_panel.dart';
 import 'panels/problems_panel.dart';
+import 'panels/find_panel.dart';
 import 'panels/summary_bar.dart';
 import 'state/display_controller.dart';
 import 'state/library_controller.dart';
@@ -130,6 +131,7 @@ Map<ShortcutActivator, Intent> editorShortcuts({required bool apple}) {
       const _ZoomOutIntent(),
   held(LogicalKeyboardKey.digit0):
       const _ZoomResetIntent(),
+  held(LogicalKeyboardKey.keyF): const _FindIntent(),
   held(LogicalKeyboardKey.keyC): const _CopyIntent(),
   held(LogicalKeyboardKey.keyV): const _PasteIntent(),
   // One grid cell per press — the grid is 8 — and eight cells with
@@ -164,6 +166,7 @@ const Map<String, String> kShortcutNames = <String, String>{
   '⌘=': 'zoom in',
   '⌘−': 'zoom out',
   '⌘0': 'zoom back to life size',
+  '⌘F': 'find a node in this build',
   '⌘C': 'copy the selected nodes',
   '⌘V': 'paste them',
   'arrow keys': 'nudge by a grid cell, eight with shift',
@@ -201,6 +204,20 @@ class _EditorScreenState extends State<EditorScreen> {
   bool _guideOpen = false;
   bool _changelogOpen = false;
   bool _catalogueOpen = false;
+
+  /// The find bar, and the way back to its field. Asking for the search while
+  /// it is already open should put the cursor back in it and select what is
+  /// there, not open a second one or quietly do nothing.
+  bool _findOpen = false;
+  final GlobalKey<FindPanelState> _findKey = GlobalKey<FindPanelState>();
+
+  void _find() {
+    if (_findOpen) {
+      _findKey.currentState?.takeFocus();
+    } else {
+      setState(() => _findOpen = true);
+    }
+  }
 
   /// The entry somebody had read when they opened the changelog, so what they
   /// see is what came after it. Cleared when they open it from the guide.
@@ -340,6 +357,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   () => _canvasKey.currentState?.zoomAtCentre(1 / 1.25)),
               _ZoomResetIntent: _CanvasAction<_ZoomResetIntent>(
                   () => _canvasKey.currentState?.resetView()),
+              _FindIntent: _CanvasAction<_FindIntent>(_find),
               _CopyIntent: _CanvasAction<_CopyIntent>(_copySelection),
               _PasteIntent: _CanvasAction<_PasteIntent>(_pasteNodes),
               _NudgeIntent: _nudge,
@@ -409,7 +427,10 @@ class _EditorScreenState extends State<EditorScreen> {
                                 _editing = widget.library.editable(spec)),
                           ),
                           Expanded(
-                            child: controller.pipeline.nodes.isEmpty
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: controller.pipeline.nodes.isEmpty
                                 ? _EmptyCanvas(
                                     onStartFrom: widget.workspace
                                         .createFromTemplate,
@@ -428,6 +449,23 @@ class _EditorScreenState extends State<EditorScreen> {
                                         widget.displaySettings.toggle,
                                     pointingAt: widget.demoHands?.litPort,
                                   ),
+                                ),
+                                // Over the canvas rather than above it, where
+                                // a browser puts its find bar: jumping to a
+                                // match should not move everything else.
+                                if (_findOpen)
+                                  Positioned(
+                                    top: OniSpacing.md,
+                                    right: OniSpacing.md,
+                                    child: FindPanel(
+                                      key: _findKey,
+                                      controller: controller,
+                                      onClose: () =>
+                                          setState(() => _findOpen = false),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                           InspectorPanel(
                             controller: controller,
@@ -712,6 +750,10 @@ class _ZoomOutIntent extends Intent {
 
 class _ZoomResetIntent extends Intent {
   const _ZoomResetIntent();
+}
+
+class _FindIntent extends Intent {
+  const _FindIntent();
 }
 
 class _CopyIntent extends Intent {

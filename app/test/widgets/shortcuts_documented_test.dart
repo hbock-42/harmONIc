@@ -31,16 +31,16 @@ void main() {
 
     // Every binding is one of the named ones. Arrow keys are named as a
     // family, since eight of them are one idea.
-    // Nineteen: undo, redo, two ways to delete, escape, four for zoom, copy,
-    // paste, four arrows and four with shift. The number is here because the
-    // first version of this test was written against a map that had lost two
-    // of them in an edit — and the honest thing was to put them back, not to
-    // change the number.
-    expect(editorShortcuts(apple: true).length, 19,
+    // Twenty: undo, redo, two ways to delete, escape, four for zoom, find,
+    // copy, paste, four arrows and four with shift. The number is here because
+    // the first version of this test was written against a map that had lost
+    // two of them in an edit — and the honest thing was to put them back, not
+    // to change the number.
+    expect(editorShortcuts(apple: true).length, 20,
         reason: 'a new binding wants a line in kShortcutNames and in the '
             'guide, and then this number');
   });
-  test('and the other half of the world gets the same nineteen', () {
+  test('and the other half of the world gets the same twenty', () {
     // Written on a Mac, so every binding said meta and every label said ⌘.
     // On Windows and Linux that is a key most keyboards do not have: undo,
     // redo, copy, paste and zoom were not mislabelled, they were missing.

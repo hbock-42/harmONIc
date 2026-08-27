@@ -193,5 +193,88 @@ void main() {
 
     expect(controller.solution.status, SolveStatus.inconsistent);
     expect(textContaining('No scale satisfies'), findsOneWidget);
+
+    // And the offer the name of this test has always claimed: something to
+    // click that puts the node it names in front of you. It used to be the
+    // word "show" set in ten-point grey, and nothing checked it was there.
+    expect(find.text('SHOW ME'), findsWidgets);
+    final place = controller.solution.issues.expand((i) => i.places).first;
+    await tester.tap(find.byKey(ValueKey(showKeyFor(place))));
+    await tester.pumpAndSettle();
+    expect(controller.selectedNodeIds, isNotEmpty);
+  });
+
+  /// A message that names something offers to go and show it.
+  ///
+  /// Reported: "if I manage to find the correct one that's overflowing and
+  /// give it an output node, it usually resolves it, but it's hard to tell
+  /// which one is the problem." Half of that was the app not saying which; the
+  /// other half is that knowing the name still leaves you hunting a canvas
+  /// bigger than the window.
+  group('where a message points', () {
+    /// One port divided between producer-driven lines, with a consumer-driven
+    /// one left over: the shape reported as "zeroes entire build".
+    Pipeline spokenFor() {
+      final base = (PipelineBuilder(testDatabase, name: 'divided')
+            ..addSource('water', x: 0, y: 0)
+            ..add('electrolyzer', nodeId: 'elec', x: 340, y: 0)
+            ..add('hydrogen_generator', nodeId: 'hgen', x: 700, y: 0)
+            ..addSink('hydrogen', nodeId: 'h2out', x: 700, y: 300)
+            ..connectItem('src_water', 'elec', 'water'))
+          .build();
+      return base.copyWith(edges: [
+        ...base.edges,
+        const PipelineEdge(
+          id: 'divided',
+          fromNodeId: 'elec',
+          fromPortId: 'hydrogen',
+          toNodeId: 'hgen',
+          toPortId: 'hydrogen',
+          mode: EdgeMode.push,
+        ),
+        const PipelineEdge(
+          id: 'starved',
+          fromNodeId: 'elec',
+          fromPortId: 'hydrogen',
+          toNodeId: 'h2out',
+          toPortId: 'in',
+        ),
+      ]);
+    }
+
+    testWidgets('the port and the starved line are both buttons',
+        (tester) async {
+      final controller = await pumpEditor(tester, pipeline: spokenFor());
+      await tester.pump();
+
+      expect(
+        controller.solution.issues.map((i) => i.message).join(' '),
+        contains('already spoken for'),
+      );
+      expect(find.text('SHOW ME ONE OF'), findsOneWidget);
+
+      // The line, by where it goes rather than by its id.
+      expect(
+        find.descendant(
+          of: find.byType(ProblemsBanner),
+          matching: textContaining('the line to'),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const ValueKey('show:starved.')));
+      await tester.pumpAndSettle();
+      expect(controller.selection, isA<EdgeSelection>());
+    });
+
+    testWidgets('and an ordinary message still offers its one node',
+        (tester) async {
+      final controller = await pumpEditor(tester)..clearAllPins();
+      await tester.pump();
+      // Underdetermined names no port, so there is nothing to point at beyond
+      // the buttons that already offer an amount.
+      expect(controller.solution.status, SolveStatus.underdetermined);
+      expect(find.text('SHOW ME ONE OF'), findsNothing);
+    });
   });
 }

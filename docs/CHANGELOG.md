@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — Finding things
+
+Two ways to stop hunting a canvas bigger than the window.
+
+- **⌘F finds a node.** Type and the first match comes to you; Enter for the
+  next, ⇧Enter for the one before, escape to put it away. It searches what a
+  node is called and also what it makes or takes, so "sulfur" finds the whole
+  chain and not only the node with the word in its name.
+- **A message that names something offers to show it.** Every port and every
+  wire a problem mentions is now a button under it, and clicking one selects
+  that thing and brings it into view. A message naming six ports used to be
+  six places to go and look for by eye.
+
 ## 27 August 2026 — Three reports about being told the wrong thing
 
 None of these was the arithmetic. All three were the app answering a fair

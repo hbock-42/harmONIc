@@ -494,6 +494,10 @@ class PipelineSolver {
           '${_supplyAdvice(pipeline, database, ref) ?? 'Send the surplus to an '
               'output node, or mark the port as venting.'}',
           nodeId: ref.nodeId,
+          targets: [
+            IssueTarget(_portDescription(pipeline, ref),
+                nodeId: ref.nodeId, portId: ref.portId),
+          ],
         ),
       ];
     }
@@ -522,6 +526,11 @@ class PipelineSolver {
         'Whichever of them has the surplus, either mark that port as venting '
         'or connect an output node to it.',
         nodeId: named.first.nodeId,
+        targets: [
+          for (final ref in named)
+            IssueTarget(_portDescription(pipeline, ref),
+                nodeId: ref.nodeId, portId: ref.portId),
+        ],
       ),
     ];
   }

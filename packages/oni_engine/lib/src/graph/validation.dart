@@ -6,14 +6,53 @@ import 'pipeline.dart';
 
 enum IssueSeverity { error, warning, info }
 
+/// One of the things a message names, and where it is.
+///
+/// A message that names six ports is six places to look, and the reader has to
+/// find each of them on a canvas bigger than the window. Naming them here as
+/// well as in the sentence lets whatever shows the message offer each one as
+/// something to click.
+class IssueTarget {
+  const IssueTarget(this.label, {this.nodeId, this.edgeId, this.portId});
+
+  /// What to call it, in the same words the sentence used.
+  final String label;
+  final String? nodeId;
+  final String? edgeId;
+
+  /// The port on [nodeId] the sentence is about, where it is about one.
+  final String? portId;
+}
+
 /// Something wrong (or merely suspicious) about a pipeline, addressed to the user.
 class PipelineIssue {
-  const PipelineIssue(this.severity, this.message, {this.nodeId, this.edgeId});
+  const PipelineIssue(
+    this.severity,
+    this.message, {
+    this.nodeId,
+    this.edgeId,
+    this.targets = const [],
+  });
 
   final IssueSeverity severity;
   final String message;
   final String? nodeId;
   final String? edgeId;
+
+  /// The things this message names, for anything that can go and show them.
+  ///
+  /// Empty for a message about one thing, where [nodeId] and [edgeId] already
+  /// say which — [places] is the one to read.
+  final List<IssueTarget> targets;
+
+  /// Everywhere this message points, however it was written down.
+  List<IssueTarget> get places => targets.isNotEmpty
+      ? targets
+      : [
+          if (edgeId != null) IssueTarget('the wire', edgeId: edgeId),
+          if (edgeId == null && nodeId != null)
+            IssueTarget('the node', nodeId: nodeId),
+        ];
 
   bool get isError => severity == IssueSeverity.error;
 
@@ -262,6 +301,18 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
         '${unnamed > 0 ? 'Give the producer-driven ${unnamed == 1 ? 'line a share that leaves' : 'lines shares that leave'} something over, or make ' : 'Lower one of the shares, or make '}'
         '${starved == 1 ? 'that line' : 'those lines'} producer-driven too.',
         nodeId: node.id,
+        targets: [
+          IssueTarget(_describe(pipeline, db, ref),
+              nodeId: node.id, portId: port.id),
+          // The starved lines by name, because the fix is on one of them and
+          // a wire is the hardest thing on the canvas to find by eye.
+          for (final edge in out)
+            if (edge.mode == EdgeMode.pull)
+              IssueTarget(
+                'the line to ${_nodeName(pipeline, db, edge.toNodeId)}',
+                edgeId: edge.id,
+              ),
+        ],
       ));
     }
   }
@@ -288,6 +339,12 @@ const double _shareSlack = 1e-7;
 
 /// "the Natural Gas Generator's power", for a message somebody reads rather
 /// than a pair of ids.
+String _nodeName(Pipeline pipeline, GameDatabase db, String nodeId) {
+  final node = pipeline.node(nodeId);
+  final spec = node == null ? null : db.process(node.specId);
+  return node?.label ?? spec?.name ?? nodeId;
+}
+
 String _describe(Pipeline pipeline, GameDatabase db, PortRef ref) {
   final node = pipeline.node(ref.nodeId);
   final spec = node == null ? null : db.process(node.specId);

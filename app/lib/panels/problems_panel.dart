@@ -29,8 +29,9 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
   @override
   Widget build(BuildContext context) {
     final solution = controller.solution;
-    final blocking =
-        solution.issues.where((i) => i.severity != IssueSeverity.info).toList();
+    final blocking = solution.issues
+        .where((i) => i.severity != IssueSeverity.info)
+        .toList();
     if (blocking.isEmpty) return const SizedBox.shrink();
 
     // Info notes are the "here is how to fix it" half of an error and are worth
@@ -39,15 +40,18 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
       ...blocking,
       ...solution.issues.where((i) => i.severity == IssueSeverity.info),
     ];
-    final worst =
-        blocking.any((i) => i.isError) ? OniColors.danger : OniColors.warning;
+    final worst = blocking.any((i) => i.isError)
+        ? OniColors.danger
+        : OniColors.warning;
     final shown = _expanded ? issues : issues.take(_collapsedCount).toList();
     final hidden = issues.length - shown.length;
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
-          horizontal: OniSpacing.lg, vertical: OniSpacing.sm),
+        horizontal: OniSpacing.lg,
+        vertical: OniSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: worst.withValues(alpha: 0.1),
         border: Border(bottom: BorderSide(color: worst.withValues(alpha: 0.4))),
@@ -61,10 +65,8 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (final issue in shown) _IssueRow(
-                    issue: issue,
-                    controller: controller,
-                  ),
+                  for (final issue in shown)
+                    _IssueRow(issue: issue, controller: controller),
                 ],
               ),
             ),
@@ -81,8 +83,9 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
                   cursor: SystemMouseCursors.click,
                   child: Text(
                     _expanded ? 'show less' : 'and $hidden more',
-                    style:
-                        OniType.numberSmall.copyWith(color: OniColors.accent),
+                    style: OniType.numberSmall.copyWith(
+                      color: OniColors.accent,
+                    ),
                   ),
                 ),
               ),
@@ -101,8 +104,11 @@ class _IssueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 1),
-        child: Row(
+    padding: const EdgeInsets.symmetric(vertical: 1),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
@@ -124,19 +130,75 @@ class _IssueRow extends StatelessWidget {
                 style: OniType.body.copyWith(fontSize: 12),
               ),
             ),
-            if (issue.nodeId != null)
-              GestureDetector(
-                onTap: () => controller.selectNode(issue.nodeId!),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Text('show',
-                      style: OniType.numberSmall
-                          .copyWith(color: OniColors.accent)),
-                ),
-              ),
           ],
         ),
-      );
+        Padding(
+          padding: const EdgeInsets.only(left: 13),
+          child: _Places(issue: issue, controller: controller),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Where a message points, as something to click.
+///
+/// A sentence naming six ports is six places to look, and every one of them is
+/// somewhere on a canvas bigger than the window. Reported: "if I manage to find
+/// the correct one that's overflowing ... it's hard to tell which one is the
+/// problem" — half of that was the app not saying which, and the other half was
+/// having to go and find it.
+/// What to call the button that shows [place], so a test can name the thing it
+/// means to click rather than "the first button in the banner".
+String showKeyFor(IssueTarget place) =>
+    'show:${place.edgeId ?? place.nodeId}.${place.portId ?? ''}';
+
+class _Places extends StatelessWidget {
+  const _Places({required this.issue, required this.controller});
+
+  final PipelineIssue issue;
+  final PipelineController controller;
+
+  void _go(IssueTarget place) {
+    if (place.edgeId case final String edgeId) {
+      controller.select(EdgeSelection(edgeId));
+      return;
+    }
+    if (place.nodeId case final String nodeId) controller.selectNode(nodeId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Deduplicated: a node with two over-committed ports is named twice, and
+    // two buttons that go to the same place are one button.
+    final seen = <String>{};
+    final places = [
+      for (final place in issue.places)
+        if (seen.add(showKeyFor(place))) place,
+    ];
+    if (places.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 2),
+      child: Wrap(
+        spacing: OniSpacing.xs,
+        runSpacing: OniSpacing.xs,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(
+            places.length == 1 ? 'SHOW ME' : 'SHOW ME ONE OF',
+            style: OniType.label,
+          ),
+          for (final place in places.take(8))
+            OniButton(
+              key: ValueKey(showKeyFor(place)),
+              label: place.label,
+              compact: true,
+              onPressed: () => _go(place),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 /// The nodes worth giving an amount, as buttons. Clicking one selects it, which
@@ -148,22 +210,22 @@ class _PinSuggestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 6),
-        child: Wrap(
-          spacing: OniSpacing.sm,
-          runSpacing: OniSpacing.sm,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text('GIVE AN AMOUNT FOR', style: OniType.label),
-            for (final id in controller.solution.freeNodeIds.take(6))
-              if (controller.pipeline.node(id) case final PipelineNode node)
-                OniButton(
-                  label: controller.specOf(node).name,
-                  compact: true,
-                  tone: OniButtonTone.accent,
-                  onPressed: () => controller.selectNodeForAmount(id),
-                ),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.only(top: 6),
+    child: Wrap(
+      spacing: OniSpacing.sm,
+      runSpacing: OniSpacing.sm,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text('GIVE AN AMOUNT FOR', style: OniType.label),
+        for (final id in controller.solution.freeNodeIds.take(6))
+          if (controller.pipeline.node(id) case final PipelineNode node)
+            OniButton(
+              label: controller.specOf(node).name,
+              compact: true,
+              tone: OniButtonTone.accent,
+              onPressed: () => controller.selectNodeForAmount(id),
+            ),
+      ],
+    ),
+  );
 }
