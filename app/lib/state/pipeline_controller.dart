@@ -416,6 +416,12 @@ class PipelineController extends ChangeNotifier {
       fromPortId: from.portId,
       toNodeId: to.nodeId,
       toPortId: to.portId,
+      // Reported: an output node dropped on a port whose producer-driven lines
+      // already divide all of it killed the build outright, because a
+      // consumer-driven line there has nothing to take. A port that is already
+      // divided divides once more instead -- which is what somebody adding a
+      // fourth line to a three-way split means by it.
+      mode: portIsFullyDivided(_pipeline, from) ? EdgeMode.push : EdgeMode.pull,
     );
     _apply(_pipeline.copyWith(edges: [..._pipeline.edges, edge]));
     select(EdgeSelection(edge.id));

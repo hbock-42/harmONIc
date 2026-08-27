@@ -21,6 +21,27 @@ class PipelineIssue {
   String toString() => '[${severity.name}] $message';
 }
 
+/// Whether a port's producer-driven lines already divide everything it makes.
+///
+/// A consumer-driven line added to such a port has nothing to take, and the
+/// arithmetic answers that by running it backwards. Both the check that
+/// refuses the build and the app that draws the wire ask this, so that
+/// dropping an output node on a divided port cannot make a build the app will
+/// not then solve.
+bool portIsFullyDivided(Pipeline pipeline, PortRef ref) {
+  final pushing =
+      pipeline.edgesOutOf(ref).where((edge) => edge.mode == EdgeMode.push);
+  if (pushing.isEmpty) return false;
+  final named = [
+    for (final edge in pushing)
+      if (edge.share case final double share) share,
+  ];
+  // A producer-driven line with no share of its own takes what the named ones
+  // leave, so one of those claims whatever is left however little is named.
+  if (named.length != pushing.length) return true;
+  return named.fold<double>(0, (sum, share) => sum + share) >= 1 - _shareSlack;
+}
+
 /// Structural checks that must pass before the solver will touch a pipeline.
 List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
   final issues = <PipelineIssue>[];
@@ -213,13 +234,14 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
       final ref = PortRef(node.id, port.id);
       final out = pipeline.edgesOutOf(ref);
       final pushing = out.where((edge) => edge.mode == EdgeMode.push);
+      if (!portIsFullyDivided(pipeline, ref)) continue;
       // Only the consumer-driven ones are victims. A producer-driven line
       // with no share takes what is left, and where nothing is left it
       // carries nothing — which is what the optimiser writes when its answer
       // does not need a line. A consumer-driven one insists on its target's
       // whole demand, and that is what cannot be met.
       final starved = out.where((edge) => edge.mode == EdgeMode.pull).length;
-      if (starved == 0 || pushing.isEmpty) continue;
+      if (starved == 0) continue;
 
       final named = [
         for (final edge in pushing)
@@ -227,7 +249,6 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
       ];
       final unnamed = pushing.length - named.length;
       final claimed = named.fold<double>(0, (sum, share) => sum + share);
-      if (unnamed == 0 && claimed < 1 - _shareSlack) continue;
 
       issues.add(PipelineIssue(
         IssueSeverity.error,

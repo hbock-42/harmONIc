@@ -8,6 +8,26 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — Three reports about being told the wrong thing
+
+None of these was the arithmetic. All three were the app answering a fair
+question badly.
+
+- **"It lists every single node and it's hard to tell which one is the
+  problem."** When a build cannot balance, the app tries venting each
+  over-committed port in turn to find the one at fault. That search was
+  capped at 24 ports and the build that was reported has 26, so it gave up
+  and listed them all. It names the one port now — which, on that build, was
+  the node its author had just added.
+- **Sending the rest of a divided output somewhere no longer breaks the
+  build.** Hanging an output node on a port whose lines already divide all of
+  it left the new line with nothing to take, and the whole build was refused.
+  A fourth line onto a three-way split now divides once more, which is what
+  anybody drawing it means.
+- **A share the optimiser meant as nothing is written as nothing.** It was
+  writing 0.000000000000006 — six femto-per-cent — which starved whatever was
+  on the end of that line while reading as 0 % on screen.
+
 ## 27 August 2026 — Every figure, where you can check it
 
 **Figures**, on the toolbar: everything the app knows, grouped by what comes

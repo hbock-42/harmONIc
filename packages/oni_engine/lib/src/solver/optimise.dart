@@ -307,10 +307,19 @@ BestCase _optimise(
 /// One flow divided by another is 1.0000000000000009 or -6.2e-16 often enough,
 /// and a share outside [0, 1] is not a share. Writing one made the app produce
 /// builds it then refused to open.
-double _asShare(double fraction) {
+/// Below this a share is arithmetic noise rather than a decision.
+///
+/// A simplex answer that means "nothing goes this way" comes back as 6e-15
+/// rather than as zero, and written down as a share it says that line carries
+/// six femto-per-cent of the output -- which starves whatever is on the end of
+/// it while looking, at any precision anybody reads, exactly like nothing.
+const double _shareNoise = 1e-9;
+
+/// A fraction of a port's output, as a share fit to write down.
+double asShare(double fraction) {
   if (!fraction.isFinite) return 0;
-  if (fraction <= 0) return 0;
-  if (fraction >= 1) return 1;
+  if (fraction <= _shareNoise) return 0;
+  if (fraction >= 1 - _shareNoise) return 1;
   return fraction;
 }
 
@@ -359,7 +368,7 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
       final made = port.ratePerSecond *
           node.outputScale *
           (best.nodeCounts[node.id] ?? 0);
-      final fraction = made <= 1e-9 ? 0.0 : _asShare(flowOn(edge.id) / made);
+      final fraction = made <= 1e-9 ? 0.0 : asShare(flowOn(edge.id) / made);
       edges.add(fraction <= 0
           ? edge.copyWith(mode: EdgeMode.push, clearShare: true)
           : edge.copyWith(mode: EdgeMode.push, share: fraction));
@@ -369,7 +378,7 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
       // the fractions add to one.
       final total = siblingsIn.fold<double>(0, (sum, e) => sum + flowOn(e.id));
       final fraction =
-          total <= 1e-9 ? 0.0 : _asShare(flowOn(edge.id) / total);
+          total <= 1e-9 ? 0.0 : asShare(flowOn(edge.id) / total);
       edges.add(fraction <= 0
           ? edge.copyWith(mode: EdgeMode.pull, clearShare: true)
           : edge.copyWith(mode: EdgeMode.pull, share: fraction));

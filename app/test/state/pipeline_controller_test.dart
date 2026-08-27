@@ -13,6 +13,30 @@ void main() {
       expect(c.solution.nodes['elec']!.count, closeTo(1000 / 888, 1e-9));
     });
 
+    test('a wire onto a divided port joins the division', () {
+      // Reported: dropping an output node on a port whose producer-driven
+      // lines already divide all of it refused the whole build, because a
+      // consumer-driven line there has nothing to take. Adding a fourth line
+      // to a three-way split means dividing once more.
+      final c = testController();
+      final oxygen = c.pipeline.edges
+          .firstWhere((e) => e.fromPortId == 'oxygen');
+      c.setEdgeMode(oxygen.id, EdgeMode.push);
+      expect(portIsFullyDivided(c.pipeline, PortRef(oxygen.fromNodeId, 'oxygen')),
+          isTrue, reason: 'one producer-driven line with no share takes it all');
+
+      final sink = c.addNode('sink:oxygen', Offset.zero);
+      c.connect(PortRef(oxygen.fromNodeId, 'oxygen'), PortRef(sink, 'in'));
+
+      expect(
+        c.solution.issues
+            .where((i) => i.severity == IssueSeverity.error)
+            .map((i) => i.message)
+            .join(' '),
+        isNot(contains('already spoken for')),
+      );
+    });
+
     test('re-solves after every edit', () {
       final c = testController()..pin(const BuildingCountPin(nodeId: 'dupes', count: 20));
       expect(c.solution.nodes['elec']!.count, closeTo(2000 / 888, 1e-9));

@@ -454,18 +454,23 @@ class PipelineSolver {
     }
     if (candidates.isEmpty) return const [];
 
-    // Bounded on purpose: this is a whole solve per candidate, and a build
-    // with dozens of them is one where naming a single culprit was never going
-    // to be the answer.
+    // Bounded by work rather than by count. A flat ceiling of 24 candidates
+    // meant a build with 26 got the wall of names instead of the one port that
+    // was over-committed -- and it was over-committed by the node its author
+    // had just added, which is the answer they were looking for. A solve costs
+    // with the size of the build, so the budget is candidates times nodes.
+    final trials = candidates.length * pipeline.nodes.length <= _hintBudget
+        ? candidates.length
+        : (_hintBudget ~/ pipeline.nodes.length).clamp(1, candidates.length);
     var guilty = <PortRef>[];
-    if (candidates.length <= 24) {
+    {
       // Venting a port can rescue the arithmetic by collapsing the build
       // instead of fixing it: let the geyser throw its water away and every
       // count sits at zero, which is consistent and useless. So a candidate is
       // judged by what the relaxed build looks like, and the ones that leave
       // nothing running lose to the ones that leave it standing.
       var fewestEmpty = 1 << 30;
-      for (final ref in candidates) {
+      for (final ref in candidates.take(trials)) {
         final relaxed = _solveWithout(pipeline, ref);
         if (relaxed.status == SolveStatus.inconsistent) continue;
         final empty = relaxed.nodes.values.where((n) => n.count.abs() < 1e-9).length;
@@ -497,12 +502,23 @@ class PipelineSolver {
     // times over made the four innocent ports look exactly like the guilty
     // one, which is the complaint that started this.
     final named = guilty.isEmpty ? candidates : guilty;
+    // Reported: "sometimes it lists every single node ... it's hard to tell
+    // which one is the problem". Past a handful the list has stopped being a
+    // shortlist, and a reader is better served by knowing that than by
+    // reading thirty names none of which is marked.
+    final descriptions = {
+      for (final ref in named) _portDescription(pipeline, ref)
+    }.toList();
+    const shown = 6;
+    final tail = descriptions.length > shown
+        ? '${_sentenceList(descriptions.take(shown).toList())} '
+            'and ${descriptions.length - shown} others'
+        : _sentenceList(descriptions);
     return [
       PipelineIssue(
         IssueSeverity.info,
         'Each of these has to hand over exactly what it makes, because '
-        'everything drawing from it pulls: '
-        '${_sentenceList({for (final ref in named) _portDescription(pipeline, ref)}.toList())}. '
+        'everything drawing from it pulls: $tail. '
         'Whichever of them has the surplus, either mark that port as venting '
         'or connect an output node to it.',
         nodeId: named.first.nodeId,
@@ -558,6 +574,11 @@ class PipelineSolver {
 
   /// "a, b and c", so a list of ports reads as a sentence rather than as
   /// output.
+  /// How much trial-solving one unsolvable build is worth: candidates times
+  /// nodes. Generous, because this runs only when the build is already at a
+  /// dead end and a wrong answer here costs somebody an afternoon.
+  static const int _hintBudget = 20000;
+
   static String _sentenceList(List<String> parts) {
     if (parts.length == 1) return parts.single;
     return '${parts.take(parts.length - 1).join(', ')} and ${parts.last}';
