@@ -10,7 +10,7 @@ admit it is worse than one that never claimed to be right.
 
 ## 27 August 2026 — Builds that would not open
 
-Three faults where the app was the problem, two of them in builds it had written
+Faults where the app was the problem, most of them in builds it had written
 itself.
 
 - A build could come back with wires it then refused to draw. The app works a
@@ -27,16 +27,21 @@ itself.
   allows a port to keep a surplus while the ordinary sums do not. Where an
   answer really does leave something spare, the port is marked as venting, where
   you can see it.
-
-- There is a **Power Network** node. A grid in the game is one shared bus, so
-  two generators and three consumers should be generation minus consumption —
-  not six wires and an even split nobody asked for. Put one in the middle, run
-  the generators into it as *the producer*, and a Power output on the end is
-  what the grid has spare. Raised as the first issue anybody opened.
 - A count nothing sets now says **any amount** rather than a number. A
   spare-power outlet reading "0.0 W" reads as *no spare power*, when what it
   meant was that nothing in the build said how big the generator was — and the
   app cannot know until you say.
+- A build shared from a newer version says what it could not open. It arrives
+  with a node this app has never heard of, and every wire that touched it goes
+  too — which can be all of them. The note named the node and stopped there, so
+  the build looked like boxes somebody had forgotten to join up. It counts the
+  wires now, and says the likeliest reason: your app is older than the build.
+
+**New.** There is a **Power Network** node. A grid in the game is one shared
+bus, so two generators and three consumers should be generation minus
+consumption — not six wires and an even split nobody asked for. Put one in the
+middle, run the generators into it as *the producer*, and a Power output on the
+end is what the grid has spare. Raised as the first issue anybody opened.
 
 And it says when it has changed: a line at the top of the canvas counting what
 is new since you were last here, and this list, showing only the part you have
