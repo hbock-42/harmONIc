@@ -461,6 +461,16 @@ class _CataloguePanelState extends State<CataloguePanel> {
   return (formatted.substring(0, space), formatted.substring(space + 1));
 }
 
+/// The word for what state a thing is in, taken from the filter that would
+/// find it — so the badge on a group says the same word as the chip a reader
+/// clicked to get there. "Other" says nothing; "Growth" says what it is.
+String _stateOf(Item? item) {
+  for (final state in _State.values) {
+    if (state != _State.all && state.matches(item)) return state.label;
+  }
+  return item?.category.name ?? 'other';
+}
+
 /// Which family a recipe belongs to, for the line under its name.
 String _familyOf(ProcessSpec spec) {
   for (final family in _Family.values) {
@@ -720,10 +730,7 @@ class _GroupCard extends StatelessWidget {
                   const SizedBox(width: OniSpacing.sm),
                   // What state the thing is in, in its own hue — the same hue
                   // its ports carry on the canvas.
-                  _Badge(
-                    (item?.category.name ?? 'other').toUpperCase(),
-                    colour: colour,
-                  ),
+                  _Badge(_stateOf(item).toUpperCase(), colour: colour),
                   const SizedBox(width: OniSpacing.sm),
                   Text(
                     '${group.rows.length} '
@@ -731,11 +738,15 @@ class _GroupCard extends StatelessWidget {
                     style: OniType.numberSmall
                         .copyWith(color: OniColors.textFaint),
                   ),
-                  const Spacer(),
                   // The best in the group, boxed: the figure a reader checks
-                  // the others against without scrolling the group.
-                  Flexible(
-                    child: Container(
+                  // the others against without scrolling the group. Nothing
+                  // to check against when there is only one way, so it goes.
+                  Expanded(
+                    child: group.rows.length == 1
+                        ? const SizedBox.shrink()
+                        : Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: OniSpacing.sm, vertical: 5),
                       decoration: BoxDecoration(
@@ -761,7 +772,8 @@ class _GroupCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -775,29 +787,65 @@ class _GroupCard extends StatelessWidget {
                 builder: (context, constraints) {
                   // Two to a row where there is room, which is what makes two
                   // ways of getting the same thing comparable at a glance.
-                  final columns = constraints.maxWidth > 620 ? 2 : 1;
-                  final width = (constraints.maxWidth -
-                          (columns - 1) * OniSpacing.sm) /
-                      columns;
-                  return Wrap(
-                    spacing: OniSpacing.sm,
-                    runSpacing: OniSpacing.sm,
+                  // One way gets the whole width: half a row of card and half
+                  // a row of nothing compares a thing against itself.
+                  final columns = constraints.maxWidth > 620 &&
+                          group.rows.length > 1
+                      ? 2
+                      : 1;
+                  Widget card(_Line row, {required bool fills}) =>
+                      _ProducerCard(
+                        row: row,
+                        database: database,
+                        of: group.most,
+                        colour: colour,
+                        times: timesFor(row.spec),
+                        onTimes: (n) => onTimes(row.spec, n),
+                        rate: rate,
+                        onInspect: () => onInspect(row.spec),
+                        onSearch: onSearch,
+                        lead: lead,
+                        onReport: onReport,
+                        fills: fills,
+                      );
+
+                  if (columns == 1) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (final row in group.rows)
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: OniSpacing.sm),
+                            child: card(row, fills: false),
+                          ),
+                      ],
+                    );
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      for (final row in group.rows)
-                        SizedBox(
-                          width: width,
-                          child: _ProducerCard(
-                            row: row,
-                            database: database,
-                            of: group.most,
-                            colour: colour,
-                            times: timesFor(row.spec),
-                            onTimes: (n) => onTimes(row.spec, n),
-                            rate: rate,
-                            onInspect: () => onInspect(row.spec),
-                            onSearch: onSearch,
-                            lead: lead,
-                            onReport: onReport,
+                      for (var i = 0; i < group.rows.length; i += 2)
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(bottom: OniSpacing.sm),
+                          // Two cards side by side are being compared, so they
+                          // are the same height whatever they each have to say.
+                          child: IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                    child: card(group.rows[i], fills: true)),
+                                const SizedBox(width: OniSpacing.sm),
+                                Expanded(
+                                  child: i + 1 < group.rows.length
+                                      ? card(group.rows[i + 1], fills: true)
+                                      : const SizedBox.shrink(),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                     ],
@@ -824,6 +872,7 @@ class _ProducerCard extends StatelessWidget {
     required this.onInspect,
     required this.onSearch,
     required this.lead,
+    required this.fills,
     this.onReport,
   });
 
@@ -842,6 +891,10 @@ class _ProducerCard extends StatelessWidget {
   final String lead;
   final void Function(ProcessSpec)? onReport;
 
+  /// Whether the card has been given a height to fill — true when it is beside
+  /// another, so what it says last lines up with what its neighbour says last.
+  final bool fills;
+
   String _itemName(String itemId) =>
       database.item(itemId)?.name ?? itemId;
 
@@ -850,6 +903,11 @@ class _ProducerCard extends StatelessWidget {
     final spec = row.spec;
     final share = of <= 0 ? 0.0 : (row.rate / of).clamp(0.0, 1.0);
     final (figure, unit) = _figure(rate(row.itemId, row.rate, times));
+    // A thing with no category of its own has a grey for a hue, and a grey
+    // figure reads as a figure that has been switched off. Those get the
+    // ordinary text colour instead.
+    final ink =
+        colour == OniItemColors.of(ItemCategory.other) ? OniColors.text : colour;
     final badges = <(String, Color)>[
       if (spec.tags.contains('wild')) ('wild', OniColors.ok),
       if (spec.id.contains('grazed')) ('grazed', OniItemColors.of(ItemCategory.entity)),
@@ -865,7 +923,7 @@ class _ProducerCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: fills ? MainAxisSize.max : MainAxisSize.min,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -889,7 +947,7 @@ class _ProducerCard extends StatelessWidget {
                               fontSize: 24,
                               height: 1.0,
                               fontWeight: FontWeight.w700,
-                              color: colour),
+                              color: ink),
                         ),
                         TextSpan(
                           text: ' $unit',
@@ -992,6 +1050,7 @@ class _ProducerCard extends StatelessWidget {
               ),
             ],
           ),
+          if (fills) const Spacer(),
           const SizedBox(height: OniSpacing.md),
           Container(height: 1, color: OniColors.border),
           const SizedBox(height: OniSpacing.sm),
