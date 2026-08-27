@@ -28,13 +28,19 @@ Future<void> main() async {
   await library.load();
   final display = DisplayController(jsonStoreNamed('settings.json'));
   await display.load();
-  final news = NewsController(store: jsonStoreNamed('whats_new.json'));
+  final pipelineStore = jsonStoreNamed('pipelines.json');
+  final news = NewsController(
+    store: jsonStoreNamed('whats_new.json'),
+    // Saved builds mean this browser has been here before, so the changelog
+    // is news rather than furniture.
+    beenHereBefore: () async => (await pipelineStore.read())?.isNotEmpty ?? false,
+  );
   // Not awaited: the changelog is the least urgent thing on the page, and
   // waiting on it would hold up the canvas.
   unawaited(news.load());
   runApp(OniPipelineApp(
     library: library,
-    pipelineStore: jsonStoreNamed('pipelines.json'),
+    pipelineStore: pipelineStore,
     displaySettings: display,
     news: news,
   ));

@@ -12,10 +12,24 @@ import '../storage/json_store.dart';
 /// a notice becomes something people dismiss without reading. No entry, no
 /// news.
 class NewsController extends ChangeNotifier {
-  NewsController({required this.store, Future<String> Function()? load})
-      : _load = load ?? loadChangelog;
+  NewsController({
+    required this.store,
+    Future<bool> Function()? beenHereBefore,
+    Future<String> Function()? load,
+  })  : _load = load ?? loadChangelog,
+        _beenHereBefore = beenHereBefore ?? (() async => false);
 
   final JsonStore store;
+
+  /// Whether this browser has been used for harmONIc before, whatever it has
+  /// or has not read.
+  ///
+  /// Nothing had been read by anybody on the day this shipped, so everybody
+  /// counted as arriving for the first time and nobody was told about the
+  /// release that added the telling. Saved builds are the evidence: somebody
+  /// with work here is a returning reader who has simply never had a
+  /// changelog, and the whole of it is new to them.
+  final Future<bool> Function() _beenHereBefore;
   final Future<String> Function() _load;
 
   String? _latest;
@@ -61,9 +75,10 @@ class NewsController extends ChangeNotifier {
     _ready = true;
     _wasSeen = _seen;
 
-    // Nothing stored means somebody has just arrived, and "what's new" to
-    // them is all of it. Record where they came in and say nothing.
-    if (_seen == null && _latest != null) {
+    // Nothing stored means either somebody who has just arrived — to whom all
+    // of it is new and none of it is news — or somebody who was already here
+    // before there was a changelog to read. The second is owed the notice.
+    if (_seen == null && _latest != null && !await _beenHereBefore()) {
       _seen = _latest;
       await store.write({'seen': _latest});
     }

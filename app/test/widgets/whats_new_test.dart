@@ -57,6 +57,25 @@ Plants grow crops rather than calories.
     expect(latestRelease('# What\'s new\n\nNothing yet.\n'), isNull);
   });
 
+  test('somebody who was already here is told, even with nothing read',
+      () async {
+    // The day this shipped, nobody had read anything — so everybody counted
+    // as arriving for the first time and nobody was told about the release
+    // that added the telling. Saved builds are the evidence otherwise.
+    final store = MemoryJsonStore();
+    final news = NewsController(
+      store: store,
+      beenHereBefore: () async => true,
+      load: () async => log,
+    );
+    await news.load();
+
+    expect(news.unread, '28 August 2026 — Wires');
+    // And nothing recorded on their behalf, so the panel shows the lot.
+    expect(store.data, isNull);
+    expect(news.since, isNull);
+  });
+
   test('somebody arriving for the first time is not told anything', () async {
     // "What's new" to them is all of it, and a notice on a canvas they have
     // never seen is noise. Where they came in is recorded silently.

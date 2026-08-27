@@ -59,7 +59,8 @@ end is what the grid has spare. Raised as the first issue anybody opened.
 
 And it says when it has changed: a line at the top of the canvas counting what
 is new since you were last here, and this list, showing only the part you have
-not read.
+not read. If you have builds saved here, that is all of it — you were here
+before there was a changelog to read.
 
 ## 27 August 2026 — What the players found
 
