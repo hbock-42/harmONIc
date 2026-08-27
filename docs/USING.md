@@ -197,6 +197,10 @@ Left alone, a supply is asked for what the build needs and tells you the answer,
 which is usually what you wanted from it. Where you really do mean "at most",
 put the figure on the wire as a **valve**.
 
+You can give a build as many amounts as it has loose ends — the message tells
+you how many. A further one, once it has a size, moves the scale rather than
+adding to it, because another amount then contradicts rather than completes.
+
 Where something is still divided after that, three ways to say how:
 
 - **Say how much you want** of what comes out, on any node downstream.

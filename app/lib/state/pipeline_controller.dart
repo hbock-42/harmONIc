@@ -576,10 +576,26 @@ class PipelineController extends ChangeNotifier {
 
   /// The headline interaction: say how much you have of one thing.
   ///
-  /// One amount per *build*, not per canvas. Two chains that share no wire are
-  /// two builds, and a scale given to one says nothing about the other — so
-  /// this replaces only the amount belonging to the same connected group.
-  void pin(Pin pin) => _apply(_pipeline.withPinInComponent(pin));
+  /// One amount per *build*, not per canvas — but only while one is all the
+  /// build can use. A build with two loose ends needs two amounts, and this
+  /// used to clear the first when the second was given, because "one amount
+  /// per build" assumed every connected group had a single degree of freedom.
+  /// Where it has two, the app asked for two and then made it impossible:
+  /// setting the ore cleared the gas.
+  ///
+  /// So an amount replaces the others only when the build already has a size.
+  /// While it has none, every amount given is one it still needs.
+  void pin(Pin pin) {
+    final stillLoose = solution.status == SolveStatus.underdetermined;
+    _apply(stillLoose
+        // Only whatever was on this node, so saying it twice does not stack.
+        ? _pipeline.copyWith(pins: [
+            for (final existing in _pipeline.pins)
+              if (existing.nodeId != pin.nodeId) existing,
+            pin,
+          ])
+        : _pipeline.withPinInComponent(pin));
+  }
 
   /// Forgets the amount given to [nodeId]'s build, leaving other builds alone.
   void clearPin(String nodeId) =>

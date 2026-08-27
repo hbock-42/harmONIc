@@ -37,6 +37,11 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- A build with two loose ends can be given two amounts. Setting one used to
+  clear every other amount in the same connected build — so the app would say
+  it needed two and then make the second undo the first. It only replaces them
+  once the build has a size, where another amount would contradict rather than
+  complete.
 - A supply whose amount is more than the build needs now says what is wrong.
   The field reads "I have this much" and the amount means *exactly this much
   flows*, so a supply you have plenty of contradicts the build rather than
