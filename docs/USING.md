@@ -186,6 +186,15 @@ Saying what you *have* — 180 g/s of natural gas, a geyser's output, a stockpil
 thing feeds several, how much goes where is a choice rather than arithmetic, and
 the app will not invent it.
 
+**If you know your inputs and not your outputs**, this is the shape:
+
+1. Put a **valve** on each supply's wire — the figure you have. A valve means
+   *at most*, which is what having something means.
+2. Select what comes out and press **Get as much as possible**.
+
+It works out the whole build inside those valves and writes the answer down, so
+the amount you did not know is the one it gives you back.
+
 **An amount on a supply means exactly that much flows.** Not "up to this much".
 So give an amount to the supplies you are actually short of — the geyser, the
 gas fissure, the thing you are planning around — and leave alone the ones you

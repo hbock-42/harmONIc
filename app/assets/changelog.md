@@ -37,6 +37,11 @@ itself.
   balance by running it backwards — which spread to seven nodes, none of them
   the one at fault, under the advice "check the edge shares". It names the
   port and how much is left.
+- **"I know my inputs, not my outputs"** now has an answer. Put a valve on each
+  supply — the figure you have, which means *at most* — and ask what comes out
+  for as much as possible. It works the whole build out inside those valves.
+  It always could; it kept only the splits and threw the scale away, so the
+  build came back as undecided as it started.
 - A build with two loose ends can be given two amounts. Setting one used to
   clear every other amount in the same connected build — so the app would say
   it needed two and then make the second undo the first. It only replaces them

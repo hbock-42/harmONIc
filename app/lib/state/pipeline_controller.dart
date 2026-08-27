@@ -692,7 +692,33 @@ class PipelineController extends ChangeNotifier {
     }
 
     if (!best.isAnswer) return null;
-    _apply(withShares(_pipeline, database, best));
+
+    var answered = withShares(_pipeline, database, best);
+    // And the size, where the build had none.
+    //
+    // The optimiser works out a whole build — every count, inside whatever
+    // valves are set — and this kept only the splits. A build with no amount
+    // anywhere came back with the shares chosen and still no scale, so it was
+    // as undecided as it started and the answer was thrown away.
+    //
+    // That is the shape of "I know my inputs, not my outputs": put a valve on
+    // each supply, ask an output for the most it can give, and the amount it
+    // gives back *is* the answer. Writing it down is what makes it stick.
+    if (PipelineSolver(database).solve(answered, explain: false).status ==
+        SolveStatus.underdetermined) {
+      final portId = spec.kind == ProcessKind.sink
+          ? spec.inputs.first.id
+          : spec.outputs.first.id;
+      answered = answered.copyWith(pins: [
+        ...answered.pins,
+        PortRatePin(
+          nodeId: boundaryNodeId,
+          portId: portId,
+          ratePerSecond: best.ratePerSecond,
+        ),
+      ]);
+    }
+    _apply(answered);
     return best.ratePerSecond;
   }
 
