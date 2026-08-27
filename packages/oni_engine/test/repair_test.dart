@@ -235,4 +235,35 @@ void main() {
     expect(grain, hasLength(1), reason: 'the premise of the rule above');
   });
 
+  test('a node this app has never heard of takes its wires with it, and '
+      'the note says so', () {
+    // A build shared from a newer version. Every wire in it touched the one
+    // node this database does not have, so the whole thing arrived as five
+    // loose boxes — and the note mentioned only the node, which read as
+    // though the wires had simply not been drawn.
+    final older = GameDatabase(
+      items: db.items,
+      processes: db.processes.where((p) => p.id != 'power_network'),
+      dataVersion: '0.1.9',
+    );
+    final shared = (PipelineBuilder(db, name: 'grid')
+          ..add('petroleum_generator', nodeId: 'pgen')
+          ..add('power_network', nodeId: 'grid')
+          ..addSink('power')
+          ..connect('pgen', 'power_out', 'grid', 'in', mode: EdgeMode.push)
+          ..connect('grid', 'out', 'sink_power', 'in'))
+        .build();
+
+    final repair = repairPipeline(shared, older);
+
+    expect(repair.pipeline.nodes, hasLength(2));
+    expect(repair.pipeline.edges, isEmpty);
+
+    final said = repair.notes.join();
+    expect(said, contains('power_network'));
+    expect(said, contains('2 connections to it'));
+    // And why, since "what did I do wrong" is the first thing somebody asks.
+    expect(said, contains('newer version'));
+  });
+
 }

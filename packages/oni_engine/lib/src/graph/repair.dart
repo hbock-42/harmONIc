@@ -49,13 +49,10 @@ String? _portCarrying(
 PipelineRepair repairPipeline(Pipeline pipeline, GameDatabase database) {
   final notes = <String>[];
 
-  // 1. Nodes naming a process the database no longer has.
+  // 1. Nodes naming a process this database does not have.
   final unknown = <String>{};
   for (final node in pipeline.nodes) {
-    if (database.process(node.specId) == null) {
-      unknown.add(node.id);
-      notes.add('Removed "${node.specId}", which is no longer in the database.');
-    }
+    if (database.process(node.specId) == null) unknown.add(node.id);
   }
 
   final nodes = [
@@ -67,6 +64,33 @@ PipelineRepair repairPipeline(Pipeline pipeline, GameDatabase database) {
       if (!unknown.contains(edge.fromNodeId) && !unknown.contains(edge.toNodeId))
         edge,
   ];
+
+  if (unknown.isNotEmpty) {
+    // Said together, and said with the wires. A build shared from a newer
+    // version arrives with the node this app has never heard of and every
+    // wire that touched it — five of them, in the first build to hit this —
+    // and a note that mentioned only the node read as though the wires had
+    // simply not been drawn.
+    final lost = pipeline.edges.length - edges.length;
+    final named = {
+      for (final node in pipeline.nodes)
+        if (unknown.contains(node.id)) node.specId,
+    }.join(', ');
+    final wires = lost == 0
+        ? ''
+        : ' and the ${lost == 1 ? 'connection' : '$lost connections'} to '
+            '${unknown.length == 1 ? 'it' : 'them'}';
+    // A build carrying a different data version came from a different build
+    // of the app, which is the likeliest reason and worth saying rather than
+    // leaving somebody to wonder what they did wrong.
+    final elsewhere = pipeline.dataVersion != null &&
+            pipeline.dataVersion != database.dataVersion
+        ? ' This build was drawn against data ${pipeline.dataVersion} and this '
+            'is ${database.dataVersion}, so it may have been made with a newer '
+            'version of the app.'
+        : ' Nothing here knows what that is.';
+    notes.add('Removed "$named"$wires.$elsewhere');
+  }
 
   // 2. Nodes whose process no longer has the ports their wires use. A split
   //    leaves a sibling that does — a plant's growth moved to its grazed twin.
