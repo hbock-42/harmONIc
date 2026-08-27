@@ -137,6 +137,12 @@ class NodeWidget extends StatelessWidget {
 
   /// Boundary nodes are measured in g/s, real buildings in units of themselves.
   String _countLabel(NodeResult result) {
+    // A count the solve could not work out is not zero, and printing zero says
+    // it is. Somebody looking at a spare-power outlet reading "0.0 W" reads
+    // that as "no spare power" rather than as "nothing here sets the size" —
+    // reported by somebody who could not see how much power they had spare,
+    // and the honest answer was that the app did not know either.
+    if (controller.solution.freeNodeIds.contains(node.id)) return 'any amount';
     if (_isBoundary) {
       final port = spec.ports.isEmpty ? null : spec.ports.first;
       final item = port == null ? null : controller.database.item(port.itemId);

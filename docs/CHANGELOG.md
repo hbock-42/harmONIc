@@ -28,6 +28,11 @@ itself.
   answer really does leave something spare, the port is marked as venting, where
   you can see it.
 
+- A count nothing sets now says **any amount** rather than a number. A
+  spare-power outlet reading "0.0 W" reads as *no spare power*, when what it
+  meant was that nothing in the build said how big the generator was — and the
+  app cannot know until you say.
+
 And it says when it has changed: a line at the top of the canvas counting what
 is new since you were last here, and this list, showing only the part you have
 not read.
