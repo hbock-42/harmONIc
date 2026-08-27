@@ -10,70 +10,46 @@ admit it is worse than one that never claimed to be right.
 
 ## 27 August 2026 — Builds that would not open
 
-Faults where the app was the problem, most of them in builds it had written
-itself.
+Mostly faults where the app was the problem, and several in builds it had
+written itself.
 
-- A build could come back with wires it then refused to draw. The app works a
-  share out by dividing one flow by another, which lands on 1.0000000000000009
-  often enough, and it was rejecting that as "not between 0 and 1" — every wire
-  to zero, and no way out but to draw the whole thing again. Builds already
-  saved with one open again: there is nothing to redraw.
-- **Use as little as possible** could lock a spare-power outlet shut, by putting
-  a share of nothing on it. A plain SPOM would then not balance at any size,
-  because the hydrogen the generator was no longer burning had nowhere to go. An
-  outlet the answer does not need is left free now rather than closed.
-- What the app suggests is now always something it can then solve. It used to be
-  able to hand back an answer it called impossible a moment later, because it
-  allows a port to keep a surplus while the ordinary sums do not. Where an
-  answer really does leave something spare, the port is marked as venting, where
-  you can see it.
-- A count nothing sets now says **any amount** rather than a number. A
-  spare-power outlet reading "0.0 W" reads as *no spare power*, when what it
-  meant was that nothing in the build said how big the generator was — and the
-  app cannot know until you say.
-- A port whose wires already share out all of it now says so, instead of
-  solving to negative amounts. Six wires taking a fixed share of one
-  generator's power leave nothing for a seventh, and the sums could only
-  balance by running it backwards — which spread to seven nodes, none of them
-  the one at fault, under the advice "check the edge shares". It names the
-  port and how much is left.
-- **"I know my inputs, not my outputs"** now has an answer. Put a valve on each
-  supply — the figure you have, which means *at most* — and ask what comes out
-  for as much as possible. It works the whole build out inside those valves.
-  It always could; it kept only the splits and threw the scale away, so the
-  build came back as undecided as it started.
-- A build with two loose ends can be given two amounts. Setting one used to
-  clear every other amount in the same connected build — so the app would say
-  it needed two and then make the second undo the first. It only replaces them
-  once the build has a size, where another amount would contradict rather than
-  complete.
-- A supply whose amount is more than the build needs now says what is wrong.
-  The field reads "I have this much" and the amount means *exactly this much
-  flows*, so a supply you have plenty of contradicts the build rather than
-  leaving a spare — set a pool of water to 10 kg/s beside a refinery wanting
-  4.8 and nothing would solve. It says so, and says to clear the amount or put
-  the figure on the wire as a valve, which does mean "at most".
-- A build that cannot be sized yet points at its supplies. Being told to name
-  an amount for the Sand output is no help to somebody planning from what they
-  have — the amount is the thing they came to find out. Giving every supply an
-  amount is what they do know, and it is often the whole answer.
-- A build with two loose ends says it needs two amounts. It used to say "give
-  an amount for one of: Sand output, Water output", which reads as a menu —
-  and giving one left the build exactly as stuck, naming the other.
-- Nothing comes out below zero without saying why. A build could report a Rock
-  Crusher at minus five, and six other nodes downstream of it, each with its
-  own line saying "check the edge shares" — true, and no help. It is one line
-  now, naming the port that could not supply them, and not naming the nodes
-  that merely inherited the problem.
-- A wire's share counts the wires that are actually there. "Taking everything
-  the port makes, since nothing else is asking for it" was said with two other
-  wires asking for it: only the producer-driven ones were counted, so the
-  consumer-driven ones were invisible to the sentence describing them.
-- A build shared from a newer version says what it could not open. It arrives
-  with a node this app has never heard of, and every wire that touched it goes
-  too — which can be all of them. The note named the node and stopped there, so
-  the build looked like boxes somebody had forgotten to join up. It counts the
-  wires now, and says the likeliest reason: your app is older than the build.
+**Saying how big a build is.**
+
+- **You can give a build as many amounts as it has loose ends.** Setting one
+  used to clear every other amount in the same build, so the app would say it
+  needed two and then make the second undo the first.
+- It says **how many** it needs, rather than "give an amount for one of…",
+  which read as a menu when it was a list of all of them.
+- **An amount on a supply means exactly that much flows**, not "up to this
+  much" — so a supply you have plenty of contradicts the build. It says so now,
+  and says what to do instead.
+- **"I know my inputs, not my outputs"** has an answer: put a valve on each
+  supply — a valve means *at most* — and ask what comes out for as much as
+  possible. It works the whole build out inside those valves. It always could;
+  it kept the splits and threw away the size.
+- A count nothing sets says **any amount** rather than a number. A spare-power
+  outlet reading "0.0 W" reads as *no spare power*.
+
+**Splits between wires.**
+
+- A port whose wires already claim all of it **says so**, instead of solving to
+  negative amounts spread across nodes that were not at fault.
+- Where something does come out below zero, one line names **the port that ran
+  out** — not the six nodes downstream of it, each told to "check the edge
+  shares".
+- **Use as little as possible** could lock a spare-power outlet shut, so a
+  plain SPOM would not balance at any size.
+- What the app suggests is now always something it can then solve. It could
+  hand back an answer it called impossible a moment later.
+- A wire's share counts the wires that are actually there. "Nothing else is
+  asking for it" was said with two other wires asking.
+
+**Opening things.**
+
+- A build with a share of 1.0000000000000009 opens again — the app wrote those
+  itself and then refused them. **Nothing to redraw**: saved builds work.
+- A build shared from a newer version says what it could not open, and how many
+  wires went with it.
 
 **New.** There is a **Power Network** node. A grid in the game is one shared
 bus, so two generators and three consumers should be generation minus
