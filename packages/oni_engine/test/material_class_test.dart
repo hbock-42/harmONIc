@@ -618,9 +618,13 @@ void main() {
         'oakshell_wild.polluted_dirt',
         // 50 kg of plastic or of rubber, one gasket either way.
         'crafting_station_gasket.feedstock',
-        // 8.89 % of a plant's maturity a cycle, whichever plant it is.
+        // 8.89 % of a plant's maturity a cycle, whichever plant it is —
+        // and a quarter more than that for the Cuddle Pip, which is still
+        // one rate across the plants it will eat.
         'pip.grazing',
         'pip_wild.grazing',
+        'cuddle_pip.grazing',
+        'cuddle_pip_wild.grazing',
         // 30 kg a cycle of Plume Squash or Nosh Bean, all of it back as patty.
         'bammoth.feed',
         'bammoth_wild.feed',

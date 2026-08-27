@@ -3700,7 +3700,7 @@ const String oniDataJson = r"""
       "id": "pip",
       "name": "Pip",
       "kind": "critter",
-      "description": "Grazes 8.89 % of a plant’s maturity a cycle — four fifths of a domesticated Arbor Tree, or a sixth of a Thimble Reed. The figure is a share of whatever it is grazing, so the two crops are one recipe and the node says which. A Bonbon Tree and a Gum Palm feed it too, and neither has a grazed form here yet. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
+      "description": "Grazes 8.89 percentage points of a plant’s maturity a cycle, which is a twelfth and a half of a domesticated Arbor Tree. The figure is a share of whatever it is grazing, so the crops are one recipe and the node says which. It gives back 20 kg of dirt a cycle: two Mealwood, two domestic Arbor Trees or four Sleet Wheat, all of which the page lists. A Bonbon Tree and a Gum Palm feed it too, and neither has a grazed form here yet. Its real value, planting seeds in wild biomes, is not something a flow model can express. One egg every 6 cycles when groomed.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -3724,7 +3724,7 @@ const String oniDataJson = r"""
         {
           "item": "dirt",
           "direction": "output",
-          "rate": 16.666667
+          "rate": 33.333333333333336
         },
         {
           "item": "egg",
@@ -5119,7 +5119,7 @@ const String oniDataJson = r"""
       "id": "arbor_tree_grazed",
       "name": "Arbor Tree (grazed)",
       "kind": "plant",
-      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is published as percentage points of maturity per cycle: this one matures over 9 cycles, so it offers 11.1111 % a cycle, and a grazer taking a smaller share leaves the rest to ripen.",
+      "description": "The same plant, left for a critter to graze instead of harvested. Its growth goes to the herd, so there is no crop: pick this one or the harvested one, never both for the same plants. Growth is percentage points of maturity per cycle, and a tree carries five branches that each regrow over 4.5 cycles — 111.11 points a cycle between them, which is the 12.5 Pips a domestic tree is published as feeding.",
       "footprintWidth": 3,
       "footprintHeight": 4,
       "tags": [
@@ -5140,7 +5140,7 @@ const String oniDataJson = r"""
         {
           "item": "arbor_tree_growth",
           "direction": "output",
-          "rate": 0.0185185185
+          "rate": 0.185185185
         }
       ]
     },
@@ -6265,7 +6265,87 @@ const String oniDataJson = r"""
         {
           "item": "dirt",
           "direction": "output",
-          "rate": 16.666667
+          "rate": 33.333333333333336
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "cuddle_pip",
+      "name": "Cuddle Pip",
+      "kind": "critter",
+      "description": "A Pip morph, and one you get whether you meant to or not: an ordinary Pip has a 2 % chance of laying one, and eating Thimble Reed raises it. Same diet as a Pip and a quarter more of it, and five eighths of the dirt — 12.5 kg a cycle against 20. The egg and the meat are unchanged. What it is actually kept for is cuddling eggs, which halves their incubation, and that is not a flow this can carry. Three fit in a stable where one Pip does, so a ranch of them makes more dirt in the same floor even though each makes less.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1
+        },
+        {
+          "id": "grazing",
+          "item": "arbor_tree_growth",
+          "direction": "input",
+          "rate": 0.018518518499999997,
+          "alternatives": [
+            "thimble_reed_growth"
+          ]
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 20.833333333333336
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.016667
+        }
+      ]
+    },
+    {
+      "id": "cuddle_pip_wild",
+      "name": "Cuddle Pip (wild)",
+      "kind": "critter",
+      "description": "A Pip morph, and one you get whether you meant to or not: an ordinary Pip has a 2 % chance of laying one, and eating Thimble Reed raises it. Same diet as a Pip and a quarter more of it, and five eighths of the dirt — 12.5 kg a cycle against 20. The egg and the meat are unchanged. What it is actually kept for is cuddling eggs, which halves their incubation, and that is not a flow this can carry. Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often.",
+      "dupeLabourSecondsPerCycle": 0,
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "id": "grazing",
+          "item": "arbor_tree_growth",
+          "direction": "input",
+          "rate": 0.018518518499999997,
+          "alternatives": [
+            "thimble_reed_growth"
+          ]
+        },
+        {
+          "item": "dirt",
+          "direction": "output",
+          "rate": 20.833333333333336
         },
         {
           "item": "egg",
@@ -7170,7 +7250,7 @@ const String oniDataJson = r"""
       "id": "arbor_tree_grazed_wild",
       "name": "Arbor Tree (wild, grazed)",
       "kind": "plant",
-      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt, polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor.",
+      "description": "Growing where it landed: nobody waters or fertilises it, so it takes no dirt or polluted water at all, and it ripens at a quarter of a farmed one’s speed. That is the wild-farming trade — free, and four times the floor. A quarter of 111.11 points a cycle is 3.125 Pips to a tree, which is the published 0.32 wild trees per Pip from the other side.",
       "footprintWidth": 3,
       "footprintHeight": 4,
       "tags": [
@@ -7182,7 +7262,7 @@ const String oniDataJson = r"""
         {
           "item": "arbor_tree_growth",
           "direction": "output",
-          "rate": 0.0046296296
+          "rate": 0.046296296
         }
       ]
     },

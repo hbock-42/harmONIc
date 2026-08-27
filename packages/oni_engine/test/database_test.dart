@@ -509,9 +509,51 @@ void main() {
             closeTo(1, 1e-6));
       });
 
-      test('a Pip eats four fifths of an Arbor Tree', () {
+      test('twelve and a half Pips live off one Arbor Tree', () {
+        // This test used to say four fifths of a tree per Pip, which is what
+        // the data said, which is why the test passed. The published figure
+        // is 0.08 trees per Pip and says so three times over: on the Pip's
+        // page, again as 0.32 for a wild tree, and on the Arbor Tree's page
+        // as "feeds 12.3 adult Pips".
+        //
+        // A tree is the one plant here that is not one plant. It carries five
+        // branches that each regrow over 4.5 cycles, and the wiki quotes the
+        // ratio "assuming 5 branches per tree" — 111.11 percentage points a
+        // cycle between them, where every other crop offers the maturity of a
+        // single plant.
         expect(plantsPer('pip', 'arbor_tree_grazed', 'arbor_tree_growth'),
-            closeTo(0.8, 1e-6));
+            closeTo(0.08, 1e-6));
+      });
+
+      test('a Cuddle Pip eats a quarter more and gives five eighths back', () {
+        final pip = db.processOrThrow('pip');
+        final cuddle = db.processOrThrow('cuddle_pip');
+        double rate(ProcessSpec spec, String item, {required bool out}) =>
+            (out ? spec.outputs : spec.inputs)
+                .firstWhere((p) => p.itemId == item)
+                .ratePerSecond;
+
+        expect(rate(cuddle, 'arbor_tree_growth', out: false),
+            closeTo(rate(pip, 'arbor_tree_growth', out: false) * 1.25, 1e-9));
+        // 12.5 kg a cycle against the Pip's 20, which is the ratio its own
+        // table gives as 1 : 0.625.
+        expect(rate(cuddle, 'dirt', out: true) * secondsPerCycle / 1000,
+            closeTo(12.5, 1e-6));
+        // The egg and the meat are unchanged, which is the other half of
+        // what makes the morph worth converting a ranch to: three fit where
+        // one Pip does.
+        for (final item in ['egg', 'meat']) {
+          expect(rate(cuddle, item, out: true),
+              closeTo(rate(pip, item, out: true), 1e-12));
+        }
+      });
+
+      test('and 3.125 off a wild one, which is the other published figure', () {
+        // A wild plant ripens at a quarter of a farmed one's speed, so this
+        // falls out rather than being set — and it lands on the 0.32 wild
+        // trees per Pip the same page gives.
+        expect(plantsPer('pip', 'arbor_tree_grazed_wild', 'arbor_tree_growth'),
+            closeTo(0.32, 1e-6));
       });
 
       test('a Flox eats three fifths of a Pikeapple Bush', () {
