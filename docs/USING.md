@@ -231,9 +231,14 @@ usually too pale to read on near-white.
 ## What has changed
 
 The app says so when there is something new to read, once, with a line at the
-top of the canvas naming the release. Click **What's new** to read it, or
-**Dismiss** — either way it does not ask again. The panel holds every entry, so
-it is the history as well as the news.
+top of the canvas saying how many changes there have been since you were last
+here. Click **What's new** to read them, or **Dismiss** — either way it does not
+ask again.
+
+What opens is **only what you have not read**: one change is one entry, not the
+whole file. **Show everything** is there for the rest, and the panel opened from
+the foot of this guide starts there — because looking up what changed last month
+is a different question from being told what changed today.
 
 It is driven by `docs/CHANGELOG.md` rather than by the build: a deploy that
 fixed a typo has nothing to tell you, and the app would rather say nothing than

@@ -18,6 +18,7 @@ class GuidePanel extends StatefulWidget {
     this.title = 'How this works',
     this.backLabel = '← All topics',
     this.source = 'docs/USING.md',
+    this.newerThan,
     super.key,
   });
 
@@ -35,6 +36,16 @@ class GuidePanel extends StatefulWidget {
 
   /// Where the file lives in the repository, for when it will not load.
   final String source;
+
+  /// Show only the sections above this heading, with a way to see the rest.
+  ///
+  /// What somebody wants after a release is the release, not the file. If one
+  /// thing changed they should see one thing, and counting how much is new is
+  /// most of what a changelog is for — a list of everything that ever happened
+  /// answers a different question, and answers it every time.
+  ///
+  /// Null shows the lot, which is what the guide always wants.
+  final String? newerThan;
 
   /// What sits under the text — how to report a bug, and which build this is.
   ///
@@ -64,6 +75,10 @@ class _GuidePanelState extends State<GuidePanel> {
   /// It arrived as one scroll of three hundred lines, which is a document
   /// rather than something you look an answer up in.
   GuideTopic? _open;
+
+  /// Cleared by "Show everything", so the cut is a starting point rather than
+  /// a wall.
+  late String? _newerThan = widget.newerThan;
 
   @override
   void initState() {
@@ -155,13 +170,44 @@ class _GuidePanelState extends State<GuidePanel> {
         children: _render(topic.body),
       );
     }
+    final cut = _newerThan;
+    final at = cut == null
+        ? -1
+        : guide.topics.indexWhere((topic) => topic.title == cut);
+    // Not found means the entry somebody last read has since been renamed or
+    // removed, and a wrong cut is worse than none: show everything.
+    final showing = at > 0 ? guide.topics.sublist(0, at) : guide.topics;
+    final trimmed = showing.length != guide.topics.length;
+
     return ListView(
       padding: const EdgeInsets.all(OniSpacing.lg),
       children: [
-        ..._render(guide.intro),
+        if (trimmed)
+          Padding(
+            padding: const EdgeInsets.only(bottom: OniSpacing.md),
+            child: Text(
+              showing.length == 1
+                  ? 'One change since you were last here.'
+                  : '${showing.length} changes since you were last here.',
+              style: OniType.body.copyWith(color: OniColors.textFaint),
+            ),
+          )
+        else
+          ..._render(guide.intro),
         const SizedBox(height: OniSpacing.sm),
-        for (final topic in guide.topics)
+        for (final topic in showing)
           _TopicRow(topic: topic, onOpen: () => setState(() => _open = topic)),
+        if (trimmed) ...[
+          const SizedBox(height: OniSpacing.sm),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OniButton(
+              label: 'Show everything',
+              compact: true,
+              onPressed: () => setState(() => _newerThan = null),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -231,9 +277,13 @@ Future<String> _fromBundle() => rootBundle.loadString('assets/using.md');
 /// interrupting them to say so is how a notice becomes something people learn
 /// to dismiss without reading. No entry, no news.
 String? latestRelease(String changelog) {
-  final entries = splitGuide(changelog).topics;
-  return entries.isEmpty ? null : entries.first.title;
+  final entries = releaseTitles(changelog);
+  return entries.isEmpty ? null : entries.first;
 }
+
+/// Every entry's heading, newest first.
+List<String> releaseTitles(String changelog) =>
+    [for (final entry in splitGuide(changelog).topics) entry.title];
 
 /// One section of the guide: a heading, and everything under it.
 class GuideTopic {

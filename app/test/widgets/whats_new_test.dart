@@ -16,6 +16,10 @@ void main() {
 
 What has changed, newest first.
 
+## 28 August 2026 — Wires
+
+Two wires into one port say what they are doing.
+
 ## 27 August 2026 — The one with the critters
 
 An Oakshell. A Cuddle Pip.
@@ -48,7 +52,7 @@ Plants grow crops rather than calories.
   }
 
   test('the newest entry is what "seen" means', () {
-    expect(latestRelease(log), '27 August 2026 — The one with the critters');
+    expect(latestRelease(log), '28 August 2026 — Wires');
     // A changelog with no entries has no news, rather than some empty news.
     expect(latestRelease('# What\'s new\n\nNothing yet.\n'), isNull);
   });
@@ -61,12 +65,25 @@ Plants grow crops rather than calories.
     await news.load();
 
     expect(news.unread, isNull);
-    expect(store.data?['seen'], '27 August 2026 — The one with the critters');
+    expect(store.data?['seen'], '28 August 2026 — Wires');
   });
 
   test('and somebody who was last here a release ago is', () async {
+    final news = await newsWith('27 August 2026 — The one with the critters');
+    expect(news.unread, '28 August 2026 — Wires');
+    expect(news.unreadCount, 1);
+  });
+
+  test('and two releases ago is told how many', () async {
     final news = await newsWith('26 August 2026 — Food');
-    expect(news.unread, '27 August 2026 — The one with the critters');
+    expect(news.unreadCount, 2);
+  });
+
+  test('an entry that has since been renamed cannot be counted', () async {
+    // A wrong count is worse than none, and a wrong cut would hide entries.
+    final news = await newsWith('25 August 2026 — A release that was renamed');
+    expect(news.unread, isNotNull);
+    expect(news.unreadCount, isNull);
   });
 
   test('a changelog that will not load says nothing at all', () async {
@@ -84,17 +101,26 @@ Plants grow crops rather than calories.
   testWidgets('the notice names the release and opens it', (tester) async {
     await pumpEditor(tester, await newsWith('26 August 2026 — Food'));
 
-    expect(
-      textContaining('27 August 2026 — The one with the critters'),
-      findsOneWidget,
-    );
+    // Two of them, and it says two: counting how much is new is most of what
+    // somebody wants from a changelog.
+    expect(textContaining('2 changes to harmONIc'), findsOneWidget);
 
     await tester.tap(find.text("What's new"));
     await tester.pumpAndSettle();
 
     expect(find.byType(ChangelogPanel), findsOneWidget);
-    // Both entries, because the list is the history.
-    expect(textContaining('26 August 2026 — Food'), findsWidgets);
+    expect(textContaining('2 changes since you were last here'),
+        findsOneWidget);
+    // The two they have not read, and not the one they have.
+    expect(find.text('28 August 2026 — Wires'), findsOneWidget);
+    expect(find.text('27 August 2026 — The one with the critters'),
+        findsOneWidget);
+    expect(find.text('26 August 2026 — Food'), findsNothing);
+
+    // The rest is a click away rather than gone.
+    await tester.tap(find.text('Show everything'));
+    await tester.pumpAndSettle();
+    expect(find.text('26 August 2026 — Food'), findsOneWidget);
   });
 
   testWidgets('and reading it means it is read', (tester) async {
@@ -105,6 +131,9 @@ Plants grow crops rather than calories.
     await tester.pumpAndSettle();
 
     expect(news.unread, isNull);
+    // But what they opened is still on screen: marking it read must not empty
+    // the thing they just asked to read.
+    expect(find.text('28 August 2026 — Wires'), findsOneWidget);
   });
 
   testWidgets('dismissing counts as reading it', (tester) async {

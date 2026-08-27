@@ -200,6 +200,10 @@ class _EditorScreenState extends State<EditorScreen> {
   bool _guideOpen = false;
   bool _changelogOpen = false;
 
+  /// The entry somebody had read when they opened the changelog, so what they
+  /// see is what came after it. Cleared when they open it from the guide.
+  String? _changelogSince;
+
   /// The keys card. Two ways in, and they behave differently on purpose: the
   /// button pins it open until dismissed, and holding ? shows it only for as
   /// long as the key is down — which is what you want mid-drag, when letting
@@ -372,8 +376,12 @@ class _EditorScreenState extends State<EditorScreen> {
                     if (widget.news?.unread case final String release)
                       _WhatsNewNotice(
                         release: release,
+                        count: widget.news!.unreadCount,
                         onRead: () {
-                          setState(() => _changelogOpen = true);
+                          setState(() {
+                            _changelogSince = widget.news!.since;
+                            _changelogOpen = true;
+                          });
                           unawaited(widget.news!.markSeen());
                         },
                         onDismiss: () =>
@@ -465,7 +473,10 @@ class _EditorScreenState extends State<EditorScreen> {
                             },
                       // Over the guide rather than instead of it: closing the
                       // changelog puts somebody back where they were.
-                      onWhatsNew: () => setState(() => _changelogOpen = true),
+                      onWhatsNew: () => setState(() {
+                        _changelogSince = null;
+                        _changelogOpen = true;
+                      }),
                     ),
                   ),
                 ),
@@ -475,6 +486,10 @@ class _EditorScreenState extends State<EditorScreen> {
                 Positioned.fill(
                   child: ChangelogPanel(
                     onClose: () => setState(() => _changelogOpen = false),
+                    // What they have not read, not the whole history. Null
+                    // when they opened it from the guide, where the history
+                    // is the point.
+                    since: _changelogSince,
                     // Already in hand: the controller read it to work out
                     // whether there was anything to say.
                     load: switch (widget.news?.changelog) {
@@ -1173,11 +1188,16 @@ class _EmptyCanvas extends StatelessWidget {
 class _WhatsNewNotice extends StatelessWidget {
   const _WhatsNewNotice({
     required this.release,
+    required this.count,
     required this.onRead,
     required this.onDismiss,
   });
 
   final String release;
+
+  /// How many entries are new, or null when the entry somebody last read has
+  /// been renamed since and it cannot be told.
+  final int? count;
   final VoidCallback onRead;
   final VoidCallback onDismiss;
 
@@ -1196,7 +1216,13 @@ class _WhatsNewNotice extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'harmONIc has changed since you were last here — $release.',
+                switch (count) {
+                  1 || null =>
+                    'harmONIc has changed since you were last here — $release.',
+                  final int many =>
+                    '$many changes to harmONIc since you were last here, '
+                        'the latest being $release.',
+                },
                 style: OniType.body.copyWith(fontSize: 12),
               ),
             ),

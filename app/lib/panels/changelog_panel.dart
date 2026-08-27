@@ -9,10 +9,20 @@ import 'guide_panel.dart';
 /// list *is* the history, so "what changed" and "what has ever changed" are one
 /// panel rather than two.
 class ChangelogPanel extends StatelessWidget {
-  const ChangelogPanel({required this.onClose, this.load, super.key});
+  const ChangelogPanel({
+    required this.onClose,
+    this.load,
+    this.since,
+    super.key,
+  });
 
   final VoidCallback onClose;
   final Future<String> Function()? load;
+
+  /// The entry somebody last read. Everything above it is what is new to them,
+  /// and that is what they are shown — with "Show everything" for the rest.
+  /// Null opens the whole history, which is what the guide's footer wants.
+  final String? since;
 
   @override
   Widget build(BuildContext context) => GuidePanel(
@@ -21,6 +31,7 @@ class ChangelogPanel extends StatelessWidget {
         title: "What's new",
         backLabel: '← All changes',
         source: 'docs/CHANGELOG.md',
+        newerThan: since,
       );
 }
 
