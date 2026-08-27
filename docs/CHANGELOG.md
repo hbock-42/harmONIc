@@ -8,6 +8,30 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 27 August 2026 — Builds that would not open
+
+Three faults where the app was the problem, two of them in builds it had written
+itself.
+
+- A build could come back with wires it then refused to draw. The app works a
+  share out by dividing one flow by another, which lands on 1.0000000000000009
+  often enough, and it was rejecting that as "not between 0 and 1" — every wire
+  to zero, and no way out but to draw the whole thing again. Builds already
+  saved with one open again: there is nothing to redraw.
+- **Use as little as possible** could lock a spare-power outlet shut, by putting
+  a share of nothing on it. A plain SPOM would then not balance at any size,
+  because the hydrogen the generator was no longer burning had nowhere to go. An
+  outlet the answer does not need is left free now rather than closed.
+- What the app suggests is now always something it can then solve. It used to be
+  able to hand back an answer it called impossible a moment later, because it
+  allows a port to keep a surplus while the ordinary sums do not. Where an
+  answer really does leave something spare, the port is marked as venting, where
+  you can see it.
+
+And it says when it has changed: a line at the top of the canvas counting what
+is new since you were last here, and this list, showing only the part you have
+not read.
+
 ## 27 August 2026 — What the players found
 
 A week of reports from the Oxygen Not Included Discord, and most of them were
@@ -86,3 +110,9 @@ again. Bodies can be edited freely; headings are fixed once they ship.*
 
 *Ship nothing here for a change nobody using the app would notice. A release
 with no entry says nothing, which is the point.*
+
+*The other half of that rule is the one that gets forgotten: anything somebody
+reported gets an entry, always. They told us it was wrong, and being told it is
+fixed is the whole of what they get back. Three fixes shipped without one on the
+day this file was written, two of them to bugs players had reported — so the
+entry goes in with the fix, not after somebody notices it is missing.*
