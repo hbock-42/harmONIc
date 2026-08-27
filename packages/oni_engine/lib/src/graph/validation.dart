@@ -104,9 +104,17 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
           '$wanted port',
           edgeId: edge.id));
     }
-    if (edge.share != null && (edge.share! < 0 || edge.share! > 1)) {
+    // To within a rounding, the same slack the sum of them gets below.
+    //
+    // A share is usually not typed in: the optimiser writes it, by dividing a
+    // flow by a production, and that lands on 1.0000000000000009 or on
+    // -6.2e-16 often enough. Rejecting those made the app write builds it then
+    // refused to open — every wire to zero, and no way out but to draw it
+    // again. Reported by somebody who had to.
+    if (edge.share case final double share
+        when share < -_shareSlack || share > 1 + _shareSlack) {
       issues.add(PipelineIssue(IssueSeverity.error,
-          'Edge "${edge.id}" has share ${edge.share}, expected [0, 1]',
+          'Edge "${edge.id}" has share $share, expected [0, 1]',
           edgeId: edge.id));
     }
   }
@@ -182,7 +190,7 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
     claims[ref] = (claims[ref] ?? 0) + edge.share!;
   }
   claims.forEach((ref, total) {
-    if (total > 1.0000001) {
+    if (total > 1 + _shareSlack) {
       issues.add(PipelineIssue(
           IssueSeverity.error,
           'Port $ref is divided into ${(total * 100).toStringAsFixed(0)} % '
@@ -193,3 +201,10 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
 
   return issues;
 }
+
+/// How far outside [0, 1] a share may land before it is somebody's mistake
+/// rather than arithmetic's.
+///
+/// Wide enough for a double divided by a double, and far narrower than any
+/// share anybody would set on purpose.
+const double _shareSlack = 1e-7;

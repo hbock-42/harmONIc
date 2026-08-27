@@ -287,6 +287,18 @@ BestCase _optimise(
 /// A port with one edge is left exactly as it was: there was nothing to
 /// choose, and rewriting it would fill the inspector with shares nobody
 /// decided.
+/// A fraction, written the way somebody would have written it.
+///
+/// One flow divided by another is 1.0000000000000009 or -6.2e-16 often enough,
+/// and a share outside [0, 1] is not a share. Writing one made the app produce
+/// builds it then refused to open.
+double _asShare(double fraction) {
+  if (!fraction.isFinite) return 0;
+  if (fraction <= 0) return 0;
+  if (fraction >= 1) return 1;
+  return fraction;
+}
+
 Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
   if (!best.isAnswer) return pipeline;
 
@@ -334,7 +346,7 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
           (best.nodeCounts[node.id] ?? 0);
       edges.add(edge.copyWith(
         mode: EdgeMode.push,
-        share: made <= 1e-9 ? 0 : flowOn(edge.id) / made,
+        share: made <= 1e-9 ? 0 : _asShare(flowOn(edge.id) / made),
       ));
     } else if (siblingsIn.length > 1) {
       // Several lines feeding one port, none of them divided at its own end:
@@ -343,7 +355,7 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
       final total = siblingsIn.fold<double>(0, (sum, e) => sum + flowOn(e.id));
       edges.add(edge.copyWith(
         mode: EdgeMode.pull,
-        share: total <= 1e-9 ? 0 : flowOn(edge.id) / total,
+        share: total <= 1e-9 ? 0 : _asShare(flowOn(edge.id) / total),
       ));
     } else {
       edges.add(edge);

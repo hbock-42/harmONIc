@@ -368,4 +368,63 @@ void main() {
       expect(best.nodeCounts['b'], closeTo(116.666667 * 0.75, 1e-3));
     });
   });
+  group('the shares it writes are shares', () {
+    // Reported with a build the app had written itself: the optimiser divides
+    // a flow by a production, and the answer lands on 1.0000000000000009 or
+    // -6.2e-16 often enough. The per-edge check rejected those outright while
+    // the check on their *sum*, three lines below it, already allowed a
+    // rounding — so the app produced builds it then refused to open, every
+    // wire at zero, with no way out but to draw the thing again.
+    test('never outside [0, 1], whatever the arithmetic did', () {
+      for (final template in pipelineTemplates) {
+        final pipeline = template.build(db);
+        for (final item in {
+          for (final node in pipeline.nodes)
+            for (final port in db.processOrThrow(node.specId).ports)
+              port.itemId,
+        }) {
+          final best = mostOf(pipeline, db, item);
+          if (!best.isAnswer) continue;
+          for (final edge in withShares(pipeline, db, best).edges) {
+            if (edge.share case final double share) {
+              expect(share, inInclusiveRange(0, 1),
+                  reason: '${template.name}: ${edge.id} for $item');
+            }
+          }
+        }
+      }
+    });
+
+    test('and a build carrying one still opens', () {
+      // Builds already saved carry the values that were written before this,
+      // so tolerating them is not tidiness — it is the difference between
+      // somebody's work opening and not.
+      final base = (PipelineBuilder(db, name: 'hair')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..addSink('oxygen')
+            ..connectItem('elec', 'sink_oxygen', 'oxygen',
+                mode: EdgeMode.push, share: 1.0000000000000009))
+          .build();
+
+      expect(validatePipeline(base, db).where((i) => i.severity == IssueSeverity.error),
+          isEmpty);
+    });
+
+    test('but a share somebody typed wrong is still wrong', () {
+      // The slack is a ten-millionth. Nobody sets 150 % by accident of
+      // arithmetic.
+      final base = (PipelineBuilder(db, name: 'wrong')
+            ..add('electrolyzer', nodeId: 'elec')
+            ..addSink('oxygen')
+            ..connectItem('elec', 'sink_oxygen', 'oxygen',
+                mode: EdgeMode.push, share: 1.5))
+          .build();
+
+      expect(
+        validatePipeline(base, db).map((i) => i.message).join(),
+        contains('expected [0, 1]'),
+      );
+    });
+  });
+
 }
