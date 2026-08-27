@@ -27,6 +27,7 @@ docs/MIXTURES.md       why a pipe of mixed gas is not modelled, and what would c
 docs/DEMO.md           ten minutes of it, for somebody who plays the game.
 docs/FOOD.md           why a cooked dish has to stop being calories, and what that costs.
 docs/CHANGELOG.md      what changed, and the file the app's "What's new" reads.
+docs/reference/        every figure the app uses, sorted so a wrong one shows.
 KANBAN.md              the plan, epic by epic.
 ```
 
