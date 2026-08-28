@@ -8,6 +8,18 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A build fits in a message again
+
+Share codes are compressed. A build that came to twenty-one thousand
+characters is now under four thousand, which is the difference between a file
+somebody has to download and a line they can paste — or a link they can click,
+since the report form carries the build in its URL when it fits, and until now
+it never did for a build worth reporting.
+
+**Every code ever made still works.** Nothing needs re-sharing: the old ones
+are read by the absence of a compression header, so months of codes in chat
+logs and issue threads open exactly as before.
+
 ## 28 August 2026 — An amount that goes says that it went
 
 Setting an amount on a build that has already settled clears the amount that

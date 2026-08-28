@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
@@ -77,9 +79,19 @@ void main() {
       (tester) async {
     // A URL that silently truncates would send a share code decoding to
     // nothing, which is worse than no code at all.
+    //
+    // Three hundred identical Electrolyzers used to be enough, and are not
+    // any more: a code is gzipped now and three hundred of the same thing
+    // compress to almost nothing. What still will not fit is a build whose
+    // content genuinely differs, so every node here carries a label of its
+    // own that no compressor can do anything with.
     final big = PipelineBuilder(testDatabase, name: 'A large base');
     for (var i = 0; i < 300; i++) {
-      big.add('electrolyzer', nodeId: 'elec$i', x: i * 10, y: i * 10);
+      big.add('electrolyzer',
+          nodeId: 'elec$i',
+          label: 'The ${_noise(i)} one, by ${_noise(i * 7 + 1)}',
+          x: i * 10,
+          y: i * 10);
     }
     final clipboard = <String>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -127,4 +139,34 @@ void main() {
     }
   });
 
+  test('and the ones people actually reported do too, which they did not', () {
+    // Every build sent in this month came as a file attachment rather than a
+    // message, because its code ran past what chat or a URL will carry. These
+    // are those builds, exactly as they were pasted.
+    for (final file in Directory('../packages/oni_engine/test/fixtures')
+        .listSync()
+        .whereType<File>()) {
+      final was = file.readAsStringSync().trim();
+      final now =
+          PipelineShareCode.encode(PipelineShareCode.decode(was));
+      expect(shareCodeFits(now), isTrue,
+          reason: '${file.uri.pathSegments.last}: $was.length -> ${now.length}');
+    }
+  });
+
+}
+
+/// A different string for every number, and no two alike enough to compress.
+///
+/// Deterministic on purpose: a size test that passes on some runs is not a
+/// test. This is a linear congruential generator's output in base 36, which is
+/// as close to noise as a repeatable function gets.
+String _noise(int seed) {
+  var x = (seed * 1103515245 + 12345) & 0x7fffffff;
+  final out = StringBuffer();
+  for (var i = 0; i < 12; i++) {
+    out.write(x.remainder(36).toRadixString(36));
+    x = (x * 1103515245 + 12345) & 0x7fffffff;
+  }
+  return out.toString();
 }

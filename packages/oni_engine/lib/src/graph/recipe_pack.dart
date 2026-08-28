@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:archive/archive.dart';
+
 import '../model/item.dart';
 import '../model/process_spec.dart';
 
@@ -42,7 +44,9 @@ class RecipePack {
       );
 
   /// A single-line code, safe to paste into a forum post or a chat message.
-  String encode() => base64Url.encode(utf8.encode(jsonEncode(toJson())));
+  String encode() => base64Url.encode(
+        GZipEncoder().encode(utf8.encode(jsonEncode(toJson()))),
+      );
 
   /// Accepts a pack code or the raw JSON.
   ///
@@ -58,7 +62,14 @@ class RecipePack {
       json = trimmed;
     } else {
       try {
-        json = utf8.decode(base64Url.decode(_padded(trimmed)));
+        // Gzipped like a build's, and old codes read by their absence of a
+        // gzip header. It has to understand a *build's* code far enough to
+        // say so, too: pasting one here is the commonest near miss and
+        // "expected a pack code" is no help to somebody who has one.
+        final bytes = base64Url.decode(_padded(trimmed));
+        json = utf8.decode(bytes.length > 2 && bytes[0] == 0x1f && bytes[1] == 0x8b
+            ? GZipDecoder().decodeBytes(bytes)
+            : bytes);
       } on Object {
         throw const FormatException(
             'That does not look like a recipe pack: expected a pack code or '
