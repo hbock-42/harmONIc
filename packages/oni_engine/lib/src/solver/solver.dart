@@ -161,15 +161,31 @@ class PipelineSolver {
           // as an invitation to pick, and giving one left the build exactly
           // as stuck, naming the other. There are as many loose ends as there
           // are amounts to give, and they all have to be given.
-          names.length == 1
-              ? 'Nothing sets the size of this build yet, so every amount in it '
+          // "Every amount in it could be anything" is true of a build with
+          // nothing given anywhere, and false of one that has amounts and has
+          // just gained a loose end. Reported on a build that solved until an
+          // output node was hung on it: every other figure was still right,
+          // and being told the whole thing was unmoored was alarming and
+          // untrue.
+          switch ((names.length, pipeline.pins.isNotEmpty)) {
+            (1, true) => 'Nothing says how big the ${names.single} is yet. '
+                'Give it an amount — the rest of this build is already '
+                'settled by the amounts you have given.',
+            (1, false) =>
+              'Nothing sets the size of this build yet, so every amount in it '
                   'could be anything. Give an amount for the ${names.single} '
-                  'and everything else follows from it.'
-              : 'Nothing sets the size of this build yet, so every amount in '
+                  'and everything else follows from it.',
+            (_, true) => '${names.length} things here have no size yet and '
+                'each needs an amount: ${_sentenceList(names)}. Any node on '
+                'the same run as one of them will do instead.'
+                '${_secondRoute(pipeline, database)}',
+            (_, false) =>
+              'Nothing sets the size of this build yet, so every amount in '
                   'it could be anything. It has ${names.length} loose ends and '
                   'needs an amount for each: ${_sentenceList(names)}. Any node '
                   'on the same run as one of them will do instead.'
                   '${_secondRoute(pipeline, database)}',
+          },
         ));
       case LinearSolveStatus.inconsistent:
         status = SolveStatus.inconsistent;

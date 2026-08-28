@@ -8,6 +8,13 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A loose end is not a loose build
+
+Hanging an output node on a build that solved said *"nothing sets the size of
+this build, so every amount in it could be anything"* — while every figure on
+screen was still right and unchanged. Where the build already has amounts on
+it, it now says which thing has no size yet and leaves the rest alone.
+
 ## 28 August 2026 — Two more from the same build
 
 - **Any wood is any wood.** An Ethanol Distiller fed Lumber would not also

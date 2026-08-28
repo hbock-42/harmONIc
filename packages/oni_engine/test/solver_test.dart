@@ -1113,8 +1113,15 @@ void main() {
       expect(s.status, SolveStatus.underdetermined);
       expect(s.freeNodeIds, hasLength(2));
       final said = s.issues.map((i) => i.message).join();
-      expect(said, contains('2 loose ends'));
-      expect(said, contains('an amount for each'));
+      // How many, and both of them named: there are as many amounts to give
+      // as there are loose ends, and giving one leaves the build as stuck.
+      expect(said, contains('2 things here have no size'));
+      expect(said, contains('each needs an amount'));
+      expect(said, contains('Sand output'));
+      expect(said, contains('Water output'));
+      // And no claim that the whole build is unmoored: this one has an
+      // amount on its natural gas already.
+      expect(said, isNot(contains('every amount in it could be anything')));
       // And the other way out, since somebody who has said what they *have*
       // does not yet know the amount they are being asked for.
       expect(said, contains('give each supply an amount'));

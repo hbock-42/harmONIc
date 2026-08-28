@@ -251,4 +251,44 @@ void main() {
       isEmpty,
     );
   });
+
+  test('a loose end on a settled build does not call the whole thing loose',
+      () {
+    // Reported: hanging a Power output on a build that solved said "nothing
+    // sets the size of this build, so every amount in it could be anything"
+    // -- while every other figure on screen was still right, and unchanged.
+    // The build was not unmoored; one new node had no size.
+    final settled = PipelineShareCode.decode(
+        File('test/fixtures/settled_build.txt').readAsStringSync().trim());
+    final before = PipelineSolver(db).solve(settled);
+    expect(before.status, SolveStatus.solved);
+
+    final withOutput = settled.copyWith(
+      nodes: [
+        ...settled.nodes,
+        const PipelineNode(id: 'spare', specId: 'sink:power'),
+      ],
+      edges: [
+        ...settled.edges,
+        const PipelineEdge(
+          id: 'spare_power',
+          fromNodeId: 'natural_gas_generator_41',
+          fromPortId: 'power_out',
+          toNodeId: 'spare',
+          toPortId: 'in',
+        ),
+      ],
+    );
+    final after = PipelineSolver(db).solve(withOutput);
+    final said = after.issues.map((i) => i.message).join();
+
+    expect(said, contains('Nothing says how big the Power output is'));
+    expect(said, isNot(contains('every amount in it could be anything')),
+        reason: 'the rest of the build is settled');
+    // And it really is settled: every figure it had is the figure it keeps.
+    for (final entry in before.nodes.entries) {
+      expect(after.nodes[entry.key]!.count, closeTo(entry.value.count, 1e-6),
+          reason: entry.key);
+    }
+  });
 }
