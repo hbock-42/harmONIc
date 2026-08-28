@@ -37,16 +37,48 @@ class HiddenCard {
   static const double gap = 24;
 }
 
-/// Somewhere [nodeId] can sit where nothing is on top of it.
+/// Where a card of this size and shape can sit without landing on anything.
 ///
-/// Straight down from where it is, past whatever is covering it, and past
-/// anything else it lands on — the first version only cleared the one card
-/// named in the message and dropped the card onto the next one down, which is
-/// a fair description of not being moved clear at all.
+/// Straight down from where it was asked for, past the lowest thing it is
+/// touching, and then looked at again — because clearing one card can drop it
+/// onto the next. It only ever moves down, so it cannot loop; the count is
+/// there to be certain rather than to bound anything real.
 ///
 /// Down rather than the nearest way out because a canvas reads in columns: a
 /// card that moves sideways has changed which stage of the build it looks like
 /// it belongs to, and one that moves down has not.
+Rect clearBelow(Rect wanted, List<Rect> taken) {
+  var here = wanted;
+  for (var pass = 0; pass < 64; pass++) {
+    var lowest = double.negativeInfinity;
+    for (final other in taken) {
+      if (other.overlaps(here)) lowest = math.max(lowest, other.bottom);
+    }
+    if (lowest == double.negativeInfinity) return here;
+    here = Rect.fromLTWH(
+      here.left,
+      NodeLayout.snap(lowest + HiddenCard.gap),
+      here.width,
+      here.height,
+    );
+  }
+  return here;
+}
+
+/// Every card on the canvas, bar the ones named.
+List<Rect> cardsOn(
+  Pipeline pipeline,
+  ProcessSpec? Function(PipelineNode node) specOf, {
+  Set<String> except = const <String>{},
+}) =>
+    <Rect>[
+      for (final node in pipeline.nodes)
+        if (!except.contains(node.id))
+          if (specOf(node) case final ProcessSpec spec)
+            NodeLayout.worldRect(node, spec),
+    ];
+
+/// Somewhere [nodeId] can sit where nothing is on top of it.
 Offset clearPlaceFor(
   Pipeline pipeline,
   ProcessSpec? Function(PipelineNode node) specOf,
@@ -55,30 +87,10 @@ Offset clearPlaceFor(
   final node = pipeline.node(nodeId);
   final spec = node == null ? null : specOf(node);
   if (node == null || spec == null) return Offset(node?.x ?? 0, node?.y ?? 0);
-  final size = NodeLayout.sizeOf(spec);
-
-  final others = <Rect>[
-    for (final other in pipeline.nodes)
-      if (other.id != nodeId)
-        if (specOf(other) case final ProcessSpec s)
-          NodeLayout.worldRect(other, s),
-  ];
-
-  var y = node.y;
-  // Each pass drops the card below the lowest thing it is touching and looks
-  // again, because clearing one card can land it on another. It always moves
-  // down, so it cannot loop; the count is only there to be sure.
-  for (var pass = 0; pass < 64; pass++) {
-    final here = Rect.fromLTWH(node.x, y, size.width, size.height);
-    var lowest = double.negativeInfinity;
-    for (final other in others) {
-      if (!other.overlaps(here)) continue;
-      lowest = math.max(lowest, other.bottom);
-    }
-    if (lowest == double.negativeInfinity) break;
-    y = NodeLayout.snap(lowest + HiddenCard.gap);
-  }
-  return Offset(node.x, y);
+  return clearBelow(
+    NodeLayout.worldRect(node, spec),
+    cardsOn(pipeline, specOf, except: {nodeId}),
+  ).topLeft;
 }
 
 /// How much of a card has to be covered before it counts as hidden.

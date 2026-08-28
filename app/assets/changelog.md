@@ -8,6 +8,23 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Nothing is placed on top of anything any more
+
+Once the app could spot a buried card it was worth asking how they got
+buried, and two of the four ways a card gets a position never checked.
+
+Clicking a card onto the canvas put it exactly where you pointed, even if
+that was on top of something. It now lands below whatever is there.
+Dropped into clear space it still goes precisely where you put it.
+
+Pasting was worse. A copy arrived a fixed short step down and to the
+right, which is right on an empty canvas and wrong on top of the build it
+came from — pasting one into itself left every card between 55 and 64 per
+cent buried, a second build almost exactly on the first with both sets of
+wires crossing each other. A pasted build now comes down far enough to
+clear what is already there, moving as one piece so the arrangement it
+copied survives.
+
 ## 28 August 2026 — Tidy no longer leaves cards on top of each other
 
 Reported, and easy to confirm once there was something to confirm it with:

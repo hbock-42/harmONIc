@@ -1,4 +1,4 @@
-import 'dart:ui' show Offset, Size;
+import 'dart:ui' show Offset, Rect, Size;
 
 import 'package:flutter/foundation.dart';
 import 'package:oni_engine/oni_engine.dart';
@@ -521,11 +521,21 @@ class PipelineController extends ChangeNotifier {
     final spec = database.processOrThrow(specId);
     final size = NodeLayout.sizeOf(spec);
     final id = _freshId(specId);
+    // Dropped where you pointed, unless something is already there, in which
+    // case below it. Only the add-from-a-port path used to do this, so a card
+    // placed by hand or from the catalogue could land squarely on another one
+    // and vanish underneath it.
+    final at = overlap.clearBelow(
+      Offset(NodeLayout.snap(position.dx - size.width / 2),
+              NodeLayout.snap(position.dy - size.height / 2)) &
+          size,
+      overlap.cardsOn(_pipeline, specFor),
+    );
     final node = PipelineNode(
       id: id,
       specId: specId,
-      x: NodeLayout.snap(position.dx - size.width / 2),
-      y: NodeLayout.snap(position.dy - size.height / 2),
+      x: at.left,
+      y: at.top,
     );
     _apply(_pipeline.copyWith(nodes: [..._pipeline.nodes, node]));
     selectNode(id);
@@ -874,20 +884,31 @@ class PipelineController extends ChangeNotifier {
     return id;
   }
 
-  /// Nudges a new node down until it stops sitting on top of an existing one.
-  Offset _avoidOverlap(Offset position, Size size) {
-    var candidate = position;
-    for (var attempt = 0; attempt < 40; attempt++) {
-      final rect = candidate & size;
-      final clash = _pipeline.nodes.any((n) =>
-          (Offset(n.x, n.y) & NodeLayout.sizeOf(specOf(n)))
-              .inflate(-4)
-              .overlaps(rect.inflate(-4)));
-      if (!clash) return candidate;
-      candidate = candidate.translate(0, size.height + 24);
+  /// How much further down a pasted build has to go to be clear of this one.
+  ///
+  /// The whole thing at once, as one rectangle: a build pasted card by card
+  /// would come apart, and it is the *arrangement* that is being copied. Off
+  /// by the usual little step is right on an empty canvas and wrong on top of
+  /// the build it came from -- pasting one into itself left every card between
+  /// 55 and 64 per cent buried, which is to say a second build directly on top
+  /// of the first, mostly invisible, and the wires of both crossing each other.
+  Offset _roomForPasting(Pipeline incoming, Offset offset) {
+    Rect? wanted;
+    for (final node in incoming.nodes) {
+      final spec = _database.process(node.specId);
+      if (spec == null) continue;
+      final rect = Offset(node.x, node.y) + offset & NodeLayout.sizeOf(spec);
+      wanted = wanted == null ? rect : wanted.expandToInclude(rect);
     }
-    return candidate;
+    if (wanted == null) return Offset.zero;
+    final clear = overlap.clearBelow(wanted, overlap.cardsOn(_pipeline, specFor));
+    return Offset(0, clear.top - wanted.top);
   }
+
+  /// Nudges a new node down until it stops sitting on top of an existing one.
+  Offset _avoidOverlap(Offset position, Size size) =>
+      overlap.clearBelow(position & size, overlap.cardsOn(_pipeline, specFor))
+          .topLeft;
 
   /// Deletes whatever is selected — one node, one edge, or a whole marquee's
   /// worth — along with any edges and pins left dangling.
@@ -1608,6 +1629,7 @@ class PipelineController extends ChangeNotifier {
   /// wires would join up things nobody joined.
   void pasteNodes(Pipeline incoming, {Offset offset = const Offset(32, 32)}) {
     if (incoming.nodes.isEmpty) return;
+    offset += _roomForPasting(incoming, offset);
     final rename = <String, String>{};
     final nodes = <PipelineNode>[..._pipeline.nodes];
     for (final node in incoming.nodes) {
