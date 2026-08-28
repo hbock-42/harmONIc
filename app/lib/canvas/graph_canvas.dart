@@ -170,6 +170,37 @@ class GraphCanvasState extends State<GraphCanvas>
     super.dispose();
   }
 
+  /// Where the top of the canvas sat on screen last frame.
+  double? _viewportTop;
+
+  /// Keeps the build still on screen when the canvas itself moves.
+  ///
+  /// The problems banner is above the canvas, so anything that makes it taller
+  /// pushes the canvas down and everything drawn in it goes along. Reported
+  /// while dragging a card over another one: the moment the banner said a card
+  /// was buried, the whole build jumped, and it jumped back when the message
+  /// went. The message appearing is fine; the build moving under your hand is
+  /// not.
+  ///
+  /// The canvas cannot tell a top edge that moved from a bottom edge that did
+  /// by its size alone, and only the first should be compensated -- dragging a
+  /// window's bottom corner is meant to reveal more, not to scroll. So this
+  /// watches where the viewport actually sits on the screen and shifts the
+  /// view by exactly what moved.
+  void _keepStillWhileTheViewportMoves() {
+    if (!mounted) return;
+    final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
+    final top = box.localToGlobal(Offset.zero).dy;
+    final was = _viewportTop;
+    _viewportTop = top;
+    if (was == null || (top - was).abs() < 0.5) return;
+    // Travelling somewhere of its own accord is a deliberate move to a place;
+    // correcting it mid-glide would fight the animation and land short.
+    if (_travel.isAnimating) return;
+    setState(() => _offset = _offset.translate(0, was - top));
+  }
+
   /// Slides the view to [target], or jumps if it is already close enough that
   /// a glide would only be noticed as a lag.
   void _travelTowards(Offset target) {
@@ -726,6 +757,10 @@ class GraphCanvasState extends State<GraphCanvas>
 
   @override
   Widget build(BuildContext context) {
+    // After this frame is laid out, not during: where the canvas sits on
+    // screen is not known until the banner above it has taken its space.
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _keepStillWhileTheViewportMoves());
     final controller = this.controller;
     final selectedEdgeId = switch (controller.selection) {
       EdgeSelection(:final edgeId) => edgeId,

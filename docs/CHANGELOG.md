@@ -8,6 +8,20 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — The build stays still when the message above it grows
+
+Reported: dragging a card over another one made the banner say a card was
+buried, which made the banner taller, which pushed the canvas down — so
+the whole build jumped under your hand, and jumped back when the message
+went. Sixty-six pixels, twice, in the middle of a drag.
+
+The message appearing is fine. The build moving is not. The view now
+shifts by exactly as much as the canvas did, so what you were looking at
+stays where you were looking at it.
+
+Resizing the window still works the way it should: making it shorter from
+the bottom reveals less rather than scrolling you somewhere.
+
 ## 28 August 2026 — A save that cannot be written is lost, not fatal
 
 Saving happens quietly, as a side effect of ordinary editing, and in one
