@@ -18,7 +18,8 @@ thing that gets reported as a wire bug, because from the outside that is
 exactly what it looks like.
 
 The banner now names it, names what is sitting on top of it, and offers to
-move it clear. It is offered rather than done: two cards on top of each
+move it clear — down past everything else in the way, not merely past the
+one card named. It is offered rather than done: two cards on top of each
 other is sometimes deliberate, and an app that quietly rearranged your
 canvas would be worse than one that mentions it.
 

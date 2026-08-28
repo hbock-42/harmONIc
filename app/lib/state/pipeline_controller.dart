@@ -121,16 +121,10 @@ class PipelineController extends ChangeNotifier {
   /// sometimes deliberate, and an app that silently rearranged the canvas
   /// would be worse than one that mentions it.
   void reveal(String nodeId) {
-    final node = _pipeline.node(nodeId);
-    final under = hiddenCards.where((h) => h.hiddenId == nodeId).firstOrNull;
-    if (node == null || under == null) return;
-    final other = _pipeline.node(under.underId);
-    final spec = specFor(node);
-    final otherSpec = other == null ? null : specFor(other);
-    if (other == null || spec == null || otherSpec == null) return;
-    final to = HiddenCard.clearOf(NodeLayout.worldRect(node, spec),
-        NodeLayout.worldRect(other, otherSpec));
-    moveNode(nodeId, to, record: true);
+    if (_pipeline.node(nodeId) == null) return;
+    if (!hiddenCards.any((h) => h.hiddenId == nodeId)) return;
+    moveNode(nodeId, overlap.clearPlaceFor(_pipeline, specFor, nodeId),
+        record: true);
     selectNode(nodeId);
   }
 

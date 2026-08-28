@@ -34,16 +34,51 @@ class HiddenCard {
   /// How much of the hidden card is covered, from [kHiddenEnough] to 1.
   final double fraction;
 
-  /// Where it should go to be clear of what is covering it.
-  ///
-  /// Straight down, far enough to clear the other card's bottom edge with a
-  /// normal gap. Down rather than the nearest way out because a canvas reads
-  /// in columns: a card that moves sideways has changed which stage of the
-  /// build it looks like it belongs to, and one that moves down has not.
-  static Offset clearOf(Rect hidden, Rect under) =>
-      Offset(hidden.left, NodeLayout.snap(under.bottom + _gap));
+  static const double gap = 24;
+}
 
-  static const double _gap = 24;
+/// Somewhere [nodeId] can sit where nothing is on top of it.
+///
+/// Straight down from where it is, past whatever is covering it, and past
+/// anything else it lands on — the first version only cleared the one card
+/// named in the message and dropped the card onto the next one down, which is
+/// a fair description of not being moved clear at all.
+///
+/// Down rather than the nearest way out because a canvas reads in columns: a
+/// card that moves sideways has changed which stage of the build it looks like
+/// it belongs to, and one that moves down has not.
+Offset clearPlaceFor(
+  Pipeline pipeline,
+  ProcessSpec? Function(PipelineNode node) specOf,
+  String nodeId,
+) {
+  final node = pipeline.node(nodeId);
+  final spec = node == null ? null : specOf(node);
+  if (node == null || spec == null) return Offset(node?.x ?? 0, node?.y ?? 0);
+  final size = NodeLayout.sizeOf(spec);
+
+  final others = <Rect>[
+    for (final other in pipeline.nodes)
+      if (other.id != nodeId)
+        if (specOf(other) case final ProcessSpec s)
+          NodeLayout.worldRect(other, s),
+  ];
+
+  var y = node.y;
+  // Each pass drops the card below the lowest thing it is touching and looks
+  // again, because clearing one card can land it on another. It always moves
+  // down, so it cannot loop; the count is only there to be sure.
+  for (var pass = 0; pass < 64; pass++) {
+    final here = Rect.fromLTWH(node.x, y, size.width, size.height);
+    var lowest = double.negativeInfinity;
+    for (final other in others) {
+      if (!other.overlaps(here)) continue;
+      lowest = math.max(lowest, other.bottom);
+    }
+    if (lowest == double.negativeInfinity) break;
+    y = NodeLayout.snap(lowest + HiddenCard.gap);
+  }
+  return Offset(node.x, y);
 }
 
 /// How much of a card has to be covered before it counts as hidden.

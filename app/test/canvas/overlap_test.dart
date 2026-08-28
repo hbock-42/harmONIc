@@ -98,6 +98,23 @@ void main() {
       expect(c.selectedNodeIds, contains('elec'));
     });
 
+    test('past everything else in the way, not just the one named', () {
+      // Reported with two screenshots: the card was moved and landed on
+      // another card. Clearing the one thing named in the message is a fair
+      // description of not having been moved clear at all.
+      final base = testPipeline();
+      final elec = base.nodeOrThrow('elec');
+      var p = moved(base, 'src_water', Offset(elec.x, elec.y));
+      // Parked in exactly the gap the first version dropped things into.
+      p = moved(p, 'dupes', Offset(elec.x, elec.y + 180));
+      final c = testController()..load(p);
+      expect(c.hiddenCards.map((h) => h.hiddenId), contains('src_water'));
+
+      c.reveal('src_water');
+      expect(c.hiddenCards, isEmpty,
+          reason: 'clear of the Duplicants it would have landed on too');
+    });
+
     test('and is one undo step', () {
       final base = testPipeline();
       final elec = base.nodeOrThrow('elec');
