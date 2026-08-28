@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A code that will not open says why
+
+Three kinds of not-opening, told apart: **not a share code at all**, **cut
+short**, and **damaged** — a character changed in transit. The last two look
+identical to the eye, which is why the app had been calling both of them "that
+does not look like a pipeline" and sending people to look for the wrong thing.
+
+The message sits under the box it is about now, in the colour the app uses for
+things going wrong. It was below a fold about recipes, in the same grey as
+"Share code copied."
+
 ## 28 August 2026 — A box to paste a build into
 
 **Paste build** reads the clipboard, and a browser often will not let it. There

@@ -37,8 +37,13 @@ abstract final class PipelineShareCode {
     try {
       bytes = base64Url.decode(_padded(trimmed));
     } on Object {
+      // Not even base64, which is what a code cut short looks like: a share
+      // code is one long line and everything that carries it -- a chat
+      // message, a text box, a terminal -- is willing to wrap or clip it.
       throw const FormatException(
-          'That does not look like a pipeline: expected a share code or JSON.');
+          'That is not a share code. If you pasted one, it was probably cut '
+          'short or picked up a line break: copy the whole line again and '
+          'check the end of it arrived.');
     }
 
     final String json;
@@ -47,8 +52,14 @@ abstract final class PipelineShareCode {
       // there are months of them in chat logs and issue threads. Gzip's own
       // two-byte header says which this is, so nothing had to be stamped on
       // the front of the new ones to tell them apart.
-      json = utf8.decode(
-          _isGzip(bytes) ? GZipDecoder().decodeBytes(bytes) : bytes);
+      json = utf8.decode(_isGzip(bytes)
+          // Verified, which it is not by default: a code four characters
+          // short still decompressed happily, and a code with one character
+          // changed could too. A build that opens and is quietly the wrong
+          // build is the one failure worth going out of the way to prevent,
+          // and the checksum is already sitting in the stream.
+          ? GZipDecoder().decodeBytes(bytes, verify: true)
+          : bytes);
     } on Object {
       // Past the base64 and into the build itself, so this *was* a share code
       // and something happened to it on the way here. Worth saying, because
@@ -57,13 +68,27 @@ abstract final class PipelineShareCode {
       // perfectly fine to the eye.
       throw FormatException(
           _isGzip(bytes)
-              ? 'This is a share code, but it is damaged: something changed '
-                  'in it between there and here. Copy it again, all of it, '
-                  'and watch for a line break in the middle.'
-              : 'That does not look like a pipeline: expected a share code or '
-                  'JSON.');
+              ? 'This is a share code and it is damaged: a character of it '
+                  'changed, or the end of it is missing. Copy it again, all '
+                  'of it, and check nothing wrapped onto a second line.'
+              : 'That is not a share code. If you pasted one, it was probably '
+                  'cut short: copy the whole line again.');
     }
-    return Pipeline.fromJsonString(json);
+    try {
+      return Pipeline.fromJsonString(json);
+    } on FormatException catch (error) {
+      // The code decompressed and what came out is not a build. Almost always
+      // a code cut short: the front of the stream unpacks perfectly well and
+      // the JSON simply stops. Said as that rather than as "Unterminated
+      // string", which is true and is addressed to the wrong person.
+      throw FormatException(
+          error.message.contains('Unexpected end of input') ||
+                  error.message.contains('Unterminated')
+              ? 'This share code stops in the middle: what arrived is only '
+                  'part of it. Copy the whole line again — it is one long '
+                  'line, and the end of it is easy to leave behind.'
+              : error.message);
+    }
   }
 
   /// Whether [source] looks importable, for enabling a button without throwing.

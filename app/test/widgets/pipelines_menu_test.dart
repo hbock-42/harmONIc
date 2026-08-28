@@ -202,7 +202,9 @@ void main() {
       await tester.tap(find.text('Paste build'));
       await tester.pumpAndSettle();
 
-      expect(textContaining('does not look like a pipeline'), findsOneWidget);
+      // Named as what it probably is rather than as what it is not: the
+      // commonest reason a paste fails is a code that lost its end.
+      expect(textContaining('not a share code'), findsOneWidget);
       expect(workspace.saved, hasLength(before));
     });
 

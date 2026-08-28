@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
+import 'package:oni_pipeline/design/tokens.dart';
 import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 
@@ -79,6 +80,48 @@ void main() {
     await tester.tap(find.text('Open'));
     await tester.pumpAndSettle();
 
-    expect(textContaining('does not look like a pipeline'), findsOneWidget);
+    expect(textContaining('not a share code'), findsOneWidget);
+  });
+
+  testWidgets('and a failure is said in the failure colour, next to the box',
+      (tester) async {
+    // Reported from a screenshot: the message sat under a fold about recipes,
+    // in the same grey as "Share code copied." — a sentence about what just
+    // went wrong, printed somewhere else and dressed as a note.
+    await pumpEditor(tester);
+    await tester.enterText(
+        find.descendant(
+            of: find.byKey(const ValueKey('paste-code')),
+            matching: find.byType(EditableText)),
+        'hello');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    final said = textContaining('not a share code');
+    expect(said, findsOneWidget);
+    expect(
+      (tester.widget<Text>(said).style?.color),
+      OniColors.danger,
+    );
+    // Above the recipes fold, not below it.
+    expect(tester.getTopLeft(said).dy,
+        lessThan(tester.getTopLeft(find.text('Recipes you wrote')).dy));
+  });
+
+  testWidgets('and a code cut short says it was cut short', (tester) async {
+    // The likeliest thing to happen to four hundred characters on one line.
+    await pumpEditor(tester);
+    final code = aCode();
+    await tester.enterText(
+        find.descendant(
+            of: find.byKey(const ValueKey('paste-code')),
+            matching: find.byType(EditableText)),
+        code.substring(0, code.length - 40));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    expect(textContaining('stops in the middle'), findsOneWidget);
   });
 }

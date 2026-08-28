@@ -45,6 +45,14 @@ class PipelinesMenu extends StatefulWidget {
 class _PipelinesMenuState extends State<PipelinesMenu> {
   String? _message;
 
+  /// Whether the last thing said was something going wrong.
+  bool _messageIsBad = false;
+
+  void _say(String message, {bool bad = false}) {
+    _message = message;
+    _messageIsBad = bad;
+  }
+
   WorkspaceController get workspace => widget.workspace;
   VoidCallback get onClose => widget.onClose;
 
@@ -57,7 +65,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     await Clipboard.setData(
       ClipboardData(text: PipelineShareCode.encode(pipeline)),
     );
-    if (mounted) setState(() => _message = 'Share code copied.');
+    if (mounted) setState(() => _say('Share code copied.'));
   }
 
   /// The whole build as text, for pasting somewhere that is not this app.
@@ -76,7 +84,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     await Clipboard.setData(ClipboardData(
       text: '${controller.pipeline.name}\n\n$report',
     ));
-    if (mounted) setState(() => _message = 'Summary copied.');
+    if (mounted) setState(() => _say('Summary copied.'));
   }
 
   /// Puts the player's own recipes on the clipboard, as one pack.
@@ -102,15 +110,15 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       final result = await widget.library.import(
           RecipePack.decode(data?.text ?? ''));
       if (!mounted) return;
-      setState(() => _message = [
+      setState(() => _say([
             if (result.added > 0) '${result.added} added',
             // Said out loud, because overwriting an evening's measuring
             // without a word would be the one unforgivable thing here.
             if (result.replaced > 0)
               '${result.replaced} replaced one of yours',
-          ].join(', '));
+          ].join(', ')));
     } on FormatException catch (error) {
-      if (mounted) setState(() => _message = error.message);
+      if (mounted) setState(() => _say(error.message, bad: true));
     }
   }
 
@@ -124,12 +132,12 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     if (pipeline == null) return;
     try {
       final file = await widget.exporter.export(pipeline);
-      if (mounted) setState(() => _message = 'Saved to ${file.path}');
+      if (mounted) setState(() => _say('Saved to ${file.path}'));
     } on Object catch (error) {
       // A folder that cannot be written to is the whole failure mode here, and
       // it is worth saying rather than swallowing: an export that silently
       // does nothing is indistinguishable from one that worked.
-      if (mounted) setState(() => _message = 'It could not be saved: $error');
+      if (mounted) setState(() => _say('It could not be saved: $error', bad: true));
     }
   }
 
@@ -153,7 +161,7 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
             'for it to place one.');
       }
     } on StateError catch (e) {
-      if (mounted) setState(() => _message = e.message);
+      if (mounted) setState(() => _say(e.message, bad: true));
     }
   }
 
@@ -172,9 +180,9 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       await workspace.import(PipelineShareCode.decode(_pasted.text));
       onClose();
     } on FormatException catch (error) {
-      if (mounted) setState(() => _message = error.message);
+      if (mounted) setState(() => _say(error.message, bad: true));
     } on Object {
-      if (mounted) setState(() => _message = 'That build could not be read.');
+      if (mounted) setState(() => _say('That build could not be read.', bad: true));
     }
   }
 
@@ -185,10 +193,10 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
       await workspace.import(PipelineShareCode.decode(text));
       onClose();
     } on FormatException catch (error) {
-      if (mounted) setState(() => _message = error.message);
+      if (mounted) setState(() => _say(error.message, bad: true));
     } on Object {
       if (mounted) {
-        setState(() => _message = 'That build could not be read.');
+        setState(() => _say('That build could not be read.', bad: true));
       }
     }
   }
@@ -447,17 +455,26 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
               ],
             ),
           ),
-          _recipes(),
+          // Under the buttons and the box it is about. It used to sit below
+          // the recipes section, which is a different subject entirely: a
+          // sentence about what just failed, printed under a fold about
+          // something else.
           if (_message != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(
                   OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
               child: Text(
                 _message!,
-                style: OniType.body
-                    .copyWith(fontSize: 11.5, color: OniColors.textMuted),
+                style: OniType.body.copyWith(
+                  fontSize: 11.5,
+                  // A failure in the colour the app uses for failures. Said
+                  // in grey it read like a note, which is how somebody looks
+                  // straight past it.
+                  color: _messageIsBad ? OniColors.danger : OniColors.textMuted,
+                ),
               ),
             ),
+          _recipes(),
           Flexible(
             child: ListView(
               shrinkWrap: true,
