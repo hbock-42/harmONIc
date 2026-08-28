@@ -266,6 +266,14 @@ covers whatever is left. Pinning one end and leaving the wires alone gives you
 twice the trees, because the generator's 750 g/s is read as half of what they
 drink.
 
+A node says what it is quietly doing. **VENT** means a port on it is set to
+throw something away, which is a decision you made and nothing else on the
+canvas shows. **NEEDS** means something it eats arrives from outside the build,
+and **SPARE** means something it makes leaves without a wire. Neither is wrong —
+a build being drawn is full of both — but a port you thought was connected and
+is not is exactly what makes a build fail to balance. Heat is left out: heat
+leaving a building is where heat goes.
+
 The number on a wire is its flow. Click it to switch every rate in the app
 between per second and per cycle. Select a wire and it says what carries it —
 how many pipes or wires, since a ratio that balances on paper is unbuildable at

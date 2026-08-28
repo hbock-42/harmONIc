@@ -8,6 +8,14 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Nodes say what they are quietly doing
+
+Asked for after a build turned out to be unbalanced by a port nobody could see:
+**VENT** where a port is set to throw something away, **NEEDS** where something
+a node eats comes from outside the build, and **SPARE** where something it
+makes leaves without a wire. Not on supplies and outputs, where all of that is
+the point of them, and not for heat, which is where heat goes.
+
 ## 28 August 2026 — Wrong? actually opens something
 
 The button on every figure had never been connected to anything, so it was

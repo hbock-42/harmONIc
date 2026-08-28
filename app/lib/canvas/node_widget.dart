@@ -115,6 +115,25 @@ class NodeWidget extends StatelessWidget {
                   ],
                 ),
               ),
+              // Scaled down rather than spilling: a node with three things to
+              // say is narrower than the three things, and a header that
+              // overflows is a header that has lost one of them.
+              if (_marks() case final marks when marks.isNotEmpty)
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final (label, colour) in marks) ...[
+                          _Mark(label, colour),
+                          const SizedBox(width: 3),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
               if (pin != null)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
@@ -220,6 +239,42 @@ class NodeWidget extends StatelessWidget {
           ? [dot, const SizedBox(width: 3), Flexible(child: label)]
           : [Flexible(child: label), const SizedBox(width: 3), dot],
     );
+  }
+
+  /// What this node is quietly doing that nothing else on the canvas says.
+  ///
+  /// Asked for: "would it be possible to mark any blocks that have venting
+  /// toggled on, spare, or needs-supply details shown when you click into
+  /// them? Realising that was causing imbalance allowed me to diagnose and
+  /// correct these pipelines." All three are decisions or loose ends visible
+  /// only to somebody who opened the node and read down it.
+  List<(String, Color)> _marks() {
+    final marks = <(String, Color)>[];
+    if (node.ventedPorts.isNotEmpty) {
+      // Amber, because this one is a choice with consequences: something is
+      // being thrown away on purpose and the balance sheet knows it.
+      marks.add(('VENT', OniColors.warning));
+    }
+    // Not on a supply or an output node: drawing from outside the build is the
+    // whole of what those are for, and a mark that is true of every one of
+    // them says nothing about any of them.
+    if (_isBoundary) return marks;
+
+    var spare = false;
+    var needs = false;
+    for (final balance in controller.solution.portBalances) {
+      if (balance.ref.nodeId != node.id) continue;
+      // Already said, and better: venting is a choice and this is a leftover.
+      if (node.ventsPort(balance.ref.portId)) continue;
+      // Heat leaving a building is where heat goes. Almost nothing wires it
+      // up, so marking it would put SPARE on nearly every node in the app.
+      if (balance.itemId == WellKnownItems.heat) continue;
+      if (balance.isSurplus) spare = true;
+      if (balance.isExternalInput) needs = true;
+    }
+    if (spare) marks.add(('SPARE', OniColors.textMuted));
+    if (needs) marks.add(('NEEDS', OniColors.textMuted));
+    return marks;
   }
 
   PortBalance? _balanceFor(PortRef ref) {
@@ -356,4 +411,25 @@ class _PortDotState extends State<_PortDot> {
       ),
     );
   }
+}
+
+/// One thing a node is doing that its figures do not say.
+class _Mark extends StatelessWidget {
+  const _Mark(this.label, this.colour);
+
+  final String label;
+  final Color colour;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        decoration: BoxDecoration(
+          color: colour.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Text(
+          label,
+          style: OniType.numberSmall.copyWith(color: colour, fontSize: 9),
+        ),
+      );
 }
