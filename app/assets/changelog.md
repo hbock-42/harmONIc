@@ -8,12 +8,96 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A node drawn harder than it makes says OVER
+
+Reported: a refinery making 408 g/s of petroleum with 2 800 g/s drawn off
+it showed nothing at all, while the node it fed lost its NEEDS mark and
+looked settled.
+
+The marks looked for a *leftover* — something spare, something wanted from
+outside — and being over-drawn is the opposite of one. It is marked now,
+in red, and first: it is the only one of the four that means something is
+wrong rather than merely open. Supplies get it too, which the others do
+not: "you said you have a kilogram a second and this build wants four and
+a half" is worth saying, where "this supply comes from outside the build"
+is not.
+
+## 28 August 2026 — Wires go round the cards, and their figures stay on screen
+
+Reported with a picture: an Electrolyzer above a Hydrogen Generator, power
+going back up and hydrogen coming down, and both wires drawn straight
+through the middle of both cards. A wire under a card is not merely untidy
+— you cannot tell which of the two things it vanished between it came out
+of.
+
+A wire that would cross a card now goes round it, by the shortest way, and
+keeps a little clear of the edge. Wires with nothing in the way are
+untouched, which is most of them. That includes the two cards a wire is
+plugged into: a wire between a generator and the thing it powers leaves
+the right-hand edge of one and has to reach the left-hand edge of the
+other, so it travels backwards across the width of both — the most obvious
+crossing on the canvas, and the one originally left out.
+
+The figures on the wires were disappearing for the same reason. Wires are
+drawn under the cards, and each wire's figure was drawn with it, so a
+number that happened to land on a card was not merely hard to read: it was
+not on the screen at all, and nothing said one had gone. Eight of
+forty-nine on one build sent in, five of fifty-two on another. Each figure
+now slides along its own wire until it is in clear air — along the wire
+rather than off to one side, because a number floating beside a line
+belongs to no line in particular.
+
+While you drag a card, the wires attached to *that card* go back to plain
+curves and find their way round again when you let go. Every other wire
+stays exactly where it is.
+
+## 28 August 2026 — Cards no longer end up on top of each other
+
+A card underneath another one is invisible: you cannot click it, cannot
+read its figures, and the wires into it appear to stop in mid-air — which
+looks like a wire bug and is not one. There was nothing anywhere to say it
+had happened, and four separate things could cause it.
+
+The banner now names a buried card, names what is sitting on top of it,
+and offers to move it clear. It is offered rather than done: two cards on
+top of each other is sometimes deliberate, and an app that quietly
+rearranged your canvas would be worse than one that mentions it. Only when
+most of a card has gone, including its name — cards clipping by a few
+pixels is untidy rather than wrong.
+
+The three ways they got there are fixed as well. **Tidy** could leave two
+cards in the same place: two pairs on one build sent in, four on another.
+**Clicking** a card onto the canvas put it exactly where you pointed, on
+top of whatever was there; it now lands below. **Pasting** arrived a fixed
+short step down and right, so pasting a build into itself left every card
+mostly buried, a second build almost exactly on the first; a copy now
+comes down far enough to clear what is there, moving as one piece so the
+arrangement it copied survives.
+
+Tidying costs a little droop for this — about a tenth more across the test
+corpus. Some of the flatness it had was bought by letting two cards share
+a spot, which makes the wire between them perfectly straight and the build
+unreadable.
+
+## 28 August 2026 — Big builds are quicker to work in
+
+Moving a card re-ran the whole solve on every frame of the drag, to arrive
+back at exactly the figures already on screen — nothing in the solver has
+ever read where a card sits. On builds people have sent in that was 0.7 ms
+a frame at 14 nodes, 5.4 at 38 and 8.7 at 41, out of the 16.7 ms a frame
+has. It is now about a microsecond, and flat: how big the build is no
+longer changes what a drag costs, which is the right way round, since big
+builds are the ones worth rearranging.
+
+The numbers were never wrong. They were being worked out again sixty times
+a second for no reason.
+
 ## 28 August 2026 — A build that feeds only itself no longer crashes
 
 A loop whose parts are fed by nothing but each other comes out below zero,
-and the app has always said so. It named what was drawing too hard — and
-in this case there is nothing to name, because everything feeding the loop
-is in the loop. The empty list took the solver down.
+and the app has always said so — by naming what was drawing too hard from
+them. Here there is nothing to name, because everything feeding the loop
+is in the loop, and the empty list took the solver down.
 
 It now says what is actually the matter: a loop with nothing coming into
 it from outside, so there is nothing to start it off, and something in it
@@ -21,132 +105,6 @@ wants feeding from elsewhere or an amount of its own.
 
 Found by pointing four hundred generated builds at it rather than by
 anybody running into it — sixteen of them crashed.
-
-## 28 August 2026 — Flow figures no longer disappear behind cards
-
-Wires are drawn under the cards — that is what lets one pass behind a card
-without cutting a hole through it — and the figure on a wire was drawn with
-it. So a figure that happened to land on a card was not merely hard to
-read. It was not on the screen at all, and nothing said one had gone.
-
-Eight of forty-nine on one build sent in, five of fifty-two on another.
-
-Each figure now slides along its own wire until it is in clear air. Along
-the wire rather than off to one side, because a number floating beside a
-line belongs to no line in particular, and saying which line is the whole
-job. A figure with nothing in its way does not move: the middle of a wire
-is where the eye looks for it.
-
-Where no spot on a wire is clear of both the cards and the other figures,
-clearing the cards wins — crowded and readable beats tidy and invisible.
-
-## 28 August 2026 — Nothing is placed on top of anything any more
-
-Once the app could spot a buried card it was worth asking how they got
-buried, and two of the four ways a card gets a position never checked.
-
-Clicking a card onto the canvas put it exactly where you pointed, even if
-that was on top of something. It now lands below whatever is there.
-Dropped into clear space it still goes precisely where you put it.
-
-Pasting was worse. A copy arrived a fixed short step down and to the
-right, which is right on an empty canvas and wrong on top of the build it
-came from — pasting one into itself left every card between 55 and 64 per
-cent buried, a second build almost exactly on the first with both sets of
-wires crossing each other. A pasted build now comes down far enough to
-clear what is already there, moving as one piece so the arrangement it
-copied survives.
-
-## 28 August 2026 — Tidy no longer leaves cards on top of each other
-
-Reported, and easy to confirm once there was something to confirm it with:
-tidying a build could put two cards in the same place. Two pairs on one
-build sent in, four on another — every one of them within a column.
-
-Arranging a column moves the busiest cards first and lets the rest take
-what room is left, and a card that found no room stayed exactly where it
-was, which by then could be underneath something. They are now pushed
-apart, moving each one as little as possible rather than simply shoving
-everything downwards.
-
-It costs a little droop — about a tenth more across the test corpus. Some
-of the flatness it had was bought by letting two cards share a spot, which
-makes the wire between them perfectly straight and the build unreadable.
-
-## 28 August 2026 — A card hidden under another card says so
-
-Found while measuring the new wire routing rather than from a report: a
-build sent in had its Plastic output card lying entirely inside the Glo
-Squid card. Nothing said so. You cannot click it, cannot read its figures,
-and the wires into it appear to stop in mid-air — which is the sort of
-thing that gets reported as a wire bug, because from the outside that is
-exactly what it looks like.
-
-The banner now names it, names what is sitting on top of it, and offers to
-move it clear — down past everything else in the way, not merely past the
-one card named. It is offered rather than done: two cards on top of each
-other is sometimes deliberate, and an app that quietly rearranged your
-canvas would be worse than one that mentions it.
-
-Only when most of a card has gone, including its name. Cards clipping each
-other by a few pixels is untidy rather than wrong, and a warning that fires
-on every crowded build is one nobody reads.
-
-## 28 August 2026 — Wires go round the cards instead of under them
-
-Reported with a picture: an Electrolyzer above a Hydrogen Generator,
-power going back up and hydrogen coming down, and both wires drawn
-straight through the middle of both cards. A wire under a card is not
-merely untidy — you cannot tell which of the two things it vanished
-between it actually came out of.
-
-A wire that would cross a card it does not belong to now goes round it,
-by the shortest way round, and keeps a little clear of the edge. Wires
-with nothing in the way are untouched, which is most of them. Long wires
-across a whole screen of cards are included — those were the ones still
-being drawn through things, because a wire that passes near forty cards
-is in the way of about two of them, and only those two count.
-
-This includes the two cards a wire is plugged into. A wire between a
-generator and the thing it powers leaves the right-hand edge of one and
-has to reach the left-hand edge of the other, so it travels backwards
-across the full width of both — the case where going straight through is
-most obvious, and the one that was left out.
-
-While you drag a card, the wires attached to *that card* go back to plain
-curves and find their way round again when you let go. Every other wire
-stays where it is: working out the way round is far too much to redo
-sixty times a second, and a route drawn for where a card was would leave
-the wire hanging in space away from its port.
-
-## 28 August 2026 — Dragging a card no longer re-does the arithmetic
-
-Moving a node re-ran the whole solve, on every frame of the drag — to
-arrive back at exactly the figures already on screen, because nothing in
-the solver has ever read where a card sits.
-
-Measured per frame of a drag, on builds people have sent in: a 14-node
-build went from 0.7 ms to about a microsecond, a 38-node build from
-5.4 ms, and a 41-node build from 8.7 ms. A frame is 16.7 ms, so the
-largest of those was giving up half of every frame. The cost is also flat
-now — how big the build is no longer changes what a drag costs, which is
-the right way round, since big builds are the ones worth rearranging.
-
-Nothing else changes. The numbers were never wrong; they were being worked
-out again sixty times a second for no reason.
-
-## 28 August 2026 — A node drawn harder than it makes says OVER
-
-Reported: a refinery making 408 g/s of petroleum with 2 800 g/s drawn off it
-showed nothing at all, while the node it fed lost its NEEDS mark and looked
-settled.
-
-The marks looked for a *leftover* — something spare, something wanted from
-outside — and being over-drawn is the opposite of one. It is marked now, in
-red, and first: it is the only one of the four that means something is wrong
-rather than merely open. Supplies get it too, which the others do not: "you
-said you have a kilogram a second and this build wants four and a half" is
-worth saying, where "this supply comes from outside the build" is not.
 
 ## 28 August 2026 — Undo takes the note with it, and the note is English
 
