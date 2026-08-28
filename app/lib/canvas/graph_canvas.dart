@@ -526,6 +526,17 @@ class GraphCanvasState extends State<GraphCanvas>
   EdgeLabels _labelled = EdgeLabels.none;
 
   EdgeLabels get labels {
+    // Not while a card is moving. The pipeline is a new object on every frame
+    // of a drag, so keying on it means working every figure's position out
+    // sixty times a second -- 1.1 ms a frame at forty nodes, 12 at four
+    // hundred, on the very path that was made cheap by not re-solving.
+    //
+    // Keeping the last answer is not a compromise here the way a stale route
+    // would be. What is stored is a *fraction* along each wire, and the
+    // painter applies it to whatever path that wire has now, so a figure on a
+    // moving wire stays on its wire. What it says cannot go stale either: the
+    // text comes from the solution, and moving a card does not re-solve.
+    if (controller.isDraggingNodes) return _labelled;
     final key = (
       controller.pipeline,
       controller.solution,
