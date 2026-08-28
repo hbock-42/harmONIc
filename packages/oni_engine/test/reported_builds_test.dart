@@ -139,4 +139,116 @@ void main() {
     // The wires are named as places to go, not only the node.
     expect(bucket.first.places.where((p) => p.edgeId != null), isNotEmpty);
   });
+
+  group('a class port is a compatibility rule, not a choice', () {
+    /// Reported: "Ethanol Distiller isn't tolerating combining Gum Wood with
+    /// Arbor Tree and Oakshell Molt for the Lumber input line, even when set
+    /// to Any." Any was exactly right; what settled the port was the first
+    /// wire into it.
+    Pipeline woodyard() => (PipelineBuilder(db, name: 'woodyard')
+          ..add('arbor_tree', nodeId: 'tree')
+          ..add('gum_palm', nodeId: 'palm')
+          ..add('ethanol_distiller', nodeId: 'still'))
+        .build();
+
+    test('so any wood joins any other wood', () {
+      final spec = db.processOrThrow('ethanol_distiller');
+      final wood = spec.portById('wood')!;
+      final withLumber = woodyard().copyWith(edges: [
+        const PipelineEdge(
+          id: 'lumber_line',
+          fromNodeId: 'tree',
+          fromPortId: 'lumber',
+          toNodeId: 'still',
+          toPortId: 'wood',
+        ),
+      ]);
+      final still = withLumber.nodeOrThrow('still');
+
+      expect(
+          portAcceptsThrough(db, withLumber, still, spec, wood, 'gum_wood'),
+          isTrue,
+          reason: 'it burns any wood and makes the same ethanol either way');
+      // And still refuses what is not wood at all.
+      expect(portAcceptsThrough(db, withLumber, still, spec, wood, 'coal'),
+          isFalse);
+    });
+
+    test('and a recipe whose output *is* its input still decides', () {
+      // The four that tie an output to an input -- Metal Refinery, the metal
+      // Rock Crusher and the two Smooth Hatches -- are the reason this rule
+      // exists. Iron ore in, iron out, and copper ore may not join it.
+      final spec = db.processOrThrow('metal_refinery');
+      final ore = spec.portById('metal_ore')!;
+      final base = (PipelineBuilder(db, name: 'refinery')
+            ..add('metal_refinery', nodeId: 'refinery')
+            ..addSource('iron_ore'))
+          .build();
+      final wired = base.copyWith(edges: [
+        const PipelineEdge(
+          id: 'ore_line',
+          fromNodeId: 'src_iron_ore',
+          fromPortId: 'out',
+          toNodeId: 'refinery',
+          toPortId: 'metal_ore',
+        ),
+      ]);
+      final node = wired.nodeOrThrow('refinery');
+
+      expect(portAcceptsThrough(db, wired, node, spec, ore, 'iron_ore'), isTrue);
+      expect(portAcceptsThrough(db, wired, node, spec, ore, 'copper_ore'),
+          isFalse,
+          reason: 'a refinery fed iron ore has decided what it is making');
+    });
+  });
+
+  test('a port promised twice over says so, and offers the way out', () {
+    // Reported: "linking Cuddle Pip's dirt back to Arbor Tree zeroes a bunch
+    // of stuff". A consumer-driven line with no share of its own brings the
+    // port's *whole* demand, so the Compost already pushing dirt into the same
+    // port had nowhere to put it -- and the only arithmetic that fits is
+    // everything at zero.
+    final base = (PipelineBuilder(db, name: 'promised twice')
+          ..add('arbor_tree', nodeId: 'tree')
+          ..add('compost', nodeId: 'heap')
+          ..add('cuddle_pip', nodeId: 'pip')
+          ..addSource('polluted_dirt'))
+        .build();
+    final pipeline = base.copyWith(edges: [
+      const PipelineEdge(
+        id: 'pushed',
+        fromNodeId: 'heap',
+        fromPortId: 'dirt',
+        toNodeId: 'tree',
+        toPortId: 'dirt',
+        mode: EdgeMode.push,
+      ),
+      const PipelineEdge(
+        id: 'pulled',
+        fromNodeId: 'pip',
+        fromPortId: 'dirt',
+        toNodeId: 'tree',
+        toPortId: 'dirt',
+      ),
+    ]);
+
+    final issue = validatePipeline(pipeline, db).firstWhere(
+        (i) => i.message.contains('promised twice over'),
+        orElse: () => throw StateError('nothing said'));
+    expect(issue.severity, IssueSeverity.warning,
+        reason: 'it is a mistake worth naming, not a build worth refusing');
+    expect(issue.fix?.producerDrivenEdgeIds, ['pulled']);
+    expect(issue.places.map((p) => p.edgeId), contains('pulled'));
+
+    // And with the consumer-driven line given room, nothing is said.
+    final shared = pipeline.copyWith(edges: [
+      for (final e in pipeline.edges)
+        if (e.id == 'pulled') e.copyWith(share: 0.5) else e,
+    ]);
+    expect(
+      validatePipeline(shared, db)
+          .where((i) => i.message.contains('promised twice over')),
+      isEmpty,
+    );
+  });
 }

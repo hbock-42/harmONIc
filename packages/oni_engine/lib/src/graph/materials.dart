@@ -140,6 +140,19 @@ String? settledItem(
   }
   if (port.isOutput || depth <= 0) return null;
 
+  // A class port is a compatibility rule, not a choice, unless something on
+  // this recipe depends on the answer. A Metal Refinery fed iron ore has
+  // decided, because its refined metal *is* the ore it was given. An Ethanol
+  // Distiller fed lumber has decided nothing: it burns any wood and makes the
+  // same ethanol either way, so gum wood alongside the lumber is a mixture the
+  // building is perfectly happy with.
+  //
+  // Reported as "isn't tolerating combining gum wood with arbor tree and
+  // oakshell molt for the lumber input, even when set to Any" -- and Any was
+  // exactly right. What settled the port was the first wire into it.
+
+  if (!spec.ports.any((other) => other.followsPortId == port.id)) return null;
+
   final arriving = <String>{};
   for (final edge in pipeline.edgesInto(PortRef(node.id, port.id))) {
     final from = pipeline.node(edge.fromNodeId);

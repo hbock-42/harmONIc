@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Two more from the same build
+
+- **Any wood is any wood.** An Ethanol Distiller fed Lumber would not also
+  take Gum Wood, even with the material left on *Any*. A class port was being
+  settled by the first wire into it — right for a Metal Refinery, whose
+  refined metal *is* the ore it was given, and wrong for everything else. Only
+  the four recipes whose output follows their input decide now.
+- **"Promised twice over"**, a warning with a button that settles it. A
+  consumer-driven line with no share of its own brings a port's *whole*
+  demand, so anything pushed into the same port on top of it has nowhere to
+  go — and the amounts there go to zero. That is what linking a Cuddle Pip's
+  dirt back to an Arbor Tree already fed by a Compost was doing.
+
 ## 27 August 2026 — Output nodes, and what an even split really splits
 
 - **A second wire into an output node joins the first**, producer-driven, and

@@ -338,6 +338,64 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
     }
   }
 
+  // The same mistake seen from the other end: a consumer-driven line into a
+  // port that a producer-driven one also feeds.
+  //
+  // A consumer-driven line with no share of its own brings the port's *whole*
+  // demand, so anything pushed into the same port on top of it has nowhere to
+  // go. Reported as "linking Cuddle Pip's dirt back to Arbor Tree zeroes a
+  // bunch of stuff": the Compost was already pushing dirt into that port, and
+  // the new line said "I will bring all of it".
+  for (final node in pipeline.nodes) {
+    final spec = db.process(node.specId);
+    if (spec == null) continue;
+    for (final port in spec.ports) {
+      if (!port.isInput) continue;
+      final ref = PortRef(node.id, port.id);
+      final incoming = pipeline.edgesInto(ref);
+      final pushed = incoming.where((e) => e.mode == EdgeMode.push).toList();
+      final pulled = incoming.where((e) => e.mode == EdgeMode.pull).toList();
+      if (pushed.isEmpty || pulled.isEmpty) continue;
+
+      final named = [
+        for (final edge in pulled)
+          if (edge.share case final double share) share,
+      ];
+      final claimed = named.fold<double>(0, (sum, share) => sum + share);
+      // Room left over is somebody having said so. Only the silent case
+      // promises everything.
+      if (named.length == pulled.length && claimed < 1 - _shareSlack) continue;
+
+      issues.add(PipelineIssue(
+        IssueSeverity.warning,
+        '${_describe(pipeline, db, ref)} is promised twice over: its '
+        '${pulled.length == 1 ? 'consumer-driven line brings' : '${pulled.length} consumer-driven lines bring'} '
+        'the whole of what this needs, so the '
+        '${pushed.length == 1 ? 'line pushing into it has' : '${pushed.length} lines pushing into it have'} '
+        'nowhere to go — which is what sends the amounts here to zero. Make '
+        '${pulled.length == 1 ? 'that line' : 'those lines'} producer-driven '
+        'too, so each simply hands over what it makes, or give '
+        '${pulled.length == 1 ? 'it a share' : 'them shares'} that leaves room.',
+        nodeId: node.id,
+        targets: [
+          IssueTarget(_describe(pipeline, db, ref),
+              nodeId: node.id, portId: port.id),
+          for (final edge in pulled)
+            IssueTarget(
+              'the line from ${_nodeName(pipeline, db, edge.fromNodeId)}',
+              edgeId: edge.id,
+            ),
+        ],
+        fix: IssueFix(
+          pulled.length == 1
+              ? 'Set it to the producer'
+              : 'Set all ${pulled.length} to the producer',
+          producerDrivenEdgeIds: [for (final e in pulled) e.id],
+        ),
+      ));
+    }
+  }
+
   claims.forEach((ref, total) {
     if (total > 1 + _shareSlack) {
       issues.add(PipelineIssue(
