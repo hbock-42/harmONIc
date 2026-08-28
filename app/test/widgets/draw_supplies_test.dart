@@ -32,15 +32,18 @@ void main() {
 
     // Water in, oxygen and hydrogen out. Power is not counted: it arrives by
     // wire and the totals already say so.
-    expect(find.text('Draw 3 supplies'), findsOneWidget);
+    // It has always drawn outputs as well as supplies and only ever said
+    // "supplies", which is why somebody asked for a button that was already
+    // there. It says which now.
+    expect(find.text('Draw 1 supply and 2 outputs'), findsOneWidget);
   });
 
   testWidgets('pressing it closes the build off', (tester) async {
     final controller = await pumpEditor(tester, lonely());
 
-    await tester.ensureVisible(find.text('Draw 3 supplies'));
+    await tester.ensureVisible(find.text('Draw 1 supply and 2 outputs'));
     await tester.pump();
-    await tester.tap(find.text('Draw 3 supplies'));
+    await tester.tap(find.text('Draw 1 supply and 2 outputs'));
     await tester.pumpAndSettle();
 
     expect(controller.openPorts, isEmpty);
@@ -53,9 +56,9 @@ void main() {
   testWidgets('it is one undo, not one per node', (tester) async {
     final controller = await pumpEditor(tester, lonely());
 
-    await tester.ensureVisible(find.text('Draw 3 supplies'));
+    await tester.ensureVisible(find.text('Draw 1 supply and 2 outputs'));
     await tester.pump();
-    await tester.tap(find.text('Draw 3 supplies'));
+    await tester.tap(find.text('Draw 1 supply and 2 outputs'));
     await tester.pumpAndSettle();
     expect(controller.pipeline.nodes, hasLength(4));
 
@@ -89,8 +92,11 @@ void main() {
     // Worth pinning: the build this app ships with is not closed either. Its
     // crew has to eat and its carbon dioxide has to go somewhere, and neither
     // was drawn — which is exactly the sort of thing this button is for.
-    await pumpEditor(tester, testPipeline());
-    expect(find.text('Draw 2 supplies'), findsOneWidget);
+    final controller = await pumpEditor(tester, testPipeline());
+    // Its crew has to eat (a supply) and its carbon dioxide has to go
+    // somewhere (an output), which is the mix the label now admits to.
+    expect(controller.openPortCounts, (1, 1));
+    expect(find.text('Draw 1 supply and 1 output'), findsOneWidget);
   });
 
   testWidgets('a vented port is a decision, not an omission', (tester) async {
@@ -99,7 +105,10 @@ void main() {
     await tester.pump();
 
     // Venting says "this goes nowhere on purpose", so it is not something
-    // waiting to be drawn.
-    expect(find.text('Draw 2 supplies'), findsOneWidget);
+    // waiting to be drawn -- the oxygen output it had is gone from the count
+    // and only the two supplies are left.
+    expect(controller.openPortCounts, (1, 1),
+        reason: 'the hydrogen output it had is gone from the count');
+    expect(find.text('Draw 1 supply and 1 output'), findsOneWidget);
   });
 }

@@ -291,4 +291,62 @@ void main() {
           reason: entry.key);
     }
   });
+
+  group('when no single port explains it', () {
+    /// A generator whose power is drawn by one pinned crusher and nothing
+    /// else: the port has to hand over exactly what it makes, and at these
+    /// sizes it cannot. Venting the power is the one fix.
+    PipelineBuilder loop(String suffix) => PipelineBuilder(db, name: 'loop')
+      ..add('natural_gas_generator', nodeId: 'gen$suffix')
+      ..add('rock_crusher_sand', nodeId: 'crusher$suffix')
+      ..connect('gen$suffix', 'power_out', 'crusher$suffix', 'power_in')
+      ..pinCount('gen$suffix', 2)
+      ..pinCount('crusher$suffix', 1);
+
+    test('one of them is named on its own', () {
+      final solution = PipelineSolver(db).solve(loop('').build());
+      expect(solution.status, SolveStatus.inconsistent);
+      expect(solution.issues.map((i) => i.message).join(),
+          contains('Nothing here can take all the'));
+    });
+
+    test('and two of them are named together', () {
+      // Reported on a build where venting any single port still left it
+      // unsolvable, and the reader got the whole list to guess from. Two
+      // independent loops need two vents, and neither alone is the answer.
+      final a = loop('_a').build();
+      final b = loop('_b').build();
+      final both = a.copyWith(
+        nodes: [...a.nodes, ...b.nodes],
+        edges: [...a.edges, ...b.edges],
+        pins: [...a.pins, ...b.pins],
+      );
+
+      final said = PipelineSolver(db)
+          .solve(both)
+          .issues
+          .map((i) => i.message)
+          .join(' ');
+      expect(said, contains('No single port explains this one: it takes two'));
+      expect(said, contains('Natural Gas Generator’s power'));
+    });
+
+    test('and past that it says so rather than handing over a list', () {
+      // Five loops is more than a pair, and the useful thing to know is that
+      // hunting for the one port at fault is a waste of an afternoon.
+      var all = loop('_0').build();
+      for (var i = 1; i < 5; i++) {
+        final next = loop('_$i').build();
+        all = all.copyWith(
+          nodes: [...all.nodes, ...next.nodes],
+          edges: [...all.edges, ...next.edges],
+          pins: [...all.pins, ...next.pins],
+        );
+      }
+
+      final said =
+          PipelineSolver(db).solve(all).issues.map((i) => i.message).join(' ');
+      expect(said, contains('No one of these is the problem on its own'));
+    });
+  });
 }

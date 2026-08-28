@@ -640,6 +640,42 @@ class PipelineSolver {
       }
     }
 
+    // Nothing single-handedly explains it. That happens when more than one
+    // port is over-committed at once -- reported on a build where venting any
+    // one of twenty-six still left it unsolvable, and the reader was handed
+    // the whole list and left to guess which mattered.
+    //
+    // Pairs, where the build is small enough that trying them is not a wait.
+    // A solve costs about a millisecond, so C(20,2) is the most that can go
+    // between a keystroke and the answer without being felt.
+    if (guilty.isEmpty && candidates.length <= _pairCeiling) {
+      for (var i = 0; i < candidates.length; i++) {
+        for (var j = i + 1; j < candidates.length; j++) {
+          final relaxed =
+              _solveWithout(pipeline, candidates[i], and: candidates[j]);
+          if (relaxed.status == SolveStatus.inconsistent) continue;
+          if (relaxed.nodes.values.every((n) => n.count.abs() < 1e-9)) continue;
+          return [
+            PipelineIssue(
+              IssueSeverity.info,
+              'No single port explains this one: it takes two. '
+              '${_portDescription(pipeline, candidates[i])} and '
+              '${_portDescription(pipeline, candidates[j])} both have to hand '
+              'over exactly what they make, and between them they cannot. '
+              'Give either one somewhere to put its surplus — an output node '
+              'or venting — and the rest of the build comes right.',
+              nodeId: candidates[i].nodeId,
+              targets: [
+                for (final ref in [candidates[i], candidates[j]])
+                  IssueTarget(_portDescription(pipeline, ref),
+                      nodeId: ref.nodeId, portId: ref.portId),
+              ],
+            ),
+          ];
+        }
+      }
+    }
+
     if (guilty.length == 1) {
       final ref = guilty.single;
       return [
@@ -675,9 +711,18 @@ class PipelineSolver {
         ? '${_sentenceList(descriptions.take(shown).toList())} '
             'and ${descriptions.length - shown} others'
         : _sentenceList(descriptions);
+    // Said out loud when the search came back empty: the reader has been
+    // hunting for the one port at fault and there isn't one. Knowing that is
+    // worth more than the list, which is why it comes first.
+    final noSingleCulprit = guilty.isEmpty
+        ? 'No one of these is the problem on its own — venting any single one '
+            'still leaves the build unsolvable, so more than one of them is '
+            'over-committed. '
+        : '';
     return [
       PipelineIssue(
         IssueSeverity.info,
+        '$noSingleCulprit'
         'Each of these has to hand over exactly what it makes, because '
         'everything drawing from it pulls: $tail. '
         'Whichever of them has the surplus, either mark that port as venting '
@@ -745,6 +790,10 @@ class PipelineSolver {
   /// dead end and a wrong answer here costs somebody an afternoon.
   static const int _hintBudget = 20000;
 
+  /// How many ports it is worth trying in pairs. Every pair is a whole solve,
+  /// and this runs between a keystroke and the answer.
+  static const int _pairCeiling = 20;
+
   /// What to say when the loose end is on the end of a line carrying the rest.
   ///
   /// "The rest" is the one thing that unsizes a producer: a generator was
@@ -803,11 +852,16 @@ class PipelineSolver {
   }
 
   /// The build as it would stand if this one port were allowed to overflow.
-  PipelineSolution _solveWithout(Pipeline pipeline, PortRef ref) {
+  PipelineSolution _solveWithout(Pipeline pipeline, PortRef ref,
+      {PortRef? and}) {
+    final relaxing = <String, Set<String>>{};
+    for (final each in [ref, if (and != null) and]) {
+      relaxing.putIfAbsent(each.nodeId, () => {}).add(each.portId);
+    }
     final relaxed = pipeline.copyWith(nodes: [
       for (final node in pipeline.nodes)
-        if (node.id == ref.nodeId)
-          node.copyWith(ventedPorts: {...node.ventedPorts, ref.portId})
+        if (relaxing[node.id] case final Set<String> ports)
+          node.copyWith(ventedPorts: {...node.ventedPorts, ...ports})
         else
           node,
     ]);

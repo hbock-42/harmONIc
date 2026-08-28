@@ -1099,6 +1099,27 @@ class PipelineController extends ChangeNotifier {
     return open;
   }
 
+  /// How many of the open ports want a supply, and how many want an output.
+  ///
+  /// The button that draws them said "supplies" whatever it was about to do,
+  /// so somebody asked for an "add missing outputs" button that had been there
+  /// all along under another name.
+  (int, int) get openPortCounts {
+    var supplies = 0;
+    var outputs = 0;
+    for (final ref in openPorts) {
+      final node = _pipeline.node(ref.nodeId);
+      final port = node == null ? null : specFor(node)?.portById(ref.portId);
+      if (port == null) continue;
+      if (port.isInput) {
+        supplies++;
+      } else {
+        outputs++;
+      }
+    }
+    return (supplies, outputs);
+  }
+
   /// Draws a supply or output node for every port nothing feeds or takes from.
   ///
   /// One undo, not one per port: it is a single decision — "close this build

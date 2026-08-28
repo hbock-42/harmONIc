@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Two ports at fault, and a button that admits what it draws
+
+- **"No single port explains this one: it takes two."** When a build cannot
+  balance, the app tries venting each over-committed port to find the one at
+  fault. Where none of them is, it now tries pairs and names the two. Past
+  that it says outright that no single port is the problem — which is worth
+  more than the list, because it stops you hunting for a culprit that is not
+  there.
+- **The button says what it draws.** *Draw 3 supplies* had been drawing output
+  nodes too and never admitting it, which is why somebody asked for an "add
+  missing outputs" button that was already there. It reads *Draw 1 supply and
+  2 outputs* now.
+
 ## 28 August 2026 — Things you can click look like it
 
 Reported: *"there is lots of clickable that doesn't show they are clickable in

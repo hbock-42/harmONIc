@@ -160,6 +160,20 @@ Map<ShortcutActivator, Intent> editorShortcuts({required bool apple}) {
   };
 }
 
+/// What the button that closes a build off is about to do.
+///
+/// A count is the reason to press it and the noun is what it will leave
+/// behind, so both are on the button.
+String _drawLabel((int, int) counts) {
+  final (supplies, outputs) = counts;
+  String some(int n, String one, String many) =>
+      '$n ${n == 1 ? one : many}';
+  if (outputs == 0) return 'Draw ${some(supplies, 'supply', 'supplies')}';
+  if (supplies == 0) return 'Draw ${some(outputs, 'output', 'outputs')}';
+  return 'Draw ${some(supplies, 'supply', 'supplies')} and '
+      '${some(outputs, 'output', 'outputs')}';
+}
+
 /// What each of them is called, in the words the guide uses.
 const Map<String, String> kShortcutNames = <String, String>{
   '⌘Z': 'undo',
@@ -1098,8 +1112,11 @@ class _TopBarState extends State<_TopBar> {
             if (controller.openPorts.isNotEmpty) ...[
               const _ToolbarDivider(),
               OniButton(
-                // Says how many: the number is the reason to press it.
-                label: 'Draw ${controller.openPorts.length} supplies',
+                // Says how many, because the number is the reason to press it,
+                // and says which, because it has always drawn outputs too and
+                // never admitted to it -- which is why somebody asked for an
+                // "add missing outputs" button that was already here.
+                label: _drawLabel(controller.openPortCounts),
                 compact: true,
                 onPressed: controller.closeOpenPorts,
               ),
