@@ -8,6 +8,31 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Whatever is left
+
+A wire can now carry **whatever is left**: what its port makes, less everything
+else leaving that port.
+
+It is the third thing anybody means and the one that could not be said. A
+generator powering three buildings with an output node for the spare was
+neither a consumer with a demand of its own — nothing said how much it wanted —
+nor a fixed share of the generator, which took the lot and starved the three.
+Three reports were this one gap.
+
+- Set it on any wire under **Who decides the amount**.
+- Drop an output node on a port that already feeds something and it is chosen
+  for you, with a line saying so that ⌘Z undoes.
+- It follows: change what the neighbours take and the surplus moves with them.
+  There is no share to work out again.
+- **Get as much as possible** answers inside it and leaves it alone, rather
+  than freezing today's number into a share.
+- Ask for more than a port makes and it says so, rather than running the wire
+  backwards.
+
+It costs one thing, and the app says it: the producer is no longer sized by
+what draws from it, because the surplus absorbs any difference. Give the
+producer an amount, or give the output node one — either settles the other.
+
 ## 28 August 2026 — A loose end is not a loose build
 
 Hanging an output node on a build that solved said *"nothing sets the size of

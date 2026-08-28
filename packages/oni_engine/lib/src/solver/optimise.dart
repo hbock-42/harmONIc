@@ -153,6 +153,12 @@ BestCase _optimise(
         // take, and one that is fed less is a smaller node, not a hungry one:
         // that is what makes the count a variable rather than a wish.
         constraints.add(Constraint.exactly(coefficients, 0));
+      } else if (attached.any((e) => e.mode == EdgeMode.rest)) {
+        // A remainder line takes whatever is left, so there is no slack to
+        // leave: everything off this port is accounted for by construction,
+        // and the optimiser has to answer inside the same rule the solver
+        // will apply when it reads the answer back.
+        constraints.add(Constraint.exactly(coefficients, 0));
       } else if (!node.ventsPort(port.id)) {
         // What leaves is at most what is made. The slack is the surplus the
         // app already reports — and it is the freedom the whole thing needs.
@@ -351,6 +357,14 @@ Pipeline withShares(Pipeline pipeline, GameDatabase database, BestCase best) {
 
   final edges = <PipelineEdge>[];
   for (final edge in pipeline.edges) {
+    // A line that says "the rest" is already an answer, and one that stays
+    // true when anything around it changes. Writing a fraction over it would
+    // freeze today's numbers into a share somebody has to maintain by hand,
+    // which is the thing it exists to avoid.
+    if (edge.mode == EdgeMode.rest) {
+      edges.add(edge);
+      continue;
+    }
     final siblingsOut =
         pipeline.edgesOutOf(PortRef(edge.fromNodeId, edge.fromPortId));
     final siblingsIn =

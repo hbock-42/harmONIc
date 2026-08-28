@@ -425,26 +425,40 @@ class PipelineController extends ChangeNotifier {
 
   void connect(PortRef from, PortRef to) {
     if (!canConnect(from, to)) return;
+
+    // An output node hung on a port that already feeds something is the
+    // surplus, and now there is a way to say so. Before this it could only be
+    // a consumer with no demand of its own -- a loose end -- or a producer's
+    // whole output, which starved everything else on the port. Reported three
+    // times over as different symptoms of the same missing idea.
+    final takingTheRest = _isOutput(to.nodeId) &&
+        _pipeline.edgesOutOf(from).isNotEmpty &&
+        !_pipeline.edgesOutOf(from).any((e) => e.mode == EdgeMode.rest);
+
     final edge = PipelineEdge(
       id: _freshId('edge'),
       fromNodeId: from.nodeId,
       fromPortId: from.portId,
       toNodeId: to.nodeId,
       toPortId: to.portId,
-      // Reported: an output node dropped on a port whose producer-driven lines
-      // already divide all of it killed the build outright, because a
-      // consumer-driven line there has nothing to take. A port that is already
-      // divided divides once more instead -- which is what somebody adding a
-      // fourth line to a three-way split means by it.
-      mode: portIsFullyDivided(_pipeline, from) ? EdgeMode.push : EdgeMode.pull,
+      mode: takingTheRest
+          ? EdgeMode.rest
+          // Reported: an output node dropped on a port whose producer-driven
+          // lines already divide all of it killed the build outright, because
+          // a consumer-driven line there has nothing to take. A port that is
+          // already divided divides once more instead.
+          : portIsFullyDivided(_pipeline, from)
+              ? EdgeMode.push
+              : EdgeMode.pull,
     );
+
     // An output node is a bucket, not a customer: it has no size of its own,
     // so two consumer-driven lines into one read their shares as shares of
     // each other and are held to the same amount for ever after. That is
     // never what a second line into an output means, so the group becomes
     // producer-driven -- and says so, because a change nobody asked for by
     // name should not happen quietly.
-    final joining = _outputAlreadyFed(to.nodeId)
+    final joining = !takingTheRest && _outputAlreadyFed(to.nodeId)
         ? [
             for (final e in _pipeline.edges)
               if (e.toNodeId == to.nodeId &&
@@ -461,13 +475,26 @@ class PipelineController extends ChangeNotifier {
         else
           e,
     ]));
-    if (joining.isNotEmpty) {
+    if (takingTheRest) {
+      final maker = _pipeline.node(from.nodeId);
+      final name = maker?.label ?? specFor(maker!)?.name ?? from.nodeId;
+      _notice = 'That port already feeds something, so this line carries '
+          'whatever is left of it — it will follow the others rather than '
+          'needing a share of its own. The $name is no longer sized by what '
+          'draws from it, so give it an amount if nothing else does. ⌘Z '
+          'undoes it.';
+    } else if (joining.isNotEmpty) {
       _notice = 'An output node has no size of its own, so its lines are set '
           'to the producer: each hands over what it makes. Left as they were, '
           'the ${joining.length + 1} of them would each take a share of what '
           'the others bring and be held to the same amount. ⌘Z undoes it.';
     }
     select(EdgeSelection(edge.id));
+  }
+
+  bool _isOutput(String nodeId) {
+    final node = _pipeline.node(nodeId);
+    return node != null && specFor(node)?.kind == ProcessKind.sink;
   }
 
   /// An output node that something already runs into.
@@ -703,7 +730,13 @@ class PipelineController extends ChangeNotifier {
   void setEdgeMode(String edgeId, EdgeMode mode) => _apply(_pipeline.copyWith(
         edges: [
           for (final e in _pipeline.edges)
-            if (e.id == edgeId) e.copyWith(mode: mode) else e,
+            if (e.id == edgeId)
+              // A line carrying the rest has no share of its own: what it
+              // carries is whatever the others leave. Keeping a stale one
+              // would leave a number on screen that nothing reads.
+              e.copyWith(mode: mode, clearShare: mode == EdgeMode.rest)
+            else
+              e,
         ],
       ));
 

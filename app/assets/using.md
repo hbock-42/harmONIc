@@ -246,6 +246,17 @@ A wire is **pull** by default: the consumer decides, and the producer is sized t
 cover it. **Push** is the other way — this line takes a fixed share of what the
 producer makes, and the rest is somebody else's.
 
+**Whatever is left** is the third, and the one you want for a surplus. A
+generator powering three buildings with an output node for the spare is neither:
+the output node has no demand of its own, and a fixed share of the generator
+would take the lot and starve the three. Set that wire to *whatever is left* and
+it carries the generator's output less everything else on that port — and it
+keeps doing so when the three change, with no share to work out again. It costs
+one thing: the generator is no longer sized by what draws from it, since the
+surplus absorbs any difference, so something else has to say how big it is.
+Give the generator an amount, or give the output node one — either settles the
+other.
+
 **Two wires into one port** need saying out loud. With nothing else to go on
 the app splits that port's demand equally between them, which is rarely what
 anybody means. If you are feeding an Arbor Tree from a Petroleum Generator's

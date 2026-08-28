@@ -89,8 +89,10 @@ class PipelineIssue {
 /// dropping an output node on a divided port cannot make a build the app will
 /// not then solve.
 bool portIsFullyDivided(Pipeline pipeline, PortRef ref) {
-  final pushing =
-      pipeline.edgesOutOf(ref).where((edge) => edge.mode == EdgeMode.push);
+  final out = pipeline.edgesOutOf(ref);
+  // A line saying "the rest" leaves room for everything else by definition.
+  if (out.any((edge) => edge.mode == EdgeMode.rest)) return false;
+  final pushing = out.where((edge) => edge.mode == EdgeMode.push);
   if (pushing.isEmpty) return false;
   final named = [
     for (final edge in pushing)
@@ -294,6 +296,9 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
       final ref = PortRef(node.id, port.id);
       final out = pipeline.edgesOutOf(ref);
       final pushing = out.where((edge) => edge.mode == EdgeMode.push);
+      // A remainder line is not a claim on the port, it is whatever is left of
+      // it -- so a consumer-driven line beside one is never starved.
+      if (out.any((edge) => edge.mode == EdgeMode.rest)) continue;
       if (!portIsFullyDivided(pipeline, ref)) continue;
       // Only the consumer-driven ones are victims. A producer-driven line
       // with no share takes what is left, and where nothing is left it
@@ -353,7 +358,7 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
       if (!port.isInput) continue;
       final ref = PortRef(node.id, port.id);
       final incoming = pipeline.edgesInto(ref);
-      final pushed = incoming.where((e) => e.mode == EdgeMode.push).toList();
+      final pushed = incoming.where((e) => e.mode.isFromSource).toList();
       final pulled = incoming.where((e) => e.mode == EdgeMode.pull).toList();
       if (pushed.isEmpty || pulled.isEmpty) continue;
 

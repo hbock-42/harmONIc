@@ -58,19 +58,36 @@ class PipelineSolver {
     void addFlowTerm(List<double> row, PipelineEdge edge, double sign) {
       final factor = factors[edge.id];
       if (factor == null) return;
-      if (factor.mode == EdgeMode.push) {
-        final source = pipeline.nodeOrThrow(edge.fromNodeId);
-        final port = database
-            .processOrThrow(source.specId)
-            .portByIdOrThrow(edge.fromPortId);
-        row[index[edge.fromNodeId]!] +=
-            sign * factor.fraction * rateOf(source, port);
-      } else {
-        final port = database
-            .processOrThrow(pipeline.nodeOrThrow(edge.toNodeId).specId)
-            .portByIdOrThrow(edge.toPortId);
-        row[index[edge.toNodeId]!] +=
-            sign * factor.fraction * port.ratePerSecond;
+      switch (factor.mode) {
+        case EdgeMode.push:
+          final source = pipeline.nodeOrThrow(edge.fromNodeId);
+          final port = database
+              .processOrThrow(source.specId)
+              .portByIdOrThrow(edge.fromPortId);
+          row[index[edge.fromNodeId]!] +=
+              sign * factor.fraction * rateOf(source, port);
+        case EdgeMode.pull:
+          final port = database
+              .processOrThrow(pipeline.nodeOrThrow(edge.toNodeId).specId)
+              .portByIdOrThrow(edge.toPortId);
+          row[index[edge.toNodeId]!] +=
+              sign * factor.fraction * port.ratePerSecond;
+        case EdgeMode.rest:
+          // What the port makes, less everything else leaving it. Not a
+          // fraction of any one node's count, which is why this is the only
+          // mode that has to look at its neighbours: it is an expression, and
+          // every term of it is linear, so the solver can carry it.
+          final source = pipeline.nodeOrThrow(edge.fromNodeId);
+          final ref = PortRef(edge.fromNodeId, edge.fromPortId);
+          final port = database
+              .processOrThrow(source.specId)
+              .portByIdOrThrow(edge.fromPortId);
+          final ours = sign * factor.fraction;
+          row[index[edge.fromNodeId]!] += ours * rateOf(source, port);
+          for (final other in pipeline.edgesOutOf(ref)) {
+            if (other.mode == EdgeMode.rest) continue;
+            addFlowTerm(row, other, -ours);
+          }
       }
     }
 
@@ -101,10 +118,19 @@ class PipelineSolver {
         final attached =
             port.isInput ? pipeline.edgesInto(ref) : pipeline.edgesOutOf(ref);
         if (attached.isEmpty) continue;
+        // A remainder line is the producer's decision, so a port on the far
+        // end of one has to add up to what arrives, exactly as it does for a
+        // producer-driven line.
         final drivenFromFarEnd = port.isInput
-            ? attached.any((e) => e.mode == EdgeMode.push)
+            ? attached.any((e) => e.mode.isFromSource)
             : attached.any((e) => e.mode == EdgeMode.pull);
         if (!drivenFromFarEnd) continue;
+        // A port with a remainder line on it needs no equation: the remainder
+        // is *defined* as what makes the sum come out, so the row would be
+        // 0 = 0 with extra steps.
+        if (port.isOutput && attached.any((e) => e.mode == EdgeMode.rest)) {
+          continue;
+        }
         // A vented output port makes whatever it makes and the excess goes
         // nowhere in particular, so it constrains nothing.
         if (port.isOutput && node.ventsPort(port.id)) continue;
@@ -168,9 +194,10 @@ class PipelineSolver {
           // and being told the whole thing was unmoored was alarming and
           // untrue.
           switch ((names.length, pipeline.pins.isNotEmpty)) {
-            (1, true) => 'Nothing says how big the ${names.single} is yet. '
-                'Give it an amount — the rest of this build is already '
-                'settled by the amounts you have given.',
+            (1, true) => _restRoute(pipeline, freeNodeIds.single) ??
+                'Nothing says how big the ${names.single} is yet. '
+                    'Give it an amount — the rest of this build is already '
+                    'settled by the amounts you have given.',
             (1, false) =>
               'Nothing sets the size of this build yet, so every amount in it '
                   'could be anything. Give an amount for the ${names.single} '
@@ -278,23 +305,71 @@ class PipelineSolver {
     }
 
     // Edge flows, read off whichever end drives each edge.
-    final edgeFlows = <String, double>{};
-    for (final edge in pipeline.edges) {
+    //
+    // A remainder line has no single driving end -- it is what its port makes
+    // less what everything else takes -- so it is worked out the same way the
+    // equations were, by adding up its neighbours.
+    late final double Function(PipelineEdge) flowOf;
+    flowOf = (edge) {
       final factor = factors[edge.id];
-      if (factor == null) {
-        edgeFlows[edge.id] = 0;
-        continue;
+      if (factor == null) return 0.0;
+      switch (factor.mode) {
+        case EdgeMode.push:
+        case EdgeMode.pull:
+          final driving =
+              factor.mode == EdgeMode.push ? edge.fromNodeId : edge.toNodeId;
+          final portId =
+              factor.mode == EdgeMode.push ? edge.fromPortId : edge.toPortId;
+          final drivingNode = pipeline.nodeOrThrow(driving);
+          final port = database
+              .processOrThrow(drivingNode.specId)
+              .portByIdOrThrow(portId);
+          return factor.fraction *
+              rateOf(drivingNode, port) *
+              counts[index[driving]!];
+        case EdgeMode.rest:
+          final source = pipeline.nodeOrThrow(edge.fromNodeId);
+          final port = database
+              .processOrThrow(source.specId)
+              .portByIdOrThrow(edge.fromPortId);
+          var left = rateOf(source, port) * counts[index[source.id]!];
+          for (final other
+              in pipeline.edgesOutOf(PortRef(edge.fromNodeId, edge.fromPortId))) {
+            if (other.mode == EdgeMode.rest) continue;
+            left -= flowOf(other);
+          }
+          return factor.fraction * left;
       }
-      final driving = factor.mode == EdgeMode.push ? edge.fromNodeId : edge.toNodeId;
-      final portId =
-          factor.mode == EdgeMode.push ? edge.fromPortId : edge.toPortId;
-      final drivingNode = pipeline.nodeOrThrow(driving);
-      final port = database
-          .processOrThrow(drivingNode.specId)
-          .portByIdOrThrow(portId);
-      edgeFlows[edge.id] = _noMinusZero(factor.fraction *
-          rateOf(drivingNode, port) *
-          counts[index[driving]!]);
+    };
+
+    final edgeFlows = <String, double>{
+      for (final edge in pipeline.edges) edge.id: _noMinusZero(flowOf(edge)),
+    };
+
+    // A remainder line that comes out negative.
+    //
+    // "The rest" is only a sensible thing to say while there is a rest. Where
+    // the other lines off a port want more than it makes, the arithmetic
+    // answers by running this one backwards, which is a thing no pipe does.
+    for (final edge in pipeline.edges) {
+      if (edge.mode != EdgeMode.rest) continue;
+      final flow = edgeFlows[edge.id] ?? 0;
+      if (flow >= -1e-6) continue;
+      final ref = PortRef(edge.fromNodeId, edge.fromPortId);
+      resolvedIssues.add(PipelineIssue(
+        IssueSeverity.error,
+        'There is no rest to send: ${_portDescription(pipeline, ref)} is '
+        'already spoken for by the other lines off it, and by more than it '
+        'makes. This line would have to carry '
+        '${(-flow).toStringAsFixed(2)} g/s backwards.',
+        nodeId: edge.fromNodeId,
+        edgeId: edge.id,
+        targets: [
+          IssueTarget(_portDescription(pipeline, ref),
+              nodeId: edge.fromNodeId, portId: edge.fromPortId),
+          IssueTarget('the line carrying the rest', edgeId: edge.id),
+        ],
+      ));
     }
 
     // A valve is a cap, and a cap is an inequality this solver cannot hold —
@@ -669,6 +744,31 @@ class PipelineSolver {
   /// nodes. Generous, because this runs only when the build is already at a
   /// dead end and a wrong answer here costs somebody an afternoon.
   static const int _hintBudget = 20000;
+
+  /// What to say when the loose end is on the end of a line carrying the rest.
+  ///
+  /// "The rest" is the one thing that unsizes a producer: a generator was
+  /// sized by what drew from it, and once the surplus has somewhere to go it
+  /// can be any size at all. Both ends settle the other, and which one somebody
+  /// knows depends on what they are planning from — so both are offered.
+  String? _restRoute(Pipeline pipeline, String freeNodeId) {
+    for (final edge in pipeline.edges) {
+      if (edge.mode != EdgeMode.rest || edge.toNodeId != freeNodeId) continue;
+      final source = pipeline.node(edge.fromNodeId);
+      final maker = source?.label ??
+          database.process(source?.specId ?? '')?.name ??
+          edge.fromNodeId;
+      final taker = pipeline.node(freeNodeId);
+      final name = taker?.label ??
+          database.process(taker?.specId ?? '')?.name ??
+          freeNodeId;
+      return 'A line here carries the rest, which means the $maker is no '
+          'longer sized by what draws from it — it can be any size, and the '
+          'surplus takes up the difference. Give an amount to the $maker, or '
+          'to the $name: either settles the other.';
+    }
+    return null;
+  }
 
   static String _sentenceList(List<String> parts) {
     if (parts.length == 1) return parts.single;

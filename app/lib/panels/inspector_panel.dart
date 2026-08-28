@@ -1365,14 +1365,29 @@ class _EdgeInspector extends StatelessWidget {
                   : OniButtonTone.neutral,
               onPressed: () => controller.setEdgeMode(edge.id, EdgeMode.push),
             ),
+            OniButton(
+              label: 'Whatever is left',
+              compact: true,
+              tone: edge.mode == EdgeMode.rest
+                  ? OniButtonTone.accent
+                  : OniButtonTone.neutral,
+              onPressed: () => controller.setEdgeMode(edge.id, EdgeMode.rest),
+            ),
           ],
         ),
         const SizedBox(height: OniSpacing.sm),
         Text(
-          edge.mode == EdgeMode.pull
-              ? 'This line carries whatever the consumer needs, and the '
-                  'producer is sized to cover it.'
-              : 'This line carries a fixed share of what the producer makes.',
+          switch (edge.mode) {
+            EdgeMode.pull => 'This line carries whatever the consumer needs, '
+                'and the producer is sized to cover it.',
+            EdgeMode.push =>
+              'This line carries a fixed share of what the producer makes.',
+            EdgeMode.rest => 'This line carries what is left of the producer '
+                'after everything else on that port has taken its share. It '
+                'follows them: nothing here has to be worked out again when '
+                'they change. The producer is no longer sized by what draws '
+                'from it, so something else has to say how big it is.',
+          },
           style: OniType.body
               .copyWith(fontSize: 11.5, color: OniColors.textFaint),
         ),

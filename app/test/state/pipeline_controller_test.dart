@@ -37,18 +37,41 @@ void main() {
       );
     });
 
-    test('a second wire into an output joins it, and says so', () {
-      // An output node is a bucket, not a customer: two consumer-driven lines
-      // into one read their shares as shares of each other and are held to the
-      // same amount for ever. So the group becomes producer-driven -- visibly,
-      // because a change nobody asked for by name should not happen quietly.
+    test('an output on a port that already feeds something takes the rest',
+        () {
+      // The surplus, which could not be said at all before: not a consumer
+      // with a demand of its own (a loose end) and not the producer's whole
+      // output (which starves everything else on the port).
       final c = testController();
       final out = c.addNode('sink:oxygen', Offset.zero);
       c.connect(const PortRef('elec', 'oxygen'), PortRef(out, 'in'));
-      expect(c.notice, isNull, reason: 'the first line into it is unambiguous');
 
+      final line = c.pipeline.edges.firstWhere((e) => e.toNodeId == out);
+      expect(line.mode, EdgeMode.rest);
+      expect(line.share, isNull);
+      expect(c.notice, contains('whatever is left'));
+      // The Duplicants keep the line they had.
+      expect(
+        c.pipeline.edges
+            .firstWhere((e) => e.toNodeId == 'dupes')
+            .mode,
+        EdgeMode.pull,
+      );
+    });
+
+    test('and a second producer into one output node joins the first', () {
+      // The other shape: an output node is a bucket, so two consumer-driven
+      // lines into one read their shares as shares of each other and are held
+      // to the same amount for ever after.
+      final c = testController();
+      final out = c.addNode('sink:hydrogen', Offset.zero);
       final second = c.addNode('electrolyzer', Offset.zero);
-      c.connect(PortRef(second, 'oxygen'), PortRef(out, 'in'));
+      // A first line from a port with nothing else on it stays ordinary.
+      c.connect(PortRef(second, 'hydrogen'), PortRef(out, 'in'));
+      expect(c.notice, isNull, reason: 'nothing to be ambiguous about yet');
+
+      final third = c.addNode('electrolyzer', Offset.zero);
+      c.connect(PortRef(third, 'hydrogen'), PortRef(out, 'in'));
 
       expect(
         c.pipeline.edges

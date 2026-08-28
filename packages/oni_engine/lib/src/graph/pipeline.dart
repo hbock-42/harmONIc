@@ -144,7 +144,25 @@ enum EdgeMode {
   /// The **producer** decides: this edge carries a fixed fraction of the source
   /// port's output. Use it to model a deliberate split ("half the oxygen goes
   /// left"), or to audit a base you have already built.
-  push;
+  push,
+
+  /// **Whatever is left**: this edge carries what its source port makes, less
+  /// everything else leaving that port.
+  ///
+  /// The third thing anybody means and the one that could not be said. An
+  /// output node hung on a generator that also powers three buildings is
+  /// neither a consumer with a demand of its own nor a producer's fixed
+  /// fraction: it is the surplus, and how big it is depends on what the other
+  /// three take. Said as a fraction it has to be recomputed by hand every time
+  /// anything else changes.
+  ///
+  /// Where several lines say this, they divide the remainder equally, the same
+  /// way unshared producer-driven lines divide what they are given.
+  rest;
+
+  /// Whether this end of the edge is the source's decision. The remainder is
+  /// the producer's to give away, so it is read at the source like a push.
+  bool get isFromSource => this != EdgeMode.pull;
 
   static EdgeMode parse(String raw) => EdgeMode.values.firstWhere(
         (m) => m.name == raw,

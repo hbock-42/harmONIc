@@ -8,6 +8,8 @@ class EdgeFactor {
 
   /// [EdgeMode.push]: fraction of the source port's production.
   /// [EdgeMode.pull]: fraction of the target port's demand.
+  /// [EdgeMode.rest]: fraction of what is left of the source port after
+  /// everything else on it has taken its share.
   final double fraction;
 
   @override
@@ -24,15 +26,21 @@ class EdgeFactor {
 Map<String, EdgeFactor> resolveEdgeFactors(Pipeline pipeline) {
   final pushGroups = <PortRef, List<PipelineEdge>>{};
   final pullGroups = <PortRef, List<PipelineEdge>>{};
+  final restGroups = <PortRef, List<PipelineEdge>>{};
   for (final edge in pipeline.edges) {
-    if (edge.mode == EdgeMode.push) {
-      pushGroups
-          .putIfAbsent(PortRef(edge.fromNodeId, edge.fromPortId), () => [])
-          .add(edge);
-    } else {
-      pullGroups
-          .putIfAbsent(PortRef(edge.toNodeId, edge.toPortId), () => [])
-          .add(edge);
+    switch (edge.mode) {
+      case EdgeMode.push:
+        pushGroups
+            .putIfAbsent(PortRef(edge.fromNodeId, edge.fromPortId), () => [])
+            .add(edge);
+      case EdgeMode.rest:
+        restGroups
+            .putIfAbsent(PortRef(edge.fromNodeId, edge.fromPortId), () => [])
+            .add(edge);
+      case EdgeMode.pull:
+        pullGroups
+            .putIfAbsent(PortRef(edge.toNodeId, edge.toPortId), () => [])
+            .add(edge);
     }
   }
 
@@ -58,6 +66,15 @@ Map<String, EdgeFactor> resolveEdgeFactors(Pipeline pipeline) {
 
   assign(pushGroups, EdgeMode.push);
   assign(pullGroups, EdgeMode.pull);
+  // A remainder line has no fraction of its own: what it carries depends on
+  // what everything else on its port takes, which is the whole point of it.
+  // The number here is its share *of the remainder*, so several lines saying
+  // "the rest" divide what is left equally.
+  restGroups.forEach((_, edges) {
+    for (final edge in edges) {
+      factors[edge.id] = EdgeFactor(EdgeMode.rest, 1 / edges.length);
+    }
+  });
   return factors;
 }
 
