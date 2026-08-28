@@ -267,23 +267,37 @@ class NodeWidget extends StatelessWidget {
       // being thrown away on purpose and the balance sheet knows it.
       marks.add(('VENT', OniColors.warning));
     }
-    // Not on a supply or an output node: drawing from outside the build is the
-    // whole of what those are for, and a mark that is true of every one of
-    // them says nothing about any of them.
-    if (_isBoundary) return marks;
-
     var spare = false;
     var needs = false;
+    var over = false;
     for (final balance in controller.solution.portBalances) {
       if (balance.ref.nodeId != node.id) continue;
+      // More is being taken from this port than it makes. Reported: a refinery
+      // making 408 g/s of petroleum with 2 800 drawn off it showed nothing at
+      // all, while the node it fed lost its NEEDS and looked settled. It is
+      // the commonest reason a build will not solve and it was the one thing
+      // these marks did not say.
+      if (balance.direction == PortDirection.output &&
+          balance.linkedRate > balance.rate + 1e-6) {
+        over = true;
+      }
       // Already said, and better: venting is a choice and this is a leftover.
       if (node.ventsPort(balance.ref.portId)) continue;
       // Heat leaving a building is where heat goes. Almost nothing wires it
       // up, so marking it would put SPARE on nearly every node in the app.
       if (balance.itemId == WellKnownItems.heat) continue;
+      // Not on a supply or an output node: drawing from outside the build is
+      // the whole of what those are for, and a mark that is true of every one
+      // of them says nothing about any of them. Being over-drawn is different
+      // -- a supply told it has one kilogram a second and asked for four and a
+      // half is exactly worth saying.
+      if (_isBoundary) continue;
       if (balance.isSurplus) spare = true;
       if (balance.isExternalInput) needs = true;
     }
+    // First, because it is the only one of these that means something is
+    // wrong rather than merely open.
+    if (over) marks.insert(0, ('OVER', OniColors.danger));
     if (spare) marks.add(('SPARE', OniColors.textMuted));
     if (needs) marks.add(('NEEDS', OniColors.textMuted));
     return marks;

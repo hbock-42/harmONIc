@@ -280,7 +280,10 @@ covers whatever is left. Pinning one end and leaving the wires alone gives you
 twice the trees, because the generator's 750 g/s is read as half of what they
 drink.
 
-A node says what it is quietly doing. **VENT** means a port on it is set to
+A node says what it is quietly doing. **OVER** means more is being taken from
+one of its ports than it makes — the usual reason a build will not add up, and
+the only one of these marks that means something is wrong. **VENT** means a port
+on it is set to
 throw something away, which is a decision you made and nothing else on the
 canvas shows. **NEEDS** means something it eats arrives from outside the build,
 and **SPARE** means something it makes leaves without a wire.

@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A node drawn harder than it makes says OVER
+
+Reported: a refinery making 408 g/s of petroleum with 2 800 g/s drawn off it
+showed nothing at all, while the node it fed lost its NEEDS mark and looked
+settled.
+
+The marks looked for a *leftover* — something spare, something wanted from
+outside — and being over-drawn is the opposite of one. It is marked now, in
+red, and first: it is the only one of the four that means something is wrong
+rather than merely open. Supplies get it too, which the others do not: "you
+said you have a kilogram a second and this build wants four and a half" is
+worth saying, where "this supply comes from outside the build" is not.
+
 ## 28 August 2026 — Undo takes the note with it, and the note is English
 
 **"Since the amount on the Duplicant"** was not a sentence. The phrases naming

@@ -1,6 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/canvas/graph_canvas.dart';
+import 'package:oni_pipeline/design/tokens.dart';
 import 'package:oni_pipeline/canvas/node_widget.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 
@@ -99,5 +101,39 @@ void main() {
     // On the Electrolyzer the last mark is NEEDS; on the Duplicants it is SET.
     expect(edgeOf(find.text('NEEDS').first).dx,
         closeTo(edgeOf(find.text('SET')).dx, 1));
+  });
+
+  testWidgets('a port drawn harder than it makes is marked, and in red',
+      (tester) async {
+    // Reported: deleting one line let a consumer-driven line pull 2 800 g/s of
+    // petroleum out of a refinery making 408, and the node it fed lost its
+    // NEEDS and looked settled while the refinery said nothing at all. These
+    // marks looked for a *leftover*, and this is the opposite of one.
+    // The producer held to a size by what feeds it, which is the shape it
+    // takes in a real build: a refinery is as big as its crude oil allows.
+    final base = (PipelineBuilder(testDatabase, name: 'over-drawn')
+          ..addSource('water', x: 0, y: 0)
+          ..add('electrolyzer', nodeId: 'elec', x: 340, y: 0)
+          ..add('duplicant', nodeId: 'dupes', x: 700, y: 0)
+          ..connectItem('src_water', 'elec', 'water')
+          ..connectItem('elec', 'dupes', 'oxygen')
+          ..pinRate('src_water', 'out', 1000)
+          ..pinCount('dupes', 40))
+        .build();
+    final controller = await pump(tester, base);
+
+    // Forty Duplicants breathe more oxygen than one Electrolyzer makes.
+    expect(controller.solution.status, SolveStatus.inconsistent);
+    expect(find.text('OVER'), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.text('OVER')).style?.color,
+      OniColors.danger,
+    );
+  });
+
+  testWidgets('and a build that adds up is not accused of anything',
+      (tester) async {
+    await pump(tester, testPipeline());
+    expect(find.text('OVER'), findsNothing);
   });
 }
