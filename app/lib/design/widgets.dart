@@ -21,37 +21,37 @@ class OniPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: width,
-        decoration: BoxDecoration(
-          color: OniColors.surface,
-          border: Border(
-            left: BorderSide(color: OniColors.border),
-            right: BorderSide(color: OniColors.border),
+    width: width,
+    decoration: BoxDecoration(
+      color: OniColors.surface,
+      border: Border(
+        left: BorderSide(color: OniColors.border),
+        right: BorderSide(color: OniColors.border),
+      ),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (title != null)
+          Container(
+            height: 36,
+            padding: const EdgeInsets.symmetric(horizontal: OniSpacing.md),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: OniColors.border)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(title!.toUpperCase(), style: OniType.label),
+                ),
+                ?trailing,
+              ],
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (title != null)
-              Container(
-                height: 36,
-                padding: const EdgeInsets.symmetric(horizontal: OniSpacing.md),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: OniColors.border)),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(title!.toUpperCase(), style: OniType.label),
-                    ),
-                    ?trailing,
-                  ],
-                ),
-              ),
-            Expanded(child: child),
-          ],
-        ),
-      );
+        Expanded(child: child),
+      ],
+    ),
+  );
 }
 
 class OniButton extends StatefulWidget {
@@ -185,72 +185,83 @@ class _OniFieldState extends State<OniField> {
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: _focus.requestFocus,
-        child: Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            color: OniColors.background,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: _focus.hasFocus ? OniColors.accent : OniColors.border,
-            ),
+  Widget build(BuildContext context) => MouseRegion(
+    // A field takes a click and shows where the text will go; it is not a
+    // button, so it is not a hand.
+    cursor: SystemMouseCursors.text,
+    child: GestureDetector(
+      onTap: _focus.requestFocus,
+      child: Container(
+        height: 30,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          color: OniColors.background,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: _focus.hasFocus ? OniColors.accent : OniColors.border,
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Stack(
-            alignment: Alignment.centerLeft,
-            children: [
-              if (widget.controller.text.isEmpty && widget.hint != null)
-                Text(widget.hint!,
-                    style: OniType.number
-                        .copyWith(color: OniColors.textFaint)),
-              EditableText(
-                controller: widget.controller,
-                focusNode: _focus,
-                autofocus: widget.autofocus,
-                style: OniType.number,
-                cursorColor: OniColors.accent,
-                backgroundCursorColor: OniColors.border,
-                selectionColor: OniColors.accent.withValues(alpha: 0.3),
-                textAlign: widget.textAlign,
-                maxLines: 1,
-                onChanged: (v) {
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  if (widget.controller.text.isEmpty && widget.hint != null)
+                    Text(
+                      widget.hint!,
+                      style: OniType.number.copyWith(
+                        color: OniColors.textFaint,
+                      ),
+                    ),
+                  EditableText(
+                    controller: widget.controller,
+                    focusNode: _focus,
+                    autofocus: widget.autofocus,
+                    style: OniType.number,
+                    cursorColor: OniColors.accent,
+                    backgroundCursorColor: OniColors.border,
+                    selectionColor: OniColors.accent.withValues(alpha: 0.3),
+                    textAlign: widget.textAlign,
+                    maxLines: 1,
+                    onChanged: (v) {
+                      setState(() {});
+                      widget.onChanged?.call(v);
+                    },
+                    onSubmitted: widget.onSubmitted,
+                  ),
+                ],
+              ),
+            ),
+            if (widget.clearable && widget.controller.text.isNotEmpty)
+              GestureDetector(
+                key: clearFieldKey,
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  widget.controller.clear();
                   setState(() {});
-                  widget.onChanged?.call(v);
+                  widget.onChanged?.call('');
+                  _focus.requestFocus();
                 },
-                onSubmitted: widget.onSubmitted,
-              ),
-            ],
-                ),
-              ),
-              if (widget.clearable && widget.controller.text.isNotEmpty)
-                GestureDetector(
-                  key: clearFieldKey,
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    widget.controller.clear();
-                    setState(() {});
-                    widget.onChanged?.call('');
-                    _focus.requestFocus();
-                  },
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 6),
-                      child: Text('×',
-                          style: OniType.number
-                              .copyWith(color: OniColors.textMuted)),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Text(
+                      '×',
+                      style: OniType.number.copyWith(
+                        color: OniColors.textMuted,
+                      ),
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// The cross that empties a search field, named so tests can reach it.
@@ -280,28 +291,28 @@ class _OniRateState extends State<OniRate> {
 
   @override
   Widget build(BuildContext context) => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hover = true),
-        onExit: (_) => setState(() => _hover = false),
-        child: GestureDetector(
-          onTap: widget.onToggle,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: _hover ? OniColors.accent : const Color(0x00000000),
-                ),
-              ),
-            ),
-            child: Text(
-              widget.text,
-              style: (widget.style ?? OniType.number).copyWith(
-                color: _hover ? OniColors.accent : null,
-              ),
+    cursor: SystemMouseCursors.click,
+    onEnter: (_) => setState(() => _hover = true),
+    onExit: (_) => setState(() => _hover = false),
+    child: GestureDetector(
+      onTap: widget.onToggle,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: _hover ? OniColors.accent : const Color(0x00000000),
             ),
           ),
         ),
-      );
+        child: Text(
+          widget.text,
+          style: (widget.style ?? OniType.number).copyWith(
+            color: _hover ? OniColors.accent : null,
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 /// Label above a value — the workhorse of the inspector.
@@ -329,28 +340,28 @@ class OniStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(label.toUpperCase(), style: OniType.label),
-              if (trailing case final Widget trailing) ...[
-                const SizedBox(width: 6),
-                trailing,
-              ],
-            ],
-          ),
-          const SizedBox(height: 2),
-          if (onToggle == null)
-            Text(value, style: OniType.number.copyWith(color: valueColour))
-          else
-            OniRate(
-              text: value,
-              onToggle: onToggle!,
-              style: OniType.number.copyWith(color: valueColour),
-            ),
+          Text(label.toUpperCase(), style: OniType.label),
+          if (trailing case final Widget trailing) ...[
+            const SizedBox(width: 6),
+            trailing,
+          ],
         ],
-      );
+      ),
+      const SizedBox(height: 2),
+      if (onToggle == null)
+        Text(value, style: OniType.number.copyWith(color: valueColour))
+      else
+        OniRate(
+          text: value,
+          onToggle: onToggle!,
+          style: OniType.number.copyWith(color: valueColour),
+        ),
+    ],
+  );
 }

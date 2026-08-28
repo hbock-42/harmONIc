@@ -8,6 +8,16 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Things you can click look like it
+
+Reported: *"there is lots of clickable that doesn't show they are clickable in
+the Figures panel."* Every filter chip, every ×2, the fold headers, the note,
+the pills for what a recipe takes, and Inspect and Wrong? — all of them took a
+tap and showed nothing on the way over. They light under the pointer now, and a
+test walks the whole editor and fails on any tap target that stays silent. It
+found two more in the palette, and a search box that never showed a text
+cursor.
+
 ## 28 August 2026 — Nodes say what they are quietly doing
 
 Asked for after a build turned out to be unbalanced by a port nobody could see:

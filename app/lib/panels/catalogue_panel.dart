@@ -256,12 +256,18 @@ class _CataloguePanelState extends State<CataloguePanel> {
     final methods = groups.fold<int>(0, (sum, g) => sum + g.rows.length);
 
     return GestureDetector(
+      // Not a control: tapping away from a panel closes it, and a pointer that
+      // turns into a hand over the whole screen is worse than one that does
+      // nothing. Keyed so the audit that insists every tap target says so can
+      // tell the two apart.
+      key: const ValueKey('backdrop'),
       behavior: HitTestBehavior.opaque,
       onTap: widget.onClose,
       child: Container(
         color: const Color(0xCC000000),
         alignment: Alignment.centerRight,
         child: GestureDetector(
+          key: const ValueKey('backdrop'),
           onTap: () {},
           child: OniPanel(
             title: _inspecting?.name ?? 'Every figure',
@@ -471,6 +477,39 @@ String _stateOf(Item? item) {
   return item?.category.name ?? 'other';
 }
 
+
+/// A tap target that looks like one.
+///
+/// Reported: "lots of clickable that doesn't show they are clickable". Every
+/// one of these was a bare GestureDetector — no cursor on the way over it and
+/// nothing under the pointer once there, so the only way to find out was to
+/// click and see.
+class _Tappable extends StatefulWidget {
+  const _Tappable({required this.onTap, required this.builder, super.key});
+
+  final VoidCallback onTap;
+  final Widget Function(bool hovering) builder;
+
+  @override
+  State<_Tappable> createState() => _TappableState();
+}
+
+class _TappableState extends State<_Tappable> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hovering = true),
+        onExit: (_) => setState(() => _hovering = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          behavior: HitTestBehavior.opaque,
+          child: widget.builder(_hovering),
+        ),
+      );
+}
+
 /// Which family a recipe belongs to, for the line under its name.
 String _familyOf(ProcessSpec spec) {
   for (final family in _Family.values) {
@@ -498,21 +537,24 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tint = on ? OniColors.accent : OniColors.textMuted;
-    return GestureDetector(
+    return _Tappable(
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
+      builder: (hovering) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
         decoration: BoxDecoration(
           // A pill, and a tinted one when it is on: a chip that only changes
           // its text colour is a chip nobody can see the state of.
           color: on
-              ? OniColors.accent.withValues(alpha: 0.12)
-              : OniColors.surfaceRaised,
+              ? OniColors.accent.withValues(alpha: hovering ? 0.2 : 0.12)
+              : hovering
+                  ? OniColors.surfaceHover
+                  : OniColors.surfaceRaised,
           border: Border.all(
             color: on
                 ? OniColors.accent.withValues(alpha: 0.55)
-                : OniColors.border,
+                : hovering
+                    ? OniColors.borderStrong
+                    : OniColors.border,
           ),
           borderRadius: BorderRadius.circular(999),
         ),
@@ -572,19 +614,20 @@ class _Times extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final n in const [1, 2, 5, 10])
-              GestureDetector(
+              _Tappable(
                 // Keyed by the group as well as the recipe: one thing turns up
                 // under everything it makes, so the recipe alone names several.
                 key: ValueKey('times:$itemId:${spec.id}:$n'),
                 onTap: () => onTimes(n),
-                behavior: HitTestBehavior.opaque,
-                child: Container(
+                builder: (hovering) => Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: n == times
                         ? OniColors.accent.withValues(alpha: 0.9)
-                        : null,
+                        : hovering
+                            ? OniColors.surfaceHover
+                            : null,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
@@ -624,10 +667,9 @@ class _Guidelines extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
+            _Tappable(
               onTap: onToggle,
-              behavior: HitTestBehavior.opaque,
-              child: Row(
+              builder: (hovering) => Row(
                 children: [
                   Text('ⓘ',
                       style: OniType.label.copyWith(color: OniColors.accent)),
@@ -654,7 +696,10 @@ class _Guidelines extends StatelessWidget {
                 'row shows a quarter of the yield and nothing in the column '
                 'beside it.\n\n'
                 'Judged means somebody decided the figure rather than read it '
-                'off the game. The recipe says which part is doubtful.',
+                'off the game. The recipe says which part is doubtful.\n\n'
+                'Anything a recipe takes or gives can be clicked, which '
+                'searches for that thing — the way to walk a chain backwards '
+                'from what comes out of it.',
                 style: OniType.body
                     .copyWith(fontSize: 11.5, color: OniColors.textFaint),
               ),
@@ -709,10 +754,10 @@ class _GroupCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          GestureDetector(
+          _Tappable(
             onTap: onFold,
-            behavior: HitTestBehavior.opaque,
-            child: Container(
+            builder: (hovering) => Container(
+              color: hovering ? OniColors.surfaceHover : null,
               padding: const EdgeInsets.fromLTRB(
                   OniSpacing.md, OniSpacing.md, OniSpacing.md, OniSpacing.md),
               child: Row(
@@ -1105,15 +1150,19 @@ class _Link extends StatelessWidget {
   final Color? colour;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => _Tappable(
         onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Text(
+        builder: (hovering) => Text(
           label,
           style: OniType.body.copyWith(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w600,
-              color: colour ?? OniColors.accent),
+            fontSize: 11.5,
+            fontWeight: FontWeight.w600,
+            color: colour ?? OniColors.accent,
+            // Underlined on the way past, because a coloured word beside two
+            // other coloured words is not obviously a thing to press.
+            decoration: hovering ? TextDecoration.underline : null,
+            decorationColor: colour ?? OniColors.accent,
+          ),
         ),
       );
 }
@@ -1160,14 +1209,14 @@ class _Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (figure, unit) = _figure(rate);
-    return GestureDetector(
+    return _Tappable(
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
+      builder: (hovering) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
         decoration: BoxDecoration(
-          color: OniColors.surface,
-          border: Border.all(color: OniColors.border),
+          color: hovering ? OniColors.surfaceHover : OniColors.surface,
+          border: Border.all(
+              color: hovering ? colour.withValues(alpha: 0.7) : OniColors.border),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(

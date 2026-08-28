@@ -175,14 +175,18 @@ class _PalettePanelState extends State<PalettePanel> {
         _ when spec.tags.contains('eating') => 'Eating',
         _ when spec.tags.contains('filtering') => 'Filtering',
         _ => _capitalise(
-            spec.tags.firstWhere((t) => t != 'verified', orElse: () => 'other')),
+          spec.tags.firstWhere((t) => t != 'verified', orElse: () => 'other'),
+        ),
       };
       groups.putIfAbsent(group, () => []).add(spec);
     }
     for (final list in groups.values) {
       list.sort((a, b) {
-        final byRank = paletteRank(a, query, widget.database)
-            .compareTo(paletteRank(b, query, widget.database));
+        final byRank = paletteRank(
+          a,
+          query,
+          widget.database,
+        ).compareTo(paletteRank(b, query, widget.database));
         return byRank != 0 ? byRank : a.name.compareTo(b.name);
       });
     }
@@ -199,37 +203,50 @@ class _PalettePanelState extends State<PalettePanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => setState(() => _filtersOpen = !_filtersOpen),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-                OniSpacing.md, 2, OniSpacing.md, OniSpacing.sm),
-            child: Row(
-              children: [
-                Text(_filtersOpen ? '▾ SHOWING' : '▸ SHOWING',
-                    style: OniType.label),
-                const SizedBox(width: OniSpacing.sm),
-                Expanded(
-                  child: Text(
-                    hidden == 0 ? 'everything' : '$hidden hidden',
-                    style: OniType.body.copyWith(
-                      fontSize: 11.5,
-                      color: hidden == 0
-                          ? OniColors.textFaint
-                          : OniColors.accent,
-                    ),
-                    textAlign: TextAlign.right,
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _filtersOpen = !_filtersOpen),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md,
+                2,
+                OniSpacing.md,
+                OniSpacing.sm,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    _filtersOpen ? '▾ SHOWING' : '▸ SHOWING',
+                    style: OniType.label,
                   ),
-                ),
-              ],
+                  const SizedBox(width: OniSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      hidden == 0 ? 'everything' : '$hidden hidden',
+                      style: OniType.body.copyWith(
+                        fontSize: 11.5,
+                        color: hidden == 0
+                            ? OniColors.textFaint
+                            : OniColors.accent,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         if (_filtersOpen)
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+              OniSpacing.md,
+              0,
+              OniSpacing.md,
+              OniSpacing.sm,
+            ),
             child: Wrap(
               spacing: OniSpacing.sm,
               runSpacing: OniSpacing.sm,
@@ -241,8 +258,10 @@ class _PalettePanelState extends State<PalettePanel> {
                     tone: display.packEnabled(pack.key)
                         ? OniButtonTone.accent
                         : OniButtonTone.neutral,
-                    onPressed: () => display.setPack(pack.key,
-                        enabled: !display.packEnabled(pack.key)),
+                    onPressed: () => display.setPack(
+                      pack.key,
+                      enabled: !display.packEnabled(pack.key),
+                    ),
                   ),
                 OniButton(
                   label: 'Wild',
@@ -270,14 +289,14 @@ class _PalettePanelState extends State<PalettePanel> {
     final names = groups.keys.toList()
       ..sort((a, b) {
         int rank(String g) => switch (g) {
-              'My builds' => 0,
-              'Pumping' => 2,
-              'Filtering' => 2,
-              'Eating' => 2,
-              'Supply' => 3,
-              'Output' => 4,
-              _ => 1,
-            };
+          'My builds' => 0,
+          'Pumping' => 2,
+          'Filtering' => 2,
+          'Eating' => 2,
+          'Supply' => 3,
+          'Output' => 4,
+          _ => 1,
+        };
         final byRank = rank(a).compareTo(rank(b));
         return byRank != 0 ? byRank : a.compareTo(b);
       });
@@ -321,21 +340,27 @@ class _PalettePanelState extends State<PalettePanel> {
                   ),
                   if (!(_folded.contains(name) && !searching))
                     for (final spec in groups[name]!)
-                    _PaletteRow(
-                      key: widget.rowKeys
-                          ?.putIfAbsent(spec.id, GlobalKey.new),
-                      spec: spec,
-                      database: widget.database,
-                      pointedAt: spec.id == widget.pointingAt,
-                      // Why it is in a filtered list wins over what it is
-                      // for: somebody who searched "oxygen" is owed the
-                      // reason a Duplicant came back before anything else.
-                      why: paletteWhy(spec, _search.text.trim().toLowerCase(),
-                              widget.database) ??
-                          paletteHint(spec),
-                      onTap: () => widget.onAdd(spec.id),
-                      onEdit: () => widget.onEditRecipe(spec),
-                    ),
+                      _PaletteRow(
+                        key: widget.rowKeys?.putIfAbsent(
+                          spec.id,
+                          GlobalKey.new,
+                        ),
+                        spec: spec,
+                        database: widget.database,
+                        pointedAt: spec.id == widget.pointingAt,
+                        // Why it is in a filtered list wins over what it is
+                        // for: somebody who searched "oxygen" is owed the
+                        // reason a Duplicant came back before anything else.
+                        why:
+                            paletteWhy(
+                              spec,
+                              _search.text.trim().toLowerCase(),
+                              widget.database,
+                            ) ??
+                            paletteHint(spec),
+                        onTap: () => widget.onAdd(spec.id),
+                        onEdit: () => widget.onEditRecipe(spec),
+                      ),
                 ],
               ],
             ),
@@ -362,21 +387,28 @@ class _GroupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-            OniSpacing.md, OniSpacing.md, OniSpacing.md, 4),
-        child: Row(
-          children: [
-            // Pointing down when open and right when folded, which is the
-            // arrow every file tree has taught everybody to read.
-            Text(folded ? '\u25B8' : '\u25BE', style: OniType.label),
-            const SizedBox(width: 6),
-            Expanded(child: Text(name.toUpperCase(), style: OniType.label)),
-            Text('$count', style: OniType.label),
-          ],
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            OniSpacing.md,
+            OniSpacing.md,
+            OniSpacing.md,
+            4,
+          ),
+          child: Row(
+            children: [
+              // Pointing down when open and right when folded, which is the
+              // arrow every file tree has taught everybody to read.
+              Text(folded ? '\u25B8' : '\u25BE', style: OniType.label),
+              const SizedBox(width: 6),
+              Expanded(child: Text(name.toUpperCase(), style: OniType.label)),
+              Text('$count', style: OniType.label),
+            ],
+          ),
         ),
       ),
     );
@@ -416,10 +448,12 @@ class _PaletteRowState extends State<_PaletteRow> {
 
   @override
   Widget build(BuildContext context) {
-    final firstPort =
-        widget.spec.ports.isEmpty ? null : widget.spec.ports.first;
+    final firstPort = widget.spec.ports.isEmpty
+        ? null
+        : widget.spec.ports.first;
     final colour = OniItemColors.ofItem(
-        firstPort == null ? null : widget.database.item(firstPort.itemId));
+      firstPort == null ? null : widget.database.item(firstPort.itemId),
+    );
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -435,16 +469,16 @@ class _PaletteRowState extends State<_PaletteRow> {
             color: widget.pointedAt
                 ? OniColors.accent.withValues(alpha: 0.14)
                 : _hover
-                    ? OniColors.surfaceHover
-                    : null,
+                ? OniColors.surfaceHover
+                : null,
             border: widget.pointedAt
-                ? Border(
-                    left: BorderSide(color: OniColors.accent, width: 2),
-                  )
+                ? Border(left: BorderSide(color: OniColors.accent, width: 2))
                 : null,
           ),
           padding: const EdgeInsets.symmetric(
-              horizontal: OniSpacing.md, vertical: 6),
+            horizontal: OniSpacing.md,
+            vertical: 6,
+          ),
           child: Row(
             children: [
               Container(width: 3, height: 16, color: colour),
@@ -463,8 +497,9 @@ class _PaletteRowState extends State<_PaletteRow> {
                     if (widget.why case final String why)
                       Text(
                         why,
-                        style: OniType.numberSmall
-                            .copyWith(color: OniColors.textFaint),
+                        style: OniType.numberSmall.copyWith(
+                          color: OniColors.textFaint,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -474,9 +509,12 @@ class _PaletteRowState extends State<_PaletteRow> {
               if (_hover)
                 GestureDetector(
                   onTap: widget.onEdit,
-                  child: Text('edit',
-                      style: OniType.numberSmall
-                          .copyWith(color: OniColors.accent)),
+                  child: Text(
+                    'edit',
+                    style: OniType.numberSmall.copyWith(
+                      color: OniColors.accent,
+                    ),
+                  ),
                 ),
             ],
           ),
