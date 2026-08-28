@@ -197,8 +197,9 @@ class EdgeRouting {
       // rectangles per wire and then filtering it was the single biggest cost
       // here: on a 369-node build that is 173 000 rectangles allocated to
       // route 468 wires, before any routing happens.
-      List<Rect> near(Rect bounds) {
-        final found = <Rect>[];
+      ({List<Rect> others, List<Rect> own}) near(Rect bounds) {
+        final others = <Rect>[];
+        final mine = <Rect>[];
         for (final entry in rects.entries) {
           // Its own cards keep a smaller clearance: the wire starts and ends
           // on them, and asking it to stand well off a card it is plugged into
@@ -207,9 +208,10 @@ class EdgeRouting {
               entry.key == edge.fromNodeId || entry.key == edge.toNodeId;
           final grown =
               entry.value.inflate(own ? kOwnClearance : kClearance);
-          if (grown.overlaps(bounds)) found.add(grown);
+          if (!grown.overlaps(bounds)) continue;
+          (own ? mine : others).add(grown);
         }
-        return found;
+        return (others: others, own: mine);
       }
 
       final routed = _route(from, to, near);
@@ -235,16 +237,17 @@ Path? routedEdgePath(
   List<Rect> own = const <Rect>[],
 }) =>
     _route(from, to, (Rect bounds) {
-      final near = <Rect>[];
+      final others = <Rect>[];
       for (final rect in obstacles) {
         final grown = rect.inflate(kClearance);
-        if (grown.overlaps(bounds)) near.add(grown);
+        if (grown.overlaps(bounds)) others.add(grown);
       }
+      final mine = <Rect>[];
       for (final rect in own) {
         final grown = rect.inflate(kOwnClearance);
-        if (grown.overlaps(bounds)) near.add(grown);
+        if (grown.overlaps(bounds)) mine.add(grown);
       }
-      return near;
+      return (others: others, own: mine);
     });
 
 /// The cards near a given patch of canvas, already grown by their clearance.
@@ -254,29 +257,42 @@ Path? routedEdgePath(
 /// between the two ports was wrong in a way that took a picture to see: going
 /// round the first card lifted a wire clean out of that box, into a second
 /// card that had never been a candidate and so could never be found.
-typedef _CardsNear = List<Rect> Function(Rect bounds);
+typedef _CardsNear = ({List<Rect> others, List<Rect> own}) Function(Rect bounds);
 
 /// Cards earn their way into the visibility graph by being shown to block this
 /// particular wire. Putting every nearby card in it is both far slower and,
 /// past a certain build size, fatal: a wire crossing a full screen has dozens
 /// of cards in its bounding box and almost none of them in its way.
 Path? _route(Offset from, Offset to, _CardsNear near) {
-  // Between the stubs, not the ports, for the test as well as the routing. A
-  // port dot is laid out *inside* its card, so a path measured from the dot
-  // starts inside an obstacle and every wire in the build would report itself
-  // as crossing something.
   final start = from + const Offset(_stub, 0);
   final end = to - const Offset(_stub, 0);
-  final direct = edgePath(start, end);
-  final candidates = near(direct.getBounds());
-  if (candidates.isEmpty) return null;
-  if (!_pathEnters(direct, candidates)) return null;
+
+  // Whether this wire needs routing at all has to be asked of the path that
+  // would otherwise be *drawn* -- port to port -- and not of some near
+  // relative of it. Asking it of the stub-to-stub curve instead let five wires
+  // on a reported build pass the test and then be drawn straight through a
+  // card: the two curves have different ends and different control points, so
+  // one clears a corner the other clips.
+  //
+  // Its own two cards are the exception, and have to be asked of the stub
+  // curve. A port dot is laid out *inside* its card, so a path measured from
+  // the dot begins inside an obstacle and every wire in every build would
+  // report itself as crossing something.
+  final drawn = edgePath(from, to);
+  final stubbed = edgePath(start, end);
+  final around = near(drawn.getBounds().expandToInclude(stubbed.getBounds()));
+  if (around.others.isEmpty && around.own.isEmpty) return null;
+  if (!_pathEnters(drawn, around.others) &&
+      !_pathEnters(stubbed, around.own)) {
+    return null;
+  }
 
   final blocking = <Rect>[];
   var corners = <Offset>[start, end];
   for (var round = 0; round < _rounds; round++) {
+    final here = near(_boundsOf(corners));
     final found = <Rect>[
-      for (final rect in near(_boundsOf(corners)))
+      for (final rect in [...here.others, ...here.own])
         if (!blocking.contains(rect) && _polylineEnters(corners, rect)) rect,
     ];
     if (found.isEmpty) break;
