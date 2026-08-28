@@ -5,6 +5,7 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import 'geometry.dart';
+import 'labels.dart';
 import 'routing.dart';
 
 /// Draws the wires under the nodes.
@@ -13,53 +14,6 @@ import 'routing.dart';
 /// exactly how much — so the shape of a build is readable before you read a
 /// single number.
 class EdgePainter extends CustomPainter {
-  /// How far along a wire its flow label sits. Shared so that a click can ask
-  /// where the label is without the painter having to remember.
-  ///
-  /// The middle, because that is where the eye looks for a wire's own label —
-  /// anywhere else and it reads as belonging to whichever end it sits nearer.
-  static const double labelPosition = 0.5;
-
-  /// How far apart the labels of wires joining the same two nodes are pushed.
-  static const double _labelSpread = 0.36;
-
-  /// Where every wire's label sits, as a fraction along its own path.
-  ///
-  /// The middle, unless several wires join the same pair of nodes: an
-  /// Electrolyzer feeding a Hydrogen Generator that powers it back has two,
-  /// and one number printed over another is worse than either being off
-  /// centre. Those share out a corridor measured from whichever end sorts
-  /// first, so that a wire running the other way — which walks its own path
-  /// backwards — lands somewhere else rather than on the same spot.
-  static Map<String, double> labelFractions(Pipeline pipeline) {
-    final byPair = <String, List<PipelineEdge>>{};
-    for (final edge in pipeline.edges) {
-      final a = edge.fromNodeId;
-      final b = edge.toNodeId;
-      byPair
-          .putIfAbsent(a.compareTo(b) <= 0 ? '$a>$b' : '$b>$a', () => [])
-          .add(edge);
-    }
-    final fractions = <String, double>{};
-    for (final group in byPair.values) {
-      if (group.length == 1) {
-        fractions[group.first.id] = labelPosition;
-        continue;
-      }
-      group.sort((x, y) => x.id.compareTo(y.id));
-      for (var i = 0; i < group.length; i++) {
-        final along = (labelPosition +
-                _labelSpread * (i - (group.length - 1) / 2))
-            .clamp(0.15, 0.85);
-        fractions[group[i].id] =
-            group[i].fromNodeId.compareTo(group[i].toNodeId) <= 0
-                ? along
-                : 1 - along;
-      }
-    }
-    return fractions;
-  }
-
   /// The arrowhead keeps out of the label's way: far enough along that the two
   /// never touch, near enough the far end to still say which way it flows.
   static const double arrowPosition = 0.8;
@@ -67,6 +21,7 @@ class EdgePainter extends CustomPainter {
   EdgePainter({
     required this.pipeline,
     required this.routing,
+    required this.labels,
     required this.database,
     required this.solution,
     required this.selectedEdgeId,
@@ -84,6 +39,9 @@ class EdgePainter extends CustomPainter {
   /// label have to agree with what is drawn, so one answer is shared rather
   /// than three computed.
   final EdgeRouting routing;
+
+  /// Where each wire's figure sits, and what it says. Same reason.
+  final EdgeLabels labels;
   final GameDatabase database;
   final PipelineSolution solution;
   final String? selectedEdgeId;
@@ -98,7 +56,6 @@ class EdgePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fractions = labelFractions(pipeline);
     final maxFlow = solution.edgeFlows.values
         .fold<double>(0, (best, v) => math.max(best, v.abs()));
 
@@ -149,8 +106,7 @@ class EdgePainter extends CustomPainter {
 
       _drawArrow(canvas, path, colour);
       if (scale > 0.55) {
-        _drawFlowLabel(
-            canvas, path, flow, item, edge, fractions[edge.id] ?? labelPosition);
+        _drawFlowLabel(canvas, path, edge);
       }
     }
 
@@ -198,55 +154,40 @@ class EdgePainter extends CustomPainter {
     canvas.drawPath(head, Paint()..color = colour);
   }
 
-  void _drawFlowLabel(
-    Canvas canvas,
-    Path path,
-    double flow,
-    Item? item,
-    PipelineEdge edge,
-    double along,
-  ) {
+  void _drawFlowLabel(Canvas canvas, Path path, PipelineEdge edge) {
+    final text = labels.textFor(edge.id);
+    if (text == null) return;
     final metrics = path.computeMetrics().toList();
     if (metrics.isEmpty) return;
-    final tangent =
-        metrics.first.getTangentForOffset(metrics.first.length * along);
+    final tangent = metrics.first
+        .getTangentForOffset(metrics.first.length * labels.fractionFor(edge.id));
     if (tangent == null) return;
 
-    final precision = rateDisplay == RateDisplay.perSecond && flow.abs() >= 100
-        ? 0
-        : 1;
-    // A flow needing more than one pipe is worth seeing without clicking, since
-    // it is the difference between a build that fits and one that does not.
-    final runs =
-        item == null ? 0 : Conduits.runsNeeded(flow, item.category);
-    final suffix = runs > 1 ? '  ×$runs' : '';
-    final text = TextPainter(
+    final painter = TextPainter(
       text: TextSpan(
-        text: (item?.formatRate(flow, rateDisplay, precision: precision) ??
-                Unit.gramsPerSecond.format(flow, precision: precision)) +
-            suffix,
+        text: text,
         style: OniType.numberSmall.copyWith(color: OniColors.text),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
 
-    final centre = tangent.position;
     final rect = Rect.fromCenter(
-      center: centre,
-      width: text.width + 8,
-      height: text.height + 3,
+      center: tangent.position,
+      width: painter.width + 8,
+      height: painter.height + 3,
     );
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, const Radius.circular(3)),
       Paint()..color = OniColors.background.withValues(alpha: 0.85),
     );
-    text.paint(canvas, rect.topLeft + const Offset(4, 1.5));
+    painter.paint(canvas, rect.topLeft + const Offset(4, 1.5));
   }
 
   @override
   bool shouldRepaint(EdgePainter old) =>
       old.pipeline != pipeline ||
       old.routing != routing ||
+      old.labels != labels ||
       old.solution != solution ||
       old.selectedEdgeId != selectedEdgeId ||
       old.hoveredEdgeId != hoveredEdgeId ||

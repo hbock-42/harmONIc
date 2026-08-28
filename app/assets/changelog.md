@@ -8,6 +8,24 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Flow figures no longer disappear behind cards
+
+Wires are drawn under the cards — that is what lets one pass behind a card
+without cutting a hole through it — and the figure on a wire was drawn with
+it. So a figure that happened to land on a card was not merely hard to
+read. It was not on the screen at all, and nothing said one had gone.
+
+Eight of forty-nine on one build sent in, five of fifty-two on another.
+
+Each figure now slides along its own wire until it is in clear air. Along
+the wire rather than off to one side, because a number floating beside a
+line belongs to no line in particular, and saying which line is the whole
+job. A figure with nothing in its way does not move: the middle of a wire
+is where the eye looks for it.
+
+Where no spot on a wire is clear of both the cards and the other figures,
+clearing the cards wins — crowded and readable beats tidy and invisible.
+
 ## 28 August 2026 — Nothing is placed on top of anything any more
 
 Once the app could spot a buried card it was worth asking how they got

@@ -15,6 +15,7 @@ import 'minimap.dart';
 import 'node_widget.dart';
 import 'unbounded_layer.dart';
 import 'port_menu.dart';
+import 'labels.dart';
 import 'routing.dart';
 
 /// The pan/zoom graph editor.
@@ -517,6 +518,33 @@ class GraphCanvasState extends State<GraphCanvas>
   Pipeline? _routedFor;
   EdgeRouting _routed = EdgeRouting.none;
 
+  /// Where the labels go, worked out with the routes and thrown away with
+  /// them. Also depends on the figures themselves and on the units they are
+  /// shown in, since both change how wide a label is and so whether it fits
+  /// where it wanted to sit.
+  (Pipeline, PipelineSolution, RateDisplay)? _labelledFor;
+  EdgeLabels _labelled = EdgeLabels.none;
+
+  EdgeLabels get labels {
+    final key = (
+      controller.pipeline,
+      controller.solution,
+      widget.rateDisplay,
+    );
+    if (_labelledFor != key) {
+      _labelledFor = key;
+      _labelled = EdgeLabels.place(
+        pipeline: controller.pipeline,
+        database: controller.database,
+        solution: controller.solution,
+        routing: routing,
+        rateDisplay: widget.rateDisplay,
+        specOf: controller.specFor,
+      );
+    }
+    return _labelled;
+  }
+
   /// The routing the painter, the click test and the label should all use.
   ///
   /// While a card is being dragged, the wires attached to *it* go back to
@@ -544,11 +572,8 @@ class GraphCanvasState extends State<GraphCanvas>
   /// The labels sit at a fixed fraction along each wire, so this asks the same
   /// question the painter answered rather than storing what it drew.
   String? _labelAt(Offset world, {double tolerance = 18}) {
-    final fractions = EdgePainter.labelFractions(controller.pipeline);
     for (final edge in controller.pipeline.edges) {
-      final along = fractions[edge.id];
-      if (along == null) continue;
-      final anchor = _pointAlong(edge, along);
+      final anchor = _pointAlong(edge, labels.fractionFor(edge.id));
       if (anchor != null && (anchor - world).distance < tolerance) {
         return edge.id;
       }
@@ -558,10 +583,8 @@ class GraphCanvasState extends State<GraphCanvas>
 
   /// Where an edge's flow label sits, for tests and for anything else that
   /// needs to point at it.
-  Offset? labelAnchorFor(String edgeId) => pointAlongEdge(
-      edgeId,
-      EdgePainter.labelFractions(controller.pipeline)[edgeId] ??
-          EdgePainter.labelPosition);
+  Offset? labelAnchorFor(String edgeId) =>
+      pointAlongEdge(edgeId, labels.fractionFor(edgeId));
 
   /// A point a given fraction of the way along a wire.
   Offset? pointAlongEdge(String edgeId, double fraction) {
@@ -813,6 +836,7 @@ class GraphCanvasState extends State<GraphCanvas>
                           painter: EdgePainter(
                             pipeline: controller.pipeline,
                             routing: routing,
+                            labels: labels,
                             database: controller.database,
                             solution: controller.solution,
                             selectedEdgeId: selectedEdgeId,
