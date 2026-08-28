@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A box to paste a build into
+
+**Paste build** reads the clipboard, and a browser often will not let it. There
+is a field beside it now, so a share code has a way in whatever the browser
+thinks.
+
+And a code that will not open says which kind of not-opening it is. A share
+code damaged in transit — one character lost to a line wrap or a bad copy —
+used to be reported as "that does not look like a pipeline", which sends you
+looking for the wrong problem: a broken code looks perfectly fine to the eye.
+
 ## 28 August 2026 — A ceiling means the supply, not each of its lines
 
 **"At most this much" was being written onto every line out of a supply**, so a

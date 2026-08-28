@@ -157,6 +157,27 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
     }
   }
 
+  final TextEditingController _pasted = TextEditingController();
+
+  @override
+  void dispose() {
+    _pasted.dispose();
+    super.dispose();
+  }
+
+  /// The code somebody put in the box, which is the way in when the clipboard
+  /// is not one.
+  Future<void> _openTyped() async {
+    try {
+      await workspace.import(PipelineShareCode.decode(_pasted.text));
+      onClose();
+    } on FormatException catch (error) {
+      if (mounted) setState(() => _message = error.message);
+    } on Object {
+      if (mounted) setState(() => _message = 'That build could not be read.');
+    }
+  }
+
   Future<void> _paste() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     final text = data?.text ?? '';
@@ -391,6 +412,37 @@ class _PipelinesMenuState extends State<PipelinesMenu> {
                   label: 'Paste build',
                   compact: true,
                   onPressed: _paste,
+                ),
+              ],
+            ),
+          ),
+          // A box to paste into, as well as the button that reads the
+          // clipboard. On the web that read needs a permission the browser
+          // often will not give, and there is nothing the app can do about it
+          // except offer somewhere to put the code by hand -- which is also
+          // the only way in for anybody whose clipboard has already moved on.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                OniSpacing.md, 0, OniSpacing.md, OniSpacing.sm),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OniField(
+                    key: const ValueKey('paste-code'),
+                    controller: _pasted,
+                    hint: 'or paste a share code here',
+                    clearable: true,
+                    onChanged: (_) => setState(() {}),
+                    onSubmitted: (_) => _openTyped(),
+                  ),
+                ),
+                const SizedBox(width: OniSpacing.sm),
+                OniButton(
+                  label: 'Open',
+                  compact: true,
+                  tone: OniButtonTone.accent,
+                  onPressed:
+                      _pasted.text.trim().isEmpty ? null : _openTyped,
                 ),
               ],
             ),

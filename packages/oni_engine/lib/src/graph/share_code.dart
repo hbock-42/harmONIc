@@ -33,19 +33,35 @@ abstract final class PipelineShareCode {
     if (trimmed.startsWith('{')) {
       return Pipeline.fromJsonString(trimmed);
     }
+    final Uint8List bytes;
+    try {
+      bytes = base64Url.decode(_padded(trimmed));
+    } on Object {
+      throw const FormatException(
+          'That does not look like a pipeline: expected a share code or JSON.');
+    }
+
     final String json;
     try {
-      final bytes = base64Url.decode(_padded(trimmed));
       // Every code written before this was compressed is still a code, and
       // there are months of them in chat logs and issue threads. Gzip's own
       // two-byte header says which this is, so nothing had to be stamped on
       // the front of the new ones to tell them apart.
-      json = utf8.decode(_isGzip(bytes)
-          ? GZipDecoder().decodeBytes(bytes)
-          : bytes);
+      json = utf8.decode(
+          _isGzip(bytes) ? GZipDecoder().decodeBytes(bytes) : bytes);
     } on Object {
-      throw const FormatException(
-          'That does not look like a pipeline: expected a share code or JSON.');
+      // Past the base64 and into the build itself, so this *was* a share code
+      // and something happened to it on the way here. Worth saying, because
+      // "that is not a share code" sends somebody looking for the wrong
+      // problem: a code broken by a line wrap or a lost character looks
+      // perfectly fine to the eye.
+      throw FormatException(
+          _isGzip(bytes)
+              ? 'This is a share code, but it is damaged: something changed '
+                  'in it between there and here. Copy it again, all of it, '
+                  'and watch for a line break in the middle.'
+              : 'That does not look like a pipeline: expected a share code or '
+                  'JSON.');
     }
     return Pipeline.fromJsonString(json);
   }
