@@ -550,6 +550,18 @@ class AutoLayout {
         }
       }
 
+      // Whatever the passes made of it, no two cards in a column may share
+      // space. The priority method places each node in the room its *settled*
+      // neighbours leave, and two of its branches -- a node with no wire to
+      // flatten, and one squeezed out because there is no room -- keep the
+      // node where it was and declare it settled without checking. Either can
+      // leave it lying on a card that has since moved, which on reported
+      // builds it did: two pairs on one, four on another, every one of them
+      // in the same column.
+      for (final column in columns) {
+        _separate(column, y);
+      }
+
       final score = _score(positions, y, columns);
       if (better(score, bestScore)) {
         best = {...y};
@@ -561,6 +573,58 @@ class AutoLayout {
       for (final entry in positions.entries)
         entry.key: Offset(entry.value.dx, NodeLayout.snap(best[entry.key]!)),
     };
+  }
+
+  /// Pushes a column apart until nothing in it overlaps anything else, moving
+  /// everything as little as it can.
+  ///
+  /// Subtracting the room each card needs from where it wants to be turns
+  /// "must sit a card's height below the one above" into "must not be above
+  /// the one above" — and the least-moved arrangement obeying *that* is the
+  /// isotonic regression of what they wanted, which pool-adjacent-violators
+  /// gives exactly. A plain sweep downwards also separates them, and cost
+  /// seventeen per cent more sag across the corpus, because it can only ever
+  /// push a card down when the cheaper answer was to lift the one above it.
+  void _separate(List<String> column, Map<String, double> y) {
+    if (column.isEmpty) return;
+    final room = List<double>.filled(column.length, 0);
+    for (var i = 1; i < column.length; i++) {
+      room[i] = room[i - 1] + _sizeOf(column[i - 1]).height + rowGap;
+    }
+    final fitted = _isotonic([
+      for (var i = 0; i < column.length; i++) y[column[i]]! - room[i],
+    ]);
+    for (var i = 0; i < column.length; i++) {
+      y[column[i]] = fitted[i] + room[i];
+    }
+  }
+
+  /// The nearest run of never-decreasing numbers to the ones given.
+  ///
+  /// Pool adjacent violators: walk along, and wherever the new value would go
+  /// backwards, merge it with what came before and give the pair their common
+  /// average — repeating, since a merge can put the block below the one before
+  /// *it*. What comes out is the least-squares answer, so no card moves
+  /// further than it has to.
+  static List<double> _isotonic(List<double> wanted) {
+    final level = <double>[];
+    final size = <int>[];
+    for (final want in wanted) {
+      var value = want;
+      var count = 1;
+      while (level.isNotEmpty && level.last > value) {
+        final wasValue = level.removeLast();
+        final wasCount = size.removeLast();
+        value = (value * count + wasValue * wasCount) / (count + wasCount);
+        count += wasCount;
+      }
+      level.add(value);
+      size.add(count);
+    }
+    return <double>[
+      for (var block = 0; block < level.length; block++)
+        for (var i = 0; i < size[block]; i++) level[block],
+    ];
   }
 
   /// How bad an arrangement is, in the order these things matter.

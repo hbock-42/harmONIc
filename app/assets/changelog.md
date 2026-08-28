@@ -8,6 +8,22 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Tidy no longer leaves cards on top of each other
+
+Reported, and easy to confirm once there was something to confirm it with:
+tidying a build could put two cards in the same place. Two pairs on one
+build sent in, four on another — every one of them within a column.
+
+Arranging a column moves the busiest cards first and lets the rest take
+what room is left, and a card that found no room stayed exactly where it
+was, which by then could be underneath something. They are now pushed
+apart, moving each one as little as possible rather than simply shoving
+everything downwards.
+
+It costs a little droop — about a tenth more across the test corpus. Some
+of the flatness it had was bought by letting two cards share a spot, which
+makes the wire between them perfectly straight and the build unreadable.
+
 ## 28 August 2026 — A card hidden under another card says so
 
 Found while measuring the new wire routing rather than from a report: a

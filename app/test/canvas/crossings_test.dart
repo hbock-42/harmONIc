@@ -116,6 +116,65 @@ int wiresOverNodes(Pipeline pipeline, Map<String, Offset> at) {
   return total;
 }
 
+/// Four hundred-odd random builds, the same ones every run.
+///
+/// Was written inline inside the sag measurement and is now shared, because
+/// the thing that most wanted checking against every graph -- that no card
+/// ends up on top of another -- had only ever been asked of one hand-made one.
+List<Pipeline> corpus() {
+  final specs = [
+    for (final id in [
+      'electrolyzer', 'hydrogen_generator', 'coal_generator', 'water_sieve',
+      'deodorizer', 'algae_distiller', 'oxygen_diffuser', 'carbon_skimmer',
+      'metal_refinery', 'rock_crusher_sand', 'oil_refinery', 'polymer_press',
+      'petroleum_generator', 'ethanol_distiller', 'compost',
+      'fertilizer_synthesizer', 'duplicant', 'hatch', 'mealwood',
+      'sleet_wheat',
+    ])
+      testDatabase.processOrThrow(id),
+  ];
+  var seed = 12345;
+  int next(int bound) {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return seed % bound;
+  }
+
+  final built = <Pipeline>[];
+  for (var trial = 0; trial < 600; trial++) {
+    final chosen = <ProcessSpec>[];
+    final size = 6 + next(9);
+    for (var i = 0; i < size; i++) {
+      chosen.add(specs[next(specs.length)]);
+    }
+    final b = PipelineBuilder(testDatabase, name: 'random');
+    final ids = <String>[];
+    for (var i = 0; i < chosen.length; i++) {
+      final id = 'n$i';
+      b.add(chosen[i].id, nodeId: id);
+      ids.add(id);
+    }
+    var edges = 0;
+    for (var i = 0; i < chosen.length; i++) {
+      for (var j = i + 1; j < chosen.length; j++) {
+        final shared = chosen[i].outputs
+            .map((p) => p.itemId)
+            .toSet()
+            .intersection(chosen[j].inputs.map((p) => p.itemId).toSet());
+        if (shared.isEmpty) continue;
+        try {
+          b.connectItem(ids[i], ids[j], shared.first);
+          edges++;
+        } catch (_) {
+          continue;
+        }
+      }
+    }
+    if (edges < 4) continue;
+    built.add(b.build());
+  }
+  return built;
+}
+
 void main() {
   Map<String, Offset> layoutOf(Pipeline pipeline) =>
       AutoLayout(pipeline: pipeline, database: testDatabase).positions();
@@ -332,58 +391,37 @@ void main() {
       }
     });
 
-    test('the corpus sags less than it did, and tangles no more', () {
-      final specs = [
-        for (final id in [
-          'electrolyzer', 'hydrogen_generator', 'coal_generator', 'water_sieve',
-          'deodorizer', 'algae_distiller', 'oxygen_diffuser', 'carbon_skimmer',
-          'metal_refinery', 'rock_crusher_sand', 'oil_refinery', 'polymer_press',
-          'petroleum_generator', 'ethanol_distiller', 'compost',
-          'fertilizer_synthesizer', 'duplicant', 'hatch', 'mealwood',
-          'sleet_wheat',
-        ])
-          testDatabase.processOrThrow(id),
-      ];
-      var seed = 12345;
-      int next(int bound) {
-        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-        return seed % bound;
+    test('and that holds across the whole corpus, not just one tidy graph',
+        () {
+      // This test existed for one hand-made graph and passed all along while
+      // real builds came out with cards on top of each other -- two pairs on
+      // one that was sent in, four on another. One graph proves the layout can
+      // be asked nicely; four hundred prove it cannot be caught out.
+      var overlaps = 0;
+      var graphs = 0;
+      for (final pipeline in corpus()) {
+        graphs++;
+        final at = layoutOf(pipeline);
+        final rects = [
+          for (final n in pipeline.nodes)
+            if (at[n.id] case final Offset o)
+              o & NodeLayout.sizeOf(testDatabase.processOrThrow(n.specId)),
+        ];
+        for (var i = 0; i < rects.length; i++) {
+          for (var j = i + 1; j < rects.length; j++) {
+            if (rects[i].overlaps(rects[j])) overlaps++;
+          }
+        }
       }
+      expect(graphs, greaterThan(400), reason: 'the corpus is still there');
+      expect(overlaps, 0);
+    });
 
+    test('the corpus sags less than it did, and tangles no more', () {
       var total = 0.0;
       var through = 0;
       var graphs = 0;
-      for (var trial = 0; trial < 600; trial++) {
-        final chosen = <ProcessSpec>[];
-        final size = 6 + next(9);
-        for (var i = 0; i < size; i++) {
-          chosen.add(specs[next(specs.length)]);
-        }
-        final b = PipelineBuilder(testDatabase, name: 'random');
-        final ids = <String>[];
-        for (var i = 0; i < chosen.length; i++) {
-          final id = 'n$i';
-          b.add(chosen[i].id, nodeId: id);
-          ids.add(id);
-        }
-        var edges = 0;
-        for (var i = 0; i < chosen.length; i++) {
-          for (var j = i + 1; j < chosen.length; j++) {
-            final shared = chosen[i].outputs
-                .map((p) => p.itemId)
-                .toSet()
-                .intersection(chosen[j].inputs.map((p) => p.itemId).toSet());
-            if (shared.isEmpty) continue;
-            try {
-              b.connectItem(ids[i], ids[j], shared.first);
-              edges++;
-            } catch (_) {
-              continue;
-            }
-          }
-        }
-        if (edges < 4) continue;
-        final pipeline = b.build();
+      for (final pipeline in corpus()) {
         final at = layoutOf(pipeline);
         total += sag(pipeline, at);
         through += wiresOverNodes(pipeline, at);
@@ -402,9 +440,17 @@ void main() {
       // of a card is one you cannot follow at all — and it is the trade a
       // person makes by hand, moving a node down out of the way even though its
       // own wire then has further to fall.
+      //
+      // 720 102 was the figure while columns were still allowed to overlap
+      // themselves, and part of it was bought that way: two cards in the same
+      // place make the wires between them perfectly flat. Reported, and true
+      // of real builds — two overlapping pairs on one, four on another, every
+      // one of them within a column. Separating them costs 12 % more sag and
+      // that is simply what it costs; the arrangement it is measured against
+      // was never one the app could legally draw.
       expect(graphs, 424);
       expect(through, lessThanOrEqualTo(983));
-      expect(total, lessThanOrEqualTo(720102));
+      expect(total, lessThanOrEqualTo(811177));
     });
   });
 
