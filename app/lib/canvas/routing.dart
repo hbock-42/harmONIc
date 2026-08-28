@@ -57,15 +57,30 @@ const double _stub = 20;
 /// How finely a candidate curve is checked against the cards.
 const int _samples = 40;
 
-/// Beyond this many cards in the way, the detour is abandoned and the wire
-/// goes back to being a plain curve.
+/// Beyond this many cards genuinely blocking one wire, the detour is abandoned
+/// and the wire goes back to being a plain curve.
+///
+/// Genuinely blocking, not merely nearby: this counts the cards found to be in
+/// the way, which is a far smaller number than the cards a long wire passes
+/// anywhere near. Capping the nearby ones instead is what the first version
+/// did, and on a full-screen build every long wire had dozens of cards in its
+/// bounding box, gave up, and went back to being drawn through them -- which
+/// is exactly the wire you most want routed.
 ///
 /// The visibility graph is quadratic in corners and each of its edges is
-/// checked against every card, so the work grows as the fourth power of what
-/// is in the way. This is not a performance tuning knob so much as a promise
-/// that a pathological build cannot lock the editor up: a wire drawn through
-/// a card is a blemish, and a frozen canvas is not.
+/// checked against every card, so the work grows sharply in what is in the
+/// way. This is less a tuning knob than a promise that a pathological build
+/// cannot lock the editor up: a wire drawn through a card is a blemish, and a
+/// frozen canvas is not.
 const int _obstacleLimit = 24;
+
+/// How many times to look again after routing round what was known to be in
+/// the way.
+///
+/// Going round one card can put a wire across another that it was nowhere near
+/// before, so each pass adds whatever the last route ran into and tries again.
+/// It settles in two or three; the limit is only there so it terminates.
+const int _rounds = 6;
 
 /// Where every wire goes, worked out once for a given arrangement of cards.
 ///
@@ -142,14 +157,14 @@ class EdgeRouting {
   /// two cards they most obviously run over.
   ///
   /// Measured on real builds, and on copies of one laid out side by side:
-  /// 2.4 ms at 41 nodes, 6.7 ms at 123, 14 ms at 246, 24 ms at 369. Once per
+  /// 1.1 ms at 41 nodes, 3.8 ms at 123, 8.8 ms at 246, 15 ms at 369. Once per
   /// edit, which is fine, and nowhere near affordable per frame of a drag --
-  /// hence [EdgeRouting.none] while a card is moving.
+  /// hence dropping the routes of the card being dragged instead.
   ///
-  /// The growth that is left is the pass below that asks, for each wire, which
-  /// cards are anywhere near it: every wire against every card. A grid index
-  /// would make that near-constant, and is the first thing to reach for if a
-  /// build ever gets big enough for the pause after an edit to be noticed.
+  /// The growth that is left is the pass below that asks which cards are near
+  /// a given patch of canvas: every wire against every card, a few times over.
+  /// A grid index would make it near-constant, and is the first thing to reach
+  /// for if a build ever gets big enough for the pause after an edit to show.
   ///
   /// A wire's own cards are not obstacles to it: it starts and ends on them,
   /// so it necessarily touches them, and treating them as things to avoid
@@ -182,18 +197,21 @@ class EdgeRouting {
       // rectangles per wire and then filtering it was the single biggest cost
       // here: on a 369-node build that is 173 000 rectangles allocated to
       // route 468 wires, before any routing happens.
-      final span = Rect.fromPoints(from, to).inflate(kClearance * 2);
-      final near = <Rect>[];
-      for (final entry in rects.entries) {
-        // Its own cards keep no clearance: the wire starts and ends on them,
-        // and asking it to stand off a card it is plugged into would either
-        // fail outright or push every wire away from its own port. Crossing
-        // the body of one is still a crossing.
-        final own = entry.key == edge.fromNodeId || entry.key == edge.toNodeId;
-        final grown = entry.value
-            .inflate(own ? kOwnClearance : kClearance);
-        if (grown.overlaps(span)) near.add(grown);
+      List<Rect> near(Rect bounds) {
+        final found = <Rect>[];
+        for (final entry in rects.entries) {
+          // Its own cards keep a smaller clearance: the wire starts and ends
+          // on them, and asking it to stand well off a card it is plugged into
+          // would either fail outright or push it off its own port.
+          final own =
+              entry.key == edge.fromNodeId || entry.key == edge.toNodeId;
+          final grown =
+              entry.value.inflate(own ? kOwnClearance : kClearance);
+          if (grown.overlaps(bounds)) found.add(grown);
+        }
+        return found;
       }
+
       final routed = _route(from, to, near);
       if (routed != null) paths[edge.id] = routed;
     }
@@ -215,36 +233,84 @@ Path? routedEdgePath(
   Offset to,
   List<Rect> obstacles, {
   List<Rect> own = const <Rect>[],
-}) {
-  final span = Rect.fromPoints(from, to).inflate(kClearance * 2);
-  return _route(from, to, <Rect>[
-    for (final rect in obstacles)
-      if (rect.inflate(kClearance).overlaps(span)) rect.inflate(kClearance),
-    for (final rect in own)
-      if (rect.inflate(kOwnClearance).overlaps(span)) rect.inflate(kOwnClearance),
-  ]);
-}
+}) =>
+    _route(from, to, (Rect bounds) {
+      final near = <Rect>[];
+      for (final rect in obstacles) {
+        final grown = rect.inflate(kClearance);
+        if (grown.overlaps(bounds)) near.add(grown);
+      }
+      for (final rect in own) {
+        final grown = rect.inflate(kOwnClearance);
+        if (grown.overlaps(bounds)) near.add(grown);
+      }
+      return near;
+    });
 
-/// The same, given the cards already grown by the clearance and already
-/// narrowed to the ones anywhere near.
-Path? _route(Offset from, Offset to, List<Rect> near) {
-  if (near.isEmpty) return null;
-  // Before the sampling, not after: a wire with a crowd in the way is going to
-  // be given up on either way, and there is no sense paying forty samples
-  // against every one of them to find that out.
-  if (near.length > _obstacleLimit) return null;
+/// The cards near a given patch of canvas, already grown by their clearance.
+///
+/// A lookup rather than a list, because which cards matter depends on where
+/// the wire has been pushed to. Filtering once against the straight line
+/// between the two ports was wrong in a way that took a picture to see: going
+/// round the first card lifted a wire clean out of that box, into a second
+/// card that had never been a candidate and so could never be found.
+typedef _CardsNear = List<Rect> Function(Rect bounds);
+
+/// Cards earn their way into the visibility graph by being shown to block this
+/// particular wire. Putting every nearby card in it is both far slower and,
+/// past a certain build size, fatal: a wire crossing a full screen has dozens
+/// of cards in its bounding box and almost none of them in its way.
+Path? _route(Offset from, Offset to, _CardsNear near) {
   // Between the stubs, not the ports, for the test as well as the routing. A
   // port dot is laid out *inside* its card, so a path measured from the dot
   // starts inside an obstacle and every wire in the build would report itself
   // as crossing something.
   final start = from + const Offset(_stub, 0);
   final end = to - const Offset(_stub, 0);
-  if (!_pathEnters(edgePath(start, end), near)) return null;
+  final direct = edgePath(start, end);
+  final candidates = near(direct.getBounds());
+  if (candidates.isEmpty) return null;
+  if (!_pathEnters(direct, candidates)) return null;
 
-  final corners = _shortestPath(start, end, near);
-  if (corners == null) return null;
+  final blocking = <Rect>[];
+  var corners = <Offset>[start, end];
+  for (var round = 0; round < _rounds; round++) {
+    final found = <Rect>[
+      for (final rect in near(_boundsOf(corners)))
+        if (!blocking.contains(rect) && _polylineEnters(corners, rect)) rect,
+    ];
+    if (found.isEmpty) break;
+    blocking.addAll(found);
+    if (blocking.length > _obstacleLimit) return null;
+    final next = _shortestPath(start, end, blocking);
+    if (next == null) return null;
+    corners = next;
+  }
 
   return _smooth(<Offset>[from, ...corners, to]);
+}
+
+Rect _boundsOf(List<Offset> points) {
+  var left = points.first.dx;
+  var right = left;
+  var top = points.first.dy;
+  var bottom = top;
+  for (final p in points) {
+    if (p.dx < left) left = p.dx;
+    if (p.dx > right) right = p.dx;
+    if (p.dy < top) top = p.dy;
+    if (p.dy > bottom) bottom = p.dy;
+  }
+  return Rect.fromLTRB(left, top, right, bottom);
+}
+
+/// True when any leg of the polyline passes through [rect].
+bool _polylineEnters(List<Offset> points, Rect rect) {
+  final inside = rect.deflate(0.5);
+  for (var i = 0; i < points.length - 1; i++) {
+    if (_segmentEntersRect(points[i], points[i + 1], inside)) return true;
+  }
+  return false;
 }
 
 /// True when any part of [path] passes inside one of [rects].

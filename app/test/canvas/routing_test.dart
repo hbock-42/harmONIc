@@ -97,6 +97,36 @@ void main() {
       expect(_entersAnyOf(path!, pair), isFalse);
     });
 
+    test('a long wire past a crowd is routed, not given up on', () {
+      // Reported on a full-screen build: the long wires were the ones still
+      // drawn through cards. A wire crossing the canvas has a great many cards
+      // in its bounding box and almost none of them in its way, and capping on
+      // the nearby ones meant the wires that most needed routing were the ones
+      // abandoned.
+      final crowd = <Rect>[
+        // Two rows of cards well clear of the line, and one squarely on it.
+        for (var i = 0; i < 20; i++)
+          Rect.fromLTWH(60.0 + i * 230, -400, 216, 160),
+        for (var i = 0; i < 20; i++)
+          Rect.fromLTWH(60.0 + i * 230, 400, 216, 160),
+        const Rect.fromLTWH(2000, 60, 216, 120),
+      ];
+      final path = routedEdgePath(from, const Offset(4600, 120), crowd);
+      expect(path, isNotNull,
+          reason: 'the one card actually in the way is what counts');
+      expect(_entersAnyOf(path!, crowd), isFalse);
+    });
+
+    test('going round one card can reveal another, and it looks again', () {
+      // The detour round the first card runs straight into a second that the
+      // original line missed entirely. One pass would stop there.
+      const first = Rect.fromLTWH(180, 60, 216, 120);
+      const second = Rect.fromLTWH(150, -80, 300, 130);
+      final path = routedEdgePath(from, to, const [first, second]);
+      expect(path, isNotNull);
+      expect(_entersAnyOf(path!, const [first, second]), isFalse);
+    });
+
     test('a port walled in gives up and says so, rather than throwing', () {
       // Cards packed all round the start: there is no way out, and the honest
       // answer is a plain curve rather than an exception mid-paint.

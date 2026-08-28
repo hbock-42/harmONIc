@@ -18,7 +18,10 @@ between it actually came out of.
 
 A wire that would cross a card it does not belong to now goes round it,
 by the shortest way round, and keeps a little clear of the edge. Wires
-with nothing in the way are untouched, which is most of them.
+with nothing in the way are untouched, which is most of them. Long wires
+across a whole screen of cards are included — those were the ones still
+being drawn through things, because a wire that passes near forty cards
+is in the way of about two of them, and only those two count.
 
 This includes the two cards a wire is plugged into. A wire between a
 generator and the thing it powers leaves the right-hand edge of one and
