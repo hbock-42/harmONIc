@@ -279,6 +279,12 @@ port you *thought* was connected and is not looks exactly like one you meant to
 leave open, and that is what makes a build quietly fail to balance. Heat is
 left out: heat leaving a building is where heat goes.
 
+Select a node and it says **why** its amount is what it is. Every count in a
+build is settled by one thing — an amount you typed, or a port whose arithmetic
+has to come out — and the app names it: *"It is settled by its own oxygen:
+1.00 kg/s leaves and each one makes 888.00 g/s."* When nothing settles it yet,
+it says that too, which is the same thing the banner is asking you for.
+
 The number on a wire is its flow. Click it to switch every rate in the app
 between per second and per cycle. Select a wire and it says what carries it —
 how many pipes or wires, since a ratio that balances on paper is unbuildable at

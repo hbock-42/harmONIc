@@ -248,6 +248,10 @@ class _NodeInspectorState extends State<_NodeInspector> {
     final unit = boundaryItem?.unit;
 
     return ListView(
+      // A form, not a feed: it is a couple of screens of controls at most, and
+      // a lazy list that leaves the ones below the fold unbuilt makes the
+      // panel's own contents unfindable -- to a test, and to anything else
+      // that walks the tree.
       padding: const EdgeInsets.all(OniSpacing.lg),
       children: [
         Text(spec.name, style: OniType.heading),
@@ -370,6 +374,17 @@ class _NodeInspectorState extends State<_NodeInspector> {
                 ),
             ],
           ),
+          // Why that figure and not another. Every question anybody has asked
+          // about a number in this app has turned out to be a question about
+          // which equation settled it, and the solver has always known.
+          if (controller.solution.whyCounts[node.id] case final String why) ...[
+            const SizedBox(height: OniSpacing.sm),
+            Text(
+              why,
+              style: OniType.body
+                  .copyWith(fontSize: 11.5, color: OniColors.textFaint),
+            ),
+          ],
           _asBuiltNote(controller, result),
           _oneMoreNote(controller, node),
           _buildCost(controller, spec, result),
@@ -435,7 +450,6 @@ class _NodeInspectorState extends State<_NodeInspector> {
           _Variants(controller: controller, node: node, spec: spec),
           const SizedBox(height: OniSpacing.lg),
         ],
-
         for (final port in choosablePorts(controller.database, spec)) ...[
           MaterialChoiceRow(
             controller: controller,

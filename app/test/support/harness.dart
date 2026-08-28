@@ -32,8 +32,16 @@ Widget harness(Widget child) => WidgetsApp(
 
 /// A desktop-sized surface, since the editor is a three-column layout that does
 /// not fit the 800×600 test default.
-Future<void> useDesktopSurface(WidgetTester tester) async {
-  await tester.binding.setSurfaceSize(const Size(1440, 900));
+Future<void> useDesktopSurface(WidgetTester tester, {Size? size}) async {
+  // Tall enough for the whole of the inspector, which is a long panel and a
+  // lazy list: a widget below the fold is not built, so a test looking for one
+  // finds nothing and reads as a missing feature rather than a short window.
+  // Adding a single line to that panel used to break eight tests that had
+  // nothing to do with it.
+  //
+  // A test about the *viewport* -- what is off screen, what has to be scrolled
+  // to -- says its own size, because for those the window is the subject.
+  await tester.binding.setSurfaceSize(size ?? const Size(1440, 2200));
   addTearDown(() => tester.binding.setSurfaceSize(null));
 }
 

@@ -156,6 +156,7 @@ class PipelineSolution {
     required this.portBalances,
     required this.itemBalances,
     required this.freeNodeIds,
+    this.whyCounts = const {},
   });
 
   factory PipelineSolution.invalid(List<PipelineIssue> issues) =>
@@ -184,6 +185,14 @@ class PipelineSolution {
 
   /// Nodes the solver could not pin down; pinning any of them helps.
   final List<String> freeNodeIds;
+
+  /// Node id → why its amount is the amount it is, in words.
+  ///
+  /// Every report about a figure has been a question about *why*, and the
+  /// elimination has always known: one equation settles each count, and which
+  /// one it was is the answer. Empty when the solve was not asked to explain
+  /// itself.
+  final Map<String, String> whyCounts;
 
   /// The same solution, seen as if only these nodes were on the page.
   ///

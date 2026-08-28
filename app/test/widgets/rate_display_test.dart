@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/widgets.dart';
@@ -17,7 +18,8 @@ void main() {
   late MemoryJsonStore store;
 
   Future<void> pumpEditor(WidgetTester tester) async {
-    await useDesktopSurface(tester);
+    // A window, not a wall: this one is about what falls outside it.
+    await useDesktopSurface(tester, size: const Size(1440, 900));
     store = MemoryJsonStore();
     display = testDisplay(store);
     controller = testController();

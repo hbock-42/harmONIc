@@ -15,6 +15,19 @@ import 'solution.dart';
 /// See `docs/SOLVER.md` for the maths. In short: one variable per node, one
 /// balance equation per fed input port, one equation per pin, solved as a
 /// single linear system so that recycling loops need no special treatment.
+/// Why a row of the linear system exists, so that the answer can say which
+/// equation settled a count rather than quoting a row number at somebody.
+class _RowReason {
+  const _RowReason.balance(this.port) : nodeId = null;
+  const _RowReason.pin(String this.nodeId) : port = null;
+
+  /// The port whose balance this row is, where it is one.
+  final PortRef? port;
+
+  /// The node whose amount this row is, where it is a pin.
+  final String? nodeId;
+}
+
 class PipelineSolver {
   const PipelineSolver(this.database);
 
@@ -93,12 +106,17 @@ class PipelineSolver {
 
     final rows = <List<double>>[];
     final rhs = <double>[];
+    // What each row *is*, so that "which equation settled this count" can be
+    // said in words rather than as a row number.
+    final rowReasons = <_RowReason>[];
 
-    void addRow(void Function(List<double> row) build, double b) {
+    void addRow(void Function(List<double> row) build, double b,
+        _RowReason reason) {
       final row = List<double>.filled(nodes.length, 0);
       build(row);
       rows.add(row);
       rhs.add(b);
+      rowReasons.add(reason);
     }
 
     // Balance equations. A port only gets one when the edges attached to it are
@@ -139,7 +157,7 @@ class PipelineSolver {
             addFlowTerm(row, edge, 1);
           }
           row[index[node.id]!] -= rateOf(node, port);
-        }, 0);
+        }, 0, _RowReason.balance(PortRef(node.id, port.id)));
       }
     }
 
@@ -149,15 +167,17 @@ class PipelineSolver {
       final spec = database.processOrThrow(pipeline.nodeOrThrow(pin.nodeId).specId);
       switch (pin) {
         case BuildingCountPin(:final count):
-          addRow((row) => row[column] = 1, count);
+          addRow((row) => row[column] = 1, count, _RowReason.pin(pin.nodeId));
         case PortRatePin(:final portId, :final ratePerSecond):
           final node = pipeline.nodeOrThrow(pin.nodeId);
           final rate = rateOf(node, spec.portByIdOrThrow(portId));
-          addRow((row) => row[column] = rate, ratePerSecond);
+          addRow((row) => row[column] = rate, ratePerSecond,
+              _RowReason.pin(pin.nodeId));
         case StockPin(:final portId):
           final node = pipeline.nodeOrThrow(pin.nodeId);
           final rate = rateOf(node, spec.portByIdOrThrow(portId));
-          addRow((row) => row[column] = rate, pin.ratePerSecond);
+          addRow((row) => row[column] = rate, pin.ratePerSecond,
+              _RowReason.pin(pin.nodeId));
       }
     }
 
@@ -476,6 +496,10 @@ class PipelineSolver {
       portBalances: portBalances,
       itemBalances: itemBalances,
       freeNodeIds: freeNodeIds,
+      whyCounts: explain
+          ? _whyCounts(pipeline, index, linear, rowReasons, portBalances,
+              freeNodeIds)
+          : const {},
     );
   }
 
@@ -793,6 +817,84 @@ class PipelineSolver {
   /// How many ports it is worth trying in pairs. Every pair is a whole solve,
   /// and this runs between a keystroke and the answer.
   static const int _pairCeiling = 20;
+
+
+  /// Why each node's amount is the amount it is, in a sentence.
+  ///
+  /// One equation settles each count, and the elimination knows which. Said
+  /// from the answer rather than from the reduced row: the row is a
+  /// combination by the time it is used, and what a reader wants is the port
+  /// whose arithmetic pinned this down and the two numbers that did it.
+  Map<String, String> _whyCounts(
+    Pipeline pipeline,
+    Map<String, int> index,
+    LinearSolution linear,
+    List<_RowReason> rowReasons,
+    List<PortBalance> portBalances,
+    List<String> freeNodeIds,
+  ) {
+    PortBalance? balanceOf(PortRef ref) {
+      for (final b in portBalances) {
+        if (b.ref == ref) return b;
+      }
+      return null;
+    }
+
+    final why = <String, String>{};
+    for (final node in pipeline.nodes) {
+      if (freeNodeIds.contains(node.id)) {
+        why[node.id] = 'Nothing settles this yet, so any amount would do. '
+            'Give it one, or give one to something on the same run.';
+        continue;
+      }
+      // Its own amount, first and whatever the elimination chose. Several
+      // equations can settle one count and the pivot is whichever came to
+      // hand; being told a pinned node was settled by its own sulfur, when you
+      // typed the number yourself, is true and useless.
+      if (pipeline.pins.any((pin) => pin.nodeId == node.id)) {
+        why[node.id] = 'You set this one.';
+        continue;
+      }
+
+      final row = linear.settledBy[index[node.id]!];
+      final reason = row == null || row >= rowReasons.length
+          ? null
+          : rowReasons[row];
+      if (reason == null) continue;
+
+      if (reason.nodeId case final String pinned) {
+        why[node.id] = pinned == node.id
+            ? 'You set this one.'
+            : 'It follows from the amount you set on the '
+                '${_nodeName(pipeline, pinned)}.';
+        continue;
+      }
+
+      final ref = reason.port!;
+      final balance = balanceOf(ref);
+      final spec = database.process(pipeline.node(ref.nodeId)?.specId ?? '');
+      final port = spec?.portById(ref.portId);
+      final item = port == null ? null : database.item(port.itemId);
+      final each = port == null
+          ? null
+          : item?.formatRate(port.ratePerSecond, RateDisplay.perSecond) ??
+              _amount(port.ratePerSecond);
+      final linked = balance == null
+          ? null
+          : item?.formatRate(balance.linkedRate, RateDisplay.perSecond) ??
+              _amount(balance.linkedRate);
+
+      final whose = ref.nodeId == node.id
+          ? 'its own'
+          : '${_nodeName(pipeline, ref.nodeId)}\u2019s';
+      final what = item?.name.toLowerCase() ?? ref.portId;
+      why[node.id] = linked == null || each == null
+          ? 'It is settled by what has to balance at $whose $what.'
+          : 'It is settled by $whose $what: $linked ${port!.isInput ? 'arrives' : 'leaves'} '
+              'and each one ${port.isInput ? 'takes' : 'makes'} $each.';
+    }
+    return why;
+  }
 
   /// What to say when the loose end is on the end of a line carrying the rest.
   ///

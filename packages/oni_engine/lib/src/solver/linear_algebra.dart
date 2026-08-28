@@ -19,12 +19,21 @@ class LinearSolution {
     required this.values,
     required this.freeColumns,
     required this.rank,
+    this.settledBy = const {},
   });
 
   final LinearSolveStatus status;
   final List<double> values;
   final List<int> freeColumns;
   final int rank;
+
+  /// Column → the row that settled it, as that row was handed in.
+  ///
+  /// Which equation pinned a variable down is the whole of "why is this
+  /// number what it is", and the elimination knows it and used to throw it
+  /// away. Rows move about during pivoting, so each one's place in the list it
+  /// arrived in is carried along with it.
+  final Map<int, int> settledBy;
 }
 
 /// Solves `A·x = b` by Gaussian elimination with partial pivoting, then back
@@ -75,6 +84,10 @@ LinearSolution solveLinearSystem(
     m.add(row);
   }
 
+  // Where each row started, carried through the swaps below.
+  final origin = List<int>.generate(rowCount, (r) => r);
+  final settledBy = <int, int>{};
+
   final pivotColumns = <int>[];
   var pivotRow = 0;
   for (var col = 0; col < columnCount && pivotRow < rowCount; col++) {
@@ -92,6 +105,10 @@ LinearSolution solveLinearSystem(
     final tmp = m[pivotRow];
     m[pivotRow] = m[best];
     m[best] = tmp;
+    final tmpOrigin = origin[pivotRow];
+    origin[pivotRow] = origin[best];
+    origin[best] = tmpOrigin;
+    settledBy[col] = origin[pivotRow];
 
     final pivot = m[pivotRow][col];
     final top = m[pivotRow];
@@ -150,5 +167,6 @@ LinearSolution solveLinearSystem(
     values: values,
     freeColumns: free,
     rank: pivotColumns.length,
+    settledBy: settledBy,
   );
 }

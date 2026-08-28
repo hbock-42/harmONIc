@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Why this many
+
+Select a node and it says why its amount is the amount it is. *"You set this
+one."* — *"It follows from the amount you set on the Marine Drill."* — *"It is
+settled by its own oxygen: 1.00 kg/s leaves and each one makes 888.00 g/s."*
+
+Every question anybody has asked about a figure in this app has turned out to
+be a question about which equation settled it, answered by hand each time. The
+solver has always known: one row of its arithmetic pins each count down, and it
+was throwing away which.
+
 ## 28 August 2026 — Two ports at fault, and a button that admits what it draws
 
 - **"No single port explains this one: it takes two."** When a build cannot

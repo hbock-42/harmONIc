@@ -20,7 +20,8 @@ void main() {
       .build();
 
   Future<PipelineController> pumpCanvas(WidgetTester tester) async {
-    await useDesktopSurface(tester);
+    // A window, not a wall: this one is about what falls outside it.
+    await useDesktopSurface(tester, size: const Size(1440, 900));
     final controller = testController(pipeline: spreadOut());
     await tester.pumpWidget(harness(GraphCanvas(
       key: canvasKey,
@@ -118,7 +119,8 @@ void main() {
 
   testWidgets('clicking the suggestion in the banner goes to the node',
       (tester) async {
-    await useDesktopSurface(tester);
+    // A window, not a wall: this one is about what falls outside it.
+    await useDesktopSurface(tester, size: const Size(1440, 900));
     final controller = testController(pipeline: spreadOut());
     await tester.pumpWidget(harness(EditorScreen(
       controller: controller,
