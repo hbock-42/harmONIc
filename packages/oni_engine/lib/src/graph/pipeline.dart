@@ -21,6 +21,7 @@ class PipelineNode {
     this.materials = const {},
     this.temperatureC,
     this.notes,
+    this.capPerSecond,
   });
 
   factory PipelineNode.fromJson(Map<String, dynamic> json) => PipelineNode(
@@ -37,6 +38,7 @@ class PipelineNode {
             entry.key: entry.value as String,
         },
         temperatureC: (json['temperatureC'] as num?)?.toDouble(),
+        capPerSecond: (json['cap'] as num?)?.toDouble(),
         ventedPorts: {
           ...(json['ventedPorts'] as List<dynamic>? ?? const []).cast<String>(),
         },
@@ -91,6 +93,19 @@ class PipelineNode {
   final double? temperatureC;
   final String? notes;
 
+  /// A ceiling on what this node produces, in the item's unit per second.
+  ///
+  /// "I have at most this much", which is a different sentence from "exactly
+  /// this much flows" and the one somebody planning from what they have means.
+  /// It belongs to the node rather than to its lines: a ceiling written onto
+  /// each line separately is a ceiling per line, so a supply feeding two
+  /// things would give twice what was asked for -- which it did, and answered
+  /// fifteen kilograms of iron a second out of a supply capped at ten.
+  ///
+  /// A ceiling is an inequality, so like a valve it lives in the optimiser and
+  /// is a warning after the fact in the ordinary solver.
+  final double? capPerSecond;
+
   bool ventsPort(String portId) => ventedPorts.contains(portId);
 
   PipelineNode copyWith({
@@ -104,6 +119,8 @@ class PipelineNode {
     Map<String, String>? materials,
     double? temperatureC,
     String? notes,
+    double? capPerSecond,
+    bool clearCap = false,
   }) =>
       PipelineNode(
         id: id,
@@ -117,6 +134,7 @@ class PipelineNode {
         materials: materials ?? this.materials,
         temperatureC: temperatureC ?? this.temperatureC,
         notes: notes ?? this.notes,
+        capPerSecond: clearCap ? null : (capPerSecond ?? this.capPerSecond),
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -131,6 +149,7 @@ class PipelineNode {
         if (materials.isNotEmpty) 'materials': materials,
         if (temperatureC != null) 'temperatureC': temperatureC,
         if (notes != null) 'notes': notes,
+        if (capPerSecond != null) 'cap': capPerSecond,
       };
 }
 

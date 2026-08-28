@@ -1053,15 +1053,26 @@ class PipelineController extends ChangeNotifier {
   /// Where a supply feeds several lines it caps each of them, which is worth
   /// knowing and is said on screen.
   void setSupplyCeiling(String nodeId, double? ratePerSecond) {
-    _apply(_pipeline.copyWith(edges: [
-      for (final edge in _pipeline.edges)
-        if (edge.fromNodeId == nodeId)
-          (ratePerSecond == null
-              ? edge.copyWith(clearCap: true)
-              : edge.copyWith(capPerSecond: ratePerSecond))
-        else
-          edge,
-    ]));
+    // On the node, not on each of its lines. Written per line it was a
+    // ceiling *per line*: a supply feeding two things gave twice what was
+    // allowed, and answered fifteen kilograms of iron a second out of ten.
+    // Old builds carry the per-line version, so those are cleared as this
+    // one is set rather than left to add to it.
+    _apply(_pipeline.copyWith(
+      nodes: [
+        for (final node in _pipeline.nodes)
+          if (node.id == nodeId)
+            (ratePerSecond == null
+                ? node.copyWith(clearCap: true)
+                : node.copyWith(capPerSecond: ratePerSecond))
+          else
+            node,
+      ],
+      edges: [
+        for (final edge in _pipeline.edges)
+          if (edge.fromNodeId == nodeId) edge.copyWith(clearCap: true) else edge,
+      ],
+    ));
   }
 
   /// The supplies in this build whose amount could be read as a ceiling.
@@ -1113,12 +1124,12 @@ class PipelineController extends ChangeNotifier {
         for (final pin in _pipeline.pins)
           if (!ceilings.containsKey(pin.nodeId)) pin,
       ],
-      edges: [
-        for (final edge in _pipeline.edges)
-          if (ceilings[edge.fromNodeId] case final double cap)
-            edge.copyWith(capPerSecond: cap)
+      nodes: [
+        for (final node in _pipeline.nodes)
+          if (ceilings[node.id] case final double cap)
+            node.copyWith(capPerSecond: cap)
           else
-            edge,
+            node,
       ],
     ));
     final most = optimiseFor(outputNodeId, recordUndo: false);
@@ -1145,6 +1156,10 @@ class PipelineController extends ChangeNotifier {
   /// The ceiling on a supply, when its lines agree on one. Null when they do
   /// not, or when there is none.
   double? supplyCeiling(String nodeId) {
+    final node = _pipeline.node(nodeId);
+    if (node?.capPerSecond case final double cap) return cap;
+    // Builds saved before the ceiling moved onto the node carry it as the
+    // same figure on every line, which is what it used to mean.
     final caps = [
       for (final edge in _pipeline.edges)
         if (edge.fromNodeId == nodeId) edge.capPerSecond,

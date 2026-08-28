@@ -176,6 +176,23 @@ BestCase _optimise(
     constraints.add(Constraint.atMost(row()..[edgeColumn[edge.id]!] = 1, cap));
   }
 
+  // A ceiling on a node is the same idea one step up: not "this pipe carries
+  // at most" but "this supply gives at most", which is what somebody planning
+  // from what they have means. It has to be one constraint on the node rather
+  // than one on each of its lines, or a supply feeding two things gives twice
+  // what was allowed.
+  for (final node in pipeline.nodes) {
+    final cap = node.capPerSecond;
+    if (cap == null) continue;
+    final spec = database.processOrThrow(node.specId);
+    final port = spec.outputs.firstOrNull;
+    if (port == null) continue;
+    constraints.add(Constraint.atMost(
+      row()..[nodeColumn[node.id]!] = rateOf(node, port),
+      cap,
+    ));
+  }
+
   // A share somebody set by hand is a decision, so the optimiser works around
   // it rather than over it. Left alone, an unshared edge is free.
   //

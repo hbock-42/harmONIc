@@ -26,18 +26,41 @@ void main() {
         ..connectItem('crusher', 'sink_sand', 'sand'))
       .build();
 
-  test('a ceiling is the valve on every line leaving the supply', () {
+  test('a ceiling belongs to the supply, not to each of its lines', () {
+    // It used to be written onto every line, which made it a ceiling *per
+    // line*: a supply feeding two things gave twice what was allowed, and a
+    // build capped at ten kilograms of ore a second answered fifteen
+    // kilograms of iron.
     final controller = testController()..load(gasAndRock());
 
     controller.setSupplyCeiling('src_natural_gas', 180);
 
     expect(controller.supplyCeiling('src_natural_gas'), 180);
+    expect(controller.pipeline.nodeOrThrow('src_natural_gas').capPerSecond,
+        180);
     expect(
       controller.pipeline.edges
-          .firstWhere((e) => e.fromNodeId == 'src_natural_gas')
-          .capPerSecond,
-      180,
+          .where((e) => e.fromNodeId == 'src_natural_gas')
+          .every((e) => e.capPerSecond == null),
+      isTrue,
+      reason: 'the lines carry valves of their own and this is not one',
     );
+  });
+
+  test('and a build saved with the old one still reads', () {
+    // Builds are out there carrying the ceiling as the same figure on every
+    // line, which is what it used to mean.
+    final was = gasAndRock();
+    final controller = testController()
+      ..load(was.copyWith(edges: [
+        for (final edge in was.edges)
+          if (edge.fromNodeId == 'src_natural_gas')
+            edge.copyWith(capPerSecond: 180)
+          else
+            edge,
+      ]));
+
+    expect(controller.supplyCeiling('src_natural_gas'), 180);
   });
 
   test('and clearing it takes the valve off again', () {

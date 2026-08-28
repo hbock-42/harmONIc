@@ -8,6 +8,16 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A ceiling means the supply, not each of its lines
+
+**"At most this much" was being written onto every line out of a supply**, so a
+supply feeding two things gave twice what you allowed it. A build capped at ten
+kilograms of ore a second answered fifteen kilograms of iron — out of ten.
+
+The ceiling belongs to the supply now. Builds saved with the old one still read
+it, and the app says so when a build needs more than the ceiling allows,
+exactly as it does for a valve on a pipe.
+
 ## 28 August 2026 — What can I make from what I have?
 
 One button on an output node. It rereads every supply's amount as a ceiling

@@ -396,6 +396,30 @@ class PipelineSolver {
     // so it says when the build breaks one instead of quietly obeying it. The
     // flow above is what the line would *have* to carry; a valve set below
     // that is a valve you will have to open.
+    // The same for a ceiling on a supply, which is a valve on the whole of
+    // what it gives rather than on one of its lines.
+    for (final node in pipeline.nodes) {
+      final cap = node.capPerSecond;
+      if (cap == null) continue;
+      final spec = database.process(node.specId);
+      final port = spec?.outputs.firstOrNull;
+      final result = nodeResults[node.id];
+      if (spec == null || port == null || result == null) continue;
+      final gives = port.ratePerSecond * node.outputScale * result.count;
+      if (gives <= cap + 1e-6) continue;
+      final item = database.item(port.itemId);
+      String say(double v) =>
+          item?.formatRate(v, RateDisplay.perSecond) ?? v.toStringAsFixed(1);
+      resolvedIssues.add(PipelineIssue(
+        IssueSeverity.warning,
+        'This build needs ${say(gives)} from the '
+        '${node.label ?? spec.name}, and you have said you have at most '
+        '${say(cap)}. The figures here are what it needs; the ceiling is what '
+        'you told it you have.',
+        nodeId: node.id,
+      ));
+    }
+
     for (final edge in pipeline.edges) {
       final cap = edge.capPerSecond;
       if (cap == null) continue;
