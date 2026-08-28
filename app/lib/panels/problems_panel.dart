@@ -32,7 +32,10 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
     final blocking = solution.issues
         .where((i) => i.severity != IssueSeverity.info)
         .toList();
-    if (blocking.isEmpty) return const SizedBox.shrink();
+    final notice = controller.notice;
+    if (blocking.isEmpty) {
+      return notice == null ? const SizedBox.shrink() : _Notice(notice);
+    }
 
     // Info notes are the "here is how to fix it" half of an error and are worth
     // nothing if the banner hides them.
@@ -59,6 +62,7 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (notice != null) _Notice(notice, inset: true),
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 160),
             child: SingleChildScrollView(
@@ -139,6 +143,53 @@ class _IssueRow extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// Something the app did on the reader's behalf, said out loud.
+///
+/// Doing a thing quietly and doing it visibly are not the same, and this is
+/// the difference. It goes at the next edit; there is nothing to acknowledge.
+class _Notice extends StatelessWidget {
+  const _Notice(this.text, {this.inset = false});
+
+  final String text;
+  final bool inset;
+
+  @override
+  Widget build(BuildContext context) {
+    final line = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 1, right: OniSpacing.sm),
+          child: Text('✓', style: OniType.label.copyWith(color: OniColors.ok)),
+        ),
+        Expanded(
+          child: Text(text, style: OniType.body.copyWith(fontSize: 12)),
+        ),
+      ],
+    );
+    if (inset) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: OniSpacing.sm),
+        child: line,
+      );
+    }
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: OniSpacing.lg,
+        vertical: OniSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: OniColors.ok.withValues(alpha: 0.1),
+        border: Border(
+          bottom: BorderSide(color: OniColors.ok.withValues(alpha: 0.4)),
+        ),
+      ),
+      child: line,
+    );
+  }
 }
 
 /// Where a message points, as something to click.

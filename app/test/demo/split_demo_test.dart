@@ -29,31 +29,29 @@ void main() {
     // asked for anything, the ore divides equally because nobody said.
     final controller = blank();
     final run = DemoRun(letItChooseTheSplit, controller);
-    while (run.played < 7) {
+    while (run.played < 8) {
       await run.step();
     }
 
     expect(controller.solution.status, SolveStatus.solved);
-    expect(ironOut(controller), closeTo(6666.67, 0.01));
-    expect(asShown(controller, ironOut(controller)), '6.67 kg/s');
-    expect(run.says, contains('6.67 kg/s'));
+    expect(ironOut(controller), closeTo(7500, 0.01));
+    expect(asShown(controller, ironOut(controller)), '7.50 kg/s');
+    expect(run.says, contains('7.50 kg/s'));
     expect(controller.pipeline.edges.every((e) => e.share == null), isTrue,
         reason: 'nobody has set a share yet');
   });
 
-  test('and it is the iron that comes out even, not the ore going in',
+  test('and the ore really does divide evenly, which it did not use to',
       () async {
-    // The demo used to say the app "split the ore evenly". It does not: the
-    // ore goes 3.33 to the refinery and 6.67 to the crusher. What is even is
-    // the *iron*, because both lines into the output node are consumer-driven
-    // and neither names a share, so each takes half of whatever turns up --
-    // which holds the two makers to the same amount however much ore that
-    // costs. That is the same shape somebody reported as resources quietly
-    // going negative, sitting inside the app's own tutorial and described
-    // backwards.
+    // The demo said the app "split the ore evenly" while the ore went 3.33 to
+    // the refinery and 6.67 to the crusher. What was even was the *iron*, held
+    // there by two consumer-driven lines into one output node -- the very
+    // shape somebody reported as resources quietly going negative, sitting in
+    // the app's own tutorial and described backwards. The demo says the
+    // producer decides now, which is what makes the sentence true.
     final controller = blank();
     final run = DemoRun(letItChooseTheSplit, controller);
-    while (run.played < 7) {
+    while (run.played < 8) {
       await run.step();
     }
 
@@ -65,12 +63,12 @@ void main() {
       return controller.solution.edgeFlows[edge.id]!;
     }
 
-    expect(flow('metal_refinery'), closeTo(3333.33, 0.01));
-    expect(flow('rock_crusher_metal'), closeTo(6666.67, 0.01));
-    expect(run.says, contains('3.33 of it from each'));
+    expect(flow('metal_refinery'), closeTo(5000, 0.01));
+    expect(flow('rock_crusher_metal'), closeTo(5000, 0.01));
+    expect(run.says, contains('Five kilograms of ore to each'));
   });
 
-  test('and asking for the best gets half as much again', () async {
+  test('and asking for the best gets a third more', () async {
     final controller = blank();
     await DemoRun(letItChooseTheSplit, controller).runToEnd();
 
@@ -111,7 +109,7 @@ void main() {
     // changed between the even split and the chosen one.
     final controller = blank();
     final run = DemoRun(letItChooseTheSplit, controller);
-    while (run.played < 7) {
+    while (run.played < 8) {
       await run.step();
     }
     final ore = controller.pipeline.nodes

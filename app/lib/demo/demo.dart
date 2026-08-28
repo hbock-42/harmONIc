@@ -63,6 +63,14 @@ class ConnectPorts extends DemoAction {
   final String toPortId;
 }
 
+/// Say that the producer decides how a port's output divides.
+class LetTheProducerDecide extends DemoAction {
+  const LetTheProducerDecide({required this.node, required this.portId});
+
+  final String node;
+  final String portId;
+}
+
 /// Select a node and say how much of it there is.
 class PinAmount extends DemoAction {
   const PinAmount({required this.node, this.count, this.portId, this.rate});
@@ -190,6 +198,8 @@ class ModelHands implements DemoHands {
             ? BuildingCountPin(nodeId: id, count: count)
             : PortRatePin(
                 nodeId: id, portId: portId!, ratePerSecond: rate!));
+      case LetTheProducerDecide(:final node, :final portId):
+        controller.driveFromProducer(stage.portOf(node, portId));
       case AskForTheBest(:final node):
         final id = stage.nodeId(node);
         controller.select(NodeSelection(id));

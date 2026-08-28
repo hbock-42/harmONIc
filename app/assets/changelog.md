@@ -10,7 +10,11 @@ admit it is worse than one that never claimed to be right.
 
 ## 27 August 2026 — Output nodes, and what an even split really splits
 
-- **Several wires into one output node is now a warning, with a button that
+- **A second wire into an output node joins the first**, producer-driven, and
+  the app says so in a line you can undo. An output has no size of its own, so
+  two consumer-driven lines into one read their shares as shares of each other
+  — which is never what a second line means.
+- **Where that has already happened, it is a warning with a button that
   fixes it.** An output node has no size of its own, so two consumer-driven
   lines into one read their shares as shares of *each other* — which quietly
   holds every supplier feeding it to the same amount. That is where "unsure
@@ -21,7 +25,10 @@ admit it is worse than one that never claimed to be right.
   said the app had split the ore evenly. It had not: the ore goes 3.33 one way
   and 6.67 the other. What comes out even is the *iron*, held there by exactly
   the trap above. The same shape people were reporting was sitting in the
-  app's own worked example, described backwards. It says what it does now.
+  app's own worked example, described backwards. The demo says "let the
+  producer decide" now, which is what makes its own sentence true: the ore
+  really does split 5 and 5, for 7.50 kg/s of iron, and asking for the best
+  still gets 10.00.
 
 ## 27 August 2026 — Finding things
 

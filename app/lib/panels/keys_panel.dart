@@ -23,8 +23,10 @@ const List<(String, List<KeyLine>)> kKeyGroups = [
     ('⌫', 'delete what is selected'),
     ('⌘C  ⌘V', 'copy and paste nodes'),
   ]),
+  ('Finding things', [
+    ('⌘F', 'find a node  ·  ⏎ for the next'),
+  ]),
   ('Moving about', [
-    ('⌘F', 'find a node'),
     ('drag', 'select with a box'),
     ('space + drag', 'pan'),
     ('middle drag', 'pan'),

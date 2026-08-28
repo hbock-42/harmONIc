@@ -100,6 +100,9 @@ class WidgetHands extends ChangeNotifier implements DemoHands {
       case ConnectPorts(:final fromNode, :final fromPortId):
         _litPort = stage.portOf(fromNode, fromPortId);
         _aim = canvas.currentState?.globalPointOf(_litPort!);
+      case LetTheProducerDecide(:final node, :final portId):
+        _litPort = stage.portOf(node, portId);
+        _aim = canvas.currentState?.globalPointOf(_litPort!);
       case PinAmount(:final node):
       case AskForTheBest(:final node):
         _aim = _centreOfNode(stage.nodeId(node));
@@ -219,6 +222,17 @@ class WidgetHands extends ChangeNotifier implements DemoHands {
         controller.pin(count != null
             ? BuildingCountPin(nodeId: id, count: count)
             : PortRatePin(nodeId: id, portId: portId!, ratePerSecond: rate!));
+        await _moveTo(null);
+
+      case LetTheProducerDecide(:final node, :final portId):
+        // Pointed at the port the lines leave, because that is where the
+        // decision is: at the source, not at each destination.
+        final ref = stage.portOf(node, portId);
+        _litPort = ref;
+        await _moveTo(canvas.currentState?.globalPointOf(ref));
+        await _click();
+        controller.driveFromProducer(ref);
+        _lightNothing();
         await _moveTo(null);
 
       case AskForTheBest(:final node):

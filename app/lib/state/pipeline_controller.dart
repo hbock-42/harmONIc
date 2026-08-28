@@ -257,7 +257,22 @@ class PipelineController extends ChangeNotifier {
 
   /// Applies a change and re-solves. [record] is false for the intermediate
   /// frames of a drag, so one drag is one undo step.
+  /// Something the app did on the reader's behalf, said out loud until the
+  /// next edit.
+  ///
+  /// Only for changes nobody asked for by name. Doing a thing quietly and
+  /// doing it visibly are not the same, and the difference is this line.
+  String? _notice;
+  String? get notice => _notice;
+
+  void dismissNotice() {
+    if (_notice == null) return;
+    _notice = null;
+    notifyListeners();
+  }
+
   void _apply(Pipeline next, {bool record = true}) {
+    _notice = null;
     if (record) _recordUndo();
     _pipeline = next;
     _solution = _solver.solve(next);
@@ -423,8 +438,61 @@ class PipelineController extends ChangeNotifier {
       // fourth line to a three-way split means by it.
       mode: portIsFullyDivided(_pipeline, from) ? EdgeMode.push : EdgeMode.pull,
     );
-    _apply(_pipeline.copyWith(edges: [..._pipeline.edges, edge]));
+    // An output node is a bucket, not a customer: it has no size of its own,
+    // so two consumer-driven lines into one read their shares as shares of
+    // each other and are held to the same amount for ever after. That is
+    // never what a second line into an output means, so the group becomes
+    // producer-driven -- and says so, because a change nobody asked for by
+    // name should not happen quietly.
+    final joining = _outputAlreadyFed(to.nodeId)
+        ? [
+            for (final e in _pipeline.edges)
+              if (e.toNodeId == to.nodeId &&
+                  e.mode == EdgeMode.pull &&
+                  e.share == null)
+                e.id,
+          ]
+        : const <String>[];
+
+    _apply(_pipeline.copyWith(edges: [
+      for (final e in [..._pipeline.edges, edge])
+        if (joining.contains(e.id) || (joining.isNotEmpty && e.id == edge.id))
+          e.copyWith(mode: EdgeMode.push)
+        else
+          e,
+    ]));
+    if (joining.isNotEmpty) {
+      _notice = 'An output node has no size of its own, so its lines are set '
+          'to the producer: each hands over what it makes. Left as they were, '
+          'the ${joining.length + 1} of them would each take a share of what '
+          'the others bring and be held to the same amount. ⌘Z undoes it.';
+    }
     select(EdgeSelection(edge.id));
+  }
+
+  /// An output node that something already runs into.
+  bool _outputAlreadyFed(String nodeId) {
+    final node = _pipeline.node(nodeId);
+    if (node == null || specFor(node)?.kind != ProcessKind.sink) return false;
+    return _pipeline.edges.any((e) => e.toNodeId == nodeId);
+  }
+
+  /// Makes every line out of a port producer-driven.
+  ///
+  /// "The producer decides how it divides" — which is what somebody means by
+  /// a split at the port rather than a split at each destination. Only the
+  /// lines nobody has already spoken for: an explicit share is a decision.
+  void driveFromProducer(PortRef port) {
+    _apply(_pipeline.copyWith(edges: [
+      for (final edge in _pipeline.edges)
+        if (edge.fromNodeId == port.nodeId &&
+            edge.fromPortId == port.portId &&
+            edge.mode == EdgeMode.pull &&
+            edge.share == null)
+          edge.copyWith(mode: EdgeMode.push)
+        else
+          edge,
+    ]));
   }
 
   /// Carries out what an issue offered to do.

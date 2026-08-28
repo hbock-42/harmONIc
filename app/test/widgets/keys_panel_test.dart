@@ -47,6 +47,23 @@ void main() {
     expect(find.byType(KeysPanel), findsNothing);
   });
 
+  testWidgets('and every key it lists is really on screen', (tester) async {
+    // The other tests read kKeyGroups, which is the data and not the card. A
+    // key added to the table and lost between there and the pixels would pass
+    // every one of them.
+    await pumpEditor(tester);
+    await tester.ensureVisible(find.text('Keys  ?'));
+    await tester.tap(find.text('Keys  ?'));
+    await tester.pumpAndSettle();
+
+    for (final (_, lines) in kKeyGroups) {
+      for (final (keys, _) in lines) {
+        expect(find.text(keys), findsOneWidget, reason: keys);
+      }
+    }
+    expect(find.text('⌘F'), findsOneWidget);
+  });
+
   testWidgets('and clicking away closes it', (tester) async {
     await pumpEditor(tester);
     await tester.ensureVisible(find.text('Keys  ?'));

@@ -120,6 +120,12 @@ const Demo letItChooseTheSplit = Demo(
       ),
     ),
     DemoStep(
+      says: 'Say the producer decides. Click the ore dot: now the ore divides '
+          'where it leaves, not where it arrives — and with nobody naming a '
+          'share, evenly.',
+      does: LetTheProducerDecide(node: 'ore', portId: sourcePortId),
+    ),
+    DemoStep(
       says: 'The refinery\'s iron needs somewhere to end up.',
       does: ClickPortAndPick(
         node: 'refinery',
@@ -143,10 +149,9 @@ const Demo letItChooseTheSplit = Demo(
       does: PinAmount(node: 'ore', portId: sourcePortId, rate: 10000),
     ),
     DemoStep(
-      says: '6.67 kg/s of iron — and 3.33 of it from each, because both '
-          'lines into the output are consumer-driven and neither says a '
-          'share, so each takes half of what turns up. That holds the two to '
-          'the same amount of iron whatever it costs in ore. A fair guess, '
+      says: '7.50 kg/s of iron. Five kilograms of ore to each, because '
+          'nobody named a share — and the refinery turns all of its ore into '
+          'iron where the crusher turns half. An even split is a fair guess, '
           'and rarely the best one.',
     ),
     DemoStep(
@@ -155,8 +160,8 @@ const Demo letItChooseTheSplit = Demo(
       does: AskForTheBest('out'),
     ),
     DemoStep(
-      says: '10.00 kg/s. Half as much again, from the same ore — the refinery '
-          'is one for one and the crusher is half, so everything should go to '
+      says: '10.00 kg/s — a third more, from the same ore. The refinery is '
+          'one for one and the crusher is half, so everything should go to '
           'the refinery.',
     ),
     DemoStep(

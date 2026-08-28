@@ -37,6 +37,32 @@ void main() {
       );
     });
 
+    test('a second wire into an output joins it, and says so', () {
+      // An output node is a bucket, not a customer: two consumer-driven lines
+      // into one read their shares as shares of each other and are held to the
+      // same amount for ever. So the group becomes producer-driven -- visibly,
+      // because a change nobody asked for by name should not happen quietly.
+      final c = testController();
+      final out = c.addNode('sink:oxygen', Offset.zero);
+      c.connect(const PortRef('elec', 'oxygen'), PortRef(out, 'in'));
+      expect(c.notice, isNull, reason: 'the first line into it is unambiguous');
+
+      final second = c.addNode('electrolyzer', Offset.zero);
+      c.connect(PortRef(second, 'oxygen'), PortRef(out, 'in'));
+
+      expect(
+        c.pipeline.edges
+            .where((e) => e.toNodeId == out)
+            .every((e) => e.mode == EdgeMode.push),
+        isTrue,
+      );
+      expect(c.notice, contains('output node has no size of its own'));
+
+      // And it goes at the next edit, with nothing to acknowledge.
+      c.pin(const BuildingCountPin(nodeId: 'dupes', count: 3));
+      expect(c.notice, isNull);
+    });
+
     test('re-solves after every edit', () {
       final c = testController()..pin(const BuildingCountPin(nodeId: 'dupes', count: 20));
       expect(c.solution.nodes['elec']!.count, closeTo(2000 / 888, 1e-9));
