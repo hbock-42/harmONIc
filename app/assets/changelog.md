@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Dragging a card no longer re-does the arithmetic
+
+Moving a node re-ran the whole solve, on every frame of the drag. On a
+41-node build that was 9.9 ms of the 16.7 ms a frame has, spent to arrive
+back at exactly the figures already on screen — nothing in the solver has
+ever read where a card sits.
+
+Big builds should feel noticeably smoother to rearrange. Nothing else
+changes: the numbers were never wrong, they were just being worked out
+again sixty times a second for no reason.
+
 ## 28 August 2026 — A node drawn harder than it makes says OVER
 
 Reported: a refinery making 408 g/s of petroleum with 2 800 g/s drawn off it

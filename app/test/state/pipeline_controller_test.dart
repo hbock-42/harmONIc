@@ -190,6 +190,42 @@ void main() {
         expect(c.canRedo, isTrue);
       });
 
+      test('dragging a card does not re-solve the build', () {
+        // Position is a fact about the drawing, not about the arithmetic:
+        // nothing in the solver reads a node's x or y. Re-solving on every
+        // drag frame cost 9.9 ms on a reported 41-node build, out of the
+        // 16.7 ms a frame has, to arrive back at the answer already on
+        // screen. Object identity is the proof: a solve always returns a new
+        // one, so the same instance means no solve happened.
+        final c = testController();
+        final before = c.solution;
+        c.beginNodeDrag();
+        for (var i = 0; i < 10; i++) {
+          c.dragSelectionBy(Offset(i * 8.0, 0));
+        }
+        c.moveNode('elec', const Offset(500, 500));
+        c.moveSelectionBy(const Offset(8, 8));
+        c.applyLayout({'elec': const Offset(64, 64)});
+        expect(identical(c.solution, before), isTrue,
+            reason: 'moving cards about cannot change any figure');
+      });
+
+      test('but an edit still does', () {
+        final c = testController();
+        final before = c.solution;
+        c.pin(const BuildingCountPin(nodeId: 'dupes', count: 40));
+        expect(identical(c.solution, before), isFalse);
+      });
+
+      test('auto-layout is still one undo step', () {
+        final c = testController();
+        final was = c.pipeline.nodeOrThrow('elec').x;
+        c.applyLayout({'elec': const Offset(640, 640)});
+        expect(c.pipeline.nodeOrThrow('elec').x, 640);
+        c.undo();
+        expect(c.pipeline.nodeOrThrow('elec').x, was);
+      });
+
       test('a whole drag is one step', () {
         final c = testController()..beginNodeDrag();
         for (var i = 0; i < 10; i++) {

@@ -53,12 +53,7 @@ class PipelineController extends ChangeNotifier {
             Pipeline(id: 'untitled', name: 'Untitled pipeline',
                 dataVersion: database.dataVersion) {
     _solution = _solver.solve(_pipeline);
-    _asBuilt = null;
-    _temperatures = null;
-    _builds = null;
-    _focusedSolution = null;
-    _hasSplit = null;
-    _oneMore.clear();
+    _forget();
   }
 
   GameDatabase _database;
@@ -72,12 +67,7 @@ class PipelineController extends ChangeNotifier {
     _database = database;
     _solver = PipelineSolver(database);
     _solution = _solver.solve(_pipeline);
-    _asBuilt = null;
-    _temperatures = null;
-    _builds = null;
-    _focusedSolution = null;
-    _hasSplit = null;
-    _oneMore.clear();
+    _forget();
     notifyListeners();
   }
 
@@ -186,6 +176,20 @@ class PipelineController extends ChangeNotifier {
   /// whole graphs is already generous for a canvas of a few hundred nodes;
   /// an unbounded pile of them is a session that gets heavier the longer you
   /// arrange things.
+  /// Throws away everything worked out from the build, because the build has
+  /// changed and none of it is true any more.
+  ///
+  /// Six copies of these six lines had accumulated, one per place that swaps
+  /// the pipeline, and a seventh field would have had to find all six.
+  void _forget() {
+    _asBuilt = null;
+    _temperatures = null;
+    _builds = null;
+    _focusedSolution = null;
+    _hasSplit = null;
+    _oneMore.clear();
+  }
+
   void _recordUndo() {
     _undoStack.add(_pipeline);
     _redoStack.clear();
@@ -435,12 +439,24 @@ class PipelineController extends ChangeNotifier {
       // vanish on the next keystroke is worse than never saying it.
       _broke = null;
     }
-    _asBuilt = null;
-    _temperatures = null;
-    _builds = null;
-    _focusedSolution = null;
-    _hasSplit = null;
-    _oneMore.clear();
+    _forget();
+    notifyListeners();
+  }
+
+  /// A change that only moves cards about the canvas.
+  ///
+  /// Nothing under the solver reads a node's x or y -- position is a fact
+  /// about the drawing, not about the arithmetic -- so re-solving after a drag
+  /// re-derives, sixty times a second, numbers that cannot have changed.
+  /// Measured on a reported 41-node build that was 9.9 ms of the 16.7 ms a
+  /// frame has, spent to arrive back at the answer already on screen.
+  ///
+  /// Everything cached is cached against the solution or the wiring, so a move
+  /// invalidates none of it and [_forget] is deliberately not called either.
+  void _applyLayout(Pipeline next, {bool record = false}) {
+    _notice = null;
+    if (record) _recordUndo();
+    _pipeline = next;
     notifyListeners();
   }
 
@@ -453,12 +469,7 @@ class PipelineController extends ChangeNotifier {
     _effect = null;
     _pipeline = _undoStack.removeLast();
     _solution = _solver.solve(_pipeline);
-    _asBuilt = null;
-    _temperatures = null;
-    _builds = null;
-    _focusedSolution = null;
-    _hasSplit = null;
-    _oneMore.clear();
+    _forget();
     notifyListeners();
   }
 
@@ -471,12 +482,7 @@ class PipelineController extends ChangeNotifier {
     _effect = null;
     _pipeline = _redoStack.removeLast();
     _solution = _solver.solve(_pipeline);
-    _asBuilt = null;
-    _temperatures = null;
-    _builds = null;
-    _focusedSolution = null;
-    _hasSplit = null;
-    _oneMore.clear();
+    _forget();
     notifyListeners();
   }
 
@@ -503,14 +509,14 @@ class PipelineController extends ChangeNotifier {
         else
           n,
     ];
-    _apply(_pipeline.copyWith(nodes: nodes), record: record);
+    _applyLayout(_pipeline.copyWith(nodes: nodes), record: record);
   }
 
   /// Shifts every selected node by the same amount, so dragging one of a group
   /// takes the rest with it.
   void moveSelectionBy(Offset delta, {bool record = false}) {
     if (_selectedNodeIds.isEmpty) return;
-    _apply(
+    _applyLayout(
       _pipeline.copyWith(
         nodes: [
           for (final n in _pipeline.nodes)
@@ -547,7 +553,7 @@ class PipelineController extends ChangeNotifier {
   /// Moves the selection to where it started plus [totalDelta], in world units.
   void dragSelectionBy(Offset totalDelta) {
     if (_dragOrigins.isEmpty) return;
-    _apply(
+    _applyLayout(
       _pipeline.copyWith(
         nodes: [
           for (final n in _pipeline.nodes)
@@ -1506,7 +1512,7 @@ class PipelineController extends ChangeNotifier {
       ));
 
   /// Moves every node at once — one edit, one undo step.
-  void applyLayout(Map<String, Offset> positions) => _apply(
+  void applyLayout(Map<String, Offset> positions) => _applyLayout(
         _pipeline.copyWith(
           nodes: [
             for (final n in _pipeline.nodes)
@@ -1516,6 +1522,7 @@ class PipelineController extends ChangeNotifier {
                 n,
           ],
         ),
+        record: true,
       );
 
   /// The selected nodes and the wires between them, as a standalone pipeline.
