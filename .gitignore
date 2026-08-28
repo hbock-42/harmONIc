@@ -11,3 +11,6 @@ packages/*/pubspec.lock
 .idea/
 .vscode/
 .DS_Store
+
+# Coverage output, from `dart test --coverage` and `flutter test --coverage`.
+coverage/
