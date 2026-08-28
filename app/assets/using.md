@@ -240,6 +240,20 @@ grid has spare. Two separate grids means two of these.
 It costs nothing and stands nowhere. It is the wires you were going to run
 anyway.
 
+## What can I make from what I have?
+
+The opposite question to the one the app is built around, and a fair one. Put
+an amount on each supply — the water you have, the ore you have — select what
+you want out of the build, and press **What can I make from what I have?**
+
+It rereads those amounts as ceilings rather than as exactly-that-much-flows,
+which is the difference between "I have ten kilograms of water a second" and
+"ten kilograms a second must move", and then divides everything so as to give
+you the most it can. One press, one undo.
+
+The button only appears where the question makes sense: on an output node, in
+a build whose supplies have amounts on them.
+
 ## Wires
 
 A wire is **pull** by default: the consumer decides, and the producer is sized to

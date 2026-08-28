@@ -338,6 +338,15 @@ class _NodeInspectorState extends State<_NodeInspector> {
             onPinned: () => setState(() => _amount.text = _currentPinText()),
           ),
         ],
+        // Before the split chooser, and not gated on there being a split: the
+        // question "what can I make from what I have" is asked of builds with
+        // nothing divided in them at all.
+        if (_isBoundary &&
+            spec.kind == ProcessKind.sink &&
+            controller.supplyAmountsToCap(node.id).isNotEmpty) ...[
+          const SizedBox(height: OniSpacing.sm),
+          _FromWhatYouHave(controller: controller, node: node),
+        ],
         if (_isBoundary && controller.hasASplitToChoose) ...[
           const SizedBox(height: OniSpacing.sm),
           _TheMostOfIt(controller: controller, node: node, spec: spec),
@@ -1915,6 +1924,32 @@ class _EdgeShare extends StatelessWidget {
 /// What it does is set shares — the same ones somebody could have typed — so
 /// afterwards the build is an ordinary build, the numbers come from the
 /// ordinary solver, and undo puts it back.
+/// "What can I make from what I have?", which is a different question from
+/// "how much do I need".
+///
+/// Asked twice in a week in different words. The answer -- read every supply's
+/// amount as a ceiling rather than as exactly what flows, then ask an output
+/// for the most it can give -- has been possible for a while, is written down
+/// in the guide, and has never once been found there.
+///
+/// What it did is said in the banner, not here: once the supplies are ceilings
+/// there is nothing left to reread, so this button goes, and an answer printed
+/// under it would go with it.
+class _FromWhatYouHave extends StatelessWidget {
+  const _FromWhatYouHave({required this.controller, required this.node});
+
+  final PipelineController controller;
+  final PipelineNode node;
+
+  @override
+  Widget build(BuildContext context) => OniButton(
+        label: 'What can I make from what I have?',
+        compact: true,
+        tone: OniButtonTone.accent,
+        onPressed: () => controller.planFromWhatYouHave(node.id),
+      );
+}
+
 class _TheMostOfIt extends StatefulWidget {
   const _TheMostOfIt({
     required this.controller,
@@ -1961,6 +1996,7 @@ class _TheMostOfItState extends State<_TheMostOfIt> {
                   ? (wanting
                       ? 'There is no most: nothing in this build limits it, or '
                           'two amounts you have set contradict each other.'
+                          '${widget.controller.supplyAmountsToCap(widget.node.id).isEmpty ? '' : ' Your supplies say exactly how much flows rather than how much you have, which is what leaves nothing to be the most of.'}'
                       // Naming the amount to set, because an amount on this
                       // node is not it: the cheapest way to use no ore is to
                       // make no metal, and that is the answer you get.

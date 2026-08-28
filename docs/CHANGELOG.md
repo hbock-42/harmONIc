@@ -8,6 +8,16 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — What can I make from what I have?
+
+One button on an output node. It rereads every supply's amount as a ceiling
+rather than as exactly-that-much-flows, and divides the build to give you the
+most it can — the difference between *"I have ten kilograms of water a second"*
+and *"ten kilograms a second must move"*.
+
+All of that was already possible and written down in the guide, and nobody had
+ever found it there. Asked twice in a week in different words.
+
 ## 28 August 2026 — A build fits in a message again
 
 Share codes are compressed. A build that came to twenty-one thousand

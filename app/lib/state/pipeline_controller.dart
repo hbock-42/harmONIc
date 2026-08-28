@@ -895,7 +895,7 @@ class PipelineController extends ChangeNotifier {
   /// Returns what the answer came to, or null when there is not one: an
   /// unpinned supply makes "as much as possible" unbounded, and contradictory
   /// pins make either question impossible.
-  double? optimiseFor(String boundaryNodeId) {
+  double? optimiseFor(String boundaryNodeId, {bool recordUndo = true}) {
     final node = _pipeline.node(boundaryNodeId);
     if (node == null) return null;
     final spec = database.process(node.specId);
@@ -942,7 +942,7 @@ class PipelineController extends ChangeNotifier {
         ),
       ]);
     }
-    _apply(answered);
+    _apply(answered, record: recordUndo);
     return best.ratePerSecond;
   }
 
@@ -1062,6 +1062,84 @@ class PipelineController extends ChangeNotifier {
         else
           edge,
     ]));
+  }
+
+  /// The supplies in this build whose amount could be read as a ceiling.
+  ///
+  /// "I have ten kilograms of water a second" and "exactly ten kilograms a
+  /// second flows" are different sentences, and the app has only ever recorded
+  /// the second. Somebody planning from what they have sets an amount on every
+  /// supply, which over-constrains the build, and the way out -- put a ceiling
+  /// on each one and ask an output for the most -- is written down in the
+  /// guide and has never once been discovered without it.
+  List<String> supplyAmountsToCap(String nodeId) {
+    final build = componentOf(_pipeline, nodeId);
+    return [
+      for (final node in _pipeline.nodes)
+        if (build.contains(node.id) &&
+            specFor(node)?.kind == ProcessKind.source &&
+            supplyCeiling(node.id) == null &&
+            _pipeline.pins.any((pin) => pin.nodeId == node.id))
+          node.id,
+    ];
+  }
+
+  /// Reads every supply's amount as a ceiling, then asks [outputNodeId] for
+  /// the most it can give.
+  ///
+  /// One step on the undo stack: it is one decision -- "these are what I have,
+  /// not what must flow" -- and undoing it in six presses would make it a
+  /// decision nobody takes.
+  double? planFromWhatYouHave(String outputNodeId) {
+    final supplies = supplyAmountsToCap(outputNodeId);
+    if (supplies.isEmpty) return null;
+
+    final ceilings = <String, double>{};
+    for (final id in supplies) {
+      final node = _pipeline.node(id);
+      final spec = node == null ? null : specFor(node);
+      final port = spec?.outputs.firstOrNull;
+      final pin = pinFor(id);
+      if (node == null || spec == null || port == null || pin == null) continue;
+      ceilings[id] = switch (pin) {
+        PortRatePin(:final ratePerSecond) => ratePerSecond,
+        BuildingCountPin(:final count) => count * port.ratePerSecond,
+        StockPin() => pin.ratePerSecond,
+      };
+    }
+
+    _apply(_pipeline.copyWith(
+      pins: [
+        for (final pin in _pipeline.pins)
+          if (!ceilings.containsKey(pin.nodeId)) pin,
+      ],
+      edges: [
+        for (final edge in _pipeline.edges)
+          if (ceilings[edge.fromNodeId] case final double cap)
+            edge.copyWith(capPerSecond: cap)
+          else
+            edge,
+      ],
+    ));
+    final most = optimiseFor(outputNodeId, recordUndo: false);
+
+    // Said in the banner rather than beside the button, because the button
+    // goes: once the supplies are ceilings there is nothing left to reread,
+    // so an answer printed under it would vanish along with it.
+    final node = _pipeline.node(outputNodeId);
+    final item = node == null
+        ? null
+        : database.item(specFor(node)?.inputs.firstOrNull?.itemId ?? '');
+    final many = ceilings.length == 1 ? 'supply' : '${ceilings.length} supplies';
+    _notice = most == null
+        ? 'Your $many now say the most you have rather than exactly what '
+            'flows, and there is still no answer: something else is holding '
+            'this build to a size. ⌘Z puts them back.'
+        : 'Taking your $many as the most you have rather than exactly what '
+            'flows: ${item?.formatRate(most, RateDisplay.perSecond) ?? most.toStringAsFixed(1)}. '
+            'The splits it chose are on the wires. ⌘Z puts it all back.';
+    notifyListeners();
+    return most;
   }
 
   /// The ceiling on a supply, when its lines agree on one. Null when they do
