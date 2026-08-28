@@ -8,8 +8,17 @@ export 'file_store.dart' if (dart.library.js_interop) 'browser_store.dart';
 /// `localStorage` key in a browser. [jsonStoreNamed] hands back whichever, and
 /// nothing above this line knows which it got.
 abstract class JsonStore {
+  /// What was last written, or null when there is nothing to read or it
+  /// cannot be read. Never throws: a corrupt or unreachable store must not
+  /// stop the app from starting, and the bundled data alone is usable.
   Future<Map<String, dynamic>?> read();
 
+  /// Keeps [data] if it can, and does nothing if it cannot. Never throws.
+  ///
+  /// Both halves of that matter. Saving happens as a side effect of ordinary
+  /// editing, sometimes without anybody waiting for it, so a store that threw
+  /// would turn a full disk into an unhandled error in the middle of a build.
+  /// Losing the save is bad; taking the app down with it is worse.
   Future<void> write(Map<String, dynamic> data);
 }
 

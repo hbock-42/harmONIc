@@ -50,6 +50,15 @@ jobs:
           flutter analyze --fatal-infos
           flutter test
 
+      # test/browser holds what cannot run on the VM: the store the web build
+      # keeps every saved build in is `package:web` all the way down. Without
+      # this step it is never run at all, on any platform, which is how it had
+      # been. Only that directory -- the rest of the suite imports dart:io and
+      # would not compile for a browser.
+      - name: App, in a browser
+        working-directory: app
+        run: flutter test --platform chrome test/browser
+
       - name: The shipped docs match the ones in docs/
         run: |
           ./tool/copy_docs.sh

@@ -41,7 +41,19 @@ class FileJsonStore implements JsonStore {
 
   @override
   Future<void> write(Map<String, dynamic> data) async {
-    final file = await _file();
-    await file.writeAsString(const JsonEncoder.withIndent('  ').convert(data));
+    try {
+      final file = await _file();
+      await file.writeAsString(
+          const JsonEncoder.withIndent('  ').convert(data));
+    } on Object {
+      // A read-only volume, a disk with nothing left on it, a sandboxed app
+      // refused its own support directory. Losing the save is bad; taking the
+      // app down with it is worse -- and one caller does not even wait for
+      // this, so what came out was an unhandled error from a save nobody
+      // asked for.
+      //
+      // The browser store has always said this in as many words. The file
+      // store swallowed it on the way in and not on the way out.
+    }
   }
 }

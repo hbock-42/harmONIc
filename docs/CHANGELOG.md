@@ -8,6 +8,18 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A save that cannot be written is lost, not fatal
+
+Saving happens quietly, as a side effect of ordinary editing, and in one
+place without anything waiting for it to finish. On a full disk, a
+read-only volume, or a machine that will not let the app into its own
+storage, that came out as an error in the middle of a build — from a save
+nobody had asked for.
+
+It now keeps what it can and does nothing when it cannot. Losing a save is
+bad; taking the whole thing down with it is worse. The browser version has
+always behaved this way; the desktop one only did so when reading.
+
 ## 28 August 2026 — A node drawn harder than it makes says OVER
 
 Reported: a refinery making 408 g/s of petroleum with 2 800 g/s drawn off
