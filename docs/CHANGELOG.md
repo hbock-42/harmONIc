@@ -8,6 +8,20 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — What broke it
+
+When a build that was adding up stops adding up, the banner names the edit that
+did it: *"This was solving until the line from the Electrolyzer to the
+Duplicant."* — with an **Undo that** beside it.
+
+Every report of a broken build has been phrased that way — *adding X did Y* —
+and the app made people prove what they already knew. It knows too: the undo
+stack holds the build that was working a moment ago.
+
+It stays until the build is whole again, because edits made while hunting for
+the cause are not the cause. And it says nothing while a build is merely
+unfinished: half of drawing one is having amounts nobody has given yet.
+
 ## 28 August 2026 — Why this many
 
 Select a node and it says why its amount is the amount it is. *"You set this

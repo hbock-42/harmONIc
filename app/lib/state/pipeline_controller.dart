@@ -257,6 +257,65 @@ class PipelineController extends ChangeNotifier {
 
   /// Applies a change and re-solves. [record] is false for the intermediate
   /// frames of a drag, so one drag is one undo step.
+  /// The edit that turned a build that solved into one that does not.
+  ///
+  /// Every report has been phrased this way -- "adding Oakshell Molt drained
+  /// the Tublia", "linking Cuddle Pip's dirt back zeroes a bunch of stuff" --
+  /// and the app made people prove what they already knew. It knows too: the
+  /// undo stack holds the build that was working a moment ago.
+  String? _broke;
+  String? get broke => _broke;
+
+  /// What one edit did, in the fewest words that identify it.
+  String? _whatChanged(Pipeline before, Pipeline after) {
+    final wasNodes = {for (final n in before.nodes) n.id};
+    final wasEdges = {for (final e in before.edges) e.id};
+
+    for (final node in after.nodes) {
+      if (wasNodes.contains(node.id)) continue;
+      return 'adding the ${_nameOf(node)}';
+    }
+    for (final edge in after.edges) {
+      if (wasEdges.contains(edge.id)) continue;
+      final from = after.node(edge.fromNodeId);
+      final to = after.node(edge.toNodeId);
+      if (from == null || to == null) continue;
+      return 'the line from the ${_nameOf(from)} to the ${_nameOf(to)}';
+    }
+    for (final node in before.nodes) {
+      if (after.nodes.any((n) => n.id == node.id)) continue;
+      return 'deleting the ${_nameOf(node)}';
+    }
+    for (final edge in before.edges) {
+      if (after.edges.any((e) => e.id == edge.id)) continue;
+      final from = before.node(edge.fromNodeId);
+      final to = before.node(edge.toNodeId);
+      if (from == null || to == null) continue;
+      return 'removing the line from the ${_nameOf(from)} to the '
+          '${_nameOf(to)}';
+    }
+    // A wire that was already there and now means something else. "Setting it
+    // to producer-driven" is as much an edit as drawing it, and reported as
+    // one.
+    for (final edge in after.edges) {
+      final was = before.edges.where((e) => e.id == edge.id).firstOrNull;
+      if (was == null) continue;
+      if (was.mode == edge.mode && was.share == edge.share) continue;
+      final from = after.node(edge.fromNodeId);
+      final to = after.node(edge.toNodeId);
+      if (from == null || to == null) continue;
+      return 'changing the line from the ${_nameOf(from)} to the '
+          '${_nameOf(to)}';
+    }
+    if (before.pins.length != after.pins.length) {
+      return 'the amounts you set';
+    }
+    return null;
+  }
+
+  String _nameOf(PipelineNode node) =>
+      node.label ?? specFor(node)?.name ?? node.specId;
+
   /// Something the app did on the reader's behalf, said out loud until the
   /// next edit.
   ///
@@ -273,9 +332,25 @@ class PipelineController extends ChangeNotifier {
 
   void _apply(Pipeline next, {bool record = true}) {
     _notice = null;
+    final before = _pipeline;
+    bool broken(SolveStatus status) =>
+        status == SolveStatus.inconsistent || status == SolveStatus.invalid;
+    final wasWhole = !broken(_solution.status);
     if (record) _recordUndo();
     _pipeline = next;
     _solution = _solver.solve(next);
+    // The step that tipped it, not merely the step after a solved one. A build
+    // being drawn is underdetermined half the time -- every node placed adds
+    // an amount nobody has given yet -- so the interesting transition is into
+    // arithmetic that cannot come out, from anything that could.
+    if (record && wasWhole && broken(_solution.status)) {
+      _broke = _whatChanged(before, next);
+    } else if (!broken(_solution.status)) {
+      // It stays until the build is whole again. Edits made while hunting for
+      // the cause are not the cause, and having the one line that named it
+      // vanish on the next keystroke is worse than never saying it.
+      _broke = null;
+    }
     _asBuilt = null;
     _temperatures = null;
     _builds = null;

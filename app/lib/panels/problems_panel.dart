@@ -63,6 +63,31 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (notice != null) _Notice(notice, inset: true),
+          // The edit that did it, where there is one. Every report of a broken
+          // build has been phrased as "adding X did Y", and the app made
+          // people prove what they already knew.
+          if (controller.broke case final String edit) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: OniSpacing.sm),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'This was solving until $edit.',
+                      style: OniType.body.copyWith(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(width: OniSpacing.sm),
+                  OniButton(
+                    label: 'Undo that   ⌘Z',
+                    compact: true,
+                    onPressed: controller.canUndo ? controller.undo : null,
+                  ),
+                ],
+              ),
+            ),
+          ],
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 160),
             child: SingleChildScrollView(
