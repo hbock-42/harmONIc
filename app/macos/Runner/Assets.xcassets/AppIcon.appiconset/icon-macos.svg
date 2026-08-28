@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- macOS draws its icons small inside their canvas: a 824 px rounded square
+       centred in 1024, with the rest transparent. Filling the whole square
+       instead is what makes an app look bigger than everything beside it in
+       the Dock. The corner radius is the system's own proportion, near a
+       quarter of the shape. -->
+  <g transform="translate(100,100)">
+    <rect width="824" height="824" rx="184" fill="#0E1116"/>
+    <g transform="translate(412,412) scale(1.03) translate(-393,-412)">
+      <g fill="none" stroke-linecap="round">
+        <path d="M270 412 C 373 412, 373 241, 531 241" stroke="#4C9AFF" stroke-width="55"/>
+        <path d="M270 412 C 373 412, 373 583, 531 583" stroke="#4FD1C5" stroke-width="55"/>
+      </g>
+      <circle cx="241" cy="412" r="90" fill="#3FB8AF"/>
+      <circle cx="566" cy="241" r="68" fill="#4C9AFF"/>
+      <circle cx="566" cy="583" r="68" fill="#4FD1C5"/>
+    </g>
+  </g>
+</svg>
