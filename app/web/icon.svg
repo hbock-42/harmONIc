@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- harmONIc: one port divided between two, which is the whole of what this
+       app is for. Drawn in its own palette so the icon and the canvas agree:
+       the background is OniColors.background, the source dot is the accent,
+       and the two it feeds carry the item hues for liquid and gas. -->
+  <rect width="512" height="512" rx="112" fill="#0E1116"/>
+  <g fill="none" stroke-linecap="round">
+    <!-- The two lines out of the port. Thick enough to survive 16 px, where
+         anything under about 6 % of the width disappears. -->
+    <path d="M168 256 C 232 256, 232 150, 330 150" stroke="#4C9AFF" stroke-width="34"/>
+    <path d="M168 256 C 232 256, 232 362, 330 362" stroke="#4FD1C5" stroke-width="34"/>
+  </g>
+  <circle cx="150" cy="256" r="56" fill="#3FB8AF"/>
+  <circle cx="352" cy="150" r="42" fill="#4C9AFF"/>
+  <circle cx="352" cy="362" r="42" fill="#4FD1C5"/>
+</svg>

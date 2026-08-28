@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Maskable: the platform cuts its own shape out of this, so the background
+       runs to the edge with no corner of our own, and the mark sits well
+       inside the safe circle (the middle 80 %) in case that shape is a tight
+       one. -->
+  <rect width="512" height="512" fill="#0E1116"/>
+  <g transform="translate(256,256) scale(0.68) translate(-238,-252)">
+    <g fill="none" stroke-linecap="round">
+      <path d="M168 256 C 232 256, 232 150, 330 150" stroke="#4C9AFF" stroke-width="34"/>
+      <path d="M168 256 C 232 256, 232 362, 330 362" stroke="#4FD1C5" stroke-width="34"/>
+    </g>
+    <circle cx="150" cy="256" r="56" fill="#3FB8AF"/>
+    <circle cx="352" cy="150" r="42" fill="#4C9AFF"/>
+    <circle cx="352" cy="362" r="42" fill="#4FD1C5"/>
+  </g>
+</svg>

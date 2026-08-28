@@ -24,10 +24,19 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="harmONIc">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <!-- The maskable one: iOS rounds the corners itself, so handing it an icon
+       that is already rounded rounds it twice. -->
+  <link rel="apple-touch-icon" href="icons/Icon-maskable-192.png">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <!-- Favicon. The SVG first, which is what a browser prefers and what stays
+       sharp on a retina tab; the PNG is the fallback and is drawn bolder,
+       because at 16 px only about four shapes survive. -->
+  <link rel="icon" type="image/svg+xml" href="icon-small.svg"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png"/>
+
+  <!-- The colour the browser paints round the page before Flutter starts, so
+       the first frame is not a white flash on a dark app. -->
+  <meta name="theme-color" content="#0E1116">
 
   <title>harmONIc</title>
   <link rel="manifest" href="manifest.json">

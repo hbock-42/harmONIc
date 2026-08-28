@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- The same mark for 16 and 32 px, where only about four shapes survive.
+       Less padding, fatter strokes, bigger dots: at that size the drawing is
+       a silhouette and the detail is wasted. -->
+  <rect width="512" height="512" rx="64" fill="#0E1116"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M150 256 C 226 256, 226 118, 336 118" stroke="#4C9AFF" stroke-width="66"/>
+    <path d="M150 256 C 226 256, 226 394, 336 394" stroke="#4FD1C5" stroke-width="66"/>
+  </g>
+  <circle cx="132" cy="256" r="78" fill="#3FB8AF"/>
+  <circle cx="368" cy="118" r="62" fill="#4C9AFF"/>
+  <circle cx="368" cy="394" r="62" fill="#4FD1C5"/>
+</svg>
