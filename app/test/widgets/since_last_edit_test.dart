@@ -49,8 +49,11 @@ void main() {
     controller.pin(const BuildingCountPin(nodeId: 'dupes', count: 30));
     await tester.pumpAndSettle();
 
-    expect(textContaining('SINCE THE AMOUNT ON THE DUPLICANT'),
-        findsOneWidget);
+    // A gerund, because two different sentences use this phrase and only one
+    // of them takes a noun: "since the amount on the Duplicant" is not
+    // English. And in ordinary words, not letterspaced capitals.
+    expect(find.text('SINCE'), findsOneWidget);
+    expect(find.text('setting the amount on the Duplicant'), findsOneWidget);
     expect(textContaining('power'), findsWidgets);
   });
 
@@ -64,5 +67,35 @@ void main() {
 
     expect(controller.sinceLastEdit, isNull);
     expect(textContaining('SINCE '), findsNothing);
+  });
+
+  testWidgets('and undo takes the line away with the edit', (tester) async {
+    // Reported: a node deleted and then undone left "since deleting the
+    // Oakshell" on the totals — a sentence about a build that no longer
+    // exists.
+    final controller = await pumpEditor(tester);
+    controller.select(const NodeSelection('elec'));
+    controller.deleteSelection();
+    await tester.pumpAndSettle();
+    expect(controller.sinceLastEdit, isNotNull);
+
+    controller.undo();
+    await tester.pumpAndSettle();
+    expect(controller.sinceLastEdit, isNull);
+    expect(find.text('SINCE'), findsNothing);
+  });
+
+  testWidgets('and redo does not put a stale one back', (tester) async {
+    // Redoing is not making: the figures it would be measured against are two
+    // steps back rather than one.
+    final controller = await pumpEditor(tester);
+    controller.select(const NodeSelection('elec'));
+    controller.deleteSelection();
+    await tester.pumpAndSettle();
+    controller.undo();
+    controller.redo();
+    await tester.pumpAndSettle();
+
+    expect(controller.sinceLastEdit, isNull);
   });
 }

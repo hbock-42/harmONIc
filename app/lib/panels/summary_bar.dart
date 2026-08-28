@@ -372,7 +372,19 @@ class _SinceLastEdit extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('SINCE ${effect.edit.toUpperCase()}', style: OniType.label),
+          // "SINCE" as the label and the change in ordinary words: a whole
+          // sentence set in letterspaced capitals is a sentence nobody reads.
+          Row(
+            children: [
+              Text('SINCE', style: OniType.label),
+              const SizedBox(width: 6),
+              Text(
+                effect.edit,
+                style: OniType.body
+                    .copyWith(fontSize: 11.5, color: OniColors.textMuted),
+              ),
+            ],
+          ),
           const SizedBox(height: 3),
           Row(
             children: [

@@ -8,6 +8,16 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Undo takes the note with it, and the note is English
+
+**"Since the amount on the Duplicant"** was not a sentence. The phrases naming
+an edit were written for one place and reused in another that does not take a
+noun; they are all *"setting the amount on the Duplicant"*, *"drawing the line
+from A to B"* now, which both places take.
+
+And undoing an edit left the note about it on screen — a line about a build
+that no longer existed. Undo and redo clear it.
+
 ## 28 August 2026 — What your last edit cost
 
 At the end of the totals: **since the amount on the Duplicant — power 1.2 kW →

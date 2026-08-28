@@ -323,6 +323,10 @@ class PipelineController extends ChangeNotifier {
   String? get broke => _broke;
 
   /// What one edit did, in the fewest words that identify it.
+  ///
+  /// Always a gerund -- "drawing the line from A to B", not "the line from A
+  /// to B" -- because two different sentences use this and only one of them
+  /// takes a noun. "Since the amount on the Duplicant" is not English.
   String? _whatChanged(Pipeline before, Pipeline after) {
     final wasNodes = {for (final n in before.nodes) n.id};
     final wasEdges = {for (final e in before.edges) e.id};
@@ -336,7 +340,8 @@ class PipelineController extends ChangeNotifier {
       final from = after.node(edge.fromNodeId);
       final to = after.node(edge.toNodeId);
       if (from == null || to == null) continue;
-      return 'the line from the ${_nameOf(from)} to the ${_nameOf(to)}';
+      return 'drawing the line from the ${_nameOf(from)} to the '
+          '${_nameOf(to)}';
     }
     for (final node in before.nodes) {
       if (after.nodes.any((n) => n.id == node.id)) continue;
@@ -377,14 +382,14 @@ class PipelineController extends ChangeNotifier {
       if (wasPinned.contains(key(pin))) continue;
       final node = after.node(pin.nodeId);
       return node == null
-          ? 'the amount you set'
-          : 'the amount on the ${_nameOf(node)}';
+          ? 'setting an amount'
+          : 'setting the amount on the ${_nameOf(node)}';
     }
     for (final pin in before.pins) {
       if (after.pins.any((now) => key(now) == key(pin))) continue;
       final node = before.node(pin.nodeId);
       return node == null
-          ? 'the amount you cleared'
+          ? 'clearing an amount'
           : 'clearing the amount on the ${_nameOf(node)}';
     }
     return null;
@@ -442,6 +447,10 @@ class PipelineController extends ChangeNotifier {
   void undo() {
     if (_undoStack.isEmpty) return;
     _redoStack.add(_pipeline);
+    // Nothing is "since" an edit that has just been taken back. Reported: a
+    // node deleted and then undone left "since deleting the Oakshell" on the
+    // totals, which is a sentence about a build that no longer exists.
+    _effect = null;
     _pipeline = _undoStack.removeLast();
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;
@@ -456,6 +465,10 @@ class PipelineController extends ChangeNotifier {
   void redo() {
     if (_redoStack.isEmpty) return;
     _undoStack.add(_pipeline);
+    // Redoing an edit is not the same as making it: the figures it is
+    // measured against are two steps back rather than one, and saying "since"
+    // about them would be a comparison with a build nobody is looking at.
+    _effect = null;
     _pipeline = _redoStack.removeLast();
     _solution = _solver.solve(_pipeline);
     _asBuilt = null;

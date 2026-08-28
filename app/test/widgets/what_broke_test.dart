@@ -44,8 +44,8 @@ void main() {
     await tester.pump();
 
     expect(controller.solution.status, isNot(SolveStatus.solved));
-    expect(controller.broke, contains('the line from the Electrolyzer'));
-    expect(textContaining('This was solving until'), findsOneWidget);
+    expect(controller.broke, contains('drawing the line from the Electrolyzer'));
+    expect(textContaining('is what broke this'), findsOneWidget);
   });
 
   testWidgets('and undoing it puts the build and the message back',
@@ -71,7 +71,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(controller.solution.status, SolveStatus.solved);
-    expect(textContaining('This was solving until'), findsNothing);
+    expect(textContaining('is what broke this'), findsNothing);
   });
 
   testWidgets('and a build that was already broken says nothing',

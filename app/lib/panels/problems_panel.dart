@@ -73,7 +73,12 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
                 children: [
                   Expanded(
                     child: Text(
-                      'This was solving until $edit.',
+                      // The edit as the subject of the sentence, because the
+                      // phrase is a gerund: "drawing the line ... is what
+                      // broke this" reads, and "solving until drawing the
+                      // line" does not.
+                      '${edit[0].toUpperCase()}${edit.substring(1)} is what '
+                          'broke this.',
                       style: OniType.body.copyWith(
                           fontSize: 12, fontWeight: FontWeight.w600),
                     ),
