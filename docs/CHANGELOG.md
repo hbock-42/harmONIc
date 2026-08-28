@@ -8,6 +8,13 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Wrong? actually opens something
+
+The button on every figure had never been connected to anything, so it was
+never on screen. It opens a report with the recipe and all of its rates
+already written out — spotting a ten-times slip should not mean transcribing
+the row you spotted it in.
+
 ## 28 August 2026 — Whatever is left
 
 A wire can now carry **whatever is left**: what its port makes, less everything

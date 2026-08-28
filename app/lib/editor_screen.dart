@@ -16,6 +16,9 @@ import 'design/tokens.dart';
 import 'design/widgets.dart';
 import 'panels/guide_panel.dart';
 import 'panels/keys_panel.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'design/build_stamp.dart';
 import 'panels/report_footer.dart';
 import 'panels/inspector_panel.dart';
 
@@ -210,6 +213,11 @@ class _EditorScreenState extends State<EditorScreen> {
   /// there, not open a second one or quietly do nothing.
   bool _findOpen = false;
   final GlobalKey<FindPanelState> _findKey = GlobalKey<FindPanelState>();
+
+  /// The browser, when nobody has handed the screen another way to open a
+  /// link. A widget test has neither.
+  static Future<bool> _openInBrowser(Uri uri) =>
+      launchUrl(uri, mode: LaunchMode.externalApplication);
 
   void _find() {
     if (_findOpen) {
@@ -531,6 +539,19 @@ class _EditorScreenState extends State<EditorScreen> {
                   child: CataloguePanel(
                     database: widget.library.database,
                     onClose: () => setState(() => _catalogueOpen = false),
+                    // The reason the page exists: somebody who has spotted a
+                    // wrong figure should not then have to go and describe the
+                    // row they spotted it in.
+                    onReport: (spec) => unawaited(
+                      (widget.openLink ?? _openInBrowser)(
+                        figureReportUri(
+                          spec: spec,
+                          database: widget.library.database,
+                          version: buildStamp,
+                          platform: describePlatform(),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               if (_changelogOpen)

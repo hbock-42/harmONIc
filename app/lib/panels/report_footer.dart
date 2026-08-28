@@ -45,6 +45,44 @@ Uri reportUri({
       'build': ?shareCode,
     });
 
+/// The link that reports a figure, with the recipe already written out.
+///
+/// A figure is wrong in the *data*, so the report has to say which recipe and
+/// what the app currently claims. Somebody who has spotted a ten-times slip
+/// should not then have to transcribe the row they spotted it in.
+Uri figureReportUri({
+  required ProcessSpec spec,
+  required GameDatabase database,
+  required String version,
+  required String platform,
+}) {
+  String line(Port port) {
+    final item = database.item(port.itemId);
+    final rate = item?.formatRate(
+            port.ratePerSecond, RateDisplay.perCycle, precision: 2) ??
+        '${port.ratePerSecond}';
+    return '- ${port.isOutput ? 'gives' : 'takes'} '
+        '${item?.name ?? port.itemId}: $rate';
+  }
+
+  final said = [
+    'Figures shows **${spec.name}** as:',
+    '',
+    for (final port in spec.ports) line(port),
+    '',
+    if (spec.tags.contains('unverified'))
+      'This one is marked as judged rather than published.',
+  ].join('\n');
+
+  return Uri.parse('$kRepository/issues/new').replace(queryParameters: {
+    'template': 'bug.yml',
+    'title': 'Figure looks wrong: ${spec.name}',
+    'what': said,
+    'version': version,
+    'platform': platform,
+  });
+}
+
 /// Whether this code can travel in the link rather than on the clipboard.
 bool shareCodeFits(String shareCode) =>
     reportUri(
