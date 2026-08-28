@@ -502,6 +502,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       // on the page: adding two builds' power together gives a
                       // figure that describes neither.
                       solution: controller.focusedSolution,
+                      sinceLastEdit: controller.sinceLastEdit,
                       scope: controller.focusedBuild == null
                           ? (controller.builds.length > 1
                               ? 'whole canvas'

@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — What your last edit cost
+
+At the end of the totals: **since the amount on the Duplicant — power 1.2 kW →
+−340 W, dupe time 80 s → 240 s.** What one change did to the figures, named by
+the change.
+
+The app already said when an edit *broke* a build. This is the other half of
+the same question, for the ordinary case where nothing broke and the totals
+simply moved. Only what actually moved is listed, and an edit that changes no
+figure — dragging a node about — says nothing at all.
+
 ## 28 August 2026 — A code that will not open says why
 
 Three kinds of not-opening, told apart: **not a share code at all**, **cut

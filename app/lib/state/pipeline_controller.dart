@@ -10,6 +10,28 @@ sealed class Selection {
   const Selection();
 }
 
+/// One total, before an edit and after it.
+class TotalChange {
+  const TotalChange(this.label, this.before, this.after, this.itemId);
+
+  final String label;
+  final double before;
+  final double after;
+
+  /// The item whose units this is measured in, where it has one. Floor space
+  /// and Duplicant time have their own words.
+  final String? itemId;
+}
+
+/// What one edit did, and which edit it was.
+class EditEffect {
+  const EditEffect(this.edit, this.changes);
+
+  /// "adding the Oakshell", in the words the banner uses.
+  final String edit;
+  final List<TotalChange> changes;
+}
+
 class NodeSelection extends Selection {
   const NodeSelection(this.nodeId);
   final String nodeId;
@@ -257,6 +279,40 @@ class PipelineController extends ChangeNotifier {
 
   /// Applies a change and re-solves. [record] is false for the intermediate
   /// frames of a drag, so one drag is one undo step.
+  /// What the last edit did to the totals.
+  ///
+  /// Every message about a build this month has been about the effect of one
+  /// change -- "adding the Oakshell drained the Tublia", "linking the dirt
+  /// back zeroes a bunch of stuff" -- and the app made people work it out by
+  /// remembering what the figures were a moment ago. It does not have to: the
+  /// solution before the edit is right there, and keeping it costs nothing.
+  EditEffect? _effect;
+  EditEffect? get sinceLastEdit => _effect;
+
+  EditEffect? _effectOf(Pipeline before, PipelineSolution was) {
+    final edit = _whatChanged(before, _pipeline);
+    if (edit == null) return null;
+    final changes = <TotalChange>[
+      for (final change in [
+        TotalChange('power', was.netPowerWatts, _solution.netPowerWatts,
+            WellKnownItems.power),
+        TotalChange('heat', was.totalHeatKdtu, _solution.totalHeatKdtu,
+            WellKnownItems.heat),
+        TotalChange('floor', was.totalFootprintTiles.toDouble(),
+            _solution.totalFootprintTiles.toDouble(), null),
+        TotalChange(
+            'dupe time',
+            was.dupeLabourSecondsPerCycle,
+            _solution.dupeLabourSecondsPerCycle,
+            null),
+      ])
+        // Only what moved, and only by enough to read. A build redrawn by a
+        // rounding is not a build that changed.
+        if ((change.after - change.before).abs() > 1e-6) change,
+    ];
+    return changes.isEmpty ? null : EditEffect(edit, changes);
+  }
+
   /// The edit that turned a build that solved into one that does not.
   ///
   /// Every report has been phrased this way -- "adding Oakshell Molt drained
@@ -307,8 +363,29 @@ class PipelineController extends ChangeNotifier {
       return 'changing the line from the ${_nameOf(from)} to the '
           '${_nameOf(to)}';
     }
-    if (before.pins.length != after.pins.length) {
-      return 'the amounts you set';
+    // An amount changed, added or taken away. By value and not by count: the
+    // commonest edit of all is typing a different number into the same box,
+    // and counting the pins says nothing happened.
+    String key(Pin pin) => switch (pin) {
+          BuildingCountPin(:final count) => '${pin.nodeId}=$count',
+          PortRatePin(:final portId, :final ratePerSecond) =>
+            '${pin.nodeId}.$portId=$ratePerSecond',
+          StockPin(:final portId) => '${pin.nodeId}.$portId=${pin.ratePerSecond}',
+        };
+    final wasPinned = {for (final pin in before.pins) key(pin)};
+    for (final pin in after.pins) {
+      if (wasPinned.contains(key(pin))) continue;
+      final node = after.node(pin.nodeId);
+      return node == null
+          ? 'the amount you set'
+          : 'the amount on the ${_nameOf(node)}';
+    }
+    for (final pin in before.pins) {
+      if (after.pins.any((now) => key(now) == key(pin))) continue;
+      final node = before.node(pin.nodeId);
+      return node == null
+          ? 'the amount you cleared'
+          : 'clearing the amount on the ${_nameOf(node)}';
     }
     return null;
   }
@@ -333,6 +410,7 @@ class PipelineController extends ChangeNotifier {
   void _apply(Pipeline next, {bool record = true}) {
     _notice = null;
     final before = _pipeline;
+    final wasSolution = _solution;
     bool broken(SolveStatus status) =>
         status == SolveStatus.inconsistent || status == SolveStatus.invalid;
     final wasWhole = !broken(_solution.status);
@@ -343,6 +421,7 @@ class PipelineController extends ChangeNotifier {
     // being drawn is underdetermined half the time -- every node placed adds
     // an amount nobody has given yet -- so the interesting transition is into
     // arithmetic that cannot come out, from anything that could.
+    if (record) _effect = _effectOf(before, wasSolution);
     if (record && wasWhole && broken(_solution.status)) {
       _broke = _whatChanged(before, next);
     } else if (!broken(_solution.status)) {

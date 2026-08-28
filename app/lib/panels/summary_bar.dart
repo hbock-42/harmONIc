@@ -4,11 +4,13 @@ import 'package:oni_engine/oni_engine.dart';
 import '../design/item_glyph.dart';
 import '../design/tokens.dart';
 import '../design/widgets.dart';
+import '../state/pipeline_controller.dart';
 
 /// Always-visible totals for the whole build.
 class SummaryBar extends StatelessWidget {
   const SummaryBar({
     required this.solution,
+    this.sinceLastEdit,
     required this.scope,
     required this.database,
     required this.rateDisplay,
@@ -29,6 +31,12 @@ class SummaryBar extends StatelessWidget {
   /// The build as it would really be placed, when that differs from the exact
   /// ratio. Null where nothing had to be rounded, which is most builds.
   final AsBuiltReport? asBuilt;
+
+  /// What the last edit did to these figures, where it did anything.
+  ///
+  /// At the end of the bar rather than at the front: the totals are what
+  /// somebody came to read, and this is a footnote about how they got there.
+  final EditEffect? sinceLastEdit;
 
   final PipelineSolution solution;
 
@@ -167,6 +175,14 @@ class SummaryBar extends StatelessWidget {
               onToggle: onToggleRates,
             ),
           ),
+          if (sinceLastEdit case final EditEffect effect) ...[
+            const _Divider(),
+            _SinceLastEdit(
+              effect: effect,
+              database: database,
+              rateDisplay: rateDisplay,
+            ),
+          ],
         ],
         ),
       ),
@@ -324,4 +340,65 @@ class _AsBuilt extends StatelessWidget {
       onToggle: onToggle,
     );
   }
+}
+
+/// What the last edit did to the totals, at the end of them.
+///
+/// The app already says when an edit *broke* a build. This says what one cost
+/// when nothing broke, which is the other half of the question everybody has
+/// been asking: "what did adding that do?"
+class _SinceLastEdit extends StatelessWidget {
+  const _SinceLastEdit({
+    required this.effect,
+    required this.database,
+    required this.rateDisplay,
+  });
+
+  final EditEffect effect;
+  final GameDatabase database;
+  final RateDisplay rateDisplay;
+
+  String _say(TotalChange change, double value) {
+    if (change.itemId case final String itemId) {
+      return database.itemOrThrow(itemId).formatRate(value, rateDisplay);
+    }
+    return change.label == 'floor'
+        ? '${value.round()} tiles'
+        : '${value.toStringAsFixed(0)} s';
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('SINCE ${effect.edit.toUpperCase()}', style: OniType.label),
+          const SizedBox(height: 3),
+          Row(
+            children: [
+              for (final change in effect.changes) ...[
+                Padding(
+                  padding: const EdgeInsets.only(right: OniSpacing.md),
+                  child: Text(
+                    '${change.label} '
+                    '${_say(change, change.before)} → '
+                    '${_say(change, change.after)}',
+                    style: OniType.numberSmall.copyWith(
+                      // Worse in the colour of worse. Which way is worse
+                      // differs: more power is good and more heat is not.
+                      color: change.after == change.before
+                          ? OniColors.textMuted
+                          : (change.label == 'power'
+                                  ? change.after > change.before
+                                  : change.after < change.before)
+                              ? OniColors.ok
+                              : OniColors.warning,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      );
 }
