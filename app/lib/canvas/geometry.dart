@@ -86,10 +86,14 @@ Path edgePath(Offset from, Offset to) {
     ..cubicTo(from.dx + reach, from.dy, to.dx - reach, to.dy, to.dx, to.dy);
 }
 
-/// Approximate distance from a point to a cubic, by sampling. Good enough for
+/// Approximate distance from a point to a path, by sampling. Good enough for
 /// click targets and far simpler than solving it properly.
-double distanceToEdge(Offset from, Offset to, Offset point, {int samples = 24}) {
-  final metrics = edgePath(from, to).computeMetrics().toList();
+///
+/// Takes the path rather than its two ends, because a wire routed round a card
+/// is no longer the curve its ends imply, and a click test that assumed it was
+/// would select whichever wire happened to run where this one used to.
+double distanceAlong(Path path, Offset point, {int samples = 32}) {
+  final metrics = path.computeMetrics().toList();
   if (metrics.isEmpty) return double.infinity;
   final metric = metrics.first;
   var best = double.infinity;

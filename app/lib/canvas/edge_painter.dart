@@ -5,6 +5,7 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import 'geometry.dart';
+import 'routing.dart';
 
 /// Draws the wires under the nodes.
 ///
@@ -65,6 +66,7 @@ class EdgePainter extends CustomPainter {
 
   EdgePainter({
     required this.pipeline,
+    required this.routing,
     required this.database,
     required this.solution,
     required this.selectedEdgeId,
@@ -77,6 +79,11 @@ class EdgePainter extends CustomPainter {
   });
 
   final Pipeline pipeline;
+
+  /// Where each wire goes. Not worked out here: the click test and the flow
+  /// label have to agree with what is drawn, so one answer is shared rather
+  /// than three computed.
+  final EdgeRouting routing;
   final GameDatabase database;
   final PipelineSolution solution;
   final String? selectedEdgeId;
@@ -120,7 +127,7 @@ class EdgePainter extends CustomPainter {
       final hovered = edge.id == hoveredEdgeId;
       final width = _strokeWidth(flow, maxFlow);
 
-      final path = edgePath(from, to);
+      final path = routing.pathFor(edge.id, from, to);
       if (selected || hovered) {
         canvas.drawPath(
           path,
@@ -239,6 +246,7 @@ class EdgePainter extends CustomPainter {
   @override
   bool shouldRepaint(EdgePainter old) =>
       old.pipeline != pipeline ||
+      old.routing != routing ||
       old.solution != solution ||
       old.selectedEdgeId != selectedEdgeId ||
       old.hoveredEdgeId != hoveredEdgeId ||

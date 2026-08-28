@@ -550,6 +550,24 @@ class PipelineController extends ChangeNotifier {
     };
   }
 
+  /// True between [beginNodeDrag] and [endNodeDrag].
+  ///
+  /// The canvas asks because some work is worth doing for a settled build and
+  /// not for one in mid-gesture -- routing the wires round the cards, in
+  /// particular, which costs far too much to redo on every frame of a drag.
+  bool get isDraggingNodes => _dragOrigins.isNotEmpty;
+
+  /// The drag is over: what the cards are doing now is what they will keep
+  /// doing.
+  ///
+  /// Notifies, because a listener that drew something cheap for the duration
+  /// of the gesture needs to be told it can do the expensive thing again.
+  void endNodeDrag() {
+    if (_dragOrigins.isEmpty) return;
+    _dragOrigins = const {};
+    notifyListeners();
+  }
+
   /// Moves the selection to where it started plus [totalDelta], in world units.
   void dragSelectionBy(Offset totalDelta) {
     if (_dragOrigins.isEmpty) return;

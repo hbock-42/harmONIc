@@ -33,6 +33,10 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  # The wire router wants a priority queue and this is the tested one.
+  # Declared rather than leant on as a transitive dependency, because the
+  # router imports it by name.
+  collection: ^1.19.0
   cupertino_icons: ^1.0.8
   oni_engine:
     path: ../packages/oni_engine

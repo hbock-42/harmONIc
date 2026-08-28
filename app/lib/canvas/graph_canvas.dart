@@ -15,6 +15,7 @@ import 'minimap.dart';
 import 'node_widget.dart';
 import 'unbounded_layer.dart';
 import 'port_menu.dart';
+import 'routing.dart';
 
 /// The pan/zoom graph editor.
 ///
@@ -508,6 +509,30 @@ class GraphCanvasState extends State<GraphCanvas>
             if (NodeLayout.worldRect(node, spec).overlaps(world)) node.id,
       ];
 
+  /// Where the wires go, worked out once per arrangement of the cards.
+  ///
+  /// Cached against the pipeline it was computed from, by identity: every edit
+  /// makes a new one, so a stale cache is impossible and an unchanged one
+  /// costs a pointer comparison.
+  Pipeline? _routedFor;
+  EdgeRouting _routed = EdgeRouting.none;
+
+  /// The routing the painter, the click test and the label should all use.
+  ///
+  /// Nothing at all while a card is being dragged. Routing every wire is far
+  /// too much to do sixty times a second, and a route computed for where the
+  /// card *was* is worse than none: the wire would hang in space, no longer
+  /// touching the port it belongs to. Plain curves follow the card exactly,
+  /// and the moment the drag ends the real routes come back.
+  EdgeRouting get routing {
+    if (controller.isDraggingNodes) return EdgeRouting.none;
+    if (!identical(_routedFor, controller.pipeline)) {
+      _routedFor = controller.pipeline;
+      _routed = EdgeRouting.of(controller.pipeline, controller.specFor);
+    }
+    return _routed;
+  }
+
   /// The flow label a click landed on, if any.
   ///
   /// The labels sit at a fixed fraction along each wire, so this asks the same
@@ -553,7 +578,8 @@ class GraphCanvasState extends State<GraphCanvas>
     final to = NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
     if (from == null || to == null) return null;
 
-    final metrics = edgePath(from, to).computeMetrics().toList();
+    final metrics =
+        routing.pathFor(edge.id, from, to).computeMetrics().toList();
     if (metrics.isEmpty) return null;
     return metrics.first
         .getTangentForOffset(metrics.first.length * fraction)
@@ -575,7 +601,8 @@ class GraphCanvasState extends State<GraphCanvas>
       final to =
           NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
       if (from == null || to == null) continue;
-      final distance = distanceToEdge(from, to, world);
+      final distance =
+          distanceAlong(routing.pathFor(edge.id, from, to), world);
       if (distance < bestDistance) {
         bestDistance = distance;
         best = edge.id;
@@ -779,6 +806,7 @@ class GraphCanvasState extends State<GraphCanvas>
                           size: Size.zero,
                           painter: EdgePainter(
                             pipeline: controller.pipeline,
+                            routing: routing,
                             database: controller.database,
                             solution: controller.solution,
                             selectedEdgeId: selectedEdgeId,
@@ -1054,8 +1082,14 @@ class _DraggableNodeState extends State<_DraggableNode> {
           // with it, so a node can be dragged somewhere off screen.
           widget.onEdgePan(() => _dragTo(d.globalPosition), d.globalPosition);
         },
-        onPanEnd: (_) => widget.onEdgePanEnd(),
-        onPanCancel: widget.onEdgePanEnd,
+        onPanEnd: (_) {
+          widget.onEdgePanEnd();
+          widget.controller.endNodeDrag();
+        },
+        onPanCancel: () {
+          widget.onEdgePanEnd();
+          widget.controller.endNodeDrag();
+        },
         child: MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: NodeWidget(

@@ -280,6 +280,10 @@ covers whatever is left. Pinning one end and leaving the wires alone gives you
 twice the trees, because the generator's 750 g/s is read as half of what they
 drink.
 
+A wire that would cross a card it has nothing to do with goes round it
+instead. While you drag a card, its wires straighten out to plain curves and
+find their way round again when you let go.
+
 A node says what it is quietly doing. **OVER** means more is being taken from
 one of its ports than it makes — the usual reason a build will not add up, and
 the only one of these marks that means something is wrong. **VENT** means a port

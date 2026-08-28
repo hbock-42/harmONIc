@@ -8,16 +8,38 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — Wires go round the cards instead of under them
+
+Reported with a picture: an Electrolyzer above a Hydrogen Generator,
+power going back up and hydrogen coming down, and both wires drawn
+straight through the middle of both cards. A wire under a card is not
+merely untidy — you cannot tell which of the two things it vanished
+between it actually came out of.
+
+A wire that would cross a card it does not belong to now goes round it,
+by the shortest way round, and keeps a little clear of the edge. Wires
+with nothing in the way are untouched, which is most of them.
+
+While you are dragging a card its wires go back to being plain curves and
+snap to their proper routes when you let go — working out the way round
+is far too much to redo sixty times a second, and a route drawn for where
+the card *was* would leave the wire hanging in space.
+
 ## 28 August 2026 — Dragging a card no longer re-does the arithmetic
 
-Moving a node re-ran the whole solve, on every frame of the drag. On a
-41-node build that was 9.9 ms of the 16.7 ms a frame has, spent to arrive
-back at exactly the figures already on screen — nothing in the solver has
-ever read where a card sits.
+Moving a node re-ran the whole solve, on every frame of the drag — to
+arrive back at exactly the figures already on screen, because nothing in
+the solver has ever read where a card sits.
 
-Big builds should feel noticeably smoother to rearrange. Nothing else
-changes: the numbers were never wrong, they were just being worked out
-again sixty times a second for no reason.
+Measured per frame of a drag, on builds people have sent in: a 14-node
+build went from 0.7 ms to about a microsecond, a 38-node build from
+5.4 ms, and a 41-node build from 8.7 ms. A frame is 16.7 ms, so the
+largest of those was giving up half of every frame. The cost is also flat
+now — how big the build is no longer changes what a drag costs, which is
+the right way round, since big builds are the ones worth rearranging.
+
+Nothing else changes. The numbers were never wrong; they were being worked
+out again sixty times a second for no reason.
 
 ## 28 August 2026 — A node drawn harder than it makes says OVER
 
