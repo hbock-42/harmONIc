@@ -8,6 +8,20 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A build that feeds only itself no longer crashes
+
+A loop whose parts are fed by nothing but each other comes out below zero,
+and the app has always said so. It named what was drawing too hard — and
+in this case there is nothing to name, because everything feeding the loop
+is in the loop. The empty list took the solver down.
+
+It now says what is actually the matter: a loop with nothing coming into
+it from outside, so there is nothing to start it off, and something in it
+wants feeding from elsewhere or an amount of its own.
+
+Found by pointing four hundred generated builds at it rather than by
+anybody running into it — sixteen of them crashed.
+
 ## 28 August 2026 — Flow figures no longer disappear behind cards
 
 Wires are drawn under the cards — that is what lets one pass behind a card

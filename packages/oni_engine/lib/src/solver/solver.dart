@@ -284,16 +284,32 @@ class PipelineSolver {
         for (final id in negative)
           database.process(pipeline.nodeOrThrow(id).specId)?.name ?? id,
       ];
+      final below = '${_sentenceList(names.toSet().toList())} '
+          '${names.length == 1 ? 'came' : 'come'} out below zero, which is not '
+          'a thing a base can do.';
       resolvedIssues.add(PipelineIssue(
         IssueSeverity.error,
-        '${_sentenceList(names.toSet().toList())} '
-        '${names.length == 1 ? 'came' : 'come'} out below zero, which is not '
-        'a thing a base can do. More is being drawn from '
-        '${_sentenceList([for (final ref in blame) _portDescription(pipeline, ref)])} '
-        'than ${blame.length == 1 ? 'it makes' : 'they make'}: the shares on '
-        'the lines off '
-        '${blame.length == 1 ? 'it' : 'them'} leave less than what the rest '
-        'of the build asks for.',
+        // Nobody outside is feeding them, so there is nobody to blame: what
+        // they take, they take from each other. A ring that has to start
+        // itself, and every time round the shares leave less than went in.
+        // Naming a culprit here used to crash -- an empty list of them -- and
+        // would have read "more is being drawn from  than they make".
+        blame.isEmpty
+            ? '$below Everything feeding '
+                '${names.length == 1 ? 'it' : 'them'} is one of '
+                '${names.length == 1 ? 'it' : 'them'}: a loop with nothing '
+                'coming into it from outside, so there is nothing to start it '
+                'off. Something in it wants feeding from elsewhere, or an '
+                'amount of its own.'
+            : '$below More is being drawn from '
+                '${_sentenceList([
+                    for (final ref in blame)
+                      _portDescription(pipeline, ref)
+                  ])} '
+                'than ${blame.length == 1 ? 'it makes' : 'they make'}: the '
+                'shares on the lines off '
+                '${blame.length == 1 ? 'it' : 'them'} leave less than what '
+                'the rest of the build asks for.',
         nodeId: negative.first,
       ));
     }
@@ -946,6 +962,11 @@ class PipelineSolver {
   }
 
   static String _sentenceList(List<String> parts) {
+    // Nothing to list. Every caller now checks first and says something else
+    // instead, because a sentence with a hole in it is not much better than
+    // the crash this used to be -- `take(-1)` on an empty list throws, and a
+    // build whose negative nodes were fed only by each other found it.
+    if (parts.isEmpty) return '';
     if (parts.length == 1) return parts.single;
     return '${parts.take(parts.length - 1).join(', ')} and ${parts.last}';
   }

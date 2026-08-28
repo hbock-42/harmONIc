@@ -12,6 +12,12 @@ void main() {
   final db = loadDefaultDatabase();
 
   /// The real ones, exactly as they were pasted into chat and into issue #2.
+  ///
+  /// Only the top of the directory, and that is the point of it: everything
+  /// here was written by the old encoder and is checked as such. Builds found
+  /// some other way -- a fuzz run, say -- are saved under a subdirectory,
+  /// because a code this app wrote today is compressed and would fail every
+  /// assertion below for a reason that says nothing about anything.
   final reported = Directory('test/fixtures')
       .listSync()
       .whereType<File>()
