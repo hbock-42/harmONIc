@@ -119,17 +119,29 @@ class NodeWidget extends StatelessWidget {
               // say is narrower than the three things, and a header that
               // overflows is a header that has lost one of them.
               if (_marks() case final marks when marks.isNotEmpty)
-                Flexible(
+                // No flex of its own -- a Flexible with the default flex of 1
+                // splits the free space with the name beside it, which is what
+                // left VENT stranded in the middle of one node and SET hard
+                // right on the next -- and a ceiling, because a flex-0 child
+                // is laid out unbounded and would rather overflow than shrink.
+                ConstrainedBox(
+                  constraints:
+                      BoxConstraints(maxWidth: NodeLayout.sizeOf(spec).width / 2),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerRight,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        for (final (label, colour) in marks) ...[
+                        for (final (index, (label, colour))
+                            in marks.indexed) ...[
+                          if (index > 0) const SizedBox(width: 3),
                           _Mark(label, colour),
-                          const SizedBox(width: 3),
                         ],
+                        // Only where something follows: a gap after the last
+                        // one would leave the strip short of the edge that
+                        // SET sits on.
+                        if (pin != null) const SizedBox(width: 3),
                       ],
                     ),
                   ),

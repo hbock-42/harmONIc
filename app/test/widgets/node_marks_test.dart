@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/canvas/graph_canvas.dart';
+import 'package:oni_pipeline/canvas/node_widget.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
 
 import '../support/harness.dart';
@@ -73,4 +74,30 @@ void main() {
     expect(find.text('VENT'), findsOneWidget);
   });
 
+
+  testWidgets('and the marks sit where the SET badge sits', (tester) async {
+    // Reported from a screenshot: SET hard against the right edge on one node
+    // and VENT stranded mid-header on the next. A Flexible with the default
+    // flex of 1 splits the free space with the name beside it.
+    final base = testPipeline();
+    final vented = base.copyWith(nodes: [
+      for (final node in base.nodes)
+        if (node.id == 'elec')
+          node.copyWith(ventedPorts: const {'hydrogen'})
+        else
+          node,
+    ]);
+    await pump(tester, vented);
+
+    // The marks end where SET ends: hard against the node's right edge,
+    // whatever the name beside them does.
+    Offset edgeOf(Finder badge) {
+      final node = find.ancestor(of: badge, matching: find.byType(NodeWidget));
+      return tester.getTopRight(node) - tester.getTopRight(badge);
+    }
+
+    // On the Electrolyzer the last mark is NEEDS; on the Duplicants it is SET.
+    expect(edgeOf(find.text('NEEDS').first).dx,
+        closeTo(edgeOf(find.text('SET')).dx, 1));
+  });
 }
