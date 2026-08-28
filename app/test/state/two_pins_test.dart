@@ -38,6 +38,10 @@ void main() {
         reason: 'the first amount is gone: this is what sent somebody to an '
             'external tool to force two of them');
     expect(c.pipeline.pins, hasLength(1));
+    // And it says so, which it did not: an amount that disappears without a
+    // word reads as the app losing it rather than deciding something.
+    expect(c.notice, contains('The amount on the Duplicant is gone'));
+    expect(c.notice, contains('⌘Z'));
   });
 
   test('and in a chain with no slack the two would have disagreed anyway', () {
@@ -97,6 +101,7 @@ void main() {
     c.pin(const BuildingCountPin(nodeId: 'sieve', count: 1));
     expect(c.pipeline.pins, hasLength(2),
         reason: 'both kept, because the build was not settled by the first');
+    expect(c.notice, isNull, reason: 'nothing was taken away');
     expect(c.solution.status, SolveStatus.solved);
     expect(c.solution.nodes['dupes']!.count, closeTo(8, 1e-9));
     expect(c.solution.nodes['sieve']!.count, closeTo(1, 1e-9));

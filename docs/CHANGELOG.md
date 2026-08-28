@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — An amount that goes says that it went
+
+Setting an amount on a build that has already settled clears the amount that
+settled it — two amounts on a build with no slack would have to disagree. That
+was right and it happened without a word, so the first SET simply vanished. It
+says so now, and ⌘Z puts it back.
+
+Where a build *does* have slack — a line carrying the rest, say — it was never
+a problem: both amounts are kept and both hold. That is the case somebody
+wrote an external tool to get at.
+
 ## 28 August 2026 — What broke it
 
 When a build that was adding up stops adding up, the banner names the edit that

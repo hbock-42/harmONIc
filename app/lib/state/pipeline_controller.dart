@@ -787,6 +787,32 @@ class PipelineController extends ChangeNotifier {
             pin,
           ])
         : _pipeline.withPinInComponent(pin));
+
+    // A settled build has no room for a second amount, so setting one clears
+    // the amount that settled it. That is usually right -- two amounts on a
+    // build with no slack are a contradiction rather than extra information --
+    // but it used to happen without a word, and somebody went and wrote an
+    // external tool because of it.
+    final dropped = [
+      for (final was in _undoStack.last.pins)
+        if (was.nodeId != pin.nodeId &&
+            !_pipeline.pins.any((now) => now.nodeId == was.nodeId))
+          was.nodeId,
+    ];
+    if (dropped.isEmpty) return;
+    final names = [
+      for (final id in dropped)
+        if (_pipeline.node(id) case final PipelineNode node) _nameOf(node),
+    ];
+    _notice = names.length == 1
+        ? 'The amount on the ${names.single} is gone: this build was already '
+            'settled, so a second amount would have to disagree with it. Give '
+            'it somewhere to put a surplus and it will hold both. ⌘Z undoes '
+            'this.'
+        : 'The amounts on ${names.join(' and ')} are gone: this build was '
+            'already settled, so another would have to disagree with them. '
+            '⌘Z undoes this.';
+    notifyListeners();
   }
 
   /// Forgets the amount given to [nodeId]'s build, leaving other builds alone.
