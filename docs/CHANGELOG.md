@@ -15,12 +15,18 @@ buried, which made the banner taller, which pushed the canvas down — so
 the whole build jumped under your hand, and jumped back when the message
 went. Sixty-six pixels, twice, in the middle of a drag.
 
-The message appearing is fine. The build moving is not. The view now
-shifts by exactly as much as the canvas did, so what you were looking at
-stays where you were looking at it.
+The message appearing is fine. The build moving is not. The message now
+sits *over* the canvas rather than above it — the same place the find bar
+already goes, and for the same reason — so the canvas never changes size
+and there is nothing to correct.
 
-Resizing the window still works the way it should: making it shorter from
-the bottom reveals less rather than scrolling you somewhere.
+A message that covers the top of the canvas has one cost: showing you a
+card the message names must not leave it underneath the message. Anything
+that brings a card into view keeps clear of whatever the banner is using.
+
+The view also keeps still now if anything else above the canvas changes
+size, and resizing the window still works the way it should: making it
+shorter from the bottom reveals less rather than scrolling you somewhere.
 
 ## 28 August 2026 — A save that cannot be written is lost, not fatal
 

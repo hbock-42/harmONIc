@@ -30,6 +30,7 @@ class GraphCanvas extends StatefulWidget {
     this.offers = _everything,
     required this.onToggleRates,
     this.pointingAt,
+    this.obscuredTop,
     super.key,
   });
 
@@ -44,6 +45,17 @@ class GraphCanvas extends StatefulWidget {
   final bool Function(ProcessSpec) offers;
 
   static bool _everything(ProcessSpec spec) => true;
+
+  /// How many pixels of the top of the canvas something is lying over.
+  ///
+  /// The problems banner sits on the canvas rather than above it, so that a
+  /// message growing does not push the build down. The cost is that the top of
+  /// the canvas is not all visible, and anything that brings a node into view
+  /// has to know that or it will leave one under the message that named it.
+  ///
+  /// A function rather than a number because it is only known once the banner
+  /// has been laid out, and it changes with what the banner has to say.
+  final double Function()? obscuredTop;
 
   /// Switches every rate between per second and per cycle — reachable from the
   /// labels on the wires, which are where most rates are actually read.
@@ -74,6 +86,9 @@ class GraphCanvasState extends State<GraphCanvas>
   static const double canvasHalf = canvasExtent / 2;
 
   final GlobalKey _viewportKey = GlobalKey();
+
+  /// How much of the top of the canvas something else is sitting on.
+  double get _obscuredTop => widget.obscuredTop?.call() ?? 0;
 
   /// Clicking the canvas has to take focus away from whatever text field had
   /// it, or the guard that keeps ⌫ out of a search box also stops ⌫ ever
@@ -298,17 +313,24 @@ class GraphCanvasState extends State<GraphCanvas>
     final box = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
     if (node == null || spec == null || box == null) return;
 
+    // Not the whole canvas: the problems banner lies over the top of it, and
+    // a node under the very message that named it has not been shown to
+    // anybody. This is the cost of putting that message over the canvas
+    // instead of above it, and it is a smaller cost than the build jumping
+    // every time the message changes size.
     final rect = NodeLayout.worldRect(node, spec);
     final visible = Rect.fromPoints(
-      worldFromLocal(Offset.zero),
+      worldFromLocal(Offset(0, _obscuredTop)),
       worldFromLocal(Offset(box.size.width, box.size.height)),
     ).deflate(24 / _scale);
     if (visible.contains(rect.topLeft) && visible.contains(rect.bottomRight)) {
       return;
     }
 
+    // Centred on the part you can see, for the same reason.
     _travelTowards(
-      Offset(box.size.width / 2, box.size.height / 2) - rect.center * _scale,
+      Offset(box.size.width / 2, (box.size.height + _obscuredTop) / 2) -
+          rect.center * _scale,
     );
   }
 

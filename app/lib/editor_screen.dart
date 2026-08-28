@@ -194,6 +194,16 @@ class _EditorScreenState extends State<EditorScreen> {
   late final GlobalKey<GraphCanvasState> _canvasKey =
       widget.canvasKey ?? GlobalKey<GraphCanvasState>();
 
+  /// The problems banner, so the canvas can be told how much of its top the
+  /// banner is lying over.
+  final GlobalKey _bannerKey = GlobalKey();
+
+  /// How tall the banner is right now, or nothing when it has nothing to say.
+  double _bannerHeight() {
+    final box = _bannerKey.currentContext?.findRenderObject() as RenderBox?;
+    return box == null || !box.hasSize ? 0 : box.size.height;
+  }
+
   PipelineController get controller => widget.controller;
 
   bool get _apple => widget.apple ?? appleKeys;
@@ -432,7 +442,6 @@ class _EditorScreenState extends State<EditorScreen> {
                             unawaited(widget.news!.markSeen()),
                       ),
                     _RepairNotice(workspace: widget.workspace),
-                    ProblemsBanner(controller: controller),
                     Expanded(
                       child: Row(
                         children: [
@@ -470,6 +479,30 @@ class _EditorScreenState extends State<EditorScreen> {
                                     onToggleRates:
                                         widget.displaySettings.toggle,
                                     pointingAt: widget.demoHands?.litPort,
+                                    obscuredTop: _bannerHeight,
+                                  ),
+                                ),
+                                // Over the canvas and not above it, for the
+                                // same reason the find bar is: a message that
+                                // grows must not move the build. Above it in
+                                // the column, saying "a card is buried" while
+                                // a card was being dragged over another one
+                                // pushed the canvas down sixty-six pixels and
+                                // let it back up when the message went, which
+                                // is a flash in the middle of a drag.
+                                //
+                                // Opaque, because it is over the wires now
+                                // rather than over the page's own background.
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: ColoredBox(
+                                    color: OniColors.background,
+                                    child: ProblemsBanner(
+                                      key: _bannerKey,
+                                      controller: controller,
+                                    ),
                                   ),
                                 ),
                                 // Over the canvas rather than above it, where
