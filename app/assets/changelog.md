@@ -8,6 +8,24 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 28 August 2026 — A card hidden under another card says so
+
+Found while measuring the new wire routing rather than from a report: a
+build sent in had its Plastic output card lying entirely inside the Glo
+Squid card. Nothing said so. You cannot click it, cannot read its figures,
+and the wires into it appear to stop in mid-air — which is the sort of
+thing that gets reported as a wire bug, because from the outside that is
+exactly what it looks like.
+
+The banner now names it, names what is sitting on top of it, and offers to
+move it clear. It is offered rather than done: two cards on top of each
+other is sometimes deliberate, and an app that quietly rearranged your
+canvas would be worse than one that mentions it.
+
+Only when most of a card has gone, including its name. Cards clipping each
+other by a few pixels is untidy rather than wrong, and a warning that fires
+on every crowded build is one nobody reads.
+
 ## 28 August 2026 — Wires go round the cards instead of under them
 
 Reported with a picture: an Electrolyzer above a Hydrogen Generator,

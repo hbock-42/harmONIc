@@ -280,6 +280,9 @@ covers whatever is left. Pinning one end and leaving the wires alone gives you
 twice the trees, because the generator's 750 g/s is read as half of what they
 drink.
 
+If a card ends up underneath another one, the banner says which and offers to
+move it clear — a card nobody can see is worse than a card in the wrong place.
+
 A wire that would cross a card it has nothing to do with goes round it
 instead. While you drag a card, its wires straighten out to plain curves and
 find their way round again when you let go.

@@ -3,6 +3,7 @@ import 'package:oni_engine/oni_engine.dart';
 
 import '../design/tokens.dart';
 import '../design/widgets.dart';
+import '../canvas/overlap.dart';
 import '../state/pipeline_controller.dart';
 
 /// Solver complaints, phrased as things to do and wired to the doing.
@@ -33,7 +34,11 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
         .where((i) => i.severity != IssueSeverity.info)
         .toList();
     final notice = controller.notice;
-    if (blocking.isEmpty) {
+    // A card buried under another is not a problem the solver can see -- the
+    // arithmetic is perfectly fine and the build is simply missing from the
+    // screen -- so it is added here rather than found among the issues.
+    final buried = controller.hiddenCards;
+    if (blocking.isEmpty && buried.isEmpty) {
       return notice == null ? const SizedBox.shrink() : _Notice(notice);
     }
 
@@ -46,6 +51,10 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
     final worst = blocking.any((i) => i.isError)
         ? OniColors.danger
         : OniColors.warning;
+    final hiddenRows = [
+      for (final card in buried)
+        _HiddenRow(card: card, controller: controller),
+    ];
     final shown = _expanded ? issues : issues.take(_collapsedCount).toList();
     final hidden = issues.length - shown.length;
 
@@ -101,6 +110,10 @@ class _ProblemsBannerState extends State<ProblemsBanner> {
                 children: [
                   for (final issue in shown)
                     _IssueRow(issue: issue, controller: controller),
+                  // Last, and never truncated with the rest: there are never
+                  // many, and a card nobody can see is the one thing on this
+                  // banner you cannot go and look at for yourself.
+                  ...hiddenRows,
                 ],
               ),
             ),
@@ -173,6 +186,81 @@ class _IssueRow extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// A card nobody can see, and the offer to move it.
+///
+/// Not an issue from the solver: the arithmetic is fine and the build is
+/// simply missing from the screen. It gets the same shape as one because that
+/// is what the reader is used to reading here.
+class _HiddenRow extends StatelessWidget {
+  const _HiddenRow({required this.card, required this.controller});
+
+  final HiddenCard card;
+  final PipelineController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final hidden = controller.pipeline.node(card.hiddenId);
+    final under = controller.pipeline.node(card.underId);
+    if (hidden == null || under == null) return const SizedBox.shrink();
+    final name = controller.nameOf(hidden);
+    final other = controller.nameOf(under);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 5,
+                height: 5,
+                margin: const EdgeInsets.only(top: 6, right: OniSpacing.sm),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: OniColors.warning,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  card.fraction >= 0.999
+                      ? '$name is completely hidden under $other.'
+                      : '$name is mostly hidden under $other.',
+                  style: OniType.body.copyWith(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 13, top: 4, bottom: 2),
+            child: Wrap(
+              spacing: OniSpacing.xs,
+              runSpacing: OniSpacing.xs,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                OniButton(
+                  key: ValueKey('reveal:${card.hiddenId}'),
+                  label: 'Move it clear',
+                  compact: true,
+                  tone: OniButtonTone.accent,
+                  onPressed: () => controller.reveal(card.hiddenId),
+                ),
+                Text('SHOW ME', style: OniType.label),
+                OniButton(
+                  key: ValueKey('show-under:${card.underId}'),
+                  label: other,
+                  compact: true,
+                  onPressed: () => controller.selectNode(card.underId),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Something the app did on the reader's behalf, said out loud.

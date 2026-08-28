@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:oni_engine/oni_engine.dart';
 
 import '../canvas/geometry.dart';
+import '../canvas/overlap.dart' as overlap;
+import '../canvas/overlap.dart' show HiddenCard;
 
 /// What the user currently has selected on the canvas.
 sealed class Selection {
@@ -103,6 +105,35 @@ class PipelineController extends ChangeNotifier {
   /// fiftieth of a frame given away for nothing.
   List<Set<String>> get builds => _builds ??= connectedComponents(_pipeline);
 
+  List<HiddenCard>? _hidden;
+
+  /// Cards buried under other cards, worst first.
+  ///
+  /// Unlike everything else cached here this depends on *where* the cards are,
+  /// so it is the one thing a move has to throw away -- see [_applyLayout],
+  /// which deliberately keeps the rest.
+  List<HiddenCard> get hiddenCards =>
+      _hidden ??= overlap.hiddenCards(_pipeline, specFor);
+
+  /// Moves a buried card down into clear air, as one undo step.
+  ///
+  /// It is offered rather than done. Two cards on top of each other is
+  /// sometimes deliberate, and an app that silently rearranged the canvas
+  /// would be worse than one that mentions it.
+  void reveal(String nodeId) {
+    final node = _pipeline.node(nodeId);
+    final under = hiddenCards.where((h) => h.hiddenId == nodeId).firstOrNull;
+    if (node == null || under == null) return;
+    final other = _pipeline.node(under.underId);
+    final spec = specFor(node);
+    final otherSpec = other == null ? null : specFor(other);
+    if (other == null || spec == null || otherSpec == null) return;
+    final to = HiddenCard.clearOf(NodeLayout.worldRect(node, spec),
+        NodeLayout.worldRect(other, otherSpec));
+    moveNode(nodeId, to, record: true);
+    selectNode(nodeId);
+  }
+
   /// The build being worked in, when there is more than one to choose from.
   ///
   /// Whatever is selected decides it. With nothing selected there is no answer
@@ -182,6 +213,7 @@ class PipelineController extends ChangeNotifier {
   /// Six copies of these six lines had accumulated, one per place that swaps
   /// the pipeline, and a seventh field would have had to find all six.
   void _forget() {
+    _hidden = null;
     _asBuilt = null;
     _temperatures = null;
     _builds = null;
@@ -337,27 +369,27 @@ class PipelineController extends ChangeNotifier {
 
     for (final node in after.nodes) {
       if (wasNodes.contains(node.id)) continue;
-      return 'adding the ${_nameOf(node)}';
+      return 'adding the ${nameOf(node)}';
     }
     for (final edge in after.edges) {
       if (wasEdges.contains(edge.id)) continue;
       final from = after.node(edge.fromNodeId);
       final to = after.node(edge.toNodeId);
       if (from == null || to == null) continue;
-      return 'drawing the line from the ${_nameOf(from)} to the '
-          '${_nameOf(to)}';
+      return 'drawing the line from the ${nameOf(from)} to the '
+          '${nameOf(to)}';
     }
     for (final node in before.nodes) {
       if (after.nodes.any((n) => n.id == node.id)) continue;
-      return 'deleting the ${_nameOf(node)}';
+      return 'deleting the ${nameOf(node)}';
     }
     for (final edge in before.edges) {
       if (after.edges.any((e) => e.id == edge.id)) continue;
       final from = before.node(edge.fromNodeId);
       final to = before.node(edge.toNodeId);
       if (from == null || to == null) continue;
-      return 'removing the line from the ${_nameOf(from)} to the '
-          '${_nameOf(to)}';
+      return 'removing the line from the ${nameOf(from)} to the '
+          '${nameOf(to)}';
     }
     // A wire that was already there and now means something else. "Setting it
     // to producer-driven" is as much an edit as drawing it, and reported as
@@ -369,8 +401,8 @@ class PipelineController extends ChangeNotifier {
       final from = after.node(edge.fromNodeId);
       final to = after.node(edge.toNodeId);
       if (from == null || to == null) continue;
-      return 'changing the line from the ${_nameOf(from)} to the '
-          '${_nameOf(to)}';
+      return 'changing the line from the ${nameOf(from)} to the '
+          '${nameOf(to)}';
     }
     // An amount changed, added or taken away. By value and not by count: the
     // commonest edit of all is typing a different number into the same box,
@@ -387,19 +419,21 @@ class PipelineController extends ChangeNotifier {
       final node = after.node(pin.nodeId);
       return node == null
           ? 'setting an amount'
-          : 'setting the amount on the ${_nameOf(node)}';
+          : 'setting the amount on the ${nameOf(node)}';
     }
     for (final pin in before.pins) {
       if (after.pins.any((now) => key(now) == key(pin))) continue;
       final node = before.node(pin.nodeId);
       return node == null
           ? 'clearing an amount'
-          : 'clearing the amount on the ${_nameOf(node)}';
+          : 'clearing the amount on the ${nameOf(node)}';
     }
     return null;
   }
 
-  String _nameOf(PipelineNode node) =>
+  /// What to call a node in a sentence: what it was renamed to, else the
+  /// recipe's name.
+  String nameOf(PipelineNode node) =>
       node.label ?? specFor(node)?.name ?? node.specId;
 
   /// Something the app did on the reader's behalf, said out loud until the
@@ -455,6 +489,9 @@ class PipelineController extends ChangeNotifier {
   /// invalidates none of it and [_forget] is deliberately not called either.
   void _applyLayout(Pipeline next, {bool record = false}) {
     _notice = null;
+    // The one derived thing a move does invalidate: which cards are buried
+    // under which is entirely a question of where they are.
+    _hidden = null;
     if (record) _recordUndo();
     _pipeline = next;
     notifyListeners();
@@ -921,7 +958,7 @@ class PipelineController extends ChangeNotifier {
     if (dropped.isEmpty) return;
     final names = [
       for (final id in dropped)
-        if (_pipeline.node(id) case final PipelineNode node) _nameOf(node),
+        if (_pipeline.node(id) case final PipelineNode node) nameOf(node),
     ];
     _notice = names.length == 1
         ? 'The amount on the ${names.single} is gone: this build was already '
