@@ -118,5 +118,46 @@ void main() {
           const [back]);
       if (path != null) expect(_entersAnyOf(path, const [back]), isFalse);
     });
+
+    test('a wire does not cross the cards it is plugged into', () {
+      // Reported with a picture: a Petroleum Generator powering the Ethanol
+      // Distiller beside it, the wire straight through both. Power leaves the
+      // right edge of one card and has to reach the left edge of the other,
+      // so it travels backwards over the whole width of both -- and both were
+      // being left out of its own obstacles.
+      const source = Rect.fromLTWH(300, 0, 216, 160);
+      const target = Rect.fromLTWH(0, 0, 216, 160);
+      const out = Offset(507, 90); // right edge of the source card
+      const into = Offset(9, 90); // left edge of the target card
+      final path = routedEdgePath(out, into, const [], own: const [source, target]);
+      expect(path, isNotNull, reason: 'it plainly needs taking round');
+
+      // Its own cards are still where it starts and ends, so the check has to
+      // ignore the little stub at each end that is inside them by definition.
+      final middle = _walk(path!).sublist(12, _walk(path).length - 12);
+      expect(middle.any(source.contains), isFalse,
+          reason: 'it does not cross the card it leaves');
+      expect(middle.any(target.contains), isFalse,
+          reason: 'nor the one it arrives at');
+    });
+
+    test('a plain forward wire between two cards is still left alone', () {
+      // The other half of the same change: now that a wire's own cards are
+      // obstacles, an ordinary left-to-right wire must not start routing
+      // itself round them for no reason.
+      const source = Rect.fromLTWH(0, 0, 216, 160);
+      const target = Rect.fromLTWH(400, 0, 216, 160);
+      expect(
+        routedEdgePath(const Offset(207, 90), const Offset(409, 90), const [],
+            own: const [source, target]),
+        isNull,
+      );
+      // Even with the ports at different heights, which bends the curve.
+      expect(
+        routedEdgePath(const Offset(207, 60), const Offset(409, 130), const [],
+            own: const [source, target]),
+        isNull,
+      );
+    });
   });
 }

@@ -37,6 +37,17 @@ import 'geometry.dart';
 /// them rather than forcing the whole detour round the outside.
 const double kClearance = 12;
 
+/// How far a wire keeps off a card it is plugged into.
+///
+/// Less than [kClearance], because a wire has business with its own cards and
+/// hugging one reads as "attached" rather than as "in the way". Less than
+/// [_stub] too, and that is a constraint rather than a preference: the point a
+/// wire starts routing from is [_stub] beyond the port, the port sits
+/// [NodeLayout.portInset] inside the card, and if the card's own margin
+/// swallowed that point the wire would begin inside an obstacle and no route
+/// out of it would exist.
+const double kOwnClearance = 6;
+
 /// How far a wire leaves a port before it is allowed to turn.
 ///
 /// Every wire in this app leaves and arrives horizontally, and a routed one
@@ -79,13 +90,56 @@ class EdgeRouting {
   /// the largest build anybody has sent in.
   int get routedCount => _paths.length;
 
+  /// Whether this wire is one of them.
+  ///
+  /// [pathFor] cannot answer that: it builds a fresh plain curve for a wire it
+  /// has no route for, so what comes back looks the same either way.
+  bool isRouted(String edgeId) => _paths.containsKey(edgeId);
+
+  /// The route itself, or null when there is not one.
+  Path? routeFor(String edgeId) => _paths[edgeId];
+
+  /// The same routing, less the wires touching any of [nodeIds].
+  ///
+  /// For dragging. Throwing away *every* route because one card is moving made
+  /// the whole picture flinch: reported as "when moving a node, all links
+  /// change position for no reason, then go back". Only the wires attached to
+  /// what is moving have to give up their route, and those are the only ones
+  /// whose route has stopped being true.
+  ///
+  /// The rest are a little stale -- a card being dragged past them is an
+  /// obstacle that has moved -- and staying put while that happens is much
+  /// less distracting than jumping twice.
+  EdgeRouting exceptTouching(Set<String> nodeIds, Pipeline pipeline) {
+    if (nodeIds.isEmpty || _paths.isEmpty) return this;
+    final kept = <String, Path>{};
+    for (final edge in pipeline.edges) {
+      final path = _paths[edge.id];
+      if (path == null) continue;
+      if (nodeIds.contains(edge.fromNodeId) ||
+          nodeIds.contains(edge.toNodeId)) {
+        continue;
+      }
+      kept[edge.id] = path;
+    }
+    return EdgeRouting(kept);
+  }
+
   /// The routed path for this wire, or the plain curve when it did not need
   /// routing, was not routed, or could not be.
   Path pathFor(String edgeId, Offset from, Offset to) =>
       _paths[edgeId] ?? edgePath(from, to);
 
-  /// Routes every wire in [pipeline] around every card that is not one of its
-  /// own two ends.
+  /// Routes every wire in [pipeline] around the cards, including its own two.
+  ///
+  /// Its own two matter more than they look. A feedback wire -- a Hydrogen
+  /// Generator powering the Electrolyzer it is fed by, a Petroleum Generator
+  /// powering the Distiller -- leaves the *right* edge of one card and has to
+  /// arrive at the *left* edge of the other, so it travels backwards across
+  /// the full width of both. Leaving them out of the obstacles, on the
+  /// reasonable-sounding grounds that a wire must be allowed to touch the
+  /// cards it is attached to, gave those wires a free pass through exactly the
+  /// two cards they most obviously run over.
   ///
   /// Measured on real builds, and on copies of one laid out side by side:
   /// 2.4 ms at 41 nodes, 6.7 ms at 123, 14 ms at 246, 24 ms at 369. Once per
@@ -128,15 +182,17 @@ class EdgeRouting {
       // rectangles per wire and then filtering it was the single biggest cost
       // here: on a 369-node build that is 173 000 rectangles allocated to
       // route 468 wires, before any routing happens.
+      final span = Rect.fromPoints(from, to).inflate(kClearance * 2);
       final near = <Rect>[];
       for (final entry in rects.entries) {
-        if (entry.key == edge.fromNodeId || entry.key == edge.toNodeId) {
-          continue;
-        }
-        final grown = entry.value.inflate(kClearance);
-        if (grown.overlaps(Rect.fromPoints(from, to).inflate(kClearance * 2))) {
-          near.add(grown);
-        }
+        // Its own cards keep no clearance: the wire starts and ends on them,
+        // and asking it to stand off a card it is plugged into would either
+        // fail outright or push every wire away from its own port. Crossing
+        // the body of one is still a crossing.
+        final own = entry.key == edge.fromNodeId || entry.key == edge.toNodeId;
+        final grown = entry.value
+            .inflate(own ? kOwnClearance : kClearance);
+        if (grown.overlaps(span)) near.add(grown);
       }
       final routed = _route(from, to, near);
       if (routed != null) paths[edge.id] = routed;
@@ -151,11 +207,21 @@ class EdgeRouting {
 /// Null rather than the plain curve so that callers can tell "did not need
 /// routing" from "was routed", which is the difference between a wire the
 /// painter can draw the cheap way and one it cannot.
-Path? routedEdgePath(Offset from, Offset to, List<Rect> obstacles) {
+/// [own] is the wire's own two cards, which are obstacles as well but keep no
+/// clearance: the wire starts and ends on them, and standing off a card it is
+/// plugged into would either fail outright or push the wire off its own port.
+Path? routedEdgePath(
+  Offset from,
+  Offset to,
+  List<Rect> obstacles, {
+  List<Rect> own = const <Rect>[],
+}) {
   final span = Rect.fromPoints(from, to).inflate(kClearance * 2);
   return _route(from, to, <Rect>[
     for (final rect in obstacles)
       if (rect.inflate(kClearance).overlaps(span)) rect.inflate(kClearance),
+    for (final rect in own)
+      if (rect.inflate(kOwnClearance).overlaps(span)) rect.inflate(kOwnClearance),
   ]);
 }
 
@@ -167,13 +233,15 @@ Path? _route(Offset from, Offset to, List<Rect> near) {
   // be given up on either way, and there is no sense paying forty samples
   // against every one of them to find that out.
   if (near.length > _obstacleLimit) return null;
-  if (!_pathEnters(edgePath(from, to), near)) return null;
+  // Between the stubs, not the ports, for the test as well as the routing. A
+  // port dot is laid out *inside* its card, so a path measured from the dot
+  // starts inside an obstacle and every wire in the build would report itself
+  // as crossing something.
+  final start = from + const Offset(_stub, 0);
+  final end = to - const Offset(_stub, 0);
+  if (!_pathEnters(edgePath(start, end), near)) return null;
 
-  // Route between the stubs, not the ports: the wire has to leave and arrive
-  // horizontally whatever happens in between.
-  final corners =
-      _shortestPath(from + const Offset(_stub, 0), to - const Offset(_stub, 0),
-          near);
+  final corners = _shortestPath(start, end, near);
   if (corners == null) return null;
 
   return _smooth(<Offset>[from, ...corners, to]);

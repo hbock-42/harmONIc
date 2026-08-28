@@ -20,10 +20,17 @@ A wire that would cross a card it does not belong to now goes round it,
 by the shortest way round, and keeps a little clear of the edge. Wires
 with nothing in the way are untouched, which is most of them.
 
-While you are dragging a card its wires go back to being plain curves and
-snap to their proper routes when you let go — working out the way round
-is far too much to redo sixty times a second, and a route drawn for where
-the card *was* would leave the wire hanging in space.
+This includes the two cards a wire is plugged into. A wire between a
+generator and the thing it powers leaves the right-hand edge of one and
+has to reach the left-hand edge of the other, so it travels backwards
+across the full width of both — the case where going straight through is
+most obvious, and the one that was left out.
+
+While you drag a card, the wires attached to *that card* go back to plain
+curves and find their way round again when you let go. Every other wire
+stays where it is: working out the way round is far too much to redo
+sixty times a second, and a route drawn for where a card was would leave
+the wire hanging in space away from its port.
 
 ## 28 August 2026 — Dragging a card no longer re-does the arithmetic
 

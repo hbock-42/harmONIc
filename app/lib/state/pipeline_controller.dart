@@ -557,6 +557,9 @@ class PipelineController extends ChangeNotifier {
   /// particular, which costs far too much to redo on every frame of a drag.
   bool get isDraggingNodes => _dragOrigins.isNotEmpty;
 
+  /// The cards moving right now, which is empty unless one is being dragged.
+  Set<String> get draggingNodeIds => _dragOrigins.keys.toSet();
+
   /// The drag is over: what the cards are doing now is what they will keep
   /// doing.
   ///

@@ -519,13 +519,19 @@ class GraphCanvasState extends State<GraphCanvas>
 
   /// The routing the painter, the click test and the label should all use.
   ///
-  /// Nothing at all while a card is being dragged. Routing every wire is far
-  /// too much to do sixty times a second, and a route computed for where the
-  /// card *was* is worse than none: the wire would hang in space, no longer
-  /// touching the port it belongs to. Plain curves follow the card exactly,
-  /// and the moment the drag ends the real routes come back.
+  /// While a card is being dragged, the wires attached to *it* go back to
+  /// plain curves and everything else keeps the route it had. Routing the
+  /// whole build is far too much to do sixty times a second, and a route
+  /// computed for where a card was is worse than none: the wire would hang in
+  /// space, no longer touching the port it belongs to. That is only true of
+  /// the wires on the card that is moving, though -- reported as the whole
+  /// picture shifting slightly the moment a drag starts and snapping back when
+  /// it ended.
   EdgeRouting get routing {
-    if (controller.isDraggingNodes) return EdgeRouting.none;
+    if (controller.isDraggingNodes) {
+      return _routed.exceptTouching(
+          controller.draggingNodeIds, controller.pipeline);
+    }
     if (!identical(_routedFor, controller.pipeline)) {
       _routedFor = controller.pipeline;
       _routed = EdgeRouting.of(controller.pipeline, controller.specFor);
