@@ -8,6 +8,39 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 29 August 2026 — An output node takes what it is given
+
+Asked, after a CO2 output wired to a Vulcanizer threw negatives all over a
+build and the error panel's own suggestion — set it to the producer —
+fixed it: "can terminating output blocks be defaulted to producer-driven,
+or is that my misunderstanding?"
+
+Not a misunderstanding. An output node is a bucket, not a customer: it has
+no size of its own and no demand to speak of, so a line into it should
+carry what the port makes rather than ask for an amount nobody has given.
+The app already reasoned this way about the *second* line into an output.
+Now the first one does too.
+
+Two things this does not change. An output can still be what sizes a
+build — ask it for a rate and the build works backwards to it, the same as
+always. And an output hung on a port that already feeds something still
+takes whatever is left, which is usually what you want and says so.
+
+## 29 August 2026 — A wire carrying nothing says nothing, not "-0.000000"
+
+Reported from a 46-node build full of them: wires carrying no flow at all
+read "0.000000 kJ/cycle", and some of them "-0.000000 g/cycle" — a minus
+sign in front of a nothing, which reads as a flow going the wrong way and
+sends you looking for one.
+
+Rates grow extra decimal places when they need them, so that a Hatch
+laying an egg every 1.4 cycles does not read as laying none. Past a point
+that stops helping and starts printing float noise faithfully, which is
+the same lie told the other way round. It gives the digits back now.
+
+A flow that really does run backwards still keeps its minus sign. That is
+worth seeing, and the app says so in words as well.
+
 ## 29 August 2026 — Volcanoes, magma, and the sour gas boiler
 
 Asked for: "how efficient could I make a geothermal sour gas boiler with a

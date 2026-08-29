@@ -144,9 +144,16 @@ void main() {
     test('a rate too small for its decimals grows them rather than lying', () {
       final water = db.itemOrThrow('water');
       expect(water.formatRate(0.004, RateDisplay.perSecond), '0.004 g/s');
-      expect(water.formatRate(0.0000004, RateDisplay.perSecond), '0.000000 g/s',
-          reason: 'past six places the honest answer is that it is nothing '
+      // This used to read "0.000000 g/s", which is that same honest answer
+      // given in the least readable way there is — and it said so in this
+      // very reason while asserting the opposite. Reported from a build full
+      // of them: six places of nothing, some of it with a minus sign in
+      // front. Past the cap the digits are given back rather than piled on.
+      expect(water.formatRate(0.0000004, RateDisplay.perSecond), '0.00 g/s',
+          reason: 'past four places the honest answer is that it is nothing '
               'worth planning around');
+      expect(water.formatRate(0.0004, RateDisplay.perSecond), '0.0004 g/s',
+          reason: 'and a rate that four places can show still gets them');
       // And a rate with room to spare is left exactly as it was.
       expect(water.formatRate(1000, RateDisplay.perSecond), '1.00 kg/s');
       expect(water.formatRate(0, RateDisplay.perSecond), '0.00 g/s');

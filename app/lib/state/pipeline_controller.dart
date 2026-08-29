@@ -682,7 +682,7 @@ class PipelineController extends ChangeNotifier {
           // lines already divide all of it killed the build outright, because
           // a consumer-driven line there has nothing to take. A port that is
           // already divided divides once more instead.
-          : portIsFullyDivided(_pipeline, from)
+          : (portIsFullyDivided(_pipeline, from) || _isOutput(to.nodeId))
               ? EdgeMode.push
               : EdgeMode.pull,
     );

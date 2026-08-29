@@ -37,6 +37,19 @@ enum RateDisplay {
 }
 
 /// Formatting helpers. Deliberately in the engine so the CLI/tests and the app
+/// Fixed-point, without the minus sign on a number that rounds to nothing.
+///
+/// A trickle of -0.004 g/s is float noise, and "-0.0 g/s" reads as a flow
+/// going the wrong way. Reported from a build full of them: "-0.000000
+/// g/cycle" on wires that were carrying nothing at all, because the per-cycle
+/// figures were formatted straight rather than through here.
+String fixedRate(double value, int precision) {
+  final text = value.toStringAsFixed(precision);
+  return text.startsWith('-') && double.parse(text) == 0
+      ? text.substring(1)
+      : text;
+}
+
 /// print numbers the same way.
 extension UnitFormatting on Unit {
   /// Formats a per-second [value] using the friendliest magnitude.
@@ -61,15 +74,8 @@ extension UnitFormatting on Unit {
     }
   }
 
-  /// Fixed-point, without the minus sign on a number that rounds to nothing.
-  /// A trickle of -0.004 g/s is float noise, and "-0.0 g/s" reads as a flow
-  /// going the wrong way.
-  static String _fixed(double value, int precision) {
-    final text = value.toStringAsFixed(precision);
-    return text.startsWith('-') && double.parse(text) == 0
-        ? text.substring(1)
-        : text;
-  }
+  static String _fixed(double value, int precision) =>
+      fixedRate(value, precision);
 
   /// Same value expressed per cycle, for the "per cycle" display toggle.
   double perCycle(double perSecond) => perSecond * secondsPerCycle;

@@ -66,9 +66,10 @@ void main() {
       final c = testController();
       final out = c.addNode('sink:hydrogen', Offset.zero);
       final second = c.addNode('electrolyzer', Offset.zero);
-      // A first line from a port with nothing else on it stays ordinary.
       c.connect(PortRef(second, 'hydrogen'), PortRef(out, 'in'));
-      expect(c.notice, isNull, reason: 'nothing to be ambiguous about yet');
+      expect(c.pipeline.edges.firstWhere((e) => e.toNodeId == out).mode,
+          EdgeMode.push,
+          reason: 'a bucket takes what it is given, from the first line on');
 
       final third = c.addNode('electrolyzer', Offset.zero);
       c.connect(PortRef(third, 'hydrogen'), PortRef(out, 'in'));
@@ -79,11 +80,40 @@ void main() {
             .every((e) => e.mode == EdgeMode.push),
         isTrue,
       );
-      expect(c.notice, contains('output node has no size of its own'));
-
-      // And it goes at the next edit, with nothing to acknowledge.
-      c.pin(const BuildingCountPin(nodeId: 'dupes', count: 3));
+      // No notice any more, and that is the improvement: it existed to own up
+      // to changing a line the reader had not asked about, and now there is
+      // no change to own up to.
       expect(c.notice, isNull);
+    });
+
+    test('but a line the reader set to the consumer is still owned up to', () {
+      // The notice has not gone, only the case that no longer needs it. Set a
+      // line to the consumer by hand, add a second, and the group still has
+      // to move together — which is a change worth being told about.
+      final c = testController();
+      final out = c.addNode('sink:hydrogen', Offset.zero);
+      final first = c.addNode('electrolyzer', Offset.zero);
+      c.connect(PortRef(first, 'hydrogen'), PortRef(out, 'in'));
+      final line = c.pipeline.edges.firstWhere((e) => e.toNodeId == out);
+      c.setEdgeMode(line.id, EdgeMode.pull);
+
+      final second = c.addNode('electrolyzer', Offset.zero);
+      c.connect(PortRef(second, 'hydrogen'), PortRef(out, 'in'));
+      expect(c.notice, contains('output node has no size of its own'));
+    });
+
+    test('and an output can still be the thing that sizes a build', () {
+      // Producer-driven does not mean the output cannot lead: asking for a
+      // rate out of it still settles what has to go in, which is the ordinary
+      // way somebody says how big they want the thing.
+      final c = testController();
+      final out = c.addNode('sink:hydrogen', Offset.zero);
+      final maker = c.addNode('electrolyzer', Offset.zero);
+      c.connect(PortRef(maker, 'hydrogen'), PortRef(out, 'in'));
+      c.clearAllPins();
+      c.pin(PortRatePin(nodeId: out, portId: 'in', ratePerSecond: 224));
+      expect(c.solution.status, isNot(SolveStatus.invalid));
+      expect(c.solution.nodes[maker]!.count, greaterThan(0));
     });
 
     test('re-solves after every edit', () {

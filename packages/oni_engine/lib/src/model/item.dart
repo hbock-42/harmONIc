@@ -141,17 +141,33 @@ class Item {
   /// A Hatch lays an egg every 1.4 cycles, which is 0.0024 a second, which at
   /// two decimal places is "0.00" — and "0.00" does not mean "a small number",
   /// it means "none". A ranch reporting no eggs is worse than one reporting an
-  /// awkward figure. Capped, because past a point the honest answer is that the
-  /// number is too small to matter and the extra digits are noise.
+  /// awkward figure.
+  ///
+  /// Capped at four, and the cap has to be reached from the right side. It
+  /// used to be six, which is enough to print float noise faithfully: a
+  /// reported build showed "-0.000000 g/cycle" and "0.000000 kJ/cycle" on
+  /// wires carrying nothing at all, which is the very thing this exists to
+  /// prevent, arrived at from the other direction. Four still covers the
+  /// Hatch, which wants three.
+  ///
+  /// And [value] must be the number that will actually be *printed*, not the
+  /// one it came from: kilojoules a cycle are worked out and then divided by a
+  /// thousand, so choosing the digits before the division picked six of them
+  /// for a figure that then had none left.
   static int _enoughDigitsFor(double value, int precision) {
     final magnitude = value.abs();
     if (magnitude == 0) return precision;
     var digits = precision;
-    while (digits < 6 && magnitude < 0.5 / _powerOfTen(digits)) {
+    while (digits < _mostDigits && magnitude < 0.5 / _powerOfTen(digits)) {
       digits++;
     }
+    // Still nothing, even at the cap. A wider zero is no more informative
+    // than a narrow one and much harder to read past.
+    if (magnitude < 0.5 / _powerOfTen(digits)) return precision;
     return digits;
   }
+
+  static const int _mostDigits = 4;
 
   static double _powerOfTen(int n) {
     var result = 1.0;
@@ -175,30 +191,38 @@ class Item {
     int precision = 2,
   }) {
     if (isCapacity) return value.toStringAsFixed(precision);
-    precision = _enoughDigitsFor(
-        display == RateDisplay.perSecond ? value : value * secondsPerCycle,
-        precision);
+
     if (display == RateDisplay.perSecond) {
-      final formatted = unit.format(value, precision: precision);
+      final formatted = unit.format(value,
+          precision: _enoughDigitsFor(_printedPerSecond(value), precision));
       // A count keeps the shape it has always had per second -- a bare number,
       // because one Duplicant is one Duplicant and not one a second. All the
       // label does is say what is being counted.
       if (unit != Unit.count || unitLabel == null) return formatted;
       return '$formatted $unitLabel';
     }
+
+    // Worked out before the digits are chosen, because the digits are chosen
+    // from what is printed. See [_enoughDigitsFor].
     final perCycle = value * secondsPerCycle;
-    return switch (unit) {
-      Unit.gramsPerSecond => perCycle.abs() >= 1000
-          ? '${(perCycle / 1000).toStringAsFixed(precision)} kg/cycle'
-          : '${perCycle.toStringAsFixed(precision)} g/cycle',
-      Unit.watts => '${(perCycle / 1000).toStringAsFixed(precision)} kJ/cycle',
-      Unit.kdtuPerSecond =>
-        '${perCycle.toStringAsFixed(precision)} kDTU/cycle',
-      Unit.count => unitLabel == null
-          ? '${perCycle.toStringAsFixed(precision)} /cycle'
-          : '${perCycle.toStringAsFixed(precision)} $unitLabel/cycle',
+    final (shown, suffix) = switch (unit) {
+      Unit.gramsPerSecond when perCycle.abs() >= 1000 =>
+        (perCycle / 1000, 'kg/cycle'),
+      Unit.gramsPerSecond => (perCycle, 'g/cycle'),
+      Unit.watts => (perCycle / 1000, 'kJ/cycle'),
+      Unit.kdtuPerSecond => (perCycle, 'kDTU/cycle'),
+      Unit.count => (perCycle, unitLabel == null ? '/cycle' : '$unitLabel/cycle'),
     };
+    return '${fixedRate(shown, _enoughDigitsFor(shown, precision))} $suffix';
   }
+
+  /// The number [Unit.format] will actually print, which is not always the one
+  /// it is given: a kilogram is a thousand grams and reads as one figure.
+  double _printedPerSecond(double value) => switch (unit) {
+    Unit.gramsPerSecond when value.abs() >= 1000 => value / 1000,
+    Unit.watts when value.abs() >= 1000 => value / 1000,
+    _ => value,
+  };
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
