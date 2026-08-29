@@ -8,6 +8,38 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 29 August 2026 — Volcanoes, magma, and the sour gas boiler
+
+Asked for: "how efficient could I make a geothermal sour gas boiler with a
+1 kg/s pipeline" — and there was no magma in the catalogue at all, let
+alone a volcano to get it from.
+
+There is now a **Volcano** and a **Minor Volcano**, alongside the metal
+ones that were already there. Magma at 1.2 kg/s and 1726.85 °C, half that
+for the minor one, and the usual warning that every geyser rolls its own
+figures: use the activity control for the one you actually got, and the
+output control for geotuners.
+
+Three of the new entries are not buildings, which is new here. Petroleum
+heated past 541.85 °C turns into sour gas because that is what petroleum
+does; sour gas cooled to −164.5 °C falls into 67 % methane and 33 %
+sulfur; magma freezing at 1409.85 °C gives up its heat. They are written
+as processes anyway, so the solver can weigh one against another.
+
+Which answers the question. A kilogram a second of petroleum wants
+2.59 kg/s of magma — a little over two volcanoes — and gives back 670 g/s
+of natural gas and 330 g/s of sulfur, along with 2.6 kg/s of igneous rock
+to carry away.
+
+Two things it cannot say, both written on the cards themselves: a real
+boiler runs the hot sour gas against the cold oil coming in and gets most
+of the heat back, and below about 5 g a tile sour gas condenses entirely
+to methane with no sulfur at all.
+
+Sulfur was also marked as coming from the Aquatic pack, which is wrong —
+it is in the base game, in warm Rust biomes, quite apart from being what a
+sour gas boiler makes.
+
 ## 28 August 2026 — The build stays still when the message above it grows
 
 Reported: dragging a card over another one made the banner say a card was
