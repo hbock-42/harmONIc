@@ -8,6 +8,25 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 29 August 2026 — When more than one port is over-committed, it says which
+
+Reported with a picture: thirty-one ports named in one message, none of
+them marked, and "no one of these is the problem on its own". True, and
+close to useless — the reader was left to find the set by hand, which they
+did: give one node somewhere to put its surplus, watch thirty-one become
+four, repeat.
+
+That is now what the app does. It looks for the smallest set of ports
+that, given somewhere to put their surplus, lets the build stand up, and
+names those instead of the wall — "no one port explains this: it takes
+three", with a button for each.
+
+It looked for pairs before, exactly, and gave up past twenty candidates.
+So a build wanting three ports vented defeated it just as thoroughly with
+five candidates as with thirty-one, and both got the same list. Past four
+ports it still says the list, because past four the answer has stopped
+being a diagnosis.
+
 ## 29 August 2026 — An output node takes what it is given
 
 Asked, after a CO2 output wired to a Vulcanizer threw negatives all over a

@@ -740,6 +740,46 @@ class PipelineSolver {
       }
     }
 
+    // Still nothing, and too many candidates to try every pair. Reported with
+    // a picture: thirty-one ports named, none of them marked, and the whole
+    // list useless. The reader's own way out was the greedy step this refused
+    // to take -- give one node somewhere to put its surplus, watch thirty-one
+    // become four, repeat.
+    //
+    // So: vent whichever one leaves the build least broken, hold it vented,
+    // and look again. Not exhaustive, and it does not need to be. A set that
+    // works is worth far more than the certainty that it is the smallest one,
+    // and every port it names is one the reader can act on.
+    // Whenever nothing single-handed explains it, and not only when there are
+    // too many candidates to pair off exhaustively: a build needing three
+    // ports vented defeated the pair search just as thoroughly with five
+    // candidates as with thirty-one, and got the same wall of names.
+    if (guilty.isEmpty) {
+      final set = _smallestSetThatFrees(pipeline, candidates);
+      if (set.isNotEmpty) {
+        final descriptions = [
+          for (final ref in set) _portDescription(pipeline, ref)
+        ];
+        return [
+          PipelineIssue(
+            IssueSeverity.info,
+            'No one port explains this: it takes ${_inWords(set.length)}. '
+            '${_sentenceList(descriptions)} each have to hand over exactly '
+            'what they make, and between them they cannot. Give '
+            '${set.length == 2 ? 'either' : 'any'} of them somewhere to put '
+            'its surplus — an output node, or venting — and the rest of the '
+            'build comes right.',
+            nodeId: set.first.nodeId,
+            targets: [
+              for (final ref in set)
+                IssueTarget(_portDescription(pipeline, ref),
+                    nodeId: ref.nodeId, portId: ref.portId),
+            ],
+          ),
+        ];
+      }
+    }
+
     if (guilty.length == 1) {
       final ref = guilty.single;
       return [
@@ -999,10 +1039,79 @@ class PipelineSolver {
   }
 
   /// The build as it would stand if this one port were allowed to overflow.
+  /// The fewest ports that, vented together, let the build stand up.
+  ///
+  /// Greedy: score every candidate by how broken the build still is with it
+  /// vented, keep the best, and look again with that one held. Exhaustive
+  /// search over pairs is exact and costs C(n,2) solves, which at a
+  /// millisecond each is half a second by thirty candidates and worse after;
+  /// this costs at most [_mostVents] passes over what is left.
+  ///
+  /// Empty when it cannot find one, in which case the caller falls back to
+  /// naming them all -- which is what used to happen every time.
+  List<PortRef> _smallestSetThatFrees(
+      Pipeline pipeline, List<PortRef> candidates) {
+    final held = <PortRef>[];
+    final left = [...candidates];
+    var budget = _hintBudget ~/ pipeline.nodes.length;
+
+    for (var pass = 0; pass < _mostVents && left.isNotEmpty; pass++) {
+      PortRef? best;
+      var bestScore = double.infinity;
+      PipelineSolution? bestSolution;
+      for (final ref in left) {
+        if (budget-- <= 0) return const [];
+        final relaxed = _solveWithout(pipeline, ref, alongside: held);
+        final score = _howBroken(relaxed);
+        if (score < bestScore) {
+          bestScore = score;
+          best = ref;
+          bestSolution = relaxed;
+        }
+      }
+      if (best == null || bestSolution == null) return const [];
+      held.add(best);
+      left.remove(best);
+      // Standing, and standing on something: a build venting its way to all
+      // zeroes is consistent and useless, and the single-port pass already
+      // turns those down for the same reason.
+      if (bestSolution.status != SolveStatus.inconsistent &&
+          !bestSolution.nodes.values.every((n) => n.count.abs() < 1e-9)) {
+        return held.length > 1 ? held : const [];
+      }
+    }
+    return const [];
+  }
+
+  /// How far a relaxed build still is from standing up, smaller being nearer.
+  ///
+  /// A build that will not balance at any size is further off than one that
+  /// balances with something below zero, which is further off than one that
+  /// merely leaves a lot of it at nothing.
+  static double _howBroken(PipelineSolution solution) {
+    final below = solution.nodes.values.where((n) => n.count < -1e-9).length;
+    final empty =
+        solution.nodes.values.where((n) => n.count.abs() < 1e-9).length;
+    final unsolvable =
+        solution.status == SolveStatus.inconsistent ? 1000000.0 : 0;
+    return unsolvable + below * 1000.0 + empty;
+  }
+
+  /// At most this many ports named as over-committed together. Past a few the
+  /// answer has stopped being a diagnosis and gone back to being a list.
+  static const int _mostVents = 4;
+
+  static String _inWords(int n) => switch (n) {
+    2 => 'two',
+    3 => 'three',
+    4 => 'four',
+    _ => '$n',
+  };
+
   PipelineSolution _solveWithout(Pipeline pipeline, PortRef ref,
-      {PortRef? and}) {
+      {PortRef? and, List<PortRef> alongside = const []}) {
     final relaxing = <String, Set<String>>{};
-    for (final each in [ref, if (and != null) and]) {
+    for (final each in [ref, if (and != null) and, ...alongside]) {
       relaxing.putIfAbsent(each.nodeId, () => {}).add(each.portId);
     }
     final relaxed = pipeline.copyWith(nodes: [

@@ -331,6 +331,36 @@ void main() {
       expect(said, contains('Natural Gas Generator’s power'));
     });
 
+    test('and three loops are named as three, not as a list', () {
+      // Reported with a picture: thirty-one ports named and none of them
+      // marked. The pair search is exact and stops at two, so a build wanting
+      // three vented defeated it exactly as thoroughly as one wanting
+      // thirty — and both got the same wall of names. It looks for a set now,
+      // greedily, the way the reader was doing it by hand.
+      var all = loop('_0').build();
+      for (var i = 1; i < 3; i++) {
+        final next = loop('_$i').build();
+        all = all.copyWith(
+          nodes: [...all.nodes, ...next.nodes],
+          edges: [...all.edges, ...next.edges],
+          pins: [...all.pins, ...next.pins],
+        );
+      }
+
+      final issues = PipelineSolver(db).solve(all).issues;
+      final said = issues.map((i) => i.message).join(' ');
+      expect(said, contains('it takes three'));
+      expect(said, isNot(contains('No one of these is the problem on its own')),
+          reason: 'the list is what this replaces');
+
+      // And every port it names is one you can go and act on.
+      final named = issues
+          .expand((i) => i.places)
+          .where((p) => p.portId != null)
+          .toList();
+      expect(named, hasLength(3));
+    });
+
     test('and past that it says so rather than handing over a list', () {
       // Five loops is more than a pair, and the useful thing to know is that
       // hunting for the one port at fault is a waste of an afternoon.
