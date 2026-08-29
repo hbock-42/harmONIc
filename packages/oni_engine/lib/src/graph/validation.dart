@@ -30,7 +30,11 @@ class IssueTarget {
 /// shortcut, not an authority. The reader still sees what it did and can undo
 /// it.
 class IssueFix {
-  const IssueFix(this.label, {this.producerDrivenEdgeIds = const []});
+  const IssueFix(
+    this.label, {
+    this.producerDrivenEdgeIds = const [],
+    this.restEdgeIds = const [],
+  });
 
   /// What the button says, in the imperative: "Set them to the producer".
   final String label;
@@ -38,7 +42,15 @@ class IssueFix {
   /// Wires to make producer-driven.
   final List<String> producerDrivenEdgeIds;
 
-  bool get isEmpty => producerDrivenEdgeIds.isEmpty;
+  /// Wires to set to "whatever is left".
+  ///
+  /// The answer to a port whose producer-driven lines have claimed the whole
+  /// of it: one of them stops claiming a fixed amount and takes the remainder
+  /// instead, which leaves the consumer-driven lines something to draw. It is
+  /// what two people worked out for themselves before the app ever offered it.
+  final List<String> restEdgeIds;
+
+  bool get isEmpty => producerDrivenEdgeIds.isEmpty && restEdgeIds.isEmpty;
 }
 
 /// Something wrong (or merely suspicious) about a pipeline, addressed to the user.
@@ -324,9 +336,20 @@ List<PipelineIssue> validatePipeline(Pipeline pipeline, GameDatabase db) {
         'so the '
         '${starved == 1 ? 'other line has' : '$starved other lines have'} '
         'nothing to take. '
-        '${unnamed > 0 ? 'Give the producer-driven ${unnamed == 1 ? 'line a share that leaves' : 'lines shares that leave'} something over, or make ' : 'Lower one of the shares, or make '}'
+        '${unnamed > 0 ? 'Set the producer-driven ${unnamed == 1 ? 'line to carry whatever is left, give it a share' : 'lines to carry whatever is left, give them shares'} that leaves something over, or make ' : 'Lower one of the shares, or make '}'
         '${starved == 1 ? 'that line' : 'those lines'} producer-driven too.',
         nodeId: node.id,
+        // Offered as a button where there is one line to do it to. A line
+        // carrying the remainder claims nothing, so the lines drawing from
+        // the port have something to draw -- and unlike lowering a share it
+        // needs no number chosen out of the air.
+        fix: switch ([for (final e in pushing) if (e.share == null) e]) {
+          [final PipelineEdge only] => IssueFix(
+              'Let it carry whatever is left',
+              restEdgeIds: [only.id],
+            ),
+          _ => null,
+        },
         targets: [
           IssueTarget(_describe(pipeline, db, ref),
               nodeId: node.id, portId: port.id),

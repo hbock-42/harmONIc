@@ -763,11 +763,14 @@ class PipelineController extends ChangeNotifier {
   /// ⌘Z back — this is a shortcut for a few clicks, not an authority.
   void applyFix(IssueFix fix) {
     if (fix.isEmpty) return;
-    final wanted = fix.producerDrivenEdgeIds.toSet();
+    final producer = fix.producerDrivenEdgeIds.toSet();
+    final remainder = fix.restEdgeIds.toSet();
     _apply(_pipeline.copyWith(edges: [
       for (final edge in _pipeline.edges)
-        if (wanted.contains(edge.id))
+        if (producer.contains(edge.id))
           edge.copyWith(mode: EdgeMode.push, clearShare: true)
+        else if (remainder.contains(edge.id))
+          edge.copyWith(mode: EdgeMode.rest, clearShare: true)
         else
           edge,
     ]));

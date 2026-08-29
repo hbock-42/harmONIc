@@ -8,6 +8,23 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 29 August 2026 — "Already spoken for" now offers the answer people were finding themselves
+
+A port whose producer-driven lines claim the whole of it leaves the lines
+drawing from it nothing, and the build stops having any figures at all —
+reported as "producer-driven zeroes the entire build", which is exactly
+what it looks like from the outside.
+
+The app said why, and then offered a share picked out of the air, or
+making the starved line producer-driven too — which on a port already
+fully claimed just adds another claimant. It never mentioned the mode
+added for precisely this: one line stops claiming a fixed amount and
+carries the remainder instead.
+
+It does now, and there is a button for it where there is a single line
+that can take it. Two people had worked this out for themselves before the
+app ever suggested it.
+
 ## 29 August 2026 — When more than one port is over-committed, it says which
 
 Reported with a picture: thirty-one ports named in one message, none of
