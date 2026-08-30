@@ -86,6 +86,12 @@ const String oniDataJson = r"""
       "kcalPerKg": 1840
     },
     {
+      "id": "brackene",
+      "name": "Brackene",
+      "category": "liquid",
+      "specificHeat": 4.1
+    },
+    {
       "id": "brine",
       "name": "Brine",
       "category": "liquid",
@@ -2719,6 +2725,34 @@ const String oniDataJson = r"""
       ],
       "build": {
         "metal_ore": 200
+      }
+    },
+    {
+      "id": "critter_fountain",
+      "name": "Critter Fountain",
+      "kind": "building",
+      "buildingId": "critter_fountain",
+      "description": "Grooming without a Duplicant. Five kilograms of brackene a cycle makes a critter as happy as being groomed does, and it lays the same extra eggs for it — so a ranch can run on a pipe instead of on somebody’s time. Wire it to the grooming port of anything that wants grooming.\n\nUNVERIFIED: serving eight, matching the other ranching stations, because the wiki publishes no capacity for this either. A stable runs 12–96 tiles and each species takes a different amount of room. If yours differs, correct it with + Recipe.",
+      "tags": [
+        "ranching",
+        "unverified"
+      ],
+      "footprintWidth": 3,
+      "footprintHeight": 3,
+      "ports": [
+        {
+          "item": "brackene",
+          "direction": "input",
+          "rate": 66.6667
+        },
+        {
+          "item": "grooming",
+          "direction": "output",
+          "rate": 8
+        }
+      ],
+      "build": {
+        "refined_metal": 400
       }
     },
     {
@@ -8058,6 +8092,37 @@ const String oniDataJson = r"""
       "family": "pip"
     },
     {
+      "id": "plant_pulverizer_amber",
+      "name": "Plant Pulverizer (Amber)",
+      "kind": "building",
+      "buildingId": "plant_pulverizer",
+      "description": "UNVERIFIED RATE: 100 kg Amber → 50 kg Resin, with the same 40 s batch assumed. Half of it is lost, as with gum wood.",
+      "heatKdtuPerSecond": 2,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "tags": [
+        "refining",
+        "prehistoric",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "amber",
+          "direction": "input",
+          "rate": 2500
+        },
+        {
+          "item": "resin",
+          "direction": "output",
+          "rate": 1250
+        }
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
+    },
+    {
       "id": "plant_pulverizer_gum_wood",
       "name": "Plant Pulverizer (Gum Wood)",
       "kind": "building",
@@ -8089,6 +8154,41 @@ const String oniDataJson = r"""
       }
     },
     {
+      "id": "plant_pulverizer_nosh_bean",
+      "name": "Plant Pulverizer (Nosh Bean)",
+      "kind": "building",
+      "buildingId": "plant_pulverizer",
+      "description": "UNVERIFIED RATE: 2 kg Nosh Bean and 18 kg water make 20 kg of brackene, with the same 40 s batch assumed as the other recipes here. Mucin does instead of water, at the same weight.",
+      "heatKdtuPerSecond": 2,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "tags": [
+        "refining",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "nosh_bean",
+          "direction": "input",
+          "rate": 50
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 450
+        },
+        {
+          "item": "brackene",
+          "direction": "output",
+          "rate": 500
+        }
+      ],
+      "build": {
+        "raw_mineral": 400
+      }
+    },
+    {
       "id": "plant_pulverizer_slime",
       "name": "Plant Pulverizer (Slime)",
       "kind": "building",
@@ -8097,10 +8197,9 @@ const String oniDataJson = r"""
       "dupeLabourSecondsPerCycle": 600,
       "footprintWidth": 3,
       "footprintHeight": 2,
-      "description": "UNVERIFIED RATE: 100 kg Slime → 70 kg Phyto Oil + 30 kg Dirt, with a 40 s batch assumed.",
+      "description": "UNVERIFIED RATE: 100 kg Slime → 70 kg Phyto Oil + 30 kg Dirt, with a 40 s batch assumed. Base game, and it was marked Aquatic — which is also what made the Phyto Oil look like pack-only content, since this is the only way of making it modelled here.",
       "tags": [
         "refining",
-        "aquatic",
         "unverified"
       ],
       "ports": [

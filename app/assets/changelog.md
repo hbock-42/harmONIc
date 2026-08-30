@@ -8,6 +8,23 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — Ranching without a Duplicant
+
+Brackene is here, and with it the Critter Fountain. Five kilograms of it a
+cycle makes a critter as happy as grooming does, and it lays the same
+extra eggs for it — so a ranch can run on a pipe instead of on somebody's
+time.
+
+This needed no toggle and no new cards. Grooming was already a thing one
+building hands to another, so a fountain is simply a second place to get
+it: wire it to the grooming port of anything that wants grooming, and
+every critter in the app can be kept either way.
+
+The Plant Pulverizer gained two of the recipes it was missing — Nosh Beans
+into brackene, and Amber into Resin — and lost a pack tag it should never
+have had. Its Slime recipe was marked Aquatic and is base game, which is
+also what made Phyto Oil look like content you had to buy.
+
 ## 31 August 2026 — Bionic Duplicants, and four more materials in the wrong pack
 
 Bionic Duplicants are here. They eat nothing: a power bank a cycle, oil

@@ -20,8 +20,6 @@ const Map<String, String> unusedOnPurpose = {
       'fullerene, 49.5 of gold and 49.5 of petroleum, and nobody has published '
       'how long that takes — so it is here to be had and cooled with, and the '
       'recipe is not',
-  'amber': 'the same, and the Plant Pulverizer takes it in a recipe nobody has '
-      'published a cycle time for',
   'bristle_blossom': 'the crop, where the plant reports calories directly',
   'lumen_quartz': 'a decorative mineral',
   'iridium': 'a Prehistoric metal nothing here refines',
