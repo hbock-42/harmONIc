@@ -71,4 +71,19 @@ void main() {
     expect(db.variantsOf(db.processOrThrow('plant_pulverizer_amber')).length,
         greaterThan(3));
   });
+
+  test('and it says why it is allowed to stand in for grooming', () {
+    // The whole design rests on one published number. Grooming is +5
+    // happiness and a fountain is +5 happiness, so they are the same thing to
+    // a critter, and a fountain can hand over the very item a Grooming
+    // Station hands over. If that were ever found to be wrong, this model is
+    // wrong and not merely imprecise -- so the reason is on the card.
+    final said = db.processOrThrow('critter_fountain').description ?? '';
+    expect(said, contains('+5 happy'));
+    expect(said, contains('1225'));
+    // And it says what a Condo is not, because the obvious next thought is
+    // that a Condo would do as well.
+    expect(said, contains('Condo'));
+    expect(said, contains('325'));
+  });
 }

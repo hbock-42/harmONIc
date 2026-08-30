@@ -2732,7 +2732,7 @@ const String oniDataJson = r"""
       "name": "Critter Fountain",
       "kind": "building",
       "buildingId": "critter_fountain",
-      "description": "Grooming without a Duplicant. Five kilograms of brackene a cycle makes a critter as happy as being groomed does, and it lays the same extra eggs for it — so a ranch can run on a pipe instead of on somebody’s time. Wire it to the grooming port of anything that wants grooming.\n\nUNVERIFIED: serving eight, matching the other ranching stations, because the wiki publishes no capacity for this either. A stable runs 12–96 tiles and each species takes a different amount of room. If yours differs, correct it with + Recipe.",
+      "description": "Grooming without a Duplicant. A critter drinks five kilograms of brackene a cycle and is +5 happy for it, which is exactly what being groomed gives — so it eats and produces and lays as though somebody had brushed it, and nobody has. Wire it to the grooming port of anything that wants grooming.\n\nHappiness is worth +225 % reproduction a point, so those five points are the difference between a critter laying at 100 % and one laying at 1225 %. A Critter Condo gives one point rather than five and is not the same thing: 325 %, which is full output and about a quarter of the eggs.\n\nUNVERIFIED: serving eight, matching the other ranching stations, because the wiki publishes no capacity for this either. A stable runs 12–96 tiles and each species takes a different amount of room. If yours differs, correct it with + Recipe.",
       "tags": [
         "ranching",
         "unverified"
