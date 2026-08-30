@@ -10,6 +10,7 @@ import '../storage/json_store.dart';
 /// rather than by anybody keeping a list of ids in step.
 const Map<String, String> kContentPacks = <String, String>{
   'aquatic': 'Aquatic',
+  'bionic': 'Bionic',
   'frosty': 'Frosty',
   'prehistoric': 'Prehistoric',
   'spacedout': 'Spaced Out',

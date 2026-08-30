@@ -8,6 +8,29 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — Bionic Duplicants, and four more materials in the wrong pack
+
+Bionic Duplicants are here. They eat nothing: a power bank a cycle, oil
+rather than food, and their oxygen from a tank rather than the air — and
+they breathe none of it back out. What they leave is gunk. The Bionic
+Booster Pack is a pack of its own, beside Spaced Out rather than on top of
+it, so it has its own switch.
+
+Adding it turned up four materials filed under the wrong DLC, all the same
+way: tagged for the pack this app happened to meet them in rather than the
+one that added them.
+
+**Phyto Oil** was marked Aquatic. It came with the Bionic pack and is base
+game now. **Frost Bun** was hidden behind the Prehistoric pack, which
+applies only to an alternative grain you can bake it with. **Dried Mixed
+Berry Pie** was unmarked though the pie it dries is Spaced Out. And the
+**Nosh Sprout** was marked Frosty, which is true only of the Deep Fryer
+recipe for Nosh Noms and of the Bammoth that eats the beans — so Tofu and
+Curried Beans were hidden from people who own them.
+
+A tag decides what you are shown, so every one of these was something
+quietly missing from somebody's catalogue.
+
 ## 31 August 2026 — Bog Jelly is Spaced Out, and a check that would have said so
 
 Asked for as "verifying all materials by DLC". The app already refused to

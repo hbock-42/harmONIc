@@ -371,6 +371,14 @@ const Set<String> contentPackTags = {
   // liquid sulfur, sucrose and the Plug Slug — because nothing here models
   // rockets or radiation, which is most of what Spaced Out is.
   'spacedout',
+  // The Bionic Booster Pack, which is *not* one of the three: it sits beside
+  // Spaced Out rather than on it, and needs only the base game. Somebody can
+  // own it and nothing else.
+  //
+  // Small here too, and for the opposite reason to Spaced Out's: most of what
+  // it adds has since been given to the base game. Phyto Oil was its and is
+  // everybody's now.
+  'bionic',
 };
 
 String filterSpecId(String itemId) => 'filter:$itemId';

@@ -280,7 +280,10 @@ const String oniDataJson = r"""
       "id": "dried_mixed_berry_pie",
       "name": "Dried Mixed Berry Pie",
       "category": "solid",
-      "kcalPerKg": 1000
+      "kcalPerKg": 1000,
+      "tags": [
+        "spacedout"
+      ]
     },
     {
       "id": "dried_mushroom_quiche",
@@ -528,6 +531,15 @@ const String oniDataJson = r"""
       "tags": [
         "aquatic"
       ]
+    },
+    {
+      "id": "gunk",
+      "name": "Gunk",
+      "category": "liquid",
+      "tags": [
+        "bionic"
+      ],
+      "specificHeat": 1.55
     },
     {
       "id": "heat",
@@ -998,9 +1010,6 @@ const String oniDataJson = r"""
       "id": "phyto_oil",
       "name": "Phyto Oil",
       "category": "liquid",
-      "tags": [
-        "aquatic"
-      ],
       "specificHeat": 0.9
     },
     {
@@ -2130,6 +2139,39 @@ const String oniDataJson = r"""
         }
       ],
       "family": "beakon"
+    },
+    {
+      "id": "bionic_duplicant",
+      "name": "Bionic Duplicant",
+      "kind": "duplicant",
+      "description": "UNVERIFIED: eats nothing. A Bionic Duplicant runs on power banks rather than calories — one a cycle, 120 kJ each, which is the 200 W here — and on oil rather than food, 20 kg/cycle of it, drawn from a 200 kg tank at a Lubrication Station. It still wants its 100 g/s of oxygen, from an internal tank of 240 kg that lasts four cycles rather than from the air around it, and it breathes none of it back out. What it does leave is gunk: 47.3 kg/cycle through a Gunk Extractor, which is the figure used here. An Outhouse gives 48.7 kg and 200 kg of dirt besides, and that is a different recipe. The microchips it makes while it sleeps cost only its own time and are not modelled.",
+      "tags": [
+        "colony",
+        "bionic",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "oxygen",
+          "direction": "input",
+          "rate": 100
+        },
+        {
+          "item": "power",
+          "direction": "input",
+          "rate": 200
+        },
+        {
+          "item": "phyto_oil",
+          "direction": "input",
+          "rate": 33.3333
+        },
+        {
+          "item": "gunk",
+          "direction": "output",
+          "rate": 78.8333
+        }
+      ]
     },
     {
       "id": "bleach_stone_offgassing",
@@ -4016,7 +4058,6 @@ const String oniDataJson = r"""
       "footprintHeight": 2,
       "tags": [
         "food",
-        "prehistoric",
         "verified"
       ],
       "ports": [
@@ -7166,7 +7207,6 @@ const String oniDataJson = r"""
       "tags": [
         "farming",
         "food",
-        "frosty",
         "verified"
       ],
       "ports": [
@@ -7198,7 +7238,6 @@ const String oniDataJson = r"""
       "tags": [
         "farming",
         "food",
-        "frosty",
         "wild",
         "verified"
       ],
@@ -10774,8 +10813,8 @@ const String oniDataJson = r"""
       "footprintHeight": 2,
       "description": "UNVERIFIED TIME: a nosh bean and a kilogram of salty sticks. The Sushi Bar’s base craft time is published nowhere, so this uses the 50 s the Sushi Roll recipe here already assumes — right or wrong, they are so together.",
       "tags": [
-        "food",
         "aquatic",
+        "food",
         "unverified"
       ],
       "ports": [
