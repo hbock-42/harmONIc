@@ -1147,12 +1147,16 @@
       "name": "Raw Mineral",
       "category": "solid",
       "members": [
-        "sedimentary_rock",
-        "obsidian",
-        "shale",
-        "siltstone",
         "basalt",
-        "coquina"
+        "coquina",
+        "granite",
+        "igneous_rock",
+        "insulite",
+        "obsidian",
+        "sandstone",
+        "sedimentary_rock",
+        "shale",
+        "siltstone"
       ],
       "tags": [
         "class"
@@ -5941,7 +5945,7 @@
       "id": "hatch",
       "name": "Hatch",
       "kind": "critter",
-      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner. Eats rock of any sort, which is what the class here means. It will also take some ores and most of what a Duplicant eats; neither is modelled, because a ranch fed on rock is the one anybody builds.",
+      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner. Eats rock of any sort, which is what the class here means. It will also eat dirt, sand, clay and regolith, some ores at a lower yield, and prepared food by the calorie rather than by weight. None of those is modelled: a ranch fed on rock is the one anybody builds, and the others do not share this recipe’s rate.",
       "tags": [
         "ranching",
         "verified"
@@ -5979,7 +5983,7 @@
       "id": "hatch_wild",
       "name": "Hatch (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged. Eats rock of any sort, which is what the class here means. It will also take some ores and most of what a Duplicant eats; neither is modelled, because a ranch fed on rock is the one anybody builds.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged. Eats rock of any sort, which is what the class here means. It will also eat dirt, sand, clay and regolith, some ores at a lower yield, and prepared food by the calorie rather than by weight. None of those is modelled: a ranch fed on rock is the one anybody builds, and the others do not share this recipe’s rate.",
       "tags": [
         "ranching",
         "wild",
@@ -6343,6 +6347,38 @@
           "direction": "output",
           "rate": 75,
           "temperatureC": 326.85
+        }
+      ]
+    },
+    {
+      "id": "liquid_sulfur_freezing",
+      "name": "Liquid sulfur, frozen to solid",
+      "kind": "custom",
+      "description": "UNVERIFIED: not a building — liquid sulfur freezes at 115.2 °C on its own, and a Sweetle will not touch it until it does, because a critter picks its food up. Reported as \"Sweetles cannot eat liquid sulfur\", which was true and which the app had wrong in words while refusing the wire in practice. The heat is arithmetic rather than a published figure: a kilogram a second leaving a geyser at 165.2 °C has 50 °C to lose at 0.7 DTU/g/°C, which is 35 kDTU/s. Take it colder and there is more, and how much colder is a question this app cannot ask.",
+      "footprintWidth": 1,
+      "footprintHeight": 1,
+      "tags": [
+        "geothermal",
+        "spacedout",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "liquid_sulfur",
+          "direction": "input",
+          "rate": 1000
+        },
+        {
+          "item": "sulfur",
+          "direction": "output",
+          "rate": 1000,
+          "temperatureC": 115.2
+        },
+        {
+          "item": "heat",
+          "direction": "output",
+          "rate": 35,
+          "id": "heat_out"
         }
       ]
     },
@@ -10763,7 +10799,7 @@
       "id": "sweetle",
       "name": "Sweetle",
       "kind": "critter",
-      "description": "Eats 20 kg/cycle of sulfur — solid or liquid, the same either way — and excretes half of it as sucrose: renewable sugar out of a material most bases are throwing away. Three figures agree on the 50 %: the diet, the sucrose page's stated efficiency, and the farm on its own page, 45 of them on 1.5 kg/s of liquid sulfur for 450 kg/cycle. It also eats sucrose at 10 kg/cycle, which is a different recipe and one nobody has published an output for. Groomed: one egg every 4.5 cycles. The meat is the 1 600 kcal it drops at the end of a 75-cycle life, spread across it.",
+      "description": "Eats 20 kg/cycle of sulfur and excretes half of it as sucrose: renewable sugar out of a material most bases are throwing away. Three figures agree on the 50 %: the diet, the sucrose page's stated efficiency, and the farm on its own page, 45 of them on 1.5 kg/s for 450 kg/cycle. It also eats sucrose at 10 kg/cycle, which is a different recipe and one nobody has published an output for. Groomed: one egg every 4.5 cycles. The meat is the 1 600 kcal it drops at the end of a 75-cycle life, spread across it. Solid sulfur only: a Sweetle picks its food up, and liquid sulfur has to freeze first — which it does at 115.2 °C, so a geyser at 165.2 °C wants cooling by fifty degrees before a ranch can use it.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",

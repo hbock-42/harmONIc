@@ -8,6 +8,30 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 30 August 2026 — Two diets that were wrong
+
+Reported: "Sweetles cannot eat liquid sulfur and you don't have the full
+hatch diet useable." Both true, and wrong in different ways.
+
+The Sweetle was only wrong in words. The app has always refused a wire
+from a Liquid Sulfur Geyser to a Sweetle — they are different materials —
+while the note on the card said "solid or liquid, the same either way",
+which is the worst way to be wrong: doing one thing and saying the other.
+A critter picks its food up, and liquid sulfur has to freeze first, which
+it does at 115.2 °C. There is now a way to say that in a build, so a
+geyser can feed a ranch on the page the way it does in a base.
+
+The Hatch was wrong in the model. It eats rock of any sort, and four of
+the ten rocks the game recognises were missing from the class: granite,
+igneous rock, sandstone and insulite. The Rock Crusher takes exactly the
+same ten, so both were short by the same four. Igneous rock is what a
+volcano leaves behind, so a volcano can feed a coal ranch now, which it
+could not yesterday.
+
+Still not modelled, and now said plainly on the card rather than vaguely:
+a Hatch will also eat dirt, sand, clay and regolith, some ores at a lower
+yield, and prepared food by the calorie rather than by weight.
+
 ## 29 August 2026 — "Already spoken for" now offers the answer people were finding themselves
 
 A port whose producer-driven lines claim the whole of it leaves the lines
