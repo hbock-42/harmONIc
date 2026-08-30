@@ -8,6 +8,25 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — Bog Jelly is Spaced Out, and a check that would have said so
+
+Asked for as "verifying all materials by DLC". The app already refused to
+let a base-game recipe call for pack-only materials, and that catches a
+lot — but it says nothing about one pack reaching into another, and it
+only notices a mistagged material when some base-game recipe happens to
+touch it. Sulfur sat marked Aquatic for exactly that reason until a
+base-game recipe for it turned up.
+
+Frosty Planet, Prehistoric Planet and Aquatic are all packs *for* Spaced
+Out, so having any of them means having that too — but not each other. A
+recipe from one that calls for a material from another is a recipe nobody
+can cook, and there was one: Swampy Delights, cooked from Bog Jelly, with
+the jelly marked Prehistoric. It is Spaced Out. The Prehistoric note on
+its page is about the two critters that eat it.
+
+Geysers are checked the same way now, since a geyser offered to somebody
+who cannot have it is worse than most mistakes.
+
 ## 30 August 2026 — Wild or groomed is a switch now, not a different card
 
 Asked for as "toggles for grooming, with the same format as plants" — and

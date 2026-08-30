@@ -81,7 +81,7 @@ const String oniDataJson = r"""
       "name": "Bog Jelly",
       "category": "solid",
       "tags": [
-        "prehistoric"
+        "spacedout"
       ],
       "kcalPerKg": 1840
     },
