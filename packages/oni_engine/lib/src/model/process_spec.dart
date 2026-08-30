@@ -42,6 +42,7 @@ class ProcessSpec {
     required this.kind,
     required List<Port> ports,
     this.buildingId,
+    this.family,
     this.description,
     this.dupeLabourSecondsPerCycle = 0,
     this.footprintWidth = 0,
@@ -101,6 +102,7 @@ class ProcessSpec {
       name: json['name'] as String,
       kind: ProcessKind.parse(json['kind'] as String),
       buildingId: json['buildingId'] as String?,
+      family: json['family'] as String?,
       description: json['description'] as String?,
       ports: ports,
       dupeLabourSecondsPerCycle:
@@ -123,6 +125,16 @@ class ProcessSpec {
 
   /// Groups the operating modes of the same physical building together.
   final String? buildingId;
+
+  /// The id every version of this thing shares.
+  ///
+  /// A Hatch and a Hatch (wild) are one creature kept two ways, and an Arbor
+  /// Tree comes four ways once grazing is counted. Buildings have always had
+  /// this through [buildingId] -- the twenty-two Aquatuners are one building
+  /// with a coolant chosen -- and critters and plants had nothing, so changing
+  /// your mind about grooming meant deleting the card and drawing its wires
+  /// again.
+  final String? family;
   final String? description;
   final List<Port> ports;
   final double dupeLabourSecondsPerCycle;
@@ -191,6 +203,7 @@ class ProcessSpec {
         'name': name,
         'kind': kind.name,
         if (buildingId != null) 'buildingId': buildingId,
+        if (family != null) 'family': family,
         if (description != null) 'description': description,
         'ports': [for (final p in ports) p.toJson()],
         if (dupeLabourSecondsPerCycle != 0)

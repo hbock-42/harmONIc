@@ -1717,7 +1717,8 @@
           "direction": "output",
           "rate": 30
         }
-      ]
+      ],
+      "family": "alveo_vera"
     },
     {
       "id": "alveo_vera_wild",
@@ -1738,7 +1739,8 @@
           "direction": "output",
           "rate": 7.5
         }
-      ]
+      ],
+      "family": "alveo_vera"
     },
     {
       "id": "aquatic_grooming_station",
@@ -1814,7 +1816,8 @@
           "direction": "output",
           "rate": 555.55
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "arbor_tree_grazed",
@@ -1843,7 +1846,8 @@
           "direction": "output",
           "rate": 0.185185185
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "arbor_tree_grazed_wild",
@@ -1863,7 +1867,8 @@
           "direction": "output",
           "rate": 0.046296296
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "arbor_tree_wild",
@@ -1883,7 +1888,8 @@
           "direction": "output",
           "rate": 138.8875
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "bammoth",
@@ -1926,7 +1932,8 @@
           "direction": "output",
           "rate": 0.1166666667
         }
-      ]
+      ],
+      "family": "bammoth"
     },
     {
       "id": "bammoth_wild",
@@ -1965,7 +1972,8 @@
           "direction": "output",
           "rate": 0.1166666667
         }
-      ]
+      ],
+      "family": "bammoth"
     },
     {
       "id": "beakon",
@@ -2004,7 +2012,8 @@
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon"
     },
     {
       "id": "beakon_grazing",
@@ -2043,7 +2052,8 @@
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon_grazing"
     },
     {
       "id": "beakon_grazing_wild",
@@ -2078,7 +2088,8 @@
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon_grazing"
     },
     {
       "id": "beakon_wild",
@@ -2113,7 +2124,8 @@
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon"
     },
     {
       "id": "bleach_stone_offgassing",
@@ -2170,7 +2182,8 @@
           "rate": 0.001111
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "blowter"
     },
     {
       "id": "blowter_wild",
@@ -2201,7 +2214,8 @@
           "rate": 0.0001111
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "blowter"
     },
     {
       "id": "blum_lumb",
@@ -2236,7 +2250,8 @@
           "direction": "output",
           "rate": 0.1
         }
-      ]
+      ],
+      "family": "blum_lumb"
     },
     {
       "id": "blum_lumb_wild",
@@ -2267,7 +2282,8 @@
           "direction": "output",
           "rate": 0.1
         }
-      ]
+      ],
+      "family": "blum_lumb"
     },
     {
       "id": "bristle_blossom",
@@ -2292,7 +2308,8 @@
           "direction": "output",
           "rate": 0.2777777777777778
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "bristle_blossom_grazed",
@@ -2316,7 +2333,8 @@
           "direction": "output",
           "rate": 0.0277777778
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "bristle_blossom_grazed_wild",
@@ -2336,7 +2354,8 @@
           "direction": "output",
           "rate": 0.0069444445
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "bristle_blossom_wild",
@@ -2357,7 +2376,8 @@
           "direction": "output",
           "rate": 0.0694444444375
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "carbon_dioxide_geyser",
@@ -2695,7 +2715,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "cuddle_pip"
     },
     {
       "id": "cuddle_pip_wild",
@@ -2733,7 +2754,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "cuddle_pip"
     },
     {
       "id": "dartle",
@@ -2777,7 +2799,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "dartle"
     },
     {
       "id": "dartle_wild",
@@ -2817,7 +2840,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "dartle"
     },
     {
       "id": "deep_fryer_fish_taco",
@@ -3501,7 +3525,8 @@
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "family": "dense_puft"
     },
     {
       "id": "dense_puft_wild",
@@ -3535,7 +3560,8 @@
         }
       ],
       "dupeLabourSecondsPerCycle": 0,
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "family": "dense_puft"
     },
     {
       "id": "deodorizer",
@@ -3725,7 +3751,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 13.5
+      "dupeLabourSecondsPerCycle": 13.5,
+      "family": "drecko"
     },
     {
       "id": "drecko_wild",
@@ -3759,7 +3786,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "drecko"
     },
     {
       "id": "duplicant",
@@ -3810,7 +3838,8 @@
           "direction": "output",
           "rate": 0.22222222222222224
         }
-      ]
+      ],
+      "family": "dusk_cap"
     },
     {
       "id": "dusk_cap_wild",
@@ -3831,7 +3860,8 @@
           "direction": "output",
           "rate": 0.05555555554166666
         }
-      ]
+      ],
+      "family": "dusk_cap"
     },
     {
       "id": "egg_cracker",
@@ -4515,7 +4545,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "flox"
     },
     {
       "id": "flox_wild",
@@ -4550,7 +4581,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "flox"
     },
     {
       "id": "flue_coral",
@@ -4581,7 +4613,8 @@
           "direction": "output",
           "rate": 150
         }
-      ]
+      ],
+      "family": "flue_coral"
     },
     {
       "id": "flue_coral_wild",
@@ -4603,7 +4636,8 @@
           "direction": "output",
           "rate": 37.5
         }
-      ]
+      ],
+      "family": "flue_coral"
     },
     {
       "id": "gas_grass",
@@ -4640,7 +4674,8 @@
           "direction": "output",
           "rate": 166.666667
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_grass_grazed",
@@ -4677,7 +4712,8 @@
           "direction": "output",
           "rate": 0.0416666667
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_grass_grazed_wild",
@@ -4697,7 +4733,8 @@
           "direction": "output",
           "rate": 0.0104166667
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_grass_wild",
@@ -4717,7 +4754,8 @@
           "direction": "output",
           "rate": 41.66666675
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_range_curried_beans",
@@ -5314,7 +5352,8 @@
           "direction": "output",
           "rate": 0.222222
         }
-      ]
+      ],
+      "family": "gassy_moo"
     },
     {
       "id": "gassy_moo_wild",
@@ -5344,7 +5383,8 @@
           "direction": "output",
           "rate": 0.222222
         }
-      ]
+      ],
+      "family": "gassy_moo"
     },
     {
       "id": "gildgo",
@@ -5393,7 +5433,8 @@
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "gildgo"
     },
     {
       "id": "gildgo_wild",
@@ -5438,7 +5479,8 @@
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "gildgo"
     },
     {
       "id": "glass_forge",
@@ -5567,7 +5609,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 16.0
+      "dupeLabourSecondsPerCycle": 16.0,
+      "family": "glossy_drecko"
     },
     {
       "id": "glossy_drecko_wild",
@@ -5601,7 +5644,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "glossy_drecko"
     },
     {
       "id": "gold_volcano",
@@ -5686,7 +5730,8 @@
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sucrose"
     },
     {
       "id": "grubgrub_sucrose_wild",
@@ -5725,7 +5770,8 @@
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sucrose"
     },
     {
       "id": "grubgrub_sulfur",
@@ -5768,7 +5814,8 @@
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sulfur"
     },
     {
       "id": "grubgrub_sulfur_wild",
@@ -5807,7 +5854,8 @@
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sulfur"
     },
     {
       "id": "gulp_fish",
@@ -5850,7 +5898,8 @@
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "gulp_fish"
     },
     {
       "id": "gulp_fish_wild",
@@ -5889,7 +5938,8 @@
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "gulp_fish"
     },
     {
       "id": "gum_palm",
@@ -5918,7 +5968,8 @@
           "direction": "output",
           "rate": 116.667
         }
-      ]
+      ],
+      "family": "gum_palm"
     },
     {
       "id": "gum_palm_wild",
@@ -5939,7 +5990,8 @@
           "direction": "output",
           "rate": 29.16675
         }
-      ]
+      ],
+      "family": "gum_palm"
     },
     {
       "id": "hatch",
@@ -5977,7 +6029,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "hatch"
     },
     {
       "id": "hatch_wild",
@@ -6011,7 +6064,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "hatch"
     },
     {
       "id": "hot_polluted_oxygen_vent",
@@ -6164,7 +6218,8 @@
           "direction": "output",
           "rate": 3.333333
         }
-      ]
+      ],
+      "family": "kelpole"
     },
     {
       "id": "kelpole_wild",
@@ -6189,7 +6244,8 @@
           "direction": "output",
           "rate": 3.333333
         }
-      ]
+      ],
+      "family": "kelpole"
     },
     {
       "id": "kiln_ceramic",
@@ -6515,7 +6571,8 @@
           "direction": "output",
           "rate": 0.5555555555555555
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "mealwood_grazed",
@@ -6539,7 +6596,8 @@
           "direction": "output",
           "rate": 0.0555555556
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "mealwood_grazed_wild",
@@ -6559,7 +6617,8 @@
           "direction": "output",
           "rate": 0.0138888889
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "mealwood_wild",
@@ -6579,7 +6638,8 @@
           "direction": "output",
           "rate": 0.13888888883333333
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "megafrond",
@@ -7000,7 +7060,8 @@
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "family": "molten_slickster"
     },
     {
       "id": "molten_slickster_wild",
@@ -7034,7 +7095,8 @@
         }
       ],
       "dupeLabourSecondsPerCycle": 0,
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "family": "molten_slickster"
     },
     {
       "id": "natural_gas_generator",
@@ -7119,7 +7181,8 @@
           "direction": "output",
           "rate": 20.0
         }
-      ]
+      ],
+      "family": "nosh_sprout"
     },
     {
       "id": "nosh_sprout_wild",
@@ -7141,7 +7204,8 @@
           "direction": "output",
           "rate": 5.0
         }
-      ]
+      ],
+      "family": "nosh_sprout"
     },
     {
       "id": "oakshell",
@@ -7188,7 +7252,8 @@
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "oakshell"
     },
     {
       "id": "oakshell_wild",
@@ -7226,7 +7291,8 @@
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "oakshell"
     },
     {
       "id": "oil_refinery",
@@ -7349,7 +7415,8 @@
           "direction": "output",
           "rate": 0.0625
         }
-      ]
+      ],
+      "family": "orehull"
     },
     {
       "id": "orehull_wild",
@@ -7384,7 +7451,8 @@
           "direction": "output",
           "rate": 0.0625
         }
-      ]
+      ],
+      "family": "orehull"
     },
     {
       "id": "oxygen_diffuser",
@@ -7506,7 +7574,8 @@
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "pacu"
     },
     {
       "id": "pacu_wild",
@@ -7535,7 +7604,8 @@
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "pacu"
     },
     {
       "id": "peat_burner",
@@ -7637,7 +7707,8 @@
           "direction": "output",
           "rate": 0.5555416666666667
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pikeapple_bush_grazed",
@@ -7662,7 +7733,8 @@
           "direction": "output",
           "rate": 0.0555555556
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pikeapple_bush_grazed_wild",
@@ -7683,7 +7755,8 @@
           "direction": "output",
           "rate": 0.0138888889
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pikeapple_bush_wild",
@@ -7704,7 +7777,8 @@
           "direction": "output",
           "rate": 0.138885416625
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pincha_pepperplant",
@@ -7734,7 +7808,8 @@
           "direction": "output",
           "rate": 6.666667
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pincha_pepperplant_grazed",
@@ -7763,7 +7838,8 @@
           "direction": "output",
           "rate": 0.0208333333
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pincha_pepperplant_grazed_wild",
@@ -7783,7 +7859,8 @@
           "direction": "output",
           "rate": 0.0052083333
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pincha_pepperplant_wild",
@@ -7804,7 +7881,8 @@
           "direction": "output",
           "rate": 1.66666675
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pinpoket",
@@ -7829,7 +7907,8 @@
           "direction": "output",
           "rate": 0.000104167
         }
-      ]
+      ],
+      "family": "pinpoket"
     },
     {
       "id": "pinpoket_wild",
@@ -7850,7 +7929,8 @@
           "direction": "output",
           "rate": 2.60418e-05
         }
-      ]
+      ],
+      "family": "pinpoket"
     },
     {
       "id": "pip",
@@ -7892,7 +7972,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "pip"
     },
     {
       "id": "pip_wild",
@@ -7930,7 +8011,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "pip"
     },
     {
       "id": "plant_pulverizer_gum_wood",
@@ -8047,7 +8129,8 @@
           "direction": "output",
           "rate": 200.0
         }
-      ]
+      ],
+      "family": "plug_slug"
     },
     {
       "id": "plug_slug_wild",
@@ -8093,7 +8176,8 @@
           "direction": "output",
           "rate": 200.0
         }
-      ]
+      ],
+      "family": "plug_slug"
     },
     {
       "id": "plywood_press",
@@ -8177,7 +8261,8 @@
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "pokeshell"
     },
     {
       "id": "pokeshell_wild",
@@ -8219,7 +8304,8 @@
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "pokeshell"
     },
     {
       "id": "polluted_brine_vent",
@@ -8386,7 +8472,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "puft"
     },
     {
       "id": "puft_prince",
@@ -8424,7 +8511,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "puft_prince"
     },
     {
       "id": "puft_prince_wild",
@@ -8458,7 +8546,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "puft_prince"
     },
     {
       "id": "puft_wild",
@@ -8492,7 +8581,8 @@
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "puft"
     },
     {
       "id": "rehydrator_curried_beans",
@@ -9320,7 +9410,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "sage_hatch"
     },
     {
       "id": "sage_hatch_wild",
@@ -9362,7 +9453,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "sage_hatch"
     },
     {
       "id": "salt_water_geyser",
@@ -9465,7 +9557,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "shatter_flox"
     },
     {
       "id": "shatter_flox_wild",
@@ -9500,7 +9593,8 @@
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "shatter_flox"
     },
     {
       "id": "shearing_station",
@@ -9552,7 +9646,8 @@
           "direction": "output",
           "rate": 0.001111
         }
-      ]
+      ],
+      "family": "shine_bug"
     },
     {
       "id": "shine_bug_wild",
@@ -9576,7 +9671,8 @@
           "direction": "output",
           "rate": 0.0001111
         }
-      ]
+      ],
+      "family": "shine_bug"
     },
     {
       "id": "shove_vole",
@@ -9616,7 +9712,8 @@
           "direction": "output",
           "rate": 0.166667
         }
-      ]
+      ],
+      "family": "shove_vole"
     },
     {
       "id": "shove_vole_wild",
@@ -9652,7 +9749,8 @@
           "direction": "output",
           "rate": 0.166667
         }
-      ]
+      ],
+      "family": "shove_vole"
     },
     {
       "id": "sleet_wheat",
@@ -9682,7 +9780,8 @@
           "direction": "output",
           "rate": 1.666667
         }
-      ]
+      ],
+      "family": "sleet_wheat"
     },
     {
       "id": "sleet_wheat_wild",
@@ -9703,7 +9802,8 @@
           "direction": "output",
           "rate": 0.41666675
         }
-      ]
+      ],
+      "family": "sleet_wheat"
     },
     {
       "id": "slickster",
@@ -9741,7 +9841,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "slickster"
     },
     {
       "id": "slickster_wild",
@@ -9775,7 +9876,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "slickster"
     },
     {
       "id": "slime_offgassing",
@@ -9846,7 +9948,8 @@
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "slogo"
     },
     {
       "id": "slogo_wild",
@@ -9891,7 +9994,8 @@
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "slogo"
     },
     {
       "id": "sludge_press_mud",
@@ -10142,7 +10246,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "smooth_hatch"
     },
     {
       "id": "smooth_hatch_wild",
@@ -10180,7 +10285,8 @@
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "smooth_hatch"
     },
     {
       "id": "sodicane",
@@ -10329,7 +10435,8 @@
           "direction": "output",
           "rate": 0.833333
         }
-      ]
+      ],
+      "family": "spigot_seal"
     },
     {
       "id": "spigot_seal_wild",
@@ -10364,7 +10471,8 @@
           "direction": "output",
           "rate": 0.833333
         }
-      ]
+      ],
+      "family": "spigot_seal"
     },
     {
       "id": "spindly_grubfruit_plant",
@@ -10422,7 +10530,8 @@
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "family": "squeaky_puft"
     },
     {
       "id": "squeaky_puft_wild",
@@ -10456,7 +10565,8 @@
         }
       ],
       "dupeLabourSecondsPerCycle": 0,
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "family": "squeaky_puft"
     },
     {
       "id": "starnacle",
@@ -10481,7 +10591,8 @@
           "direction": "output",
           "rate": 33.333333333333336
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "starnacle_grazed",
@@ -10506,7 +10617,8 @@
           "direction": "output",
           "rate": 0.0416666667
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "starnacle_grazed_wild",
@@ -10527,7 +10639,8 @@
           "direction": "output",
           "rate": 0.0104166667
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "starnacle_wild",
@@ -10548,7 +10661,8 @@
           "direction": "output",
           "rate": 8.3333333333
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "steam_turbine",
@@ -10836,7 +10950,8 @@
           "direction": "output",
           "rate": 0.0222222
         }
-      ]
+      ],
+      "family": "sweetle"
     },
     {
       "id": "sweetle_wild",
@@ -10875,7 +10990,8 @@
           "direction": "output",
           "rate": 0.0222222
         }
-      ]
+      ],
+      "family": "sweetle"
     },
     {
       "id": "thimble_reed",
@@ -10899,7 +11015,8 @@
           "direction": "output",
           "rate": 1.666667
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "thimble_reed_grazed",
@@ -10923,7 +11040,8 @@
           "direction": "output",
           "rate": 0.0833333333
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "thimble_reed_grazed_wild",
@@ -10943,7 +11061,8 @@
           "direction": "output",
           "rate": 0.0208333333
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "thimble_reed_wild",
@@ -10963,7 +11082,8 @@
           "direction": "output",
           "rate": 0.41666675
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "tidal_spring",
@@ -11041,7 +11161,8 @@
           "direction": "output",
           "rate": 0.0045000000000000005
         }
-      ]
+      ],
+      "family": "tower_kelp"
     },
     {
       "id": "tower_kelp_wild",
@@ -11062,7 +11183,8 @@
           "direction": "output",
           "rate": 0.001125
         }
-      ]
+      ],
+      "family": "tower_kelp"
     },
     {
       "id": "tublia",
@@ -11095,7 +11217,8 @@
           "direction": "output",
           "rate": 41.666666666666664
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "tublia_grazed",
@@ -11128,7 +11251,8 @@
           "direction": "output",
           "rate": 0.0208333333
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "tublia_grazed_wild",
@@ -11149,7 +11273,8 @@
           "direction": "output",
           "rate": 0.0052083333
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "tublia_wild",
@@ -11170,7 +11295,8 @@
           "direction": "output",
           "rate": 10.4166666667
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "uranium_centrifuge",
@@ -11348,7 +11474,8 @@
           "direction": "output",
           "rate": 1.6666666666666665
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "waterweed_grazed",
@@ -11372,7 +11499,8 @@
           "direction": "output",
           "rate": 0.0138888889
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "waterweed_grazed_wild",
@@ -11392,7 +11520,8 @@
           "direction": "output",
           "rate": 0.0034722222
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "waterweed_wild",
@@ -11413,7 +11542,8 @@
           "direction": "output",
           "rate": 0.41666666675
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "wood_heater",

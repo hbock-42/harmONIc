@@ -1688,7 +1688,7 @@ class _VariantsState extends State<_Variants> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          prefix.isEmpty ? 'THIS BUILDING ALSO RUNS' : '${prefix.toUpperCase()} —',
+          prefix.isEmpty ? _alsoComesAs(widget.spec.kind) : '${prefix.toUpperCase()} —',
           style: OniType.label,
         ),
         const SizedBox(height: OniSpacing.sm),
@@ -1731,6 +1731,17 @@ class _VariantsState extends State<_Variants> {
 }
 
 /// The words every one of these names begins with, if any.
+/// What to call the row of other ways to be this thing.
+///
+/// It said "THIS BUILDING ALSO RUNS" whatever it was, which was true while
+/// only buildings had variants. A Hatch does not run anything.
+String _alsoComesAs(ProcessKind kind) => switch (kind) {
+      ProcessKind.building => 'THIS BUILDING ALSO RUNS',
+      ProcessKind.critter => 'THIS CREATURE IS ALSO KEPT',
+      ProcessKind.plant => 'THIS PLANT IS ALSO GROWN',
+      _ => 'THIS ALSO COMES AS',
+    };
+
 String _sharedPrefix(Iterable<String> names) {
   final bracket = names.first.indexOf(' (');
   if (bracket <= 0) return '';

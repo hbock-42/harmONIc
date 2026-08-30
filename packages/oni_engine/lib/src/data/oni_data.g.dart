@@ -1721,7 +1721,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 30
         }
-      ]
+      ],
+      "family": "alveo_vera"
     },
     {
       "id": "alveo_vera_wild",
@@ -1742,7 +1743,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 7.5
         }
-      ]
+      ],
+      "family": "alveo_vera"
     },
     {
       "id": "aquatic_grooming_station",
@@ -1818,7 +1820,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 555.55
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "arbor_tree_grazed",
@@ -1847,7 +1850,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.185185185
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "arbor_tree_grazed_wild",
@@ -1867,7 +1871,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.046296296
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "arbor_tree_wild",
@@ -1887,7 +1892,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 138.8875
         }
-      ]
+      ],
+      "family": "arbor_tree"
     },
     {
       "id": "bammoth",
@@ -1930,7 +1936,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.1166666667
         }
-      ]
+      ],
+      "family": "bammoth"
     },
     {
       "id": "bammoth_wild",
@@ -1969,7 +1976,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.1166666667
         }
-      ]
+      ],
+      "family": "bammoth"
     },
     {
       "id": "beakon",
@@ -2008,7 +2016,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon"
     },
     {
       "id": "beakon_grazing",
@@ -2047,7 +2056,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon_grazing"
     },
     {
       "id": "beakon_grazing_wild",
@@ -2082,7 +2092,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon_grazing"
     },
     {
       "id": "beakon_wild",
@@ -2117,7 +2128,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.041667
         }
-      ]
+      ],
+      "family": "beakon"
     },
     {
       "id": "bleach_stone_offgassing",
@@ -2174,7 +2186,8 @@ const String oniDataJson = r"""
           "rate": 0.001111
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "blowter"
     },
     {
       "id": "blowter_wild",
@@ -2205,7 +2218,8 @@ const String oniDataJson = r"""
           "rate": 0.0001111
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "blowter"
     },
     {
       "id": "blum_lumb",
@@ -2240,7 +2254,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.1
         }
-      ]
+      ],
+      "family": "blum_lumb"
     },
     {
       "id": "blum_lumb_wild",
@@ -2271,7 +2286,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.1
         }
-      ]
+      ],
+      "family": "blum_lumb"
     },
     {
       "id": "bristle_blossom",
@@ -2296,7 +2312,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.2777777777777778
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "bristle_blossom_grazed",
@@ -2320,7 +2337,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0277777778
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "bristle_blossom_grazed_wild",
@@ -2340,7 +2358,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0069444445
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "bristle_blossom_wild",
@@ -2361,7 +2380,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0694444444375
         }
-      ]
+      ],
+      "family": "bristle_blossom"
     },
     {
       "id": "carbon_dioxide_geyser",
@@ -2699,7 +2719,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "cuddle_pip"
     },
     {
       "id": "cuddle_pip_wild",
@@ -2737,7 +2758,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "cuddle_pip"
     },
     {
       "id": "dartle",
@@ -2781,7 +2803,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "dartle"
     },
     {
       "id": "dartle_wild",
@@ -2821,7 +2844,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "dartle"
     },
     {
       "id": "deep_fryer_fish_taco",
@@ -3505,7 +3529,8 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "family": "dense_puft"
     },
     {
       "id": "dense_puft_wild",
@@ -3539,7 +3564,8 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 0,
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "family": "dense_puft"
     },
     {
       "id": "deodorizer",
@@ -3729,7 +3755,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 13.5
+      "dupeLabourSecondsPerCycle": 13.5,
+      "family": "drecko"
     },
     {
       "id": "drecko_wild",
@@ -3763,7 +3790,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "drecko"
     },
     {
       "id": "duplicant",
@@ -3814,7 +3842,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.22222222222222224
         }
-      ]
+      ],
+      "family": "dusk_cap"
     },
     {
       "id": "dusk_cap_wild",
@@ -3835,7 +3864,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.05555555554166666
         }
-      ]
+      ],
+      "family": "dusk_cap"
     },
     {
       "id": "egg_cracker",
@@ -4519,7 +4549,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "flox"
     },
     {
       "id": "flox_wild",
@@ -4554,7 +4585,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "flox"
     },
     {
       "id": "flue_coral",
@@ -4585,7 +4617,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 150
         }
-      ]
+      ],
+      "family": "flue_coral"
     },
     {
       "id": "flue_coral_wild",
@@ -4607,7 +4640,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 37.5
         }
-      ]
+      ],
+      "family": "flue_coral"
     },
     {
       "id": "gas_grass",
@@ -4644,7 +4678,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 166.666667
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_grass_grazed",
@@ -4681,7 +4716,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0416666667
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_grass_grazed_wild",
@@ -4701,7 +4737,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0104166667
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_grass_wild",
@@ -4721,7 +4758,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 41.66666675
         }
-      ]
+      ],
+      "family": "gas_grass"
     },
     {
       "id": "gas_range_curried_beans",
@@ -5318,7 +5356,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.222222
         }
-      ]
+      ],
+      "family": "gassy_moo"
     },
     {
       "id": "gassy_moo_wild",
@@ -5348,7 +5387,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.222222
         }
-      ]
+      ],
+      "family": "gassy_moo"
     },
     {
       "id": "gildgo",
@@ -5397,7 +5437,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "gildgo"
     },
     {
       "id": "gildgo_wild",
@@ -5442,7 +5483,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "gildgo"
     },
     {
       "id": "glass_forge",
@@ -5571,7 +5613,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 16.0
+      "dupeLabourSecondsPerCycle": 16.0,
+      "family": "glossy_drecko"
     },
     {
       "id": "glossy_drecko_wild",
@@ -5605,7 +5648,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "glossy_drecko"
     },
     {
       "id": "gold_volcano",
@@ -5690,7 +5734,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sucrose"
     },
     {
       "id": "grubgrub_sucrose_wild",
@@ -5729,7 +5774,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sucrose"
     },
     {
       "id": "grubgrub_sulfur",
@@ -5772,7 +5818,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sulfur"
     },
     {
       "id": "grubgrub_sulfur_wild",
@@ -5811,7 +5858,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0333333
         }
-      ]
+      ],
+      "family": "grubgrub_sulfur"
     },
     {
       "id": "gulp_fish",
@@ -5854,7 +5902,8 @@ const String oniDataJson = r"""
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "gulp_fish"
     },
     {
       "id": "gulp_fish_wild",
@@ -5893,7 +5942,8 @@ const String oniDataJson = r"""
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "gulp_fish"
     },
     {
       "id": "gum_palm",
@@ -5922,7 +5972,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 116.667
         }
-      ]
+      ],
+      "family": "gum_palm"
     },
     {
       "id": "gum_palm_wild",
@@ -5943,7 +5994,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 29.16675
         }
-      ]
+      ],
+      "family": "gum_palm"
     },
     {
       "id": "hatch",
@@ -5981,7 +6033,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "hatch"
     },
     {
       "id": "hatch_wild",
@@ -6015,7 +6068,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "hatch"
     },
     {
       "id": "hot_polluted_oxygen_vent",
@@ -6168,7 +6222,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 3.333333
         }
-      ]
+      ],
+      "family": "kelpole"
     },
     {
       "id": "kelpole_wild",
@@ -6193,7 +6248,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 3.333333
         }
-      ]
+      ],
+      "family": "kelpole"
     },
     {
       "id": "kiln_ceramic",
@@ -6519,7 +6575,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.5555555555555555
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "mealwood_grazed",
@@ -6543,7 +6600,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0555555556
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "mealwood_grazed_wild",
@@ -6563,7 +6621,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0138888889
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "mealwood_wild",
@@ -6583,7 +6642,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.13888888883333333
         }
-      ]
+      ],
+      "family": "mealwood"
     },
     {
       "id": "megafrond",
@@ -7004,7 +7064,8 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "family": "molten_slickster"
     },
     {
       "id": "molten_slickster_wild",
@@ -7038,7 +7099,8 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 0,
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "family": "molten_slickster"
     },
     {
       "id": "natural_gas_generator",
@@ -7123,7 +7185,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 20.0
         }
-      ]
+      ],
+      "family": "nosh_sprout"
     },
     {
       "id": "nosh_sprout_wild",
@@ -7145,7 +7208,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 5.0
         }
-      ]
+      ],
+      "family": "nosh_sprout"
     },
     {
       "id": "oakshell",
@@ -7192,7 +7256,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "oakshell"
     },
     {
       "id": "oakshell_wild",
@@ -7230,7 +7295,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "oakshell"
     },
     {
       "id": "oil_refinery",
@@ -7353,7 +7419,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0625
         }
-      ]
+      ],
+      "family": "orehull"
     },
     {
       "id": "orehull_wild",
@@ -7388,7 +7455,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0625
         }
-      ]
+      ],
+      "family": "orehull"
     },
     {
       "id": "oxygen_diffuser",
@@ -7510,7 +7578,8 @@ const String oniDataJson = r"""
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "pacu"
     },
     {
       "id": "pacu_wild",
@@ -7539,7 +7608,8 @@ const String oniDataJson = r"""
           "rate": 0.041667
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "pacu"
     },
     {
       "id": "peat_burner",
@@ -7641,7 +7711,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.5555416666666667
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pikeapple_bush_grazed",
@@ -7666,7 +7737,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0555555556
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pikeapple_bush_grazed_wild",
@@ -7687,7 +7759,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0138888889
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pikeapple_bush_wild",
@@ -7708,7 +7781,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.138885416625
         }
-      ]
+      ],
+      "family": "pikeapple_bush"
     },
     {
       "id": "pincha_pepperplant",
@@ -7738,7 +7812,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 6.666667
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pincha_pepperplant_grazed",
@@ -7767,7 +7842,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0208333333
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pincha_pepperplant_grazed_wild",
@@ -7787,7 +7863,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0052083333
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pincha_pepperplant_wild",
@@ -7808,7 +7885,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1.66666675
         }
-      ]
+      ],
+      "family": "pincha_pepperplant"
     },
     {
       "id": "pinpoket",
@@ -7833,7 +7911,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.000104167
         }
-      ]
+      ],
+      "family": "pinpoket"
     },
     {
       "id": "pinpoket_wild",
@@ -7854,7 +7933,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 2.60418e-05
         }
-      ]
+      ],
+      "family": "pinpoket"
     },
     {
       "id": "pip",
@@ -7896,7 +7976,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "pip"
     },
     {
       "id": "pip_wild",
@@ -7934,7 +8015,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "pip"
     },
     {
       "id": "plant_pulverizer_gum_wood",
@@ -8051,7 +8133,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 200.0
         }
-      ]
+      ],
+      "family": "plug_slug"
     },
     {
       "id": "plug_slug_wild",
@@ -8097,7 +8180,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 200.0
         }
-      ]
+      ],
+      "family": "plug_slug"
     },
     {
       "id": "plywood_press",
@@ -8181,7 +8265,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "pokeshell"
     },
     {
       "id": "pokeshell_wild",
@@ -8223,7 +8308,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0125
         }
-      ]
+      ],
+      "family": "pokeshell"
     },
     {
       "id": "polluted_brine_vent",
@@ -8390,7 +8476,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "puft"
     },
     {
       "id": "puft_prince",
@@ -8428,7 +8515,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "puft_prince"
     },
     {
       "id": "puft_prince_wild",
@@ -8462,7 +8550,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "puft_prince"
     },
     {
       "id": "puft_wild",
@@ -8496,7 +8585,8 @@ const String oniDataJson = r"""
           "rate": 0.022222
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "puft"
     },
     {
       "id": "rehydrator_curried_beans",
@@ -9324,7 +9414,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "sage_hatch"
     },
     {
       "id": "sage_hatch_wild",
@@ -9366,7 +9457,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "sage_hatch"
     },
     {
       "id": "salt_water_geyser",
@@ -9469,7 +9561,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "shatter_flox"
     },
     {
       "id": "shatter_flox_wild",
@@ -9504,7 +9597,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.016667
         }
-      ]
+      ],
+      "family": "shatter_flox"
     },
     {
       "id": "shearing_station",
@@ -9556,7 +9650,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.001111
         }
-      ]
+      ],
+      "family": "shine_bug"
     },
     {
       "id": "shine_bug_wild",
@@ -9580,7 +9675,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0001111
         }
-      ]
+      ],
+      "family": "shine_bug"
     },
     {
       "id": "shove_vole",
@@ -9620,7 +9716,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.166667
         }
-      ]
+      ],
+      "family": "shove_vole"
     },
     {
       "id": "shove_vole_wild",
@@ -9656,7 +9753,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.166667
         }
-      ]
+      ],
+      "family": "shove_vole"
     },
     {
       "id": "sleet_wheat",
@@ -9686,7 +9784,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1.666667
         }
-      ]
+      ],
+      "family": "sleet_wheat"
     },
     {
       "id": "sleet_wheat_wild",
@@ -9707,7 +9806,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.41666675
         }
-      ]
+      ],
+      "family": "sleet_wheat"
     },
     {
       "id": "slickster",
@@ -9745,7 +9845,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "slickster"
     },
     {
       "id": "slickster_wild",
@@ -9779,7 +9880,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "slickster"
     },
     {
       "id": "slime_offgassing",
@@ -9850,7 +9952,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "slogo"
     },
     {
       "id": "slogo_wild",
@@ -9895,7 +9998,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.033333
         }
-      ]
+      ],
+      "family": "slogo"
     },
     {
       "id": "sludge_press_mud",
@@ -10146,7 +10250,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 12.0
+      "dupeLabourSecondsPerCycle": 12.0,
+      "family": "smooth_hatch"
     },
     {
       "id": "smooth_hatch_wild",
@@ -10184,7 +10289,8 @@ const String oniDataJson = r"""
           "rate": 0.033333
         }
       ],
-      "dupeLabourSecondsPerCycle": 0
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "smooth_hatch"
     },
     {
       "id": "sodicane",
@@ -10333,7 +10439,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.833333
         }
-      ]
+      ],
+      "family": "spigot_seal"
     },
     {
       "id": "spigot_seal_wild",
@@ -10368,7 +10475,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.833333
         }
-      ]
+      ],
+      "family": "spigot_seal"
     },
     {
       "id": "spindly_grubfruit_plant",
@@ -10426,7 +10534,8 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
-      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner."
+      "description": "Groomed: one egg every 4.5 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 75-cycle life, spread across that life — cull sooner and you get it sooner.",
+      "family": "squeaky_puft"
     },
     {
       "id": "squeaky_puft_wild",
@@ -10460,7 +10569,8 @@ const String oniDataJson = r"""
         }
       ],
       "dupeLabourSecondsPerCycle": 0,
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged."
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "family": "squeaky_puft"
     },
     {
       "id": "starnacle",
@@ -10485,7 +10595,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 33.333333333333336
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "starnacle_grazed",
@@ -10510,7 +10621,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0416666667
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "starnacle_grazed_wild",
@@ -10531,7 +10643,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0104166667
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "starnacle_wild",
@@ -10552,7 +10665,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 8.3333333333
         }
-      ]
+      ],
+      "family": "starnacle"
     },
     {
       "id": "steam_turbine",
@@ -10840,7 +10954,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0222222
         }
-      ]
+      ],
+      "family": "sweetle"
     },
     {
       "id": "sweetle_wild",
@@ -10879,7 +10994,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0222222
         }
-      ]
+      ],
+      "family": "sweetle"
     },
     {
       "id": "thimble_reed",
@@ -10903,7 +11019,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1.666667
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "thimble_reed_grazed",
@@ -10927,7 +11044,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0833333333
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "thimble_reed_grazed_wild",
@@ -10947,7 +11065,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0208333333
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "thimble_reed_wild",
@@ -10967,7 +11086,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.41666675
         }
-      ]
+      ],
+      "family": "thimble_reed"
     },
     {
       "id": "tidal_spring",
@@ -11045,7 +11165,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0045000000000000005
         }
-      ]
+      ],
+      "family": "tower_kelp"
     },
     {
       "id": "tower_kelp_wild",
@@ -11066,7 +11187,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.001125
         }
-      ]
+      ],
+      "family": "tower_kelp"
     },
     {
       "id": "tublia",
@@ -11099,7 +11221,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 41.666666666666664
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "tublia_grazed",
@@ -11132,7 +11255,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0208333333
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "tublia_grazed_wild",
@@ -11153,7 +11277,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0052083333
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "tublia_wild",
@@ -11174,7 +11299,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 10.4166666667
         }
-      ]
+      ],
+      "family": "tublia"
     },
     {
       "id": "uranium_centrifuge",
@@ -11352,7 +11478,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 1.6666666666666665
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "waterweed_grazed",
@@ -11376,7 +11503,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0138888889
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "waterweed_grazed_wild",
@@ -11396,7 +11524,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.0034722222
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "waterweed_wild",
@@ -11417,7 +11546,8 @@ const String oniDataJson = r"""
           "direction": "output",
           "rate": 0.41666666675
         }
-      ]
+      ],
+      "family": "waterweed"
     },
     {
       "id": "wood_heater",

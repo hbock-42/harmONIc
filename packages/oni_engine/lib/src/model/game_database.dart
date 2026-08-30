@@ -49,9 +49,7 @@ class GameDatabase {
   ProcessSpec processOrThrow(String id) =>
       _processes[id] ?? (throw ArgumentError('Unknown process "$id"'));
 
-  /// Can something offering [offered] be wired into a port asking for [wanted]?
-  ///
-  /// The other things this same building can be set to run.
+  /// The other things this same thing can be set to be.
   ///
   /// One building often has several recipes — a Rock Crusher makes sand or
   /// lime or metal, an Aquatuner is one machine per coolant — and each is its
@@ -59,18 +57,29 @@ class GameDatabase {
   /// are the same *building* though, which is why they share a `buildingId`,
   /// and swapping between them should not mean deleting what you placed.
   ///
+  /// The same is true of a creature or a plant kept a different way: a Hatch
+  /// and a Hatch (wild) are one animal, and an Arbor Tree comes four ways once
+  /// grazing is counted. Those share a `family`.
+  ///
   /// Includes the one asked about, and is empty for anything that stands
   /// alone.
   List<ProcessSpec> variantsOf(ProcessSpec spec) {
-    final building = spec.buildingId;
-    if (building == null) return const [];
+    // Two ways of being the same thing, and they mean the same to a reader:
+    // a building running a different coolant, and a creature kept a different
+    // way. The second had no answer at all until somebody asked for "toggles
+    // for grooming, with the same format as plants" -- and changing your mind
+    // about it meant deleting the card and drawing its wires again.
+    final key = spec.family ?? spec.buildingId;
+    if (key == null) return const [];
     final found = [
       for (final other in processes)
-        if (other.buildingId == building) other,
+        if ((other.family ?? other.buildingId) == key) other,
     ]..sort((a, b) => a.name.compareTo(b.name));
     return found.length > 1 ? found : const [];
   }
 
+  /// Can something offering [offered] be wired into a port asking for [wanted]?
+  ///
   /// The same item always can. Beyond that, a class accepts any of its members
   /// — a Metal Refinery asking for Metal Ore takes the Iron Ore an Orehull
   /// sheds — and, going the other way, a port offering the class satisfies a

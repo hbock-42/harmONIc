@@ -8,6 +8,21 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 30 August 2026 — Wild or groomed is a switch now, not a different card
+
+Asked for as "toggles for grooming, with the same format as plants" — and
+there was no format to match. A Hatch and a Hatch (wild) were two
+unrelated cards, so changing your mind meant deleting one, placing the
+other, and drawing every wire again.
+
+Open a critter or a plant and the other ways to keep it are listed, the
+way a building has always listed its other recipes. One press swaps the
+card where it stands and keeps its wires; anything that genuinely does not
+fit the new version comes off, and says so.
+
+An Arbor Tree turns out to come four ways once grazing is counted, and
+sixty-five of the app's cards were a second copy of another one.
+
 ## 30 August 2026 — Two diets that were wrong
 
 Reported: "Sweetles cannot eat liquid sulfur and you don't have the full
