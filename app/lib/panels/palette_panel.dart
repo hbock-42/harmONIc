@@ -56,6 +56,19 @@ String? paletteHint(ProcessSpec spec) {
 /// 0 for a name, 1 for something that makes it, 2 for something that eats it,
 /// and 3 for no match at all. Somebody typing "oxygen" wants the Electrolyzer
 /// above the Duplicant that breathes it.
+/// Which of two ways of being the same thing to offer, negative for the first.
+///
+/// Better search rank first, and where the query says nothing to tell them
+/// apart, the one whose id *is* the family — a Hatch rather than a Hatch
+/// (wild), which is the one somebody means when they have not said.
+int _prefer(ProcessSpec a, ProcessSpec b, String query, GameDatabase db) {
+  final byRank =
+      paletteRank(a, query, db).compareTo(paletteRank(b, query, db));
+  if (byRank != 0) return byRank;
+  if ((a.id == a.family) != (b.id == b.family)) return a.id == a.family ? -1 : 1;
+  return a.name.length.compareTo(b.name.length);
+}
+
 int paletteRank(ProcessSpec spec, String query, GameDatabase database) {
   if (query.isEmpty || spec.name.toLowerCase().contains(query)) return 0;
   final why = paletteWhy(spec, query, database);
@@ -180,6 +193,34 @@ class _PalettePanelState extends State<PalettePanel> {
       };
       groups.putIfAbsent(group, () => []).add(spec);
     }
+    // One row per family. Sixty-five of these cards were a second copy of
+    // another differing by one switch -- a Hatch and a Hatch (wild), an Arbor
+    // Tree four ways -- and a list that shows all of them is twice as long as
+    // it needs to be for no information at all. The other ways are on the card
+    // once it is placed.
+    //
+    // Which one to show is decided by the search: with nothing typed every
+    // member ranks the same and the base wins, and typing "wild" makes the
+    // wild one rank better, so it is the one offered. That is the whole rule,
+    // and it means nothing becomes unfindable by being folded away.
+    for (final entry in groups.entries) {
+      final best = <String, ProcessSpec>{};
+      final loose = <ProcessSpec>[];
+      for (final spec in entry.value) {
+        final family = spec.family;
+        if (family == null) {
+          loose.add(spec);
+          continue;
+        }
+        final rival = best[family];
+        if (rival == null ||
+            _prefer(spec, rival, query, widget.database) < 0) {
+          best[family] = spec;
+        }
+      }
+      groups[entry.key] = [...loose, ...best.values];
+    }
+
     for (final list in groups.values) {
       list.sort((a, b) {
         final byRank = paletteRank(

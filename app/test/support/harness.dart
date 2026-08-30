@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/design/tokens.dart';
+import 'package:oni_pipeline/design/widgets.dart';
+import 'package:oni_pipeline/panels/palette_panel.dart';
 import 'package:oni_pipeline/state/display_controller.dart';
 import 'package:oni_pipeline/state/library_controller.dart';
 import 'package:oni_pipeline/state/pipeline_controller.dart';
@@ -108,4 +110,11 @@ Finder textLabel(String label) => find.byWidgetPredicate(
 Finder textContaining(String needle) => find.byWidgetPredicate(
       (w) => w is Text && _reads(w).contains(needle),
       description: 'Text containing "$needle"',
+    );
+
+/// The palette's own search box. The top bar has a text field too, so this has
+/// to say which one it means.
+Finder paletteSearch() => find.descendant(
+      of: find.byType(PalettePanel),
+      matching: find.byType(OniField),
     );

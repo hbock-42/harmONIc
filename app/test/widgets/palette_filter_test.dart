@@ -4,7 +4,6 @@ import 'package:oni_pipeline/state/display_controller.dart';
 import 'package:oni_pipeline/storage/json_store.dart';
 
 import 'package:oni_pipeline/design/widgets.dart';
-import 'package:oni_pipeline/panels/palette_panel.dart';
 import 'package:oni_pipeline/panels/process_editor.dart';
 
 import '../support/harness.dart';
@@ -25,12 +24,6 @@ void main() {
     )));
     return settings;
   }
-
-  /// The palette's own search box; the top bar has a text field too.
-  Finder paletteSearch() => find.descendant(
-        of: find.byType(PalettePanel),
-        matching: find.byType(OniField),
-      );
 
   Future<void> openFilters(WidgetTester tester) async {
     await tester.tap(find.textContaining('SHOWING'));
@@ -75,19 +68,35 @@ void main() {
     expect(find.text('Electrolyzer'), findsWidgets);
   });
 
-  testWidgets('hiding wild variants halves the critter list', (tester) async {
+  testWidgets('turning wild variants off puts them beyond finding',
+      (tester) async {
+    // This used to count how many rows said "Hatch" and watch the number
+    // fall. The list no longer offers the wild twin as a row of its own --
+    // it is a switch on the card now -- so searching for the animal shows
+    // one row either way. What the setting still decides is whether the
+    // wild one can be reached at all.
     final display = await pumpEditor(tester);
 
-    await tester.enterText(paletteSearch(), 'Hatch');
+    await tester.enterText(paletteSearch(), 'wild');
     await tester.pump();
-    final withWild = find.textContaining('Hatch').evaluate().length;
+    expect(find.text('Hatch (wild)'), findsOneWidget);
 
     await display.setShowWild(showWild: false);
     await tester.pump();
-    final without = find.textContaining('Hatch').evaluate().length;
-
-    expect(without, lessThan(withWild));
     expect(find.text('Hatch (wild)'), findsNothing);
+  });
+
+  testWidgets('and the animal itself is still there either way',
+      (tester) async {
+    final display = await pumpEditor(tester);
+    await tester.enterText(paletteSearch(), 'Hatch');
+    await tester.pump();
+    expect(find.text('Hatch'), findsWidgets);
+    expect(find.text('Hatch (wild)'), findsNothing,
+        reason: 'a switch on the card, not a card');
+
+    await display.setShowWild(showWild: false);
+    await tester.pump();
     expect(find.text('Hatch'), findsWidgets);
   });
 

@@ -20,8 +20,15 @@ way a building has always listed its other recipes. One press swaps the
 card where it stands and keeps its wires; anything that genuinely does not
 fit the new version comes off, and says so.
 
-An Arbor Tree turns out to come four ways once grazing is counted, and
-sixty-five of the app's cards were a second copy of another one.
+The catalogue is shorter to match: one row per thing rather than one per
+way of keeping it. Sixty-five of the cards in it were a second copy of
+another differing by a single switch, and an Arbor Tree turns out to come
+four ways once grazing is counted.
+
+Nothing has become harder to find. Search for "wild" and the wild one is
+what you are offered, because the list picks whichever version best
+answers what you typed; search for nothing and you get the plain one,
+which is what people mean when they have not said.
 
 ## 30 August 2026 — Two diets that were wrong
 
