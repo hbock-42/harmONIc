@@ -92,6 +92,12 @@ const String oniDataJson = r"""
       "specificHeat": 4.1
     },
     {
+      "id": "brackwax",
+      "name": "Brackwax",
+      "category": "solid",
+      "specificHeat": 1.92
+    },
+    {
       "id": "brine",
       "name": "Brine",
       "category": "liquid",
@@ -5591,6 +5597,47 @@ const String oniDataJson = r"""
       ],
       "build": {
         "raw_mineral": 800
+      }
+    },
+    {
+      "id": "gleaner_brackene",
+      "name": "Gleaner (Brackene)",
+      "kind": "building",
+      "buildingId": "gleaner",
+      "description": "Boils brackene down: a kilogram a second of it comes back as 90 g of brackwax, 810 g of brine and 100 g of carbon dioxide at 75 °C. Nothing is lost, which is worth knowing — the brine is most of what went in and is a material in its own right rather than waste.\n\nThe Aquatic Planet Pack adds a second recipe here for ovolene. This is the base-game one.",
+      "powerWatts": 480,
+      "heatKdtuPerSecond": 8,
+      "footprintWidth": 4,
+      "footprintHeight": 4,
+      "tags": [
+        "refining",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "brackene",
+          "direction": "input",
+          "rate": 1000
+        },
+        {
+          "item": "brackwax",
+          "direction": "output",
+          "rate": 90
+        },
+        {
+          "item": "brine",
+          "direction": "output",
+          "rate": 810
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 100,
+          "temperatureC": 75
+        }
+      ],
+      "build": {
+        "refined_metal": 800
       }
     },
     {

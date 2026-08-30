@@ -20,6 +20,11 @@ building hands to another, so a fountain is simply a second place to get
 it: wire it to the grooming port of anything that wants grooming, and
 every critter in the app can be kept either way.
 
+The Gleaner is here too, so brackene is a material and not a dead end: a
+kilogram a second of it comes back as 90 g of brackwax, 810 g of brine and
+100 g of carbon dioxide, with nothing lost. The brine is most of what went
+in, and is worth having on its own.
+
 The Plant Pulverizer gained two of the recipes it was missing — Nosh Beans
 into brackene, and Amber into Resin — and lost a pack tag it should never
 have had. Its Slime recipe was marked Aquatic and is base game, which is

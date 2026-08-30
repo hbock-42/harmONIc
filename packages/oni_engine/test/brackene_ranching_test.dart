@@ -86,4 +86,65 @@ void main() {
     expect(said, contains('Condo'));
     expect(said, contains('325'));
   });
+
+  test('and somewhere to go: the Gleaner keeps every gram of it', () {
+    final gleaner = db.processOrThrow('gleaner_brackene');
+    // Only what has weight. Power and heat are ports too, and adding 480 W to
+    // a kilogram of brackene is how this test failed the first time.
+    bool hasMass(Port port) => switch (db.itemOrThrow(port.itemId).category) {
+          ItemCategory.solid ||
+          ItemCategory.liquid ||
+          ItemCategory.gas =>
+            true,
+          _ => false,
+        };
+    final inMass = gleaner.inputs
+        .where(hasMass)
+        .fold<double>(0, (sum, p) => sum + p.ratePerSecond);
+    final outMass = gleaner.outputs
+        .where(hasMass)
+        .fold<double>(0, (sum, p) => sum + p.ratePerSecond);
+    expect(outMass, closeTo(inMass, 1e-6),
+        reason: '90 of wax and 810 of brine and 100 of gas is the kilogram');
+  });
+
+  test('so brackene is a material and not a dead end', () {
+    // Beans in one end, a ranch that needs no Duplicant and a pile of brine
+    // out of the other. Worth solving end to end once, because a chain of
+    // four new recipes is where a wrong unit hides.
+    final chain = (PipelineBuilder(db, name: 'brackene, start to finish')
+          ..add('plant_pulverizer_nosh_bean', nodeId: 'pulverizer')
+          ..addSource('nosh_bean')
+          ..addSource('water')
+          ..add('critter_fountain', nodeId: 'fountain')
+          ..add('gleaner_brackene', nodeId: 'gleaner')
+          ..add('hatch', nodeId: 'hatches')
+          ..addSource('raw_mineral')
+          ..addSource('power')
+          ..addSink('coal')
+          ..addSink('brine')
+          ..addSink('brackwax')
+          ..addSink('carbon_dioxide')
+          ..addSink('heat')
+          ..connectItem('src_nosh_bean', 'pulverizer', 'nosh_bean')
+          ..connectItem('src_water', 'pulverizer', 'water')
+          ..connectItem('pulverizer', 'fountain', 'brackene')
+          ..connectItem('pulverizer', 'gleaner', 'brackene')
+          ..connectItem('fountain', 'hatches', 'grooming')
+          ..connectItem('src_raw_mineral', 'hatches', 'raw_mineral')
+          ..connectItem('hatches', 'sink_coal', 'coal')
+          ..connectItem('src_power', 'gleaner', 'power')
+          ..connectItem('gleaner', 'sink_brine', 'brine')
+          ..connectItem('gleaner', 'sink_brackwax', 'brackwax')
+          ..connectItem('gleaner', 'sink_carbon_dioxide', 'carbon_dioxide')
+          ..pinCount('hatches', 8))
+        .build();
+
+    final solution = PipelineSolver(db).solve(chain);
+    expect(
+        solution.issues.where((i) => i.severity == IssueSeverity.error),
+        isEmpty,
+        reason: solution.issues.map((i) => i.message).join(' | '));
+    expect(solution.nodes['fountain']!.count, closeTo(1, 1e-6));
+  });
 }
