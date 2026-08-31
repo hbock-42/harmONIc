@@ -108,6 +108,17 @@ class DisplayController extends ChangeNotifier {
   String get currentLabel =>
       _display == RateDisplay.perSecond ? 'g/s' : 'kg/cycle';
 
+  /// What this app knew about before it started writing down what it knew.
+  ///
+  /// Every save older than that lists these four and nothing else, so a pack
+  /// outside this set was never a decision anybody made.
+  static const Set<String> _packsBeforeThisWasRecorded = {
+    'aquatic',
+    'frosty',
+    'prehistoric',
+    'spacedout',
+  };
+
   Future<void> load() async {
     final raw = await _store.read();
     final saved = raw?['rateDisplay'] as String?;
@@ -116,9 +127,23 @@ class DisplayController extends ChangeNotifier {
     }
     final packs = raw?['packs'] as List<dynamic>?;
     if (packs != null) {
+      // What the app knew about when this was written. A pack missing from
+      // the saved list means one of two things and they are opposites: the
+      // reader turned it off, or it did not exist yet. Without this they are
+      // the same absence, and adding a pack silently hid it from everybody
+      // who had ever opened the app -- which is the exact harm the pack tags
+      // are there to prevent, arrived at from the other side.
+      final knew = {
+        ...?(raw?['knownPacks'] as List<dynamic>?)?.cast<String>(),
+      };
       _packs
         ..clear()
-        ..addAll(packs.cast<String>().where(kContentPacks.containsKey));
+        ..addAll(packs.cast<String>().where(kContentPacks.containsKey))
+        // Anything the save had never heard of is on, because nobody has said
+        // otherwise about it.
+        ..addAll(kContentPacks.keys.where((pack) =>
+            !(knew.isEmpty ? _packsBeforeThisWasRecorded : knew)
+                .contains(pack)));
     }
     _showWild = raw?['showWild'] as bool? ?? true;
     _light = raw?['light'] as bool? ?? false;
@@ -138,6 +163,7 @@ class DisplayController extends ChangeNotifier {
   Future<void> _save() => _store.write(<String, dynamic>{
         'rateDisplay': _display.name,
         'packs': _packs.toList(),
+        'knownPacks': kContentPacks.keys.toList(),
         'showWild': _showWild,
         'light': _light,
       });

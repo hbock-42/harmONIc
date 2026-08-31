@@ -8,6 +8,21 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — A new content pack no longer hides itself
+
+Adding the Bionic Booster Pack would have hidden all of it from everybody
+who had ever opened the app.
+
+The settings remember which packs are on by listing them, and a pack that
+did not exist when that list was written is missing from it — which reads
+exactly like having been turned off. So the pack would have arrived
+switched off, silently, for every existing player, and there is nothing on
+screen to suggest why.
+
+The settings now remember what the app knew about at the time, so a pack
+nobody has ever had an opinion about is on, and one somebody actually
+turned off stays off.
+
 ## 31 August 2026 — An input you can decline
 
 Asked for as "dynamic output based on provided input lines". This is the
