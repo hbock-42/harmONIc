@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — A damaged save opens the app rather than stopping it
+
+If the file this app keeps your builds in ever came back valid but the
+wrong shape — written by a newer version, half flushed when a tab closed,
+edited by hand — the app would not start at all.
+
+Each build in it was already read carefully, so that one unreadable build
+never cost you the others. The wrapper around them was not, so a number
+where a name should be took everything down with it. It is read carefully
+now too.
+
 ## 31 August 2026 — A new content pack no longer hides itself
 
 Adding the Bionic Booster Pack would have hidden all of it from everybody

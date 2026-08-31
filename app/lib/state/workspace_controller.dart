@@ -113,8 +113,16 @@ class WorkspaceController extends ChangeNotifier {
     _loaded = true;
     if (raw == null) return false;
 
-    var restoredId = raw['lastOpenedId'] as String?;
-    for (final entry in (raw['pipelines'] as List<dynamic>? ?? const [])) {
+    // Read rather than cast. Every build in the list is already parsed inside
+    // a try, because one unreadable build must not cost you the others -- but
+    // the envelope around them was cast straight, so a file with a number
+    // where a name should be threw out of here. This runs at start-up, so
+    // that is not a lost build: it is an app that will not open.
+    var restoredId = raw['lastOpenedId'] is String
+        ? raw['lastOpenedId'] as String
+        : null;
+    final saved = raw['pipelines'];
+    for (final entry in saved is List<dynamic> ? saved : const []) {
       try {
         final pipeline = _repaired(
           Pipeline.fromJson(entry as Map<String, dynamic>),
@@ -131,11 +139,12 @@ class WorkspaceController extends ChangeNotifier {
     // again on every start and the note never stops appearing.
     if (_repairNotes.isNotEmpty) unawaited(_persist());
 
+    final open = raw['openIds'];
     _openIds
       ..clear()
       ..addAll([
-        for (final id in (raw['openIds'] as List<dynamic>? ?? const []))
-          if (_pipelines.containsKey(id as String)) id,
+        for (final id in open is List<dynamic> ? open : const [])
+          if (id is String && _pipelines.containsKey(id)) id,
       ]);
 
     restoredId ??= _pipelines.keys.first;
