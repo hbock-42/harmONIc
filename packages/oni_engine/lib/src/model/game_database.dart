@@ -102,6 +102,27 @@ class GameDatabase {
               'references unknown item "${port.itemId}"');
         }
       }
+      for (final port in spec.ports) {
+        // A port that names an input it depends on has to name one that is
+        // there. Nothing else would notice: an output whose `needs` points at
+        // a port that does not exist is simply never switched off, so the
+        // typo shows up as a feature quietly not working.
+        if (port.needsPortId case final String needed) {
+          final target = spec.portById(needed);
+          if (target == null) {
+            problems.add('process "${spec.id}" port "${port.id}" needs '
+                '"$needed", which it has not got');
+          } else if (!target.isInput) {
+            problems.add('process "${spec.id}" port "${port.id}" needs '
+                '"$needed", which is an output — a thing can only depend on '
+                'something coming in');
+          } else if (!port.isOutput) {
+            problems.add('process "${spec.id}" port "${port.id}" is an input '
+                'and cannot depend on "$needed": only what comes out can stop '
+                'coming out');
+          }
+        }
+      }
       for (final material in spec.buildCost.keys) {
         if (!_items.containsKey(material)) {
           problems.add('process "${spec.id}" is built of unknown material '
