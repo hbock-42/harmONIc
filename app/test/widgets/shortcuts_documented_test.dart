@@ -31,12 +31,16 @@ void main() {
 
     // Every binding is one of the named ones. Arrow keys are named as a
     // family, since eight of them are one idea.
-    // Twenty: undo, redo, two ways to delete, escape, four for zoom, find,
-    // copy, paste, four arrows and four with shift. The number is here because
-    // the first version of this test was written against a map that had lost
-    // two of them in an edit — and the honest thing was to put them back, not
-    // to change the number.
-    expect(editorShortcuts(apple: true).length, 20,
+    // Twenty-three: undo, redo, two ways to delete, escape, seven for zoom,
+    // find, copy, paste, four arrows and four with shift. The number is here
+    // because the first version of this test was written against a map that
+    // had lost two of them in an edit — and the honest thing was to put them
+    // back, not to change the number.
+    //
+    // It went from twenty when pressing the keys found that "⌘+" was bound to
+    // one spelling of plus out of three: not ⇧= and not the number pad, which
+    // between them is how nearly everybody types it.
+    expect(editorShortcuts(apple: true).length, 23,
         reason: 'a new binding wants a line in kShortcutNames and in the '
             'guide, and then this number');
   });

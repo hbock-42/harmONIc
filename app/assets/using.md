@@ -457,7 +457,9 @@ than the one this was written on.
   that chain and not only the node with the word in its name.
 - **⌘C** copy the selected nodes and **⌘V** paste them, into this build or
   another one. The wires between what you copied come with them.
-- **⌘=** zoom in, **⌘−** out, **⌘0** back to life size.
+- **⌘=** zoom in, **⌘−** out, **⌘0** back to life size. The **+** and **−**
+  on a number pad do the same, as does **⇧=**, which is the + on most
+  keyboards.
 - **arrow keys** nudge by a grid cell, eight with shift.
 - **Change the recipe** on a node: a Rock Crusher that makes lime rather than
   sand, an Aquatuner on petroleum rather than water. It keeps the node where it

@@ -129,9 +129,18 @@ Map<ShortcutActivator, Intent> editorShortcuts({required bool apple}) {
   const SingleActivator(LogicalKeyboardKey.escape): const _DeselectIntent(),
   held(LogicalKeyboardKey.equal):
       const _ZoomInIntent(),
+  // The + you actually press. `add` is the logical key for a plus that needs
+  // no shift, which is a German or Scandinavian keyboard; on a US or UK one
+  // the same glyph is ⇧= and on any keyboard with a number pad it is its own
+  // key. All three were meant by "⌘+" and only the first was bound, so on most
+  // keyboards in the world the way a hand reaches to zoom in did nothing. The
+  // documented ⌘= always worked, which is how this went unnoticed.
   held(LogicalKeyboardKey.add): const _ZoomInIntent(),
+  held(LogicalKeyboardKey.equal, shift: true): const _ZoomInIntent(),
+  held(LogicalKeyboardKey.numpadAdd): const _ZoomInIntent(),
   held(LogicalKeyboardKey.minus):
       const _ZoomOutIntent(),
+  held(LogicalKeyboardKey.numpadSubtract): const _ZoomOutIntent(),
   held(LogicalKeyboardKey.digit0):
       const _ZoomResetIntent(),
   held(LogicalKeyboardKey.keyF): const _FindIntent(),

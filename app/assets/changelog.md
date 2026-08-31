@@ -8,6 +8,18 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — ⌘+ zooms in, on the keyboard you actually have
+
+Zoom in was written down as ⌘=, and ⌘= worked. Reaching for the + next to
+it did not, on almost any keyboard: the one spelling of plus that was
+bound is the one you get where + needs no shift, which is a German or
+Scandinavian layout. Holding shift for it, or using the + on a number pad,
+did nothing at all. Both work now, and so does the number pad −.
+
+Found by pressing all twenty of the shortcuts rather than reading them,
+and by pressing them as Ctrl as well as ⌘ — every test this app had held
+⌘, on a set of bindings that had already been wrong about that once.
+
 ## 31 August 2026 — A damaged save opens the app rather than stopping it
 
 If the file this app keeps your builds in ever came back valid but the
