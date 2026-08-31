@@ -7,12 +7,30 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_engine/oni_engine.dart';
 import 'package:oni_pipeline/canvas/graph_canvas.dart';
+import 'package:oni_pipeline/design/tokens.dart';
 import 'package:oni_pipeline/editor_screen.dart';
 import 'package:oni_pipeline/panels/inspector_panel.dart';
+import 'package:oni_pipeline/panels/palette_panel.dart';
 
 import 'support/harness.dart';
 
-/// Renders the canvas so somebody can look at it.
+/// Renders the app to pictures, so somebody can look at it.
+///
+/// Everything else in here is an assertion about geometry or arithmetic, and
+/// a whole week of work went by on that alone: wires that avoid cards, figures
+/// that sit in clear air, a banner that does not shove the canvas about. All
+/// of it measured and none of it seen, and the caveat "I have not looked at
+/// it" was repeated for two days before anybody tried.
+///
+/// These write a PNG each. Read them.
+///
+/// Skipped by default and the results are not committed — a golden is a
+/// picture of one machine's font rendering, and text comes out as boxes here
+/// because the test font has no glyphs. That is fine for what these are for:
+/// layout, colour and geometry. Wording is what the other tests are for.
+///
+///   fvm flutter test --run-skipped --tags golden --update-goldens \
+///     test/render_check_test.dart
 void main() {
   testWidgets('the canvas, with wires that have to go round things',
       (tester) async {
@@ -171,5 +189,109 @@ void main() {
 
     await expectLater(find.byType(InspectorPanel),
         matchesGoldenFile('goldens/inspector_squid.png'));
+  });
+
+  testWidgets('and all of it in the light theme, which nothing has checked',
+      (tester) async {
+    addTearDown(() => OniTheme.current = OniPalette.dark);
+    OniTheme.current = OniPalette.light;
+
+    await useDesktopSurface(tester, size: const Size(1400, 900));
+    final base = testPipeline();
+    final elec = base.nodeOrThrow('elec');
+    final pipeline = base.copyWith(nodes: [
+      // Buried, so the banner is there to look at too.
+      for (final n in base.nodes)
+        if (n.id == 'src_water')
+          n.copyWith(x: elec.x, y: elec.y)
+        else if (n.id == 'dupes')
+          n.copyWith(x: elec.x + 700, y: elec.y - 40)
+        else if (n.id == 'h2out')
+          n.copyWith(x: elec.x + 330, y: elec.y - 10)
+        else
+          n,
+    ]);
+    final controller = testController(pipeline: pipeline);
+    await tester.pumpWidget(harness(EditorScreen(
+      controller: controller,
+      library: testLibrary(),
+      workspace: await testWorkspace(controller),
+      displaySettings: testDisplay(),
+    )));
+    await tester.pumpAndSettle();
+
+    await expectLater(find.byType(EditorScreen),
+        matchesGoldenFile('goldens/light_theme.png'));
+  });
+
+  testWidgets('the geothermal boiler, as handed over in a share code',
+      (tester) async {
+    // A build given to somebody with a description of what they would see.
+    // This checks the description was true.
+    await useDesktopSurface(tester, size: const Size(1500, 620));
+    final pipeline = (PipelineBuilder(testDatabase,
+            name: 'Geothermal sour gas boiler')
+          ..add('volcano', nodeId: 'volcano', x: 0, y: 260)
+          ..add('magma_cooling', nodeId: 'cooling', x: 328, y: 260)
+          ..addSink('igneous_rock', nodeId: 'rock_out', x: 656, y: 420)
+          ..addSource('petroleum', nodeId: 'oil_in', x: 328, y: 0)
+          ..add('sour_gas_boiler', nodeId: 'boiler', x: 656, y: 60)
+          ..add('sour_gas_condenser', nodeId: 'condenser', x: 984, y: 60)
+          ..addSink('natural_gas', nodeId: 'gas_out', x: 1312, y: 0)
+          ..addSink('sulfur', nodeId: 'sulfur_out', x: 1312, y: 160)
+          ..addSink('heat', nodeId: 'heat_out', x: 1312, y: 300)
+          ..connectItem('volcano', 'cooling', 'magma')
+          ..connectItem('cooling', 'rock_out', 'igneous_rock')
+          ..connect('cooling', 'heat_out', 'boiler', 'heat_in')
+          ..connectItem('oil_in', 'boiler', 'petroleum')
+          ..connectItem('boiler', 'condenser', 'sour_gas')
+          ..connectItem('condenser', 'gas_out', 'natural_gas')
+          ..connectItem('condenser', 'sulfur_out', 'sulfur')
+          ..connect('condenser', 'heat_out', 'heat_out', 'in')
+          ..pinRate('boiler', 'petroleum', 1000))
+        .build();
+    final controller = testController(pipeline: pipeline);
+    // What was promised: it solves, and it wants 2.16 volcanoes.
+    expect(controller.solution.status, SolveStatus.solved);
+    expect(controller.solution.nodes['volcano']!.count, closeTo(2.16, 0.01));
+    expect(controller.hiddenCards, isEmpty, reason: 'nothing buried');
+
+    final key = GlobalKey<GraphCanvasState>();
+    await tester.pumpWidget(harness(GraphCanvas(
+      key: key,
+      controller: controller,
+      rateDisplay: RateDisplay.perSecond,
+      onToggleRates: () {},
+    )));
+    await tester.pumpAndSettle();
+    key.currentState!.fitToContent();
+    await tester.pumpAndSettle();
+
+    await expectLater(find.byType(GraphCanvas),
+        matchesGoldenFile('goldens/boiler.png'));
+  });
+
+  testWidgets('the catalogue, one row per thing rather than per way of keeping it',
+      (tester) async {
+    await useDesktopSurface(tester, size: const Size(320, 800));
+    await tester.pumpWidget(harness(PalettePanel(
+      database: testDatabase,
+      display: testDisplay(),
+      onAdd: (_) {},
+      onNewRecipe: () {},
+      onEditRecipe: (_) {},
+    )));
+    await tester.pumpAndSettle();
+    await tester.enterText(paletteSearch(), 'hatch');
+    await tester.pumpAndSettle();
+
+    // Four kinds of Hatch, each once, and not one wild twin among them.
+    for (final name in ['Hatch', 'Sage Hatch', 'Smooth Hatch']) {
+      expect(find.text(name), findsOneWidget, reason: name);
+    }
+    expect(find.textContaining('(wild)'), findsNothing);
+
+    await expectLater(find.byType(PalettePanel),
+        matchesGoldenFile('goldens/palette.png'));
   });
 }
