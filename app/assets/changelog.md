@@ -43,6 +43,12 @@ building hands to another, so a fountain is simply a second place to get
 it: wire it to the grooming port of anything that wants grooming, and
 every critter in the app can be kept either way.
 
+And it now saves the time it is supposed to save. Duplicant time is booked
+on the critter rather than on the station, because it differs by species —
+twelve seconds for a Hatch, twenty-four for a Drecko — so the app was
+charging for a Duplicant nobody had sent. Eight Hatches cost 96 seconds a
+cycle groomed by hand and nothing at all off a fountain.
+
 The Gleaner is here too, so brackene is a material and not a dead end: a
 kilogram a second of it comes back as 90 g of brackwax, 810 g of brine and
 100 g of carbon dioxide, with nothing lost. The brine is most of what went

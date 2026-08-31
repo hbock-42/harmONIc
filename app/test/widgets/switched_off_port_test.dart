@@ -24,7 +24,7 @@ void main() {
     // press's state.
     await tester.pumpWidget(harness(AnimatedBuilder(
       animation: controller,
-      builder: (_, __) => InspectorPanel(
+      builder: (_, _) => InspectorPanel(
         controller: controller,
         rateDisplay: RateDisplay.perSecond,
         onToggleRates: () {},

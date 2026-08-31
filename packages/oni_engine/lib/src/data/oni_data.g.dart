@@ -2759,7 +2759,8 @@ const String oniDataJson = r"""
       ],
       "build": {
         "refined_metal": 400
-      }
+      },
+      "unattended": true
     },
     {
       "id": "cuddle_pip",

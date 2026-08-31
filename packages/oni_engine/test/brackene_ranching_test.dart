@@ -41,8 +41,12 @@ void main() {
     expect(solution.nodes['fountain']!.count, closeTo(1, 1e-6),
         reason: 'one fountain keeps the eight it is built for');
 
-    // The point of the exercise: nobody is standing there doing it.
-    expect(solution.nodes['fountain']!.dupeLabourSecondsPerCycle, 0);
+    // The point of the exercise, and this asked the wrong node the first
+    // time: a fountain was never going to book Duplicant time of its own. The
+    // question is whether the *critters* still do, and they did -- the time is
+    // booked on them, so the app charged for a Duplicant nobody had sent.
+    expect(solution.dupeLabourSecondsPerCycle, 0,
+        reason: 'nobody is standing there doing it');
   });
 
   test('and the brackene has somewhere to come from', () {
@@ -146,5 +150,40 @@ void main() {
         isEmpty,
         reason: solution.issues.map((i) => i.message).join(' | '));
     expect(solution.nodes['fountain']!.count, closeTo(1, 1e-6));
+  });
+
+  test('and a station still costs what it costs', () {
+    // The other half, or the test above passes on a model that has simply
+    // forgotten about Duplicant time altogether.
+    final byHand = (PipelineBuilder(db, name: 'groomed ranch')
+          ..add('grooming_station', nodeId: 'station')
+          ..add('hatch', nodeId: 'hatches')
+          ..addSource('raw_mineral')
+          ..addSink('coal')
+          ..connectItem('station', 'hatches', 'grooming')
+          ..connectItem('src_raw_mineral', 'hatches', 'raw_mineral')
+          ..connectItem('hatches', 'sink_coal', 'coal')
+          ..pinCount('hatches', 8))
+        .build();
+    // Eight Hatches at twelve seconds each.
+    expect(PipelineSolver(db).solve(byHand).dupeLabourSecondsPerCycle,
+        closeTo(96, 1e-6));
+  });
+
+  test('and grooming from outside the build is somebody, until told', () {
+    // An unwired grooming port means "from somewhere else", and what is
+    // somewhere else is a Duplicant until a fountain says otherwise.
+    final loose = (PipelineBuilder(db, name: 'loose ranch')
+          ..add('hatch', nodeId: 'hatches')
+          ..addSource('grooming')
+          ..addSource('raw_mineral')
+          ..addSink('coal')
+          ..connectItem('src_grooming', 'hatches', 'grooming')
+          ..connectItem('src_raw_mineral', 'hatches', 'raw_mineral')
+          ..connectItem('hatches', 'sink_coal', 'coal')
+          ..pinCount('hatches', 8))
+        .build();
+    expect(PipelineSolver(db).solve(loose).dupeLabourSecondsPerCycle,
+        closeTo(96, 1e-6));
   });
 }

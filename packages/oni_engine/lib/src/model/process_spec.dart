@@ -45,6 +45,7 @@ class ProcessSpec {
     this.family,
     this.description,
     this.dupeLabourSecondsPerCycle = 0,
+    this.unattended = false,
     this.footprintWidth = 0,
     this.footprintHeight = 0,
     this.buildCost = const {},
@@ -107,6 +108,7 @@ class ProcessSpec {
       ports: ports,
       dupeLabourSecondsPerCycle:
           (json['dupeLabourSecondsPerCycle'] as num?)?.toDouble() ?? 0,
+      unattended: json['unattended'] as bool? ?? false,
       footprintWidth: (json['footprintWidth'] as num?)?.toInt() ?? 0,
       footprintHeight: (json['footprintHeight'] as num?)?.toInt() ?? 0,
       buildCost: {
@@ -138,6 +140,20 @@ class ProcessSpec {
   final String? description;
   final List<Port> ports;
   final double dupeLabourSecondsPerCycle;
+
+  /// What this supplies costs nobody any time.
+  ///
+  /// A critter's Duplicant time is booked on the critter rather than on the
+  /// station, because it differs by species -- twelve seconds for a Hatch,
+  /// twenty-four for a Drecko -- and a station serving eight of them cannot
+  /// carry one figure. But that time is *for the grooming*, so a critter kept
+  /// happy by something nobody has to attend does not cost it.
+  ///
+  /// A Critter Fountain is the case: five kilograms of brackene a cycle buys
+  /// the same happiness a brushing does, and its whole point is that nobody is
+  /// standing there. Without this the app charged for the Duplicant anyway,
+  /// which made the building pointless in the one respect it exists for.
+  final bool unattended;
   final int footprintWidth;
   final int footprintHeight;
 
@@ -224,6 +240,7 @@ class ProcessSpec {
         'ports': [for (final p in ports) p.toJson()],
         if (dupeLabourSecondsPerCycle != 0)
           'dupeLabourSecondsPerCycle': dupeLabourSecondsPerCycle,
+        if (unattended) 'unattended': true,
         if (footprintWidth != 0) 'footprintWidth': footprintWidth,
         if (footprintHeight != 0) 'footprintHeight': footprintHeight,
         if (buildCost.isNotEmpty) 'build': buildCost,

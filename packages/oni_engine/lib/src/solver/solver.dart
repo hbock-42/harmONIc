@@ -1,6 +1,7 @@
 import '../graph/materials.dart';
 import '../graph/pin.dart';
 import '../graph/pipeline.dart';
+import '../model/item.dart';
 import '../graph/validation.dart';
 import '../model/game_database.dart';
 import '../model/port.dart';
@@ -350,7 +351,7 @@ class PipelineSolver {
         uptime: node.uptime,
         powerWatts: spec.netPowerWatts,
         heatKdtu: spec.netHeatKdtu,
-        dupeLabourSecondsPerCycle: spec.dupeLabourSecondsPerCycle,
+        dupeLabourSecondsPerCycle: _labourFor(pipeline, node, spec),
         footprintTiles: spec.footprintTiles,
       );
     }
@@ -1122,6 +1123,41 @@ class PipelineSolver {
     4 => 'four',
     _ => '$n',
   };
+
+  /// A node's Duplicant time, which grooming can excuse it from.
+  ///
+  /// The time is booked on the critter because it differs by species -- twelve
+  /// seconds for a Hatch, twenty-four for a Drecko -- and a station serving
+  /// eight of them cannot carry one figure. But it is time spent *grooming*,
+  /// so a critter kept happy by something nobody attends does not cost it.
+  ///
+  /// All or nothing, and deliberately: half a ranch on a fountain and half on
+  /// a station is a thing somebody could draw, and charging half the time for
+  /// it would be a figure this app cannot stand behind. Every line in has to
+  /// be unattended.
+  double _labourFor(
+      Pipeline pipeline, PipelineNode node, ProcessSpec spec) {
+    if (spec.dupeLabourSecondsPerCycle == 0) return 0;
+    final grooming = spec.ports
+        .where((port) => port.isInput && port.itemId == WellKnownItems.grooming);
+    if (grooming.isEmpty) return spec.dupeLabourSecondsPerCycle;
+
+    var fed = false;
+    for (final port in grooming) {
+      for (final edge in pipeline.edges) {
+        if (edge.toNodeId != node.id || edge.toPortId != port.id) continue;
+        fed = true;
+        final from = pipeline.node(edge.fromNodeId);
+        if (from == null) return spec.dupeLabourSecondsPerCycle;
+        if (!(database.process(from.specId)?.unattended ?? false)) {
+          return spec.dupeLabourSecondsPerCycle;
+        }
+      }
+    }
+    // Nothing wired in means the grooming comes from outside the build, and
+    // what is outside is a Duplicant until somebody says otherwise.
+    return fed ? 0 : spec.dupeLabourSecondsPerCycle;
+  }
 
   PipelineSolution _solveWithout(Pipeline pipeline, PortRef ref,
       {PortRef? and, List<PortRef> alongside = const []}) {

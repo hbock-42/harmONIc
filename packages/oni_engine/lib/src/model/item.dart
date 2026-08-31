@@ -248,4 +248,9 @@ abstract final class WellKnownItems {
   /// What a Duplicant actually eats. Every dish is a material until somebody
   /// puts it on a plate; see `docs/FOOD.md`.
   static const String calories = 'calories';
+
+  /// The time somebody spends keeping a critter happy. A service rather than
+  /// a material — see [ItemCategory.service] — and the one thing a Critter
+  /// Fountain can hand over without anybody doing it.
+  static const String grooming = 'grooming';
 }
