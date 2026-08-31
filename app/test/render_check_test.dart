@@ -183,12 +183,45 @@ void main() {
     )));
     await tester.pumpAndSettle();
     expect(find.byKey(ValueKey('supplied:$id.milking')), findsOneWidget);
-    // No variants row: the Glo Squid is one of the two critters here with no
-    // wild twin, which is a gap in the data rather than in the panel.
-    expect(find.text('THIS CREATURE IS ALSO KEPT'), findsNothing);
+    // The variants row, which this asserted was absent: the Glo Squid was one
+    // of the two critters with no wild twin, and now has one. That gap was in
+    // the data and this is where the fix shows up.
+    expect(find.text('THIS CREATURE IS ALSO KEPT'), findsOneWidget);
+    expect(find.text('Glo Squid (wild)'), findsOneWidget);
 
     await expectLater(find.byType(InspectorPanel),
         matchesGoldenFile('goldens/inspector_squid.png'));
+  });
+
+  testWidgets('the inspector on a Hatch nobody grooms, which now says so',
+      (tester) async {
+    // The line under the declined port. Switching the grooming off shrinks the
+    // whole build by five, and until it was added the app gave no reason for
+    // that anywhere -- so this is worth a look rather than a findsOneWidget.
+    //
+    // Tall on purpose: at 900 the Hatch's description and its variants row
+    // push every port below the fold, and the first version of this rendered
+    // a picture that could not show the thing it was taken for.
+    await useDesktopSurface(tester, size: const Size(420, 1500));
+    final controller = testController(pipeline: testPipeline());
+    final id = controller.addNode('hatch', Offset.zero);
+    controller.selectNode(id);
+    controller.setPortSupplied(id, 'grooming', supplied: false);
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => InspectorPanel(
+        controller: controller,
+        rateDisplay: RateDisplay.perSecond,
+        onToggleRates: () {},
+      ),
+    )));
+    await tester.pumpAndSettle();
+    expect(textContaining('eats and makes a fifth, lays a tenth'),
+        findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'and it fits');
+
+    await expectLater(find.byType(InspectorPanel),
+        matchesGoldenFile('goldens/inspector_ungroomed.png'));
   });
 
   testWidgets('and all of it in the light theme, which nothing has checked',

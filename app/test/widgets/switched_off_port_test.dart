@@ -67,4 +67,46 @@ void main() {
     expect(find.byKey(ValueKey('supplied:$id.water')), findsNothing);
     expect(find.byKey(ValueKey('supplied:$id.power')), findsNothing);
   });
+
+  group('and saying what declining it costs', () {
+    testWidgets('a Hatch says it eats a fifth and lays a tenth',
+        (tester) async {
+      final controller = await open(tester, 'hatch');
+      final node = controller.selectedNodeIds.single;
+      expect(textContaining('eats and makes'), findsNothing,
+          reason: 'nothing to explain while it is supplied');
+
+      controller.setPortSupplied(node, 'grooming', supplied: false);
+      await tester.pumpAndSettle();
+
+      // The two columns, in the words a person can act on. Before this the
+      // whole build shrank by five and the app offered no reason at all.
+      expect(textContaining('eats and makes a fifth, lays a tenth'),
+          findsOneWidget);
+    });
+
+    testWidgets('a Gassy Moo says only the half that applies to it',
+        (tester) async {
+      // It lays no eggs, so the sentence has no business mentioning eggs.
+      final controller = await open(tester, 'gassy_moo');
+      controller.setPortSupplied(
+          controller.selectedNodeIds.single, 'grooming', supplied: false);
+      await tester.pumpAndSettle();
+
+      expect(textContaining('eats and makes a fifth'), findsOneWidget);
+      expect(textContaining('lays'), findsNothing);
+    });
+
+    testWidgets('and a Glo Squid says nothing about its milking',
+        (tester) async {
+      // Milking buys no happiness -- it turns the ink on and off -- so there
+      // is no fifth and no tenth to report, and the line stays away.
+      final controller = await open(tester, 'glo_squid');
+      controller.setPortSupplied(
+          controller.selectedNodeIds.single, 'milking', supplied: false);
+      await tester.pumpAndSettle();
+
+      expect(textContaining('eats and makes'), findsNothing);
+    });
+  });
 }

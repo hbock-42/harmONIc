@@ -1303,11 +1303,59 @@ class _PortRow extends StatelessWidget {
                 ],
               ),
             ),
+          if (off && port.happiness != 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 4, left: 24),
+              child: Text(
+                _whatDecliningCosts(controller.specOf(node), port),
+                style: OniType.numberSmall.copyWith(color: OniColors.warning),
+              ),
+            ),
         ],
       ),
     );
   }
 }
+
+/// What a critter gives up by not being kept happy, in the words of the two
+/// things it actually changes.
+///
+/// Worked out from the model rather than written down, so it stays true if the
+/// figures move -- and they did move, by a factor of five, the day metabolism
+/// turned out to be a column. Somebody switching the grooming off sees the
+/// whole build shrink, and until this the app offered no reason for it.
+String _whatDecliningCosts(ProcessSpec spec, Port port) {
+  bool supplied(String portId) => portId != port.id;
+  final with_ = spec.happinessWhen((_) => true);
+  final without = spec.happinessWhen(supplied);
+
+  final eats = metabolismAt(without) / metabolismAt(with_);
+  final quoted = spec.outputs
+      .where((p) => p.happinessAt != null)
+      .map((p) => p.happinessAt!)
+      .firstOrNull;
+  final lays = quoted == null ? 1.0 : layingAt(without) / layingAt(quoted);
+
+  String share(double of) {
+    if (of >= 1) return 'no change';
+    final denominator = 1 / of;
+    return 'a ${_ordinal(denominator.round())}';
+  }
+
+  if (lays == 1 && eats == 1) return 'costs nothing here';
+  if (lays == eats) return 'eats and makes ${share(eats)} of it';
+  if (quoted == null) return 'eats and makes ${share(eats)}';
+  return 'eats and makes ${share(eats)}, lays ${share(lays)}';
+}
+
+String _ordinal(int n) => switch (n) {
+      2 => 'half',
+      3 => 'third',
+      4 => 'quarter',
+      5 => 'fifth',
+      10 => 'tenth',
+      _ => '1/$n',
+    };
 
 class _EdgeInspector extends StatelessWidget {
   const _EdgeInspector({

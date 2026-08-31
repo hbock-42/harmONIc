@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — A declined grooming line now says what it costs
+
+Switching the grooming off shrinks a whole build by five, and the app
+offered no reason for it anywhere. A Hatch now says "eats and makes a
+fifth, lays a tenth" under the line you declined; a Gassy Moo, which lays
+no eggs, says only the half that applies to it.
+
+Worked out from the model rather than written on the card, so it stays
+true if the figures move — and they moved by a factor of five this
+morning.
+
 ## 31 August 2026 — Grooming a Gassy Moo is worth five times the gas
 
 A Moo lays no eggs, and grooming everywhere else in this app bought eggs.
