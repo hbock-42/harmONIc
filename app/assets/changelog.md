@@ -8,6 +8,29 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — An input you can decline
+
+Asked for as "dynamic output based on provided input lines". This is the
+part of it that can be said exactly: one input turning one output on and
+off.
+
+A Glo Squid gives squid ink because somebody milks it. Until now both
+ports were simply there, so the ink arrived whether anybody went to the
+trouble or not, and a ranch that does not milk could not be drawn at all.
+Open the squid and the milking says **supplied**; press it and it says
+**not supplied**. The ink goes, the milking is no longer asked for, and
+everything else about the animal carries on — it still eats, still grows,
+still sheds abyssalite.
+
+Only ports something else depends on can be declined, and nothing else in
+the app has one yet. Being fed is not optional: a Hatch that is not fed is
+not a Hatch on short rations.
+
+A Critter Condo is still not this. It changes a rate rather than removing
+an output — one point of happiness against grooming's five, which is full
+output and about a quarter of the eggs — and that wants a different
+mechanism.
+
 ## 31 August 2026 — Ranching without a Duplicant
 
 Brackene is here, and with it the Critter Fountain. Five kilograms of it a

@@ -5675,7 +5675,8 @@ const String oniDataJson = r"""
         {
           "item": "squid_ink",
           "direction": "output",
-          "rate": 333.333333
+          "rate": 333.333333,
+          "needs": "milking"
         },
         {
           "item": "egg",

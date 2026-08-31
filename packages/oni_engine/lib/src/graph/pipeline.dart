@@ -18,6 +18,7 @@ class PipelineNode {
     this.uptime = 1,
     this.outputScale = 1,
     this.ventedPorts = const {},
+    this.portsSwitchedOff = const {},
     this.materials = const {},
     this.temperatureC,
     this.notes,
@@ -39,6 +40,9 @@ class PipelineNode {
         },
         temperatureC: (json['temperatureC'] as num?)?.toDouble(),
         capPerSecond: (json['cap'] as num?)?.toDouble(),
+        portsSwitchedOff: {
+          ...(json['off'] as List<dynamic>? ?? const []).cast<String>(),
+        },
         ventedPorts: {
           ...(json['ventedPorts'] as List<dynamic>? ?? const []).cast<String>(),
         },
@@ -75,6 +79,15 @@ class PipelineNode {
   /// the excess as surplus.
   final Set<String> ventedPorts;
 
+  /// Inputs the reader has decided not to supply, and the outputs that go with
+  /// them.
+  ///
+  /// Switching off the milking on a Glo Squid says "we keep these and we do
+  /// not milk them", which costs the ink and nothing else. Only ports some
+  /// output [Port.needsPortId] depends on can be switched off; everything else
+  /// is what the thing is.
+  final Set<String> portsSwitchedOff;
+
   /// Port id → the particular material running through it, where the recipe
   /// asks for a class.
   ///
@@ -108,6 +121,8 @@ class PipelineNode {
 
   bool ventsPort(String portId) => ventedPorts.contains(portId);
 
+  bool switchedOff(String portId) => portsSwitchedOff.contains(portId);
+
   PipelineNode copyWith({
     String? specId,
     String? label,
@@ -116,6 +131,7 @@ class PipelineNode {
     double? uptime,
     double? outputScale,
     Set<String>? ventedPorts,
+    Set<String>? portsSwitchedOff,
     Map<String, String>? materials,
     double? temperatureC,
     String? notes,
@@ -131,6 +147,7 @@ class PipelineNode {
         uptime: uptime ?? this.uptime,
         outputScale: outputScale ?? this.outputScale,
         ventedPorts: ventedPorts ?? this.ventedPorts,
+        portsSwitchedOff: portsSwitchedOff ?? this.portsSwitchedOff,
         materials: materials ?? this.materials,
         temperatureC: temperatureC ?? this.temperatureC,
         notes: notes ?? this.notes,
@@ -146,6 +163,7 @@ class PipelineNode {
         if (uptime != 1) 'uptime': uptime,
         if (outputScale != 1) 'outputScale': outputScale,
         if (ventedPorts.isNotEmpty) 'ventedPorts': ventedPorts.toList(),
+        if (portsSwitchedOff.isNotEmpty) 'off': portsSwitchedOff.toList(),
         if (materials.isNotEmpty) 'materials': materials,
         if (temperatureC != null) 'temperatureC': temperatureC,
         if (notes != null) 'notes': notes,

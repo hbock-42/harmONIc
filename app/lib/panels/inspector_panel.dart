@@ -1194,6 +1194,14 @@ class _PortRow extends StatelessWidget {
     final canVent =
         port.isOutput && controller.portIsPulled(node.id, port.id);
 
+    // An input something else only happens because of: milking a Glo Squid,
+    // which is why there is ink. Declining it is a real way to run a ranch.
+    final canDecline = controller
+        .specOf(node)
+        .switchablePorts
+        .any((switchable) => switchable.id == port.id);
+    final off = node.switchedOff(port.id);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
@@ -1227,7 +1235,8 @@ class _PortRow extends StatelessWidget {
               controller.temperatures.at(ref) != null ||
               unmet ||
               spare ||
-              canVent)
+              canVent ||
+              canDecline)
             Padding(
               padding: const EdgeInsets.only(left: 16, top: 3),
               child: Wrap(
@@ -1262,6 +1271,20 @@ class _PortRow extends StatelessWidget {
                       style: OniType.numberSmall.copyWith(
                         color:
                             unmet ? OniColors.warning : OniColors.textFaint,
+                      ),
+                    ),
+                  if (canDecline)
+                    OniButton(
+                      key: ValueKey('supplied:${node.id}.${port.id}'),
+                      label: off ? 'not supplied' : 'supplied',
+                      compact: true,
+                      tone: off
+                          ? OniButtonTone.neutral
+                          : OniButtonTone.accent,
+                      onPressed: () => controller.setPortSupplied(
+                        node.id,
+                        port.id,
+                        supplied: off,
                       ),
                     ),
                   if (canVent)

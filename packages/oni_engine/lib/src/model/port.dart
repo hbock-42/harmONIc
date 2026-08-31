@@ -32,6 +32,7 @@ class Port {
     this.followsPortId,
     this.alternatives = const [],
     this.excludes = const [],
+    this.needsPortId,
   });
 
   factory Port.fromJson(Map<String, dynamic> json) {
@@ -49,6 +50,7 @@ class Port {
       excludes: [
         ...(json['excludes'] as List<dynamic>? ?? const []).cast<String>(),
       ],
+      needsPortId: json['needs'] as String?,
     );
   }
 
@@ -98,6 +100,20 @@ class Port {
   /// should have to say it twice, and saying it twice would let them disagree.
   final String? followsPortId;
 
+  /// The input port this output only exists because of.
+  ///
+  /// A Glo Squid gives squid ink because somebody milks it. Stop milking and
+  /// it still eats, still grows, still sheds abyssalite — and gives no ink. A
+  /// ranch run that way is a real ranch, and until this there was no way to
+  /// draw one: both ports were simply there, so the ink came whether anybody
+  /// went to the trouble or not.
+  ///
+  /// Asked for as "dynamic output based on provided input lines". It is one
+  /// input turning one output on and off, which is narrower than that and is
+  /// the part that can be said exactly. A Critter Condo, which changes a rate
+  /// rather than removing an output, still cannot be said.
+  final String? needsPortId;
+
   /// Hot enough to be worth noticing before you plumb it into something.
   bool get runsHot =>
       temperatureC != null && temperatureC! > commonOverheatCelsius;
@@ -114,6 +130,7 @@ class Port {
         if (followsPortId != null) 'follows': followsPortId,
         if (alternatives.isNotEmpty) 'alternatives': alternatives,
         if (excludes.isNotEmpty) 'excludes': excludes,
+        if (needsPortId != null) 'needs': needsPortId,
       };
 
   @override

@@ -61,8 +61,23 @@ class PipelineSolver {
 
     /// A port's rate for a given node. Output ports are scaled by the node's
     /// [PipelineNode.outputScale]; what a node consumes is never scaled.
-    double rateOf(PipelineNode node, Port port) =>
-        port.isOutput ? port.ratePerSecond * node.outputScale : port.ratePerSecond;
+    /// The rate a port actually runs at on this node.
+    ///
+    /// Nothing, if the reader has switched it off — or if it is an output that
+    /// only exists because of a port they switched off. Milking is the case
+    /// this was written for: stop milking a Glo Squid and the ink stops, and
+    /// everything else about the animal carries on.
+    ///
+    /// One place decides this, so the whole solver honours it: the balance
+    /// rows, the flow terms, the pins and the reports all come through here.
+    double rateOf(PipelineNode node, Port port) {
+      if (node.switchedOff(port.id)) return 0;
+      final needs = port.needsPortId;
+      if (needs != null && node.switchedOff(needs)) return 0;
+      return port.isOutput
+          ? port.ratePerSecond * node.outputScale
+          : port.ratePerSecond;
+    }
 
     /// The flow along [edge] as a linear term in the node counts, added into
     /// [row]. Which node it lands on is the whole point of the two modes: a

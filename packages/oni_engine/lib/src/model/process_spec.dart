@@ -164,6 +164,22 @@ class ProcessSpec {
   Iterable<Port> get inputs => ports.where((p) => p.isInput);
   Iterable<Port> get outputs => ports.where((p) => p.isOutput);
 
+  /// Inputs that can be left unsupplied, because something only they bring
+  /// would go with them.
+  ///
+  /// Derived rather than declared: a port is switchable exactly when some
+  /// output says it needs it. Nothing else about a thing is optional — a Hatch
+  /// that is not fed is not a Hatch on short rations, it is a dead Hatch.
+  Iterable<Port> get switchablePorts sync* {
+    final needed = {
+      for (final port in ports)
+        if (port.needsPortId case final String id) id,
+    };
+    for (final port in ports) {
+      if (port.isInput && needed.contains(port.id)) yield port;
+    }
+  }
+
   Port? portById(String portId) {
     for (final port in ports) {
       if (port.id == portId) return port;

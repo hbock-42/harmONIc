@@ -1411,6 +1411,29 @@ class PipelineController extends ChangeNotifier {
 
   /// Lets an output port make more than anything takes from it, so a build can
   /// answer "how much is left over" instead of reading as a contradiction.
+  /// Says whether this node is supplied with [portId] at all.
+  ///
+  /// Only for a port some output depends on -- milking a Glo Squid, and so
+  /// far only that. Switching it off says "we keep these and we do not milk
+  /// them", which costs the ink and nothing else: the animal still eats,
+  /// still grows and still sheds abyssalite.
+  void setPortSupplied(String nodeId, String portId, {required bool supplied}) {
+    final node = _pipeline.node(nodeId);
+    if (node == null) return;
+    final off = {...node.portsSwitchedOff};
+    if (supplied) {
+      off.remove(portId);
+    } else {
+      off.add(portId);
+    }
+    _apply(_pipeline.copyWith(
+      nodes: [
+        for (final n in _pipeline.nodes)
+          if (n.id == nodeId) n.copyWith(portsSwitchedOff: off) else n,
+      ],
+    ));
+  }
+
   void setPortVenting(String nodeId, String portId, {required bool venting}) {
     final node = _pipeline.node(nodeId);
     if (node == null) return;
