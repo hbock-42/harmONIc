@@ -45,23 +45,44 @@ void main() {
           b.ref.nodeId == sink && b.direction == PortDirection.input)
       .rate;
 
-  test('lays a twelfth of the eggs, which is what the happiness is worth', () {
+  test('lays a tenth of the eggs, which is what the happiness is worth', () {
     final groomed = PipelineSolver(db).solve(ranch(groomed: true));
     final not = PipelineSolver(db).solve(ranch(groomed: false));
     expect(groomed.status, SolveStatus.solved);
     expect(not.status, SolveStatus.solved);
 
+    // A tamed critter starts at -1 and grooming buys five, so groomed is 4 and
+    // lays at 1000 % where ungroomed lays at 100. This said a twelfth, from
+    // reading the 1225 % off the table at five points without noticing the -1
+    // underneath it, and it was wrong in the app's favour.
     expect(into(not, 'sink_egg') / into(groomed, 'sink_egg'),
-        closeTo(100 / 1225, 1e-4));
+        closeTo(100 / 1000, 1e-4));
   });
 
-  test('and eats and makes exactly what it did', () {
-    // Metabolism does not care how happy a critter is. If this ever drifts,
-    // the ranch is being punished twice for the same thing.
+  test('and eats and makes a fifth of what it did', () {
+    // "Glum, tame, critters have -80 % metabolism offset." This file used to
+    // assert the opposite outright -- that metabolism does not care how happy
+    // a critter is -- which is what the game says about a critter at zero or
+    // above, and an ungroomed one is at -1.
+    //
+    // It is the larger half of the correction: the eggs were out by a fifth
+    // and the coal by five times.
     final groomed = PipelineSolver(db).solve(ranch(groomed: true));
     final not = PipelineSolver(db).solve(ranch(groomed: false));
-    expect(into(not, 'sink_coal'), closeTo(into(groomed, 'sink_coal'), 1e-9));
-    expect(into(not, 'sink_meat'), closeTo(into(groomed, 'sink_meat'), 1e-9));
+    expect(into(not, 'sink_coal'),
+        closeTo(into(groomed, 'sink_coal') * 0.2, 1e-9));
+    expect(into(not, 'sink_meat'),
+        closeTo(into(groomed, 'sink_meat') * 0.2, 1e-9));
+  });
+
+  test('and eats a fifth as much, which is the same thing said backwards', () {
+    final groomed = PipelineSolver(db).solve(ranch(groomed: true));
+    final not = PipelineSolver(db).solve(ranch(groomed: false));
+    double from(PipelineSolution s) => s.portBalances
+        .firstWhere((b) =>
+            b.ref.nodeId == 'hatches' && b.ref.portId == 'raw_mineral')
+        .rate;
+    expect(from(not), closeTo(from(groomed) * 0.2, 1e-9));
   });
 
   test('and costs nobody any time', () {
@@ -91,14 +112,15 @@ void main() {
     for (final spec in groomed) {
       final egg = spec.outputs.firstWhere((p) => p.itemId == 'egg');
       final grooming = spec.inputs.firstWhere((p) => p.itemId == 'grooming');
-      // The egg rate is quoted at five points of happiness, which is what
-      // grooming buys, so the figure in the data is the groomed one and an
-      // ungroomed critter is 1/12.25 of it -- the 100 against 1225 the game
-      // gives. This used to be a factor written out beside the port; it is a
-      // point on a curve now, because a factor could not also hold the Condo.
-      expect(egg.happinessAt, 5, reason: spec.id);
+      // The egg rate is quoted at four points, which is where grooming's five
+      // lands a critter that starts at -1. So the figure in the data is the
+      // groomed one and an ungroomed critter is a tenth of it -- 100 against
+      // 1000. It read 1225 before, from taking the five points of grooming as
+      // the total and missing the base underneath.
+      expect(egg.happinessAt, 4, reason: spec.id);
       expect(grooming.happiness, 5, reason: spec.id);
-      expect(layingAt(0) / layingAt(egg.happinessAt!), closeTo(100 / 1225, 1e-9),
+      expect(layingAt(spec.baseHappiness) / layingAt(egg.happinessAt!),
+          closeTo(100 / 1000, 1e-9),
           reason: spec.id);
       expect(spec.switchablePorts.map((p) => p.id), contains('grooming'),
           reason: '${spec.id} can still be left to itself');

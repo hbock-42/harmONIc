@@ -1952,7 +1952,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.0001388889,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -2036,7 +2036,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "fish_fillet",
@@ -2079,7 +2079,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "fish_fillet",
@@ -2251,7 +2251,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
@@ -2319,7 +2319,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000139,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "tough_meat",
@@ -2758,7 +2758,7 @@ const String oniDataJson = r"""
       "name": "Critter Fountain",
       "kind": "building",
       "buildingId": "critter_fountain",
-      "description": "Grooming without a Duplicant. A critter drinks five kilograms of brackene a cycle and is +5 happy for it, which is exactly what being groomed gives — so it eats and produces and lays as though somebody had brushed it, and nobody has. Wire it to the grooming port of anything that wants grooming.\n\nHappiness is worth +225 % reproduction a point, so those five points are the difference between a critter laying at 100 % and one laying at 1225 %. A Critter Condo gives one point rather than five and is not the same thing: 325 %, which is full output and about a quarter of the eggs.\n\nUNVERIFIED: serving eight, matching the other ranching stations, because the wiki publishes no capacity for this either. A stable runs 12–96 tiles and each species takes a different amount of room. If yours differs, correct it with + Recipe.",
+      "description": "Grooming without a Duplicant. A critter drinks five kilograms of brackene a cycle and is +5 happy for it, which is exactly what being groomed gives — so it eats and produces and lays as though somebody had brushed it, and nobody has. Wire it to the grooming port of anything that wants grooming.\n\nA tamed critter starts at -1 happiness, so those five points land it at 4, which is 100 % metabolism and 1000 % reproduction against the 20 % and 100 % of a critter nobody tends. This said 1225 % here, which is what 5 points would give if the -1 underneath were not there. A Critter Condo is worth one point rather than five and is a different building for a different reason: -1 to 0 buys no eggs at all and takes the metabolism back to full, so it is five times the coal and not one egg more.\n\nSquid ink in the same fountain is +3 rather than +5, which this cannot yet say: the happiness is written on the critter's port, so every supplier of it is worth the same.\n\nUNVERIFIED: serving eight, matching the other ranching stations, because the wiki publishes no capacity for this either. A stable runs 12–96 tiles and each species takes a different amount of room. If yours differs, correct it with + Recipe.",
       "tags": [
         "ranching",
         "unverified"
@@ -2817,7 +2817,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -2905,7 +2905,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000556,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -3633,7 +3633,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -3864,7 +3864,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -4662,7 +4662,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -5556,7 +5556,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -5732,7 +5732,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "calamari",
@@ -5820,7 +5820,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -5946,7 +5946,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185185,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -6034,7 +6034,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185185,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -6121,7 +6121,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "fish_fillet",
@@ -6256,7 +6256,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -7292,7 +7292,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -7488,7 +7488,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "raw_shellfish",
@@ -7657,7 +7657,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "raw_shellfish",
@@ -7819,7 +7819,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "fish_fillet",
@@ -8222,7 +8222,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -8442,7 +8442,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -8586,7 +8586,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "raw_shellfish",
@@ -8802,7 +8802,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -8844,7 +8844,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -9748,7 +9748,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -9828,7 +9828,7 @@ const String oniDataJson = r"""
       "id": "seaquine",
       "name": "Seaquine",
       "kind": "critter",
-      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime — the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. The ovolene is 100 kg a milking, which the Ovolene and Aquatic Milking Station pages both give; it was left out when only one of them had been read, so the app charged for the milking and handed back nothing, and ovolene was in the catalogue with nothing in the game able to make it. UNVERIFIED in one respect still: nobody publishes how often a critter can be milked, so this assumes once a cycle, which is what the Glo Squid beside it assumes. Milking also halves its breeding, which this model has no way to show.",
+      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime — the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. The ovolene is 100 kg a milking, which the Ovolene and Aquatic Milking Station pages both give; it was left out when only one of them had been read, so the app charged for the milking and handed back nothing, and ovolene was in the catalogue with nothing in the game able to make it. UNVERIFIED in one respect still: nobody publishes how often a critter can be milked, so this assumes once a cycle, which is what the Glo Squid beside it assumes. This said milking also halves its breeding; no source I can find says so. What the Aquatic Milking Station page actually says is that collecting a critter's underused eggs may slow reproduction, which is a different thing about a different action, and vague. Left out rather than modelled on a number nobody published.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -9867,7 +9867,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "fish_fillet",
@@ -9947,7 +9947,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -10045,7 +10045,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         }
       ],
       "family": "shine_bug",
@@ -10110,7 +10110,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -10242,7 +10242,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -10354,7 +10354,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -10657,7 +10657,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -10851,7 +10851,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "tallow",
@@ -10948,7 +10948,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",
@@ -11374,7 +11374,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037037,
-          "happinessAt": 5
+          "happinessAt": 4
         },
         {
           "item": "meat",

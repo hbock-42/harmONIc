@@ -8,6 +8,25 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — A ranch nobody grooms eats a fifth as much
+
+A tamed critter that nobody tends is glum, and a glum critter eats and
+produces a fifth of what a tended one does. This app said it ate and
+produced exactly the same, which is what the game says about a *happy*
+critter — so every unattended ranch drawn here asked for five times the
+food it needs and promised five times the coal.
+
+The eggs were wrong too, though only slightly: an ungroomed critter lays a
+tenth of a groomed one's, not a twelfth.
+
+Both come from the same missed line. A tamed critter starts at −1
+happiness, not 0. Grooming is worth five points, so a groomed critter sits
+at 4 and lays at 1000 % — the 1225 % this was built on is what five points
+would be worth if that −1 were not underneath.
+
+If you have drawn an unattended ranch, look at it again: it needs less
+than it used to say, and gives less.
+
 ## 31 August 2026 — Milking a Seaquine now gives you the ovolene
 
 A Seaquine had a milking line you could wire up and pay a Duplicant for,

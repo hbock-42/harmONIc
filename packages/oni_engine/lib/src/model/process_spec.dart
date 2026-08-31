@@ -230,13 +230,27 @@ class ProcessSpec {
     }
   }
 
+  /// Where this thing starts before anybody does anything for it.
+  ///
+  /// "Tamed critters have a base happiness of -1", which is the fact the first
+  /// version of this was written without. It is why an ungroomed critter is
+  /// glum rather than merely unimproved, and why a Critter Condo -- one point,
+  /// -1 to 0 -- buys no eggs at all and yet is worth building.
+  ///
+  /// Derived rather than declared: a thing starts at -1 exactly when something
+  /// can make it happier, which is only ever a tamed critter. A wild one has
+  /// no happiness ports and so no base, which is right -- it lays what it lays
+  /// and nobody grooms it.
+  double get baseHappiness =>
+      ports.any((port) => port.isInput && port.happiness != 0) ? -1 : 0;
+
   /// Happiness points this thing has when [supplied] says which inputs are.
   ///
-  /// Adding is the whole point: grooming is five and a Critter Condo one, and
-  /// a groomed critter in a Condo has six. Nothing multiplies here, which is
-  /// what made the Condo impossible to express before.
+  /// Adding is the whole point: grooming is five, a Critter Condo one, and
+  /// both on top of the -1 makes five. Nothing multiplies here, which is what
+  /// made the Condo impossible to express before.
   double happinessWhen(bool Function(String portId) supplied) {
-    var points = 0.0;
+    var points = baseHappiness;
     for (final port in ports) {
       if (port.isInput && port.happiness != 0 && supplied(port.id)) {
         points += port.happiness;

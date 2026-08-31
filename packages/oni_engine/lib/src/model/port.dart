@@ -9,15 +9,37 @@ const double commonOverheatCelsius = 75;
 
 /// How fast a critter lays at [happiness] points, against laying at none.
 ///
-/// The game's rule, and it is a straight line: one at no happiness, and a
-/// quarter more than twice as much again for each point. So an ungroomed
-/// critter lays at 100 %, a Critter Condo alone at 325 %, grooming alone at
-/// 1225 %, and the two together at 1450 %.
+/// The game's table, and it is a straight line only on the happy side: each
+/// point above zero is worth another 225 %, so 0 lays at 100 %, 1 at 325 % and
+/// 5 at 1225 %. Below zero it is flat -- a glum critter lays at 100 % like a
+/// contented one -- until -10, where it stops laying altogether.
 ///
-/// Written as a rule rather than as four numbers because the four numbers
-/// cannot be held by anything that multiplies, which is what the first two
-/// attempts at the Condo tried.
-double layingAt(double happiness) => 1 + 2.25 * happiness;
+/// The flat part matters more than it looks, because **a tamed critter starts
+/// at -1**. That is the fact this was written without, and getting it wrong
+/// made every figure here too generous: grooming buys five points, so a
+/// groomed critter sits at 4 and lays at 1000 %, not the 1225 % this said. A
+/// Critter Condo buys one point, which takes an ungroomed critter from -1 to
+/// 0 -- and 0 lays exactly what -1 lays. The Condo alone is worth no eggs at
+/// all. What it is worth is [metabolismAt].
+double layingAt(double happiness) {
+  if (happiness <= -10) return 0;
+  if (happiness < 0) return 1;
+  return 1 + 2.25 * happiness;
+}
+
+/// What a critter eats and makes at [happiness] points, as a fraction.
+///
+/// The other column of the same table, and it is a cliff rather than a slope:
+/// "Glum, tame, critters have -80 % metabolism offset", so anything below zero
+/// eats a fifth and produces a fifth, and zero and above eats and produces the
+/// whole of it.
+///
+/// This is the whole point of a Critter Condo, and the reason it is worth
+/// building for a critter nobody grooms: one point takes a critter from -1 to
+/// 0, which is no more eggs but five times the coal. It is also what an
+/// unattended ranch really costs -- this app used to say a critter eats the
+/// same however it is kept, which is what the game says about a *happy* one.
+double metabolismAt(double happiness) => happiness < 0 ? 0.2 : 1;
 
 /// Which way an item moves through a port.
 enum PortDirection {
@@ -148,19 +170,22 @@ class Port {
 
   /// Happiness points this input buys, when somebody supplies it.
   ///
-  /// Grooming is worth five and a Critter Condo one. They add — a groomed
-  /// critter with a Condo has six — which is exactly why neither of them can
-  /// be a factor on the output: factors multiply. Fixing grooming at 1225 %
-  /// and a Condo at 325 % forces the two together to 3981 %, and the game says
-  /// 1450 %. See [layingAt] for where those figures come from.
+  /// Grooming is worth five and a Critter Condo one, and they add on top of
+  /// the -1 a tamed critter starts at: ungroomed is -1, a Condo alone 0,
+  /// groomed 4, and both 5. See [layingAt] and [metabolismAt] for what each of
+  /// those is worth.
+  ///
+  /// Adding rather than multiplying is the point. A Condo is worth nothing on
+  /// its own and a quarter as many eggs again on top of grooming, which is not
+  /// a factor: no number multiplies 1 by itself and 10 into 12.25.
   final double happiness;
 
   /// The happiness this output's stated rate is the rate *at*.
   ///
-  /// Null for everything that does not care, which is nearly everything: an
-  /// animal's appetite and its coal are the same however happy it is. Five for
-  /// an egg, because five is groomed and a groomed rate is the figure the wiki
-  /// gives and the one worth writing down.
+  /// Null for everything that reads off [metabolismAt] instead, which is every
+  /// other port a critter has. Four for an egg: four is groomed -- five points
+  /// of grooming on top of the -1 a tamed critter starts at -- and a groomed
+  /// rate is the figure the wiki publishes and the one worth writing down.
   ///
   /// This says which point on the curve the number came from rather than
   /// stating the curve, so a rate copied off the wiki goes in unchanged and

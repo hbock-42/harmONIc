@@ -84,11 +84,15 @@ void main() {
     // wrong and not merely imprecise -- so the reason is on the card.
     final said = db.processOrThrow('critter_fountain').description ?? '';
     expect(said, contains('+5 happy'));
-    expect(said, contains('1225'));
+    // 1000 %, not the 1225 % this used to check for. Five points of grooming
+    // land a tamed critter at 4, because it starts at -1, and 1225 is what the
+    // fifth point is worth to a critter that already has a Condo.
+    expect(said, contains('1000 %'));
     // And it says what a Condo is not, because the obvious next thought is
-    // that a Condo would do as well.
+    // that a Condo would do as well. That answer changed too, and got
+    // stranger: a Condo alone is worth no eggs whatever.
     expect(said, contains('Condo'));
-    expect(said, contains('325'));
+    expect(said, contains('no eggs at all'));
   });
 
   test('and somewhere to go: the Gleaner keeps every gram of it', () {

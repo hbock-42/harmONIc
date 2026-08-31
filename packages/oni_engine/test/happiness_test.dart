@@ -3,14 +3,23 @@ import 'package:test/test.dart';
 
 /// The four ways a critter can be kept, and why they needed a new mechanism.
 ///
-/// Happiness adds: grooming is worth five points, a Critter Condo one, and a
-/// groomed critter in a Condo has six. Reproduction is 1 + 2.25 points, so the
-/// four cases are 100 %, 325 %, 1225 % and 1450 % — and that last figure is
-/// the whole difficulty. Port factors multiply. Fixing grooming at 1225 and a
-/// Condo at 325 forces the two together to 3981, against the game's 1450, so
-/// no pair of factors can hold all four however they are chosen.
+/// **A tamed critter starts at -1.** That is the fact the first version of
+/// this file was written without, and everything below moved when it arrived.
+/// Grooming buys five points and a Critter Condo one, so the four states are
+/// -1, 0, 4 and 5 — not 0, 1, 5 and 6.
 ///
-/// I said twice that the Condo only needed data. It did not; it needed this.
+/// Two columns come off that number. Reproduction is flat at 100 % anywhere
+/// below zero and 1 + 2.25 points above it, so the eggs go 100 %, 100 %,
+/// 1000 %, 1225 %. Metabolism is a cliff at zero — "Glum, tame, critters have
+/// -80 % metabolism offset" — so an ungroomed critter eats and produces a
+/// fifth, and the other three eat and produce the whole of it.
+///
+/// Which makes the Critter Condo a stranger building than it looked: on its
+/// own it is worth no eggs whatever, and five times the coal.
+///
+/// A pair of factors still cannot hold it, which is why the mechanism stands
+/// even though its numbers did not: no factor multiplies 1 by itself and by 10
+/// into 12.25.
 void main() {
   final db = loadDefaultDatabase();
 
@@ -41,29 +50,43 @@ void main() {
             id: 'egg',
             itemId: 'egg',
             direction: PortDirection.output,
-            ratePerSecond: 1225,
-            happinessAt: 5,
+            ratePerSecond: 1000,
+            happinessAt: 4,
           ),
         ],
       );
 
-  test('the rule is a straight line through the four figures', () {
-    // Read as multiples of an ungroomed critter, which is what the game's
-    // percentages are.
+  test('the reproduction column is the game table, flat below zero', () {
+    // Every row the wiki prints. The flat part is the half that was missed:
+    // -1 and 0 lay exactly the same, so the first point of happiness a critter
+    // buys is worth nothing at all in eggs.
+    expect(layingAt(-10), 0);
+    for (final glum in [-9, -5, -1]) {
+      expect(layingAt(glum.toDouble()), 1, reason: 'happiness $glum');
+    }
     expect(layingAt(0), 1);
     expect(layingAt(1), 3.25);
+    expect(layingAt(4), 10);
     expect(layingAt(5), 12.25);
-    expect(layingAt(6), 14.5);
+  });
+
+  test('and the metabolism column is a cliff at zero', () {
+    expect(metabolismAt(-1), 0.2);
+    expect(metabolismAt(0), 1);
+    expect(metabolismAt(4), 1);
   });
 
   test('and no pair of factors could have held them', () {
-    // The arithmetic that says a new mechanism was needed, rather than better
-    // data. Two factors chosen to fit the single cases are forced on the
-    // fourth, and what they force is not close.
-    final groomingFactor = layingAt(5) / layingAt(0);
-    final condoFactor = layingAt(1) / layingAt(0);
-    expect(groomingFactor * condoFactor, closeTo(39.81, 0.01));
-    expect(layingAt(6) / layingAt(0), 14.5);
+    // The arithmetic that says a new mechanism was needed rather than better
+    // data, and it survived the numbers being wrong. Grooming multiplies the
+    // eggs by ten and a Condo alone by one; if those were factors then both
+    // together would be ten, and the game says 12.25.
+    final groomed = layingAt(4) / layingAt(-1);
+    final condo = layingAt(0) / layingAt(-1);
+    expect(groomed, 10);
+    expect(condo, 1);
+    expect(groomed * condo, isNot(closeTo(12.25, 0.01)));
+    expect(layingAt(5) / layingAt(-1), 12.25);
   });
 
   group('a critter kept four ways', () {
@@ -94,22 +117,31 @@ void main() {
           .rate;
     }
 
-    // The stated rate is the groomed one, so the groomed case is the yardstick
-    // and the other three are read against it.
-    test('groomed and in a Condo lays at 1450 per cent', () {
-      expect(eggsWith(const {}), closeTo(1450, 1e-6));
+    // The stated rate is the groomed one -- 1000 at four points -- so the
+    // groomed case is the yardstick and the other three are read against it.
+    test('groomed and in a Condo lays at 1225 per cent', () {
+      expect(eggsWith(const {}), closeTo(1225, 1e-6));
     });
 
-    test('groomed alone lays at 1225, the figure in the data', () {
-      expect(eggsWith(const {'condo'}), closeTo(1225, 1e-6));
+    test('groomed alone lays at 1000, the figure in the data', () {
+      expect(eggsWith(const {'condo'}), closeTo(1000, 1e-6));
     });
 
-    test('a Condo alone lays at 325', () {
-      expect(eggsWith(const {'grooming'}), closeTo(325, 1e-6));
-    });
-
-    test('and neither lays at 100', () {
+    test('a Condo alone lays no better than nothing at all', () {
+      // -1 to 0 is a point of happiness that buys no eggs, because the
+      // reproduction column is flat underneath zero. The Condo is not useless;
+      // it is useful in the other column.
+      expect(eggsWith(const {'grooming'}), closeTo(100, 1e-6));
       expect(eggsWith(const {'grooming', 'condo'}), closeTo(100, 1e-6));
+    });
+
+    test('and what the Condo does buy is five times the food and output', () {
+      final spec = twoWaysToBeHappy();
+      expect(spec.baseHappiness, -1);
+      expect(metabolismAt(spec.happinessWhen((p) => p != 'grooming')), 1,
+          reason: 'a Condo alone lifts it off the cliff');
+      expect(metabolismAt(spec.happinessWhen((p) => false)), 0.2,
+          reason: 'and nothing at all leaves it there');
     });
 
     test('both inputs can be declined, which is what makes the four possible',
