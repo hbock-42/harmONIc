@@ -159,4 +159,75 @@ void main() {
         reason: 'once in the summary bar, once for the selected ranch');
     expect(textContaining('144 s/cycle'), findsOneWidget);
   });
+
+  group('a ranch nobody grooms', () {
+    /// The same twelve hatches with the grooming declined.
+    Pipeline ungroomed() {
+      final base = ranch();
+      return base.copyWith(nodes: [
+        for (final node in base.nodes)
+          if (node.id == 'hatches')
+            node.copyWith(portsSwitchedOff: const {'grooming'})
+          else
+            node,
+      ]);
+    }
+
+    double coalFrom(PipelineController c) => c.solution.portBalances
+        .firstWhere(
+            (b) => b.ref.nodeId == 'hatches' && b.ref.portId == 'coal')
+        .rate;
+
+    double rockInto(PipelineController c) => c.solution.portBalances
+        .firstWhere((b) =>
+            b.ref.nodeId == 'hatches' && b.ref.portId == 'raw_mineral')
+        .rate;
+
+    testWidgets('eats a fifth and makes a fifth, all the way to the screen',
+        (tester) async {
+      // The engine knows this; the question here is whether the number a
+      // person reads off the card moved with it. A glum critter has a -80 %
+      // metabolism offset, and this app used to say metabolism did not care.
+      final groomed = await pumpEditor(tester);
+      final wasCoal = coalFrom(groomed);
+      final wasRock = rockInto(groomed);
+      expect(wasCoal, greaterThan(0));
+
+      final not = await pumpEditor(tester, pipeline: ungroomed());
+      expect(coalFrom(not), closeTo(wasCoal * 0.2, 1e-6));
+      expect(rockInto(not), closeTo(wasRock * 0.2, 1e-6));
+    });
+
+    testWidgets('and lays a tenth, which is a different column', (tester) async {
+      // The two do not move together, which is the whole reason they are two
+      // columns: a fifth of the coal and a tenth of the eggs.
+      double eggs(PipelineController c) => c.solution.portBalances
+          .firstWhere(
+              (b) => b.ref.nodeId == 'hatches' && b.ref.portId == 'egg')
+          .rate;
+
+      final groomed = await pumpEditor(tester);
+      final wasEggs = eggs(groomed);
+      final not = await pumpEditor(tester, pipeline: ungroomed());
+      expect(eggs(not), closeTo(wasEggs * 0.1, 1e-6));
+    });
+
+    testWidgets('and the generator it feeds shrinks with it', (tester) async {
+      // What a person actually notices: the ranch was drawn to run a coal
+      // generator, and a fifth of the coal runs a fifth of the generator.
+      final groomed = await pumpEditor(tester);
+      final wasGen = groomed.solution.nodes['gen']!.count;
+
+      final not = await pumpEditor(tester, pipeline: ungroomed());
+      expect(not.solution.nodes['gen']!.count, closeTo(wasGen * 0.2, 1e-6));
+      expect(wasGen, greaterThan(0));
+    });
+
+    testWidgets('and it says on the card that something is switched off',
+        (tester) async {
+      await pumpEditor(tester, pipeline: ungroomed());
+      expect(find.text('OFF'), findsOneWidget,
+          reason: 'a build reading a fifth of what it did has to say why');
+    });
+  });
 }
