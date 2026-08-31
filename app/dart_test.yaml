@@ -1,14 +1,16 @@
-# Tests that compare rendered pixels. They are how somebody checks that the
-# canvas actually looks right — wires going round cards, figures in clear air,
-# a mark on a node — which no assertion about geometry can settle on its own.
+# Nothing is skipped here any more.
 #
-# Skipped by default, because a golden is a picture of one machine's font
-# rendering and a build server draws text differently. Run them deliberately:
+# The rendered-pixel checks in test/render_check_test.dart used to be, behind
+# a `golden` tag, and they took their assertions down with them: whether a
+# badge is present, whether anything overflowed, whether a row appeared. Those
+# are about layout and wording, they mean the same on every machine, and twice
+# one of them was wrong for several commits because nothing ran it.
 #
-#   fvm flutter test --run-skipped --tags golden --update-goldens \
+# So they run with everything else, and only the comparison of pixels waits to
+# be asked for -- a golden being a photograph of one computer's font rendering,
+# which a build server does differently:
+#
+#   fvm flutter test --dart-define=draw=true --update-goldens \
 #     test/render_check_test.dart
 #
 # then look at what lands in test/goldens.
-tags:
-  golden:
-    skip: "rendered-pixel checks: run with --tags golden and look at the result"
