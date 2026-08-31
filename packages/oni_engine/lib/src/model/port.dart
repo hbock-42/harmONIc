@@ -33,6 +33,7 @@ class Port {
     this.alternatives = const [],
     this.excludes = const [],
     this.needsPortId,
+    this.withoutFactor = 0,
   });
 
   factory Port.fromJson(Map<String, dynamic> json) {
@@ -51,6 +52,7 @@ class Port {
         ...(json['excludes'] as List<dynamic>? ?? const []).cast<String>(),
       ],
       needsPortId: json['needs'] as String?,
+      withoutFactor: (json['withoutFactor'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -114,6 +116,20 @@ class Port {
   /// rather than removing an output, still cannot be said.
   final String? needsPortId;
 
+  /// What is left of this port when [needsPortId] is declined, as a fraction.
+  ///
+  /// Zero for a thing that simply stops: no milking, no ink. But most of what
+  /// an input buys is a matter of degree rather than of presence. A groomed
+  /// critter lays at 1225 % and an ungroomed one at 100 %, so stopping the
+  /// grooming leaves the eggs at 100/1225 of what they were and everything
+  /// else about the animal exactly as it was — it eats the same and produces
+  /// the same, because metabolism does not care how happy it is.
+  ///
+  /// An unattended ranch is a real and common way to keep critters, and until
+  /// this there was no way to draw one: declining the grooming was not
+  /// possible, and not wiring it meant "somebody outside is doing it".
+  final double withoutFactor;
+
   /// Hot enough to be worth noticing before you plumb it into something.
   bool get runsHot =>
       temperatureC != null && temperatureC! > commonOverheatCelsius;
@@ -131,6 +147,7 @@ class Port {
         if (alternatives.isNotEmpty) 'alternatives': alternatives,
         if (excludes.isNotEmpty) 'excludes': excludes,
         if (needsPortId != null) 'needs': needsPortId,
+        if (withoutFactor != 0) 'withoutFactor': withoutFactor,
       };
 
   @override

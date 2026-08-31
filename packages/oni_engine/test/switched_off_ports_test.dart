@@ -16,11 +16,26 @@ void main() {
   final db = loadDefaultDatabase();
 
   test('a port is switchable exactly when something needs it', () {
+    // A Glo Squid has two: its milking, which is the whole of why there is
+    // ink, and its grooming, which is most of why there are eggs.
     final squid = db.processOrThrow('glo_squid');
-    expect(squid.switchablePorts.map((p) => p.id), ['milking']);
+    expect(squid.switchablePorts.map((p) => p.id),
+        containsAll(['grooming', 'milking']));
 
-    // And nothing else is. Being fed is not optional.
-    expect(db.processOrThrow('hatch').switchablePorts, isEmpty);
+    // A critter's grooming, since what it buys is eggs and an ungroomed one
+    // still lays some.
+    expect(db.processOrThrow('hatch').switchablePorts.map((p) => p.id),
+        ['grooming']);
+
+    // And being fed is still not optional, nor is anything a building takes:
+    // a Hatch that is not fed is not a Hatch on short rations.
+    expect(
+        db
+            .processOrThrow('hatch')
+            .switchablePorts
+            .map((p) => p.id)
+            .contains('raw_mineral'),
+        isFalse);
     expect(db.processOrThrow('electrolyzer').switchablePorts, isEmpty);
   });
 

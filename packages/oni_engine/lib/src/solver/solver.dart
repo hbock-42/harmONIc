@@ -74,10 +74,18 @@ class PipelineSolver {
     double rateOf(PipelineNode node, Port port) {
       if (node.switchedOff(port.id)) return 0;
       final needs = port.needsPortId;
-      if (needs != null && node.switchedOff(needs)) return 0;
-      return port.isOutput
-          ? port.ratePerSecond * node.outputScale
-          : port.ratePerSecond;
+      // What is left of it without that input, which is usually nothing --
+      // no milking, no ink -- and sometimes a fraction. An ungroomed critter
+      // lays at 100 % where a groomed one lays at 1225 %, and eats exactly
+      // the same either way.
+      final left = needs != null && node.switchedOff(needs)
+          ? port.withoutFactor
+          : 1.0;
+      if (left == 0) return 0;
+      return left *
+          (port.isOutput
+              ? port.ratePerSecond * node.outputScale
+              : port.ratePerSecond);
     }
 
     /// The flow along [edge] as a linear term in the node counts, added into
@@ -1144,6 +1152,9 @@ class PipelineSolver {
 
     var fed = false;
     for (final port in grooming) {
+      // Declined outright: nobody is grooming, so nobody is spending the time
+      // on it. Without this a ranch run unattended still paid for a Duplicant.
+      if (node.switchedOff(port.id)) return 0;
       for (final edge in pipeline.edges) {
         if (edge.toNodeId != node.id || edge.toPortId != port.id) continue;
         fed = true;

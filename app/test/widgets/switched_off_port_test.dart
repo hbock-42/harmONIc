@@ -50,12 +50,21 @@ void main() {
     expect(controller.pipeline.nodeOrThrow(id).switchedOff('milking'), isFalse);
   });
 
-  testWidgets('and nothing else offers it', (tester) async {
-    // Being fed is not optional. A Hatch that is not fed is not a Hatch on
-    // short rations.
+  testWidgets('a Hatch offers it for its grooming, and not for its food',
+      (tester) async {
+    // Grooming buys eggs, and an ungroomed critter still lays some, so
+    // declining it is a real way to keep a ranch. Being fed buys everything,
+    // and a Hatch that is not fed is not a Hatch on short rations.
     final controller = await open(tester, 'hatch');
     final id = controller.selectedNodeIds.single;
+    expect(find.byKey(ValueKey('supplied:$id.grooming')), findsOneWidget);
     expect(find.byKey(ValueKey('supplied:$id.raw_mineral')), findsNothing);
-    expect(find.byKey(ValueKey('supplied:$id.grooming')), findsNothing);
+  });
+
+  testWidgets('and a building offers it for nothing at all', (tester) async {
+    final controller = await open(tester, 'electrolyzer');
+    final id = controller.selectedNodeIds.single;
+    expect(find.byKey(ValueKey('supplied:$id.water')), findsNothing);
+    expect(find.byKey(ValueKey('supplied:$id.power')), findsNothing);
   });
 }

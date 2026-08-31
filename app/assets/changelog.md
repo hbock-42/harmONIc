@@ -23,6 +23,22 @@ The settings now remember what the app knew about at the time, so a pack
 nobody has ever had an opinion about is on, and one somebody actually
 turned off stays off.
 
+## 31 August 2026 — A ranch nobody grooms
+
+The commonest way people actually keep critters, and it could not be drawn
+here at all. Leaving the grooming unwired meant "somebody outside this
+build is doing it", so the app gave you the eggs of a groomed ranch and
+charged you the Duplicant time for one.
+
+Open a critter and its grooming now says **supplied**; press it and it says
+**not supplied**. It lays about a twelfth of the eggs — grooming is worth
+five points of happiness and happiness is worth 225 % more reproduction a
+point, so a groomed critter lays at 1225 % and an ungroomed one at 100 % —
+and everything else is untouched. It eats the same and produces the same,
+because metabolism does not care how happy a critter is.
+
+And nobody spends any time on it, which is the whole reason to do it.
+
 ## 31 August 2026 — An input you can decline
 
 Asked for as "dynamic output based on provided input lines". This is the

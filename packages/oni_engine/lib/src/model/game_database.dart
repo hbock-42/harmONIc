@@ -107,6 +107,14 @@ class GameDatabase {
         // there. Nothing else would notice: an output whose `needs` points at
         // a port that does not exist is simply never switched off, so the
         // typo shows up as a feature quietly not working.
+        if (port.withoutFactor != 0 && port.needsPortId == null) {
+          problems.add('process "${spec.id}" port "${port.id}" says what is '
+              'left of it without something, and does not say without what');
+        }
+        if (port.withoutFactor < 0 || port.withoutFactor > 1) {
+          problems.add('process "${spec.id}" port "${port.id}" keeps '
+              '${port.withoutFactor} of itself, which is not a fraction');
+        }
         if (port.needsPortId case final String needed) {
           final target = spec.portById(needed);
           if (target == null) {

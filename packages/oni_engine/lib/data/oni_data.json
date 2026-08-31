@@ -1946,7 +1946,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.0001388889
+          "rate": 0.0001388889,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -2026,7 +2028,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "fish_fillet",
@@ -2066,7 +2070,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "fish_fillet",
@@ -2233,7 +2239,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
@@ -2297,7 +2305,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000139
+          "rate": 0.000139,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "tough_meat",
@@ -2791,7 +2801,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -2875,7 +2887,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000556
+          "rate": 0.000556,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -3599,7 +3613,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.00037
+          "rate": 0.00037,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -3826,7 +3842,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000185
+          "rate": 0.000185,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -4620,7 +4638,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -5508,7 +5528,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -5678,7 +5700,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "calamari",
@@ -5725,7 +5749,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000185
+          "rate": 0.000185,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -5847,7 +5873,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000185185
+          "rate": 0.000185185,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -5931,7 +5959,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000185185
+          "rate": 0.000185185,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -6014,7 +6044,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "fish_fillet",
@@ -6145,7 +6177,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -7175,7 +7209,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -7367,7 +7403,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "raw_shellfish",
@@ -7530,7 +7568,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "raw_shellfish",
@@ -7688,7 +7728,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "fish_fillet",
@@ -8087,7 +8129,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -8303,7 +8347,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -8441,7 +8487,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "raw_shellfish",
@@ -8651,7 +8699,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.00037
+          "rate": 0.00037,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -8690,7 +8740,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.00037
+          "rate": 0.00037,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -9589,7 +9641,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -9698,7 +9752,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "fish_fillet",
@@ -9737,7 +9793,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -9831,7 +9889,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         }
       ],
       "family": "shine_bug"
@@ -9892,7 +9952,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -10020,7 +10082,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -10128,7 +10192,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.001111
+          "rate": 0.001111,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -10425,7 +10491,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -10615,7 +10683,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.000278
+          "rate": 0.000278,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "tallow",
@@ -10708,7 +10778,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.00037
+          "rate": 0.00037,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
@@ -11130,7 +11202,9 @@
         {
           "item": "egg",
           "direction": "output",
-          "rate": 0.00037037
+          "rate": 0.00037037,
+          "needs": "grooming",
+          "withoutFactor": 0.08163
         },
         {
           "item": "meat",
