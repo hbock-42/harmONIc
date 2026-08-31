@@ -88,6 +88,30 @@ void main() {
         reason: 'run tool/copy_docs.sh — the app ships a stale guide');
   });
 
+  test('and so is the shipped changelog, which nothing checked', () {
+    // copy_docs.sh has always copied both and only one of them was held to
+    // it. A stale changelog is quieter than a stale guide and worse: the
+    // what's-new notice is read off the shipped copy, so somebody would be
+    // told about the release before last and never know.
+    final shipped = File('assets/changelog.md').readAsStringSync();
+    final canonical = File('../docs/CHANGELOG.md').readAsStringSync();
+    expect(shipped, canonical,
+        reason: 'run tool/copy_docs.sh — the app ships a stale changelog');
+  });
+
+  test('no two releases share a heading', () {
+    // The heading is the identity of an entry: what is stored as "the last
+    // thing you read", and what the unread count counts back to. Two entries
+    // with the same heading and the count is silently wrong -- it finds the
+    // first and reports the distance to that one. Five entries went in on one
+    // day while this was being written, which is how the thought arose.
+    final titles =
+        releaseTitles(File('../docs/CHANGELOG.md').readAsStringSync());
+    expect(titles, isNotEmpty);
+    expect(titles.toSet(), hasLength(titles.length),
+        reason: 'two entries with one name and the unread count lies');
+  });
+
   testWidgets('and clicking away closes it too', (tester) async {
     await pumpEditor(tester);
     await openGuide(tester);
