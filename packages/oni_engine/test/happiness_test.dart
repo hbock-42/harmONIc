@@ -150,4 +150,118 @@ void main() {
           containsAll(['grooming', 'condo']));
     });
   });
+
+  group('a wild critter is not glum, it is simply wild', () {
+    final wild = db.processes.where(
+        (s) => s.kind == ProcessKind.critter && s.tags.contains('wild'));
+
+    test('none of them starts at -1, because nothing can cheer them up', () {
+      // The -1 is derived from having something that buys happiness, and a
+      // wild critter has no grooming port. Which is right, and worth pinning:
+      // if the derivation ever caught them, all 39 would drop to a fifth of
+      // their food overnight and read as a plausible-looking correction.
+      expect(wild, hasLength(39));
+      for (final spec in wild) {
+        expect(spec.baseHappiness, 0, reason: spec.id);
+        expect(metabolismAt(spec.happinessWhen((_) => true)), 1,
+            reason: '${spec.id} eats and produces the whole of it');
+      }
+    });
+
+    test('and every tame one does start at -1, bar one that is named', () {
+      // The Gassy Moo was the second exception until this was written. It lays
+      // no eggs, so nothing in it declared happiness, so its grooming bought
+      // nothing whatever and was charged for at twelve seconds a cycle. What
+      // grooming buys a Moo is the metabolism -- five times the natural gas --
+      // which only became sayable once metabolism was a column.
+      //
+      // The Kelpole is the one still standing. Its page is a stub with an
+      // empty ranching section, its grooming costs no Duplicant time, and
+      // nobody has established whether it can be groomed at all; giving it
+      // happiness would quietly cut its nori to a fifth on the strength of a
+      // guess. Named here rather than fixed, so it is a decision and not an
+      // oversight.
+      final tame = db.processes.where((s) =>
+          s.kind == ProcessKind.critter && !s.tags.contains('wild'));
+      expect(tame, hasLength(39));
+      final flat = [
+        for (final spec in tame)
+          if (spec.baseHappiness == 0) spec.id,
+      ];
+      expect(flat, ['kelpole']);
+      expect(db.processOrThrow('kelpole').tags, contains('unverified'));
+    });
+
+    test('so it eats what a groomed one eats, which the wiki bears out', () {
+      // A Hatch is 700 kcal a cycle and the page gives one figure for every
+      // variant of it, wild included -- no wild-versus-tame distinction on
+      // food anywhere. So the 39 wild specs carrying their tame twin's diet
+      // are right, and this is the check that says so rather than an
+      // assumption nobody wrote down.
+      final tame = db.processOrThrow('hatch');
+      final feral = db.processOrThrow('hatch_wild');
+      double rock(ProcessSpec s) =>
+          s.inputs.firstWhere((p) => p.itemId == 'raw_mineral').ratePerSecond;
+      expect(rock(feral), closeTo(rock(tame), 1e-9));
+      // 233.3 g/s is 140 kg a cycle, which at 5 kcal a kilogram is the 700.
+      expect(rock(tame) * 600 / 1000 * 5, closeTo(700, 1));
+    });
+  });
+
+  group('the Gassy Moo, whose grooming buys the other column', () {
+    Pipeline moos({required bool groomed}) {
+      final base = (PipelineBuilder(db, name: 'moo pasture')
+            ..add('gassy_moo', nodeId: 'moos')
+            ..addSink('natural_gas')
+            ..connectItem('moos', 'sink_natural_gas', 'natural_gas')
+            ..pinCount('moos', 4))
+          .build();
+      if (groomed) return base;
+      return base.copyWith(nodes: [
+        for (final node in base.nodes)
+          if (node.id == 'moos')
+            node.copyWith(portsSwitchedOff: const {'grooming'})
+          else
+            node,
+      ]);
+    }
+
+    double gasFrom(Pipeline p) => PipelineSolver(db)
+        .solve(p)
+        .portBalances
+        .firstWhere(
+            (b) => b.ref.nodeId == 'moos' && b.ref.portId == 'natural_gas')
+        .rate;
+
+    test('an ungroomed Moo makes a fifth of the gas', () {
+      // Ten kilograms a cycle groomed, two glum. Before this its grooming was
+      // inert: a Moo lays no eggs, so nothing on the card declared happiness,
+      // and the twelve seconds a cycle bought exactly nothing.
+      expect(gasFrom(moos(groomed: false)),
+          closeTo(gasFrom(moos(groomed: true)) * 0.2, 1e-9));
+    });
+
+    test('and the grooming can be declined at all, which it could not', () {
+      // A port earns its switch by something depending on it. Nothing did.
+      expect(db.processOrThrow('gassy_moo').switchablePorts.map((p) => p.id),
+          contains('grooming'));
+    });
+
+    test('a wild Moo makes the full amount, being no one\'s to disappoint', () {
+      final wild = (PipelineBuilder(db, name: 'wild moos')
+            ..add('gassy_moo_wild', nodeId: 'moos')
+            ..addSink('natural_gas')
+            ..connectItem('moos', 'sink_natural_gas', 'natural_gas')
+            ..pinCount('moos', 4))
+          .build();
+      expect(
+          PipelineSolver(db)
+              .solve(wild)
+              .portBalances
+              .firstWhere((b) =>
+                  b.ref.nodeId == 'moos' && b.ref.portId == 'natural_gas')
+              .rate,
+          closeTo(gasFrom(moos(groomed: true)), 1e-9));
+    });
+  });
 }

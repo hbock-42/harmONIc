@@ -8,6 +8,18 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — Grooming a Gassy Moo is worth five times the gas
+
+A Moo lays no eggs, and grooming everywhere else in this app bought eggs.
+So a Moo's grooming bought nothing at all — you paid twelve seconds a
+cycle of a Duplicant's time for a number that never moved, and you could
+not decline it either, because a line nothing depends on gets no switch.
+
+What grooming actually buys a Moo is its appetite. An ungroomed one is
+glum and runs at a fifth: two kilograms of natural gas a cycle instead of
+ten. That is now what the card says, and the grooming can be switched off
+like any other.
+
 ## 31 August 2026 — A ranch nobody grooms eats a fifth as much
 
 A tamed critter that nobody tends is glum, and a glum critter eats and

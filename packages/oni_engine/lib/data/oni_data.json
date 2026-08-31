@@ -5446,7 +5446,7 @@
       "id": "gassy_moo",
       "name": "Gassy Moo",
       "kind": "critter",
-      "description": "A Moo eats 50 % of a plant’s maturity a cycle, which is two Gas Grass at 25 % each, and makes 10 kg/cycle of natural gas. Moos lay no eggs — they summon another by meteor roughly every 16 cycles — so there is no egg output either.",
+      "description": "A Moo eats 50 % of a plant’s maturity a cycle, which is two Gas Grass at 25 % each, and makes 10 kg/cycle of natural gas. Moos lay no eggs — they summon another by meteor roughly every 16 cycles — so there is no egg output either.\n\nWhich is why the grooming matters here for a different reason than anywhere else. Everywhere else grooming buys eggs; a Moo has none, so its grooming bought nothing at all in this app and was charged for anyway. What it actually buys is the metabolism: a tamed critter starts at -1 happiness and a glum one runs at a fifth, so an ungroomed Moo makes 2 kg of gas a cycle and not 10. The wiki puts it the other way round — its \"reproduction is tied closer to its critter metabolism\", so \"a satisfied gassy moo is just as effective as a happy gassy moo\". Satisfied is zero happiness, which is one point above glum: for a Moo, anything that gets it off the cliff is as good as a brushing.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -5462,7 +5462,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "natural_gas",
@@ -5482,7 +5483,7 @@
       "id": "gassy_moo_wild",
       "name": "Gassy Moo (wild)",
       "kind": "critter",
-      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often. Grooming buys eggs, not output. What it eats and what it produces are otherwise unchanged.",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time. It eats and makes exactly what a groomed one does, because a wild critter is not a tamed critter left glum — it has no happiness to lose.\n\nThis card used to say it lays a tenth as often and that grooming buys eggs, which is the boilerplate every other wild critter carries and is nonsense on a Moo. Moos lay no eggs at all.",
       "dupeLabourSecondsPerCycle": 0,
       "tags": [
         "ranching",

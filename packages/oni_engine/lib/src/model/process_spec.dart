@@ -211,22 +211,23 @@ class ProcessSpec {
   /// would go with them.
   ///
   /// Derived rather than declared: a port is switchable exactly when some
-  /// output says it needs it, or when it buys happiness and some output is
-  /// priced in happiness. Nothing else about a thing is optional — a Hatch
-  /// that is not fed is not a Hatch on short rations, it is a dead Hatch.
+  /// output says it needs it, or when it buys happiness. Nothing else about a
+  /// thing is optional — a Hatch that is not fed is not a Hatch on short
+  /// rations, it is a dead Hatch.
+  ///
+  /// Happiness always buys something, which is why it needs no second
+  /// condition. This used to ask for an output priced in happiness as well,
+  /// back when the only thing happiness moved was eggs — and that quietly left
+  /// the Gassy Moo, which lays none, with a grooming line nobody could decline
+  /// even after its gas started depending on it.
   Iterable<Port> get switchablePorts sync* {
     final needed = {
       for (final port in ports)
         if (port.needsPortId case final String id) id,
     };
-    final anyPricedInHappiness =
-        ports.any((port) => port.happinessAt != null);
     for (final port in ports) {
       if (!port.isInput) continue;
-      if (needed.contains(port.id) ||
-          (anyPricedInHappiness && port.happiness != 0)) {
-        yield port;
-      }
+      if (needed.contains(port.id) || port.happiness != 0) yield port;
     }
   }
 
