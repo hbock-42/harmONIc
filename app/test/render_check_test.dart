@@ -340,4 +340,50 @@ void main() {
     await expectLater(find.byType(GraphCanvas),
         matchesGoldenFile('goldens/drag_after.png'));
   });
+
+  testWidgets('two ranches, one groomed and one not, side by side',
+      (tester) async {
+    await useDesktopSurface(tester, size: const Size(1200, 560));
+    final pipeline = (PipelineBuilder(testDatabase, name: 'two ranches')
+          ..add('grooming_station', nodeId: 'station', x: 0, y: 0)
+          ..add('hatch', nodeId: 'groomed', x: 330, y: 0)
+          ..add('hatch', nodeId: 'alone', x: 330, y: 260)
+          ..addSource('raw_mineral', nodeId: 'rock', x: 0, y: 260)
+          ..addSink('coal', nodeId: 'coal', x: 700, y: 0)
+          ..addSink('egg', nodeId: 'eggs', x: 700, y: 200)
+          ..connectItem('station', 'groomed', 'grooming')
+          ..connectItem('rock', 'groomed', 'raw_mineral')
+          ..connectItem('rock', 'alone', 'raw_mineral')
+          ..connectItem('groomed', 'coal', 'coal')
+          ..connectItem('groomed', 'eggs', 'egg')
+          ..pinCount('groomed', 8)
+          ..pinCount('alone', 8))
+        .build();
+    // The second ranch keeps itself.
+    final controller = testController(
+        pipeline: pipeline.copyWith(nodes: [
+      for (final n in pipeline.nodes)
+        if (n.id == 'alone')
+          n.copyWith(portsSwitchedOff: {'grooming'})
+        else
+          n,
+    ]));
+
+    final key = GlobalKey<GraphCanvasState>();
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => GraphCanvas(
+        key: key,
+        controller: controller,
+        rateDisplay: RateDisplay.perSecond,
+        onToggleRates: () {},
+      ),
+    )));
+    await tester.pumpAndSettle();
+    key.currentState!.fitToContent();
+    await tester.pumpAndSettle();
+
+    await expectLater(find.byType(GraphCanvas),
+        matchesGoldenFile('goldens/two_ranches.png'));
+  });
 }

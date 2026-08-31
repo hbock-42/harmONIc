@@ -19,13 +19,14 @@ void main() {
   Future<PipelineController> pump(WidgetTester tester, Pipeline pipeline) async {
     await useDesktopSurface(tester);
     final controller = testController()..load(pipeline);
-    await tester.pumpWidget(harness(
-      GraphCanvas(
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => GraphCanvas(
         controller: controller,
         rateDisplay: RateDisplay.perSecond,
         onToggleRates: () {},
       ),
-    ));
+    )));
     await tester.pumpAndSettle();
     return controller;
   }
@@ -135,5 +136,48 @@ void main() {
       (tester) async {
     await pump(tester, testPipeline());
     expect(find.text('OVER'), findsNothing);
+  });
+
+  /// The test build with a Hatch added, kept either way.
+  Pipeline withHatch({required bool groomed}) {
+    final base = (PipelineBuilder(testDatabase, name: 'a ranch')
+          ..add('hatch', nodeId: 'hatches', x: 0, y: 0)
+          ..addSource('raw_mineral', x: -330, y: 0)
+          ..addSource('grooming', x: -330, y: 200)
+          ..addSink('coal', x: 330, y: 0)
+          ..connectItem('src_raw_mineral', 'hatches', 'raw_mineral')
+          ..connectItem('src_grooming', 'hatches', 'grooming')
+          ..connectItem('hatches', 'sink_coal', 'coal')
+          ..pinCount('hatches', 8))
+        .build();
+    if (groomed) return base;
+    return base.copyWith(nodes: [
+      for (final n in base.nodes)
+        if (n.id == 'hatches')
+          n.copyWith(portsSwitchedOff: {'grooming'})
+        else
+          n,
+    ]);
+  }
+
+  testWidgets('a node with an input declined says so', (tester) async {
+    // Two ranches side by side, one groomed and one not, were the same
+    // picture — and the difference between them is twelve times the eggs.
+    await pump(tester, withHatch(groomed: false));
+    expect(find.text('OFF'), findsOneWidget);
+  });
+
+  testWidgets('and a groomed one says nothing', (tester) async {
+    await pump(tester, withHatch(groomed: true));
+    expect(find.text('OFF'), findsNothing);
+  });
+
+  testWidgets('and it goes when the input comes back', (tester) async {
+    final controller = await pump(tester, withHatch(groomed: false));
+    expect(find.text('OFF'), findsOneWidget);
+
+    controller.setPortSupplied('hatches', 'grooming', supplied: true);
+    await tester.pumpAndSettle();
+    expect(find.text('OFF'), findsNothing);
   });
 }

@@ -19,10 +19,16 @@ void main() {
       (tester) async {
     await useDesktopSurface(tester);
     final controller = testController(pipeline: testPipeline());
-    await tester.pumpWidget(harness(GraphCanvas(
-      controller: controller,
-      rateDisplay: RateDisplay.perSecond,
-      onToggleRates: () {},
+    // Listening, so the frames this counts are frames the canvas actually
+    // built. Reading the state directly would pass either way, which is the
+    // trap this whole file exists to guard against.
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => GraphCanvas(
+        controller: controller,
+        rateDisplay: RateDisplay.perSecond,
+        onToggleRates: () {},
+      ),
     )));
     await tester.pumpAndSettle();
 

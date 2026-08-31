@@ -39,6 +39,11 @@ because metabolism does not care how happy a critter is.
 
 And nobody spends any time on it, which is the whole reason to do it.
 
+A card with something switched off says **OFF**, in amber, the way one
+that vents something says VENT. Without it two ranches side by side — one
+groomed, one not — were the same picture, on a difference of twelve times
+the eggs.
+
 ## 31 August 2026 — An input you can decline
 
 Asked for as "dynamic output based on provided input lines". This is the

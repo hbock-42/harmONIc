@@ -267,6 +267,14 @@ class NodeWidget extends StatelessWidget {
       // being thrown away on purpose and the balance sheet knows it.
       marks.add(('VENT', OniColors.warning));
     }
+    // The mirror of it, on the way in. A ranch nobody grooms lays a twelfth of
+    // the eggs, and until this the card looked exactly like one that was
+    // groomed -- the port sat there unwired, which is what a port waiting for
+    // a supply looks like too. Two ranches side by side and nothing to tell
+    // them apart, on a difference of twelve times.
+    if (node.portsSwitchedOff.isNotEmpty) {
+      marks.add(('OFF', OniColors.warning));
+    }
     var spare = false;
     var needs = false;
     var over = false;
