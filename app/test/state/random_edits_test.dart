@@ -21,6 +21,10 @@ import '../support/harness.dart';
 /// It has been run at eighty steps a build (thirty-four thousand steps) with
 /// the same result. Forty is what is checked in, because the suite is run far
 /// more often than a fuzz needs to be exhaustive.
+///
+/// Widened afterwards to reach a week of new machinery it knew nothing about:
+/// declining an input, swapping a creature for another way of keeping it,
+/// digging out a buried card, and moving one anywhere at all.
 void main() {
   test('a random walk of edits breaks nothing, undoes cleanly, and shares',
       () {
@@ -35,6 +39,8 @@ void main() {
     final broke = <String>{};
     var steps = 0;
     var undosChecked = 0;
+    // What the walk actually got to do, so it cannot quietly stop doing it.
+    final did = <String, int>{};
 
     for (final start in corpus()) {
       final c = testController(pipeline: start);
@@ -47,7 +53,7 @@ void main() {
         final depthWas = c.undoDepth;
         steps++;
         try {
-          switch (next(16)) {
+          switch (next(20)) {
             case 0:
               c.pin(BuildingCountPin(
                   nodeId: node.id, count: (1 + next(9)).toDouble()));
@@ -95,6 +101,31 @@ void main() {
               c.undo();
             case 15:
               c.redo();
+            case 16:
+              // Declining an input, and the output that goes with it.
+              final switchable = c.specOf(node).switchablePorts.toList();
+              if (switchable.isNotEmpty) {
+                final port = pick(switchable);
+                did['decline'] = (did['decline'] ?? 0) + 1;
+                c.setPortSupplied(node.id, port.id,
+                    supplied: node.switchedOff(port.id));
+              }
+            case 17:
+              // Keeping the same creature a different way.
+              final ways = c.database.variantsOf(c.specOf(node));
+              if (ways.isNotEmpty) {
+                did['swap'] = (did['swap'] ?? 0) + 1;
+                c.swapSpec(node.id, pick(ways).id);
+              }
+            case 18:
+              if (c.hiddenCards.any((h) => h.hiddenId == node.id)) {
+                did['reveal'] = (did['reveal'] ?? 0) + 1;
+              }
+              c.reveal(node.id);
+            case 19:
+              if (c.pipeline.nodes.length > 1) {
+                c.moveNode(node.id, Offset(next(2000) - 500, next(2000) - 500));
+              }
           }
 
           // Everything the editor reads while drawing a build. It only has to
@@ -139,6 +170,13 @@ void main() {
     }
 
     expect(steps, greaterThan(10000), reason: 'the walk really walked');
+    // A move that never fires is a move that is not being tested, and a
+    // random walk is exactly the shape of test that goes quiet without
+    // saying so. Declines are the rarest because only critters have a port
+    // that can be declined and most of this corpus is buildings.
+    expect(did['decline'] ?? 0, greaterThan(10), reason: 'inputs declined');
+    expect(did['swap'] ?? 0, greaterThan(50), reason: 'creatures kept another way');
+    expect(did['reveal'] ?? 0, greaterThan(50), reason: 'buried cards dug out');
     expect(undosChecked, greaterThan(3000),
         reason: 'and most steps were undoable ones, so undo was tested');
     expect(broke, isEmpty);
