@@ -115,6 +115,23 @@ class GameDatabase {
           problems.add('process "${spec.id}" port "${port.id}" keeps '
               '${port.withoutFactor} of itself, which is not a fraction');
         }
+        // The same trap in the happiness form: a rate quoted at a happiness
+        // nothing on this thing can reach is a rate that never varies, so the
+        // mistake reads as a critter that ignores its Condo.
+        if (port.happinessAt != null && !port.isOutput) {
+          problems.add('process "${spec.id}" port "${port.id}" is an input '
+              'and cannot be priced in happiness: only what comes out varies '
+              'with it');
+        }
+        if (port.happiness != 0 && !port.isInput) {
+          problems.add('process "${spec.id}" port "${port.id}" is an output '
+              'and cannot buy happiness');
+        }
+        if (port.happinessAt != null &&
+            !spec.ports.any((p) => p.isInput && p.happiness != 0)) {
+          problems.add('process "${spec.id}" port "${port.id}" is priced in '
+              'happiness and nothing here buys any');
+        }
         if (port.needsPortId case final String needed) {
           final target = spec.portById(needed);
           if (target == null) {

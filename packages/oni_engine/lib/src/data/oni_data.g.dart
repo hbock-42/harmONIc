@@ -1931,7 +1931,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -1951,8 +1952,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.0001388889,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -2017,7 +2017,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "phosphorite",
@@ -2033,8 +2034,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -2059,7 +2059,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "starnacle_growth",
@@ -2075,8 +2076,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -2228,7 +2228,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "waterweed_growth",
@@ -2244,8 +2245,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
@@ -2299,7 +2299,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "algae",
@@ -2310,8 +2311,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000139,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "tough_meat",
@@ -2786,7 +2786,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "grazing",
@@ -2806,8 +2807,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -2871,7 +2871,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "dewdrip",
@@ -2892,8 +2893,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000556,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -3602,7 +3602,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "oxygen",
@@ -3618,8 +3619,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -3821,7 +3821,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "mealwood_growth",
@@ -3847,8 +3848,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -4617,7 +4617,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "pikeapple_growth",
@@ -4643,8 +4644,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5507,7 +5507,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "sulfur",
@@ -5533,8 +5534,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5678,7 +5678,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "milking",
@@ -5705,8 +5706,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "calamari",
@@ -5728,7 +5728,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "mealwood_growth",
@@ -5754,8 +5755,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5858,7 +5858,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -5878,8 +5879,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5944,7 +5944,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -5964,8 +5965,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000185185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -6028,7 +6028,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "algae",
@@ -6049,8 +6050,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -6166,7 +6166,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "raw_mineral",
@@ -6182,8 +6183,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -7198,7 +7198,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "carbon_dioxide",
@@ -7214,8 +7215,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -7383,7 +7383,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_dirt",
@@ -7408,8 +7409,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "raw_shellfish",
@@ -7547,7 +7547,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "shearing",
@@ -7573,8 +7574,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "raw_shellfish",
@@ -7722,7 +7722,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "algae",
@@ -7733,8 +7734,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -8114,7 +8114,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "grazing",
@@ -8134,8 +8135,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -8332,7 +8332,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "metal_ore",
@@ -8352,8 +8353,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -8468,7 +8468,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_dirt",
@@ -8492,8 +8493,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "raw_shellfish",
@@ -8688,7 +8688,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_oxygen",
@@ -8704,8 +8705,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -8729,7 +8729,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_oxygen",
@@ -8745,8 +8746,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -9622,7 +9622,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "dirt",
@@ -9646,8 +9647,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -9736,7 +9736,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "milking",
@@ -9757,8 +9758,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -9782,7 +9782,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "abyssalite",
@@ -9798,8 +9799,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -9883,7 +9883,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "phosphorite",
@@ -9894,8 +9895,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         }
       ],
       "family": "shine_bug"
@@ -9939,7 +9939,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "regolith",
@@ -9957,8 +9958,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10071,7 +10071,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "carbon_dioxide",
@@ -10087,8 +10088,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10171,7 +10171,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "salt",
@@ -10197,8 +10198,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10476,7 +10476,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "metal_ore",
@@ -10496,8 +10497,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10672,7 +10672,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "sucrose",
@@ -10688,8 +10689,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "tallow",
@@ -10767,7 +10767,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "chlorine",
@@ -10783,8 +10784,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -11187,7 +11187,8 @@ const String oniDataJson = r"""
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -11207,8 +11208,7 @@ const String oniDataJson = r"""
           "item": "egg",
           "direction": "output",
           "rate": 0.00037037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -11840,4 +11840,5 @@ const String oniDataJson = r"""
     }
   ],
   "verifiedAgainst": "https://oxygennotincluded.wiki.gg — checked 2026-08-21"
-}""";
+}
+""";

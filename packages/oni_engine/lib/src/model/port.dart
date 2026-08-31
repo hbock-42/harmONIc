@@ -7,6 +7,18 @@
 /// touching it, none of which a flow model can see.
 const double commonOverheatCelsius = 75;
 
+/// How fast a critter lays at [happiness] points, against laying at none.
+///
+/// The game's rule, and it is a straight line: one at no happiness, and a
+/// quarter more than twice as much again for each point. So an ungroomed
+/// critter lays at 100 %, a Critter Condo alone at 325 %, grooming alone at
+/// 1225 %, and the two together at 1450 %.
+///
+/// Written as a rule rather than as four numbers because the four numbers
+/// cannot be held by anything that multiplies, which is what the first two
+/// attempts at the Condo tried.
+double layingAt(double happiness) => 1 + 2.25 * happiness;
+
 /// Which way an item moves through a port.
 enum PortDirection {
   input,
@@ -34,6 +46,8 @@ class Port {
     this.excludes = const [],
     this.needsPortId,
     this.withoutFactor = 0,
+    this.happiness = 0,
+    this.happinessAt,
   });
 
   factory Port.fromJson(Map<String, dynamic> json) {
@@ -53,6 +67,8 @@ class Port {
       ],
       needsPortId: json['needs'] as String?,
       withoutFactor: (json['withoutFactor'] as num?)?.toDouble() ?? 0,
+      happiness: (json['happiness'] as num?)?.toDouble() ?? 0,
+      happinessAt: (json['happinessAt'] as num?)?.toDouble(),
     );
   }
 
@@ -111,9 +127,9 @@ class Port {
   /// went to the trouble or not.
   ///
   /// Asked for as "dynamic output based on provided input lines". It is one
-  /// input turning one output on and off, which is narrower than that and is
-  /// the part that can be said exactly. A Critter Condo, which changes a rate
-  /// rather than removing an output, still cannot be said.
+  /// input turning one output on and off, which is narrower than that: an
+  /// input that changes a rate rather than removing an output is [happiness]
+  /// instead, which came later and for the Critter Condo.
   final String? needsPortId;
 
   /// What is left of this port when [needsPortId] is declined, as a fraction.
@@ -129,6 +145,27 @@ class Port {
   /// this there was no way to draw one: declining the grooming was not
   /// possible, and not wiring it meant "somebody outside is doing it".
   final double withoutFactor;
+
+  /// Happiness points this input buys, when somebody supplies it.
+  ///
+  /// Grooming is worth five and a Critter Condo one. They add — a groomed
+  /// critter with a Condo has six — which is exactly why neither of them can
+  /// be a factor on the output: factors multiply. Fixing grooming at 1225 %
+  /// and a Condo at 325 % forces the two together to 3981 %, and the game says
+  /// 1450 %. See [layingAt] for where those figures come from.
+  final double happiness;
+
+  /// The happiness this output's stated rate is the rate *at*.
+  ///
+  /// Null for everything that does not care, which is nearly everything: an
+  /// animal's appetite and its coal are the same however happy it is. Five for
+  /// an egg, because five is groomed and a groomed rate is the figure the wiki
+  /// gives and the one worth writing down.
+  ///
+  /// This says which point on the curve the number came from rather than
+  /// stating the curve, so a rate copied off the wiki goes in unchanged and
+  /// nothing has to be re-derived to a base nobody quotes.
+  final double? happinessAt;
 
   /// Hot enough to be worth noticing before you plumb it into something.
   bool get runsHot =>
@@ -148,6 +185,8 @@ class Port {
         if (excludes.isNotEmpty) 'excludes': excludes,
         if (needsPortId != null) 'needs': needsPortId,
         if (withoutFactor != 0) 'withoutFactor': withoutFactor,
+        if (happiness != 0) 'happiness': happiness,
+        if (happinessAt != null) 'happinessAt': happinessAt,
       };
 
   @override

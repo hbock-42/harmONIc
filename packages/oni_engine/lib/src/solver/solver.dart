@@ -78,9 +78,21 @@ class PipelineSolver {
       // no milking, no ink -- and sometimes a fraction. An ungroomed critter
       // lays at 100 % where a groomed one lays at 1225 %, and eats exactly
       // the same either way.
-      final left = needs != null && node.switchedOff(needs)
+      var left = needs != null && node.switchedOff(needs)
           ? port.withoutFactor
           : 1.0;
+      // And what is left of it at whatever happiness the inputs add up to.
+      // Grooming buys five points and a Critter Condo one; a rate written
+      // down at five is the groomed rate, so grooming alone leaves it alone
+      // and the Condo on top of it makes it 14.5/12.25 of itself. This has to
+      // be a sum turned into a rate rather than a rate per input, because
+      // rates multiply and happiness does not.
+      if (port.happinessAt case final double quoted) {
+        final spec = database.processOrThrow(node.specId);
+        final points =
+            spec.happinessWhen((portId) => !node.switchedOff(portId));
+        left *= layingAt(points) / layingAt(quoted);
+      }
       if (left == 0) return 0;
       return left *
           (port.isOutput

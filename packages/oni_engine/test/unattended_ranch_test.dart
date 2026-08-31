@@ -90,8 +90,18 @@ void main() {
     expect(groomed, hasLength(37));
     for (final spec in groomed) {
       final egg = spec.outputs.firstWhere((p) => p.itemId == 'egg');
-      expect(egg.needsPortId, 'grooming', reason: spec.id);
-      expect(egg.withoutFactor, closeTo(100 / 1225, 1e-4), reason: spec.id);
+      final grooming = spec.inputs.firstWhere((p) => p.itemId == 'grooming');
+      // The egg rate is quoted at five points of happiness, which is what
+      // grooming buys, so the figure in the data is the groomed one and an
+      // ungroomed critter is 1/12.25 of it -- the 100 against 1225 the game
+      // gives. This used to be a factor written out beside the port; it is a
+      // point on a curve now, because a factor could not also hold the Condo.
+      expect(egg.happinessAt, 5, reason: spec.id);
+      expect(grooming.happiness, 5, reason: spec.id);
+      expect(layingAt(0) / layingAt(egg.happinessAt!), closeTo(100 / 1225, 1e-9),
+          reason: spec.id);
+      expect(spec.switchablePorts.map((p) => p.id), contains('grooming'),
+          reason: '${spec.id} can still be left to itself');
     }
   });
 }

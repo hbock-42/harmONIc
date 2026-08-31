@@ -184,16 +184,38 @@ class ProcessSpec {
   /// would go with them.
   ///
   /// Derived rather than declared: a port is switchable exactly when some
-  /// output says it needs it. Nothing else about a thing is optional — a Hatch
+  /// output says it needs it, or when it buys happiness and some output is
+  /// priced in happiness. Nothing else about a thing is optional — a Hatch
   /// that is not fed is not a Hatch on short rations, it is a dead Hatch.
   Iterable<Port> get switchablePorts sync* {
     final needed = {
       for (final port in ports)
         if (port.needsPortId case final String id) id,
     };
+    final anyPricedInHappiness =
+        ports.any((port) => port.happinessAt != null);
     for (final port in ports) {
-      if (port.isInput && needed.contains(port.id)) yield port;
+      if (!port.isInput) continue;
+      if (needed.contains(port.id) ||
+          (anyPricedInHappiness && port.happiness != 0)) {
+        yield port;
+      }
     }
+  }
+
+  /// Happiness points this thing has when [supplied] says which inputs are.
+  ///
+  /// Adding is the whole point: grooming is five and a Critter Condo one, and
+  /// a groomed critter in a Condo has six. Nothing multiplies here, which is
+  /// what made the Condo impossible to express before.
+  double happinessWhen(bool Function(String portId) supplied) {
+    var points = 0.0;
+    for (final port in ports) {
+      if (port.isInput && port.happiness != 0 && supplied(port.id)) {
+        points += port.happiness;
+      }
+    }
+    return points;
   }
 
   Port? portById(String portId) {

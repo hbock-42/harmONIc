@@ -1927,7 +1927,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -1947,8 +1948,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.0001388889,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -2013,7 +2013,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "phosphorite",
@@ -2029,8 +2030,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -2055,7 +2055,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "starnacle_growth",
@@ -2071,8 +2072,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -2224,7 +2224,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "waterweed_growth",
@@ -2240,8 +2241,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         }
       ],
       "dupeLabourSecondsPerCycle": 12.0,
@@ -2295,7 +2295,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "algae",
@@ -2306,8 +2307,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000139,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "tough_meat",
@@ -2782,7 +2782,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "grazing",
@@ -2802,8 +2803,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -2867,7 +2867,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "dewdrip",
@@ -2888,8 +2889,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000556,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -3598,7 +3598,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "oxygen",
@@ -3614,8 +3615,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -3817,7 +3817,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "mealwood_growth",
@@ -3843,8 +3844,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -4613,7 +4613,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "pikeapple_growth",
@@ -4639,8 +4640,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5503,7 +5503,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "sulfur",
@@ -5529,8 +5530,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5674,7 +5674,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "milking",
@@ -5701,8 +5702,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "calamari",
@@ -5724,7 +5724,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "mealwood_growth",
@@ -5750,8 +5751,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5854,7 +5854,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -5874,8 +5875,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000185185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -5940,7 +5940,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -5960,8 +5961,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000185185,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -6024,7 +6024,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "algae",
@@ -6045,8 +6046,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -6162,7 +6162,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "raw_mineral",
@@ -6178,8 +6179,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -7194,7 +7194,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "carbon_dioxide",
@@ -7210,8 +7211,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -7379,7 +7379,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_dirt",
@@ -7404,8 +7405,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "raw_shellfish",
@@ -7543,7 +7543,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "shearing",
@@ -7569,8 +7570,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "raw_shellfish",
@@ -7718,7 +7718,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "algae",
@@ -7729,8 +7730,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -8110,7 +8110,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "grazing",
@@ -8130,8 +8131,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -8328,7 +8328,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "metal_ore",
@@ -8348,8 +8349,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -8464,7 +8464,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_dirt",
@@ -8488,8 +8489,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "raw_shellfish",
@@ -8684,7 +8684,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_oxygen",
@@ -8700,8 +8701,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -8725,7 +8725,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "polluted_oxygen",
@@ -8741,8 +8742,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -9618,7 +9618,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "dirt",
@@ -9642,8 +9643,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -9732,7 +9732,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "milking",
@@ -9753,8 +9754,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "fish_fillet",
@@ -9778,7 +9778,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "abyssalite",
@@ -9794,8 +9795,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -9879,7 +9879,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "phosphorite",
@@ -9890,8 +9891,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         }
       ],
       "family": "shine_bug"
@@ -9935,7 +9935,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "regolith",
@@ -9953,8 +9954,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10067,7 +10067,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "carbon_dioxide",
@@ -10083,8 +10084,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10167,7 +10167,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "salt",
@@ -10193,8 +10194,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.001111,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10472,7 +10472,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "metal_ore",
@@ -10492,8 +10493,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -10668,7 +10668,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "sucrose",
@@ -10684,8 +10685,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "tallow",
@@ -10763,7 +10763,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "item": "chlorine",
@@ -10779,8 +10780,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.00037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
@@ -11183,7 +11183,8 @@
         {
           "item": "grooming",
           "direction": "input",
-          "rate": 1
+          "rate": 1,
+          "happiness": 5
         },
         {
           "id": "feed",
@@ -11203,8 +11204,7 @@
           "item": "egg",
           "direction": "output",
           "rate": 0.00037037,
-          "needs": "grooming",
-          "withoutFactor": 0.08163
+          "happinessAt": 5
         },
         {
           "item": "meat",
