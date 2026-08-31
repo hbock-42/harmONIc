@@ -386,4 +386,27 @@ void main() {
     await expectLater(find.byType(GraphCanvas),
         matchesGoldenFile('goldens/two_ranches.png'));
   });
+
+  testWidgets('the first thing anybody sees: an empty app', (tester) async {
+    await useDesktopSurface(tester, size: const Size(1400, 900));
+    final controller = testController(pipeline: Pipeline(
+      id: 'untitled',
+      name: 'Untitled pipeline',
+      dataVersion: testDatabase.dataVersion,
+    ));
+    final workspace = await testWorkspace(controller);
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => EditorScreen(
+        controller: controller,
+        library: testLibrary(),
+        workspace: workspace,
+        displaySettings: testDisplay(),
+      ),
+    )));
+    await tester.pumpAndSettle();
+
+    await expectLater(find.byType(EditorScreen),
+        matchesGoldenFile('goldens/empty.png'));
+  });
 }
