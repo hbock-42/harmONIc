@@ -152,4 +152,71 @@ void main() {
               contains('only what comes out can stop coming out'))));
     });
   });
+
+  group('how each critter gets about', () {
+    final critters = db.processes.where((s) => s.kind == ProcessKind.critter);
+
+    test('every one of them says, and says one of the four words', () {
+      // Audited against the game tags on each critter's own wiki page, which
+      // is where `walker`, `flyer`, `swimmer` and `hoverer` come from: they
+      // are the game's words, not this project's. A critter added without one
+      // would silently be offered no Critter Condo at all.
+      for (final spec in critters) {
+        expect(spec.locomotion, isNotNull, reason: spec.id);
+        expect(const ['walker', 'flyer', 'swimmer', 'hoverer'],
+            contains(spec.locomotion),
+            reason: spec.id);
+      }
+    });
+
+    test('and nothing that is not a critter claims to', () {
+      for (final spec in db.processes) {
+        if (spec.kind == ProcessKind.critter) continue;
+        expect(spec.locomotion, isNull, reason: spec.id);
+        expect(spec.amphibious, isFalse, reason: spec.id);
+      }
+    });
+
+    test('the roster splits the way the audit found it', () {
+      // The figures are here so that changing one critter's answer has to be
+      // deliberate. 39 families, and every variant of a family moves the same
+      // way -- a Sage Hatch walks because a Hatch does.
+      final byFamily = <String, String>{};
+      for (final spec in critters) {
+        byFamily[spec.family ?? spec.id] = spec.locomotion!;
+      }
+      expect(byFamily, hasLength(39));
+      final counts = <String, int>{};
+      for (final how in byFamily.values) {
+        counts[how] = (counts[how] ?? 0) + 1;
+      }
+      expect(counts, {'walker': 22, 'flyer': 6, 'swimmer': 9, 'hoverer': 2});
+    });
+
+    test('five of them are amphibious, and all five walk', () {
+      final wet = <String>{
+        for (final spec in critters)
+          if (spec.amphibious) spec.family ?? spec.id,
+      };
+      expect(wet,
+          {'gildgo', 'plug_slug', 'slogo', 'pokeshell', 'oakshell'});
+      for (final spec in critters) {
+        if (spec.amphibious) {
+          expect(spec.locomotion, 'walker', reason: spec.id);
+        }
+      }
+    });
+
+    test('and it survives a round trip, which is how it would go missing', () {
+      // Both fields were nearly left out of toJson, where nothing would have
+      // complained: a user-defined critter would simply come back walking.
+      final hatch = db.processOrThrow('hatch');
+      final pokeshell = db.processOrThrow('pokeshell');
+      for (final spec in [hatch, pokeshell]) {
+        final again = ProcessSpec.fromJson(spec.toJson());
+        expect(again.locomotion, spec.locomotion, reason: spec.id);
+        expect(again.amphibious, spec.amphibious, reason: spec.id);
+      }
+    });
+  });
 }

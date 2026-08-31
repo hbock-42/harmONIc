@@ -46,6 +46,8 @@ class ProcessSpec {
     this.description,
     this.dupeLabourSecondsPerCycle = 0,
     this.unattended = false,
+    this.locomotion,
+    this.amphibious = false,
     this.footprintWidth = 0,
     this.footprintHeight = 0,
     this.buildCost = const {},
@@ -109,6 +111,8 @@ class ProcessSpec {
       dupeLabourSecondsPerCycle:
           (json['dupeLabourSecondsPerCycle'] as num?)?.toDouble() ?? 0,
       unattended: json['unattended'] as bool? ?? false,
+      locomotion: json['locomotion'] as String?,
+      amphibious: json['amphibious'] as bool? ?? false,
       footprintWidth: (json['footprintWidth'] as num?)?.toInt() ?? 0,
       footprintHeight: (json['footprintHeight'] as num?)?.toInt() ?? 0,
       buildCost: {
@@ -154,6 +158,29 @@ class ProcessSpec {
   /// standing there. Without this the app charged for the Duplicant anyway,
   /// which made the building pointless in the one respect it exists for.
   final bool unattended;
+
+  /// How this critter gets about: `walker`, `flyer`, `swimmer` or `hoverer`.
+  ///
+  /// The game's own tag, off each critter's page, and null for everything that
+  /// is not a critter. Recorded because a Critter Condo comes in three and a
+  /// Grooming Station in two, and this app had no way to say which one a given
+  /// animal wants -- so nothing stopped a Pacu being groomed at a land
+  /// station.
+  ///
+  /// It does not settle the question on its own, which is why it is the tag
+  /// rather than a habitat of this project's invention. A Pokeshell is a
+  /// walker that uses the *aquatic* Condo, the terrestrial one saying in so
+  /// many words that it excludes Pokeshell species; and nothing anywhere says
+  /// which Condo a hoverer uses, so both Slicksters are still open. See E4-74.
+  final String? locomotion;
+
+  /// Walks, and is at home in liquid as well.
+  ///
+  /// Five of them: the Gildgo, Plug Slug, Slogo, Pokeshell and Oakshell. A
+  /// second tag rather than a fifth kind of [locomotion], because the game
+  /// carries both on the same critter and they answer different questions.
+  final bool amphibious;
+
   final int footprintWidth;
   final int footprintHeight;
 
@@ -263,6 +290,8 @@ class ProcessSpec {
         if (dupeLabourSecondsPerCycle != 0)
           'dupeLabourSecondsPerCycle': dupeLabourSecondsPerCycle,
         if (unattended) 'unattended': true,
+        if (locomotion != null) 'locomotion': locomotion,
+        if (amphibious) 'amphibious': true,
         if (footprintWidth != 0) 'footprintWidth': footprintWidth,
         if (footprintHeight != 0) 'footprintHeight': footprintHeight,
         if (buildCost.isNotEmpty) 'build': buildCost,
