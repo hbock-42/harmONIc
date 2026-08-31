@@ -78,10 +78,10 @@ class PipelineSolver {
     double rateOf(PipelineNode node, Port port) {
       if (node.switchedOff(port.id)) return 0;
       final needs = port.needsPortId;
-      // What is left of it without that input, which is usually nothing --
-      // no milking, no ink -- and sometimes a fraction. An ungroomed critter
-      // lays at 100 % where a groomed one lays at 1225 %, and eats exactly
-      // the same either way.
+      // What is left of it without that input: nothing, in the one case that
+      // uses this. No milking, no ink. Grooming was the other case and is not
+      // any more -- what an input buys by degree is happiness, below, which
+      // this could never have held anyway.
       var left = needs != null && node.switchedOff(needs)
           ? port.withoutFactor
           : 1.0;

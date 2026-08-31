@@ -156,16 +156,17 @@ class Port {
 
   /// What is left of this port when [needsPortId] is declined, as a fraction.
   ///
-  /// Zero for a thing that simply stops: no milking, no ink. But most of what
-  /// an input buys is a matter of degree rather than of presence. A groomed
-  /// critter lays at 1225 % and an ungroomed one at 100 %, so stopping the
-  /// grooming leaves the eggs at 100/1225 of what they were and everything
-  /// else about the animal exactly as it was — it eats the same and produces
-  /// the same, because metabolism does not care how happy it is.
+  /// Zero for a thing that simply stops, which is every use it has: no
+  /// milking, no ink.
   ///
-  /// An unattended ranch is a real and common way to keep critters, and until
-  /// this there was no way to draw one: declining the grooming was not
-  /// possible, and not wiring it meant "somebody outside is doing it".
+  /// It once carried grooming as well, on the reasoning that most of what an
+  /// input buys is a matter of degree — an ungroomed critter laying at a
+  /// fraction of a groomed one's rate and otherwise unchanged, "because
+  /// metabolism does not care how happy it is". Both halves of that were
+  /// wrong. The fraction was 100/1225 and is 100/1000, and metabolism cares a
+  /// great deal: a glum critter eats and produces a fifth. Grooming is
+  /// [happiness] now, which can hold both columns; this holds an on and an
+  /// off.
   final double withoutFactor;
 
   /// Happiness points this input buys, when somebody supplies it.
