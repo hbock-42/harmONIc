@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oni_pipeline/panels/palette_panel.dart';
 import 'package:oni_pipeline/state/display_controller.dart';
@@ -15,9 +14,9 @@ void main() {
       {String? search, DisplayController? display}) async {
     await useDesktopSurface(tester);
     final settings = display ?? testDisplay();
-    await tester.pumpWidget(harness(AnimatedBuilder(
-      animation: settings,
-      builder: (_, _) => PalettePanel(
+    await tester.pumpWidget(harness(listening(
+      settings,
+      (_) => PalettePanel(
         database: testDatabase,
         display: settings,
         onAdd: (_) {},

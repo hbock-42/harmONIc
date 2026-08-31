@@ -118,3 +118,17 @@ Finder paletteSearch() => find.descendant(
       of: find.byType(PalettePanel),
       matching: find.byType(OniField),
     );
+
+/// Wraps a panel so it rebuilds when the controller changes, the way the
+/// editor does.
+///
+/// Pumped on its own, a panel is a snapshot: it draws the build as it was and
+/// never hears about an edit. That has produced three misleading test results
+/// in one week -- a button whose second press read the state before the first,
+/// and a drag that captured two identical frames because the canvas never
+/// repainted. Neither was a bug in the app.
+Widget listening(Listenable controller, WidgetBuilder build) =>
+    AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) => build(context),
+    );

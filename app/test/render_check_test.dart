@@ -173,9 +173,9 @@ void main() {
     final controller = testController(pipeline: testPipeline());
     final id = controller.addNode('glo_squid', Offset.zero);
     controller.selectNode(id);
-    await tester.pumpWidget(harness(AnimatedBuilder(
-      animation: controller,
-      builder: (_, _) => InspectorPanel(
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => InspectorPanel(
         controller: controller,
         rateDisplay: RateDisplay.perSecond,
         onToggleRates: () {},
@@ -293,5 +293,51 @@ void main() {
 
     await expectLater(find.byType(PalettePanel),
         matchesGoldenFile('goldens/palette.png'));
+  });
+
+  testWidgets('mid-drag: the moving card loses its routes and nothing else does',
+      (tester) async {
+    await useDesktopSurface(tester, size: const Size(1200, 700));
+    // Two cards with a card between them, so the wire has to go round.
+    final base = testPipeline();
+    final elec = base.nodeOrThrow('elec');
+    final pipeline = base.copyWith(nodes: [
+      for (final n in base.nodes)
+        if (n.id == 'dupes')
+          n.copyWith(x: elec.x + 700, y: elec.y)
+        else if (n.id == 'h2out')
+          n.copyWith(x: elec.x + 330, y: elec.y - 10)
+        else
+          n,
+    ]);
+    final controller = testController(pipeline: pipeline);
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => GraphCanvas(
+        controller: controller,
+        rateDisplay: RateDisplay.perSecond,
+        onToggleRates: () {},
+      ),
+    )));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(GraphCanvas),
+        matchesGoldenFile('goldens/drag_before.png'));
+
+    // Pick up the card in the way and move it, without letting go.
+    controller
+      ..selectNode('h2out')
+      ..beginNodeDrag()
+      ..dragSelectionBy(const Offset(40, 190));
+    await tester.pump();
+    // It really did move, or the two pictures are the same picture.
+    expect(controller.pipeline.nodeOrThrow('h2out').y,
+        greaterThan(pipeline.nodeOrThrow('h2out').y));
+    await expectLater(find.byType(GraphCanvas),
+        matchesGoldenFile('goldens/drag_during.png'));
+
+    controller.endNodeDrag();
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(GraphCanvas),
+        matchesGoldenFile('goldens/drag_after.png'));
   });
 }

@@ -22,9 +22,9 @@ void main() {
     // that changes the build and then reading the button again is the whole
     // point of the test, and without this the second press sees the first
     // press's state.
-    await tester.pumpWidget(harness(AnimatedBuilder(
-      animation: controller,
-      builder: (_, _) => InspectorPanel(
+    await tester.pumpWidget(harness(listening(
+      controller,
+      (_) => InspectorPanel(
         controller: controller,
         rateDisplay: RateDisplay.perSecond,
         onToggleRates: () {},
