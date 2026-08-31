@@ -8,6 +8,18 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — Dragging a card on a big build got cheaper
+
+Every card on the canvas was being redrawn each time your hand moved one
+of them, whether or not anything about it had changed. The ones that did
+not change now keep what was already drawn.
+
+It is worth about a sixth of the work on a hundred-card build and rather
+less on a small one, which is where most builds are — so this is a
+measurement more than a rescue. There was none before: how fast this app
+solves a build has been measured for months, and how fast it *draws* one
+had never been measured at all.
+
 ## 31 August 2026 — ⌘+ zooms in, on the keyboard you actually have
 
 Zoom in was written down as ⌘=, and ⌘= worked. Reaching for the + next to

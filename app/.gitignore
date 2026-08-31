@@ -50,3 +50,6 @@ app.*.map.json
 # Rendered-pixel checks, made on demand and specific to the machine that
 # drew them. See dart_test.yaml.
 test/goldens/
+# What a failed golden run leaves behind to look at: the render, the one it
+# was compared against, and the difference. Byproduct, like the goldens.
+test/failures/

@@ -66,7 +66,6 @@ class GraphCanvas extends StatefulWidget {
   /// the ports that would take it.
   final PortRef? pointingAt;
 
-
   @override
   State<GraphCanvas> createState() => GraphCanvasState();
 }
@@ -359,7 +358,9 @@ class GraphCanvasState extends State<GraphCanvas>
   void beginEdgePan(VoidCallback reapply) {
     _edgeReapply = reapply;
     _edgeTimer ??= Timer.periodic(
-        const Duration(milliseconds: 16), (_) => _edgePanStep());
+      const Duration(milliseconds: 16),
+      (_) => _edgePanStep(),
+    );
   }
 
   void updateEdgePan(Offset globalPosition) => _edgePointer = globalPosition;
@@ -389,7 +390,10 @@ class GraphCanvasState extends State<GraphCanvas>
       return 0;
     }
 
-    return Offset(axis(local.dx, viewport.width), axis(local.dy, viewport.height));
+    return Offset(
+      axis(local.dx, viewport.width),
+      axis(local.dy, viewport.height),
+    );
   }
 
   void _edgePanStep() {
@@ -439,9 +443,9 @@ class GraphCanvasState extends State<GraphCanvas>
   }
 
   void resetView() => setState(() {
-        _offset = const Offset(120, 100);
-        _scale = 1;
-      });
+    _offset = const Offset(120, 100);
+    _scale = 1;
+  });
 
   /// Frames every node, so "where did my graph go" is one click away.
   ///
@@ -453,13 +457,20 @@ class GraphCanvasState extends State<GraphCanvas>
     final size = box?.size;
     final nodes = only.isEmpty
         ? controller.pipeline.nodes
-        : [for (final n in controller.pipeline.nodes) if (only.contains(n.id)) n];
+        : [
+            for (final n in controller.pipeline.nodes)
+              if (only.contains(n.id)) n,
+          ];
     if (size == null || nodes.isEmpty) return;
 
-    var bounds = NodeLayout.worldRect(nodes.first, controller.specOf(nodes.first));
+    var bounds = NodeLayout.worldRect(
+      nodes.first,
+      controller.specOf(nodes.first),
+    );
     for (final node in nodes.skip(1)) {
       bounds = bounds.expandToInclude(
-          NodeLayout.worldRect(node, controller.specOf(node)));
+        NodeLayout.worldRect(node, controller.specOf(node)),
+      );
     }
     bounds = bounds.inflate(60);
     // Stop any glide first. A reveal in flight goes on writing to the offset
@@ -468,10 +479,11 @@ class GraphCanvasState extends State<GraphCanvas>
     // it and selecting one reveals it.
     _travel.stop();
     setState(() {
-      _scale = math.min(size.width / bounds.width, size.height / bounds.height)
+      _scale = math
+          .min(size.width / bounds.width, size.height / bounds.height)
           .clamp(minScale, maxScale);
-      _offset = Offset(size.width / 2, size.height / 2) -
-          bounds.center * _scale;
+      _offset =
+          Offset(size.width / 2, size.height / 2) - bounds.center * _scale;
     });
   }
 
@@ -493,9 +505,9 @@ class GraphCanvasState extends State<GraphCanvas>
   }
 
   void _closePortMenu() => setState(() {
-        _menuRef = null;
-        _menuLocal = null;
-      });
+    _menuRef = null;
+    _menuLocal = null;
+  });
 
   void _onPortDragStart(PortRef ref, Offset global) {
     final node = controller.pipeline.node(ref.nodeId);
@@ -558,10 +570,10 @@ class GraphCanvasState extends State<GraphCanvas>
 
   /// Every node the rubber band touches, however slightly.
   List<String> _nodesWithin(Rect world) => [
-        for (final node in controller.pipeline.nodes)
-          if (controller.specFor(node) case final ProcessSpec spec)
-            if (NodeLayout.worldRect(node, spec).overlaps(world)) node.id,
-      ];
+    for (final node in controller.pipeline.nodes)
+      if (controller.specFor(node) case final ProcessSpec spec)
+        if (NodeLayout.worldRect(node, spec).overlaps(world)) node.id,
+  ];
 
   /// Where the wires go, worked out once per arrangement of the cards.
   ///
@@ -590,11 +602,7 @@ class GraphCanvasState extends State<GraphCanvas>
     // moving wire stays on its wire. What it says cannot go stale either: the
     // text comes from the solution, and moving a card does not re-solve.
     if (controller.isDraggingNodes) return _labelled;
-    final key = (
-      controller.pipeline,
-      controller.solution,
-      widget.rateDisplay,
-    );
+    final key = (controller.pipeline, controller.solution, widget.rateDisplay);
     if (_labelledFor != key) {
       _labelledFor = key;
       _labelled = EdgeLabels.place(
@@ -622,7 +630,9 @@ class GraphCanvasState extends State<GraphCanvas>
   EdgeRouting get routing {
     if (controller.isDraggingNodes) {
       return _routed.exceptTouching(
-          controller.draggingNodeIds, controller.pipeline);
+        controller.draggingNodeIds,
+        controller.pipeline,
+      );
     }
     if (!identical(_routedFor, controller.pipeline)) {
       _routedFor = controller.pipeline;
@@ -662,17 +672,24 @@ class GraphCanvasState extends State<GraphCanvas>
     final toNode = controller.pipeline.node(edge.toNodeId);
     final fromSpec = fromNode == null ? null : controller.specFor(fromNode);
     final toSpec = toNode == null ? null : controller.specFor(toNode);
-    if (fromNode == null || toNode == null ||
-        fromSpec == null || toSpec == null) {
+    if (fromNode == null ||
+        toNode == null ||
+        fromSpec == null ||
+        toSpec == null) {
       return null;
     }
-    final from =
-        NodeLayout.worldPortOffsetOrNull(fromNode, fromSpec, edge.fromPortId);
+    final from = NodeLayout.worldPortOffsetOrNull(
+      fromNode,
+      fromSpec,
+      edge.fromPortId,
+    );
     final to = NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
     if (from == null || to == null) return null;
 
-    final metrics =
-        routing.pathFor(edge.id, from, to).computeMetrics().toList();
+    final metrics = routing
+        .pathFor(edge.id, from, to)
+        .computeMetrics()
+        .toList();
     if (metrics.isEmpty) return null;
     return metrics.first
         .getTangentForOffset(metrics.first.length * fraction)
@@ -690,12 +707,17 @@ class GraphCanvasState extends State<GraphCanvas>
       final toSpec = controller.specFor(toNode);
       if (fromSpec == null || toSpec == null) continue;
       final from = NodeLayout.worldPortOffsetOrNull(
-          fromNode, fromSpec, edge.fromPortId);
-      final to =
-          NodeLayout.worldPortOffsetOrNull(toNode, toSpec, edge.toPortId);
+        fromNode,
+        fromSpec,
+        edge.fromPortId,
+      );
+      final to = NodeLayout.worldPortOffsetOrNull(
+        toNode,
+        toSpec,
+        edge.toPortId,
+      );
       if (from == null || to == null) continue;
-      final distance =
-          distanceAlong(routing.pathFor(edge.id, from, to), world);
+      final distance = distanceAlong(routing.pathFor(edge.id, from, to), world);
       if (distance < bestDistance) {
         bestDistance = distance;
         best = edge.id;
@@ -737,7 +759,8 @@ class GraphCanvasState extends State<GraphCanvas>
 
     // A mouse with a scroll wheel, or a trackpad's two-finger scroll.
     if (event is PointerScrollEvent) {
-      final zooming = HardwareKeyboard.instance.isMetaPressed ||
+      final zooming =
+          HardwareKeyboard.instance.isMetaPressed ||
           HardwareKeyboard.instance.isControlPressed;
       if (zooming) {
         zoomBy(event.scrollDelta.dy > 0 ? 0.9 : 1.1, local);
@@ -781,8 +804,9 @@ class GraphCanvasState extends State<GraphCanvas>
   Widget build(BuildContext context) {
     // After this frame is laid out, not during: where the canvas sits on
     // screen is not known until the banner above it has taken its space.
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _keepStillWhileTheViewportMoves());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _keepStillWhileTheViewportMoves(),
+    );
     final controller = this.controller;
     final selectedEdgeId = switch (controller.selection) {
       EdgeSelection(:final edgeId) => edgeId,
@@ -793,189 +817,200 @@ class GraphCanvasState extends State<GraphCanvas>
     return Focus(
       focusNode: _focus,
       child: Listener(
-      key: _viewportKey,
-      onPointerDown: (event) {
-        _stopTravelling();
-        _focus.requestFocus();
-        final box =
-            _viewportKey.currentContext?.findRenderObject() as RenderBox?;
-        if (box != null) {
-          _pointerDownWorld = worldFromLocal(box.globalToLocal(event.position));
-        }
-      },
-      // The middle button pans, and has to be handled here: a GestureDetector
-      // only ever sees the primary one, so its drag callbacks never fire for
-      // this and there is nothing to conflict with.
-      onPointerMove: (event) {
-        if (event.buttons & kMiddleMouseButton == 0) return;
-        setState(() => _offset += event.delta);
-      },
-      onPointerSignal: _onPointerSignal,
-      onPointerPanZoomStart: _onPanZoomStart,
-      onPointerPanZoomUpdate: _onPanZoomUpdate,
-      child: MouseRegion(
-        onHover: (event) {
+        key: _viewportKey,
+        onPointerDown: (event) {
+          _stopTravelling();
+          _focus.requestFocus();
           final box =
               _viewportKey.currentContext?.findRenderObject() as RenderBox?;
-          if (box == null) return;
-          final id = _edgeAt(worldFromLocal(box.globalToLocal(event.position)));
-          if (id != _hoveredEdgeId) setState(() => _hoveredEdgeId = id);
+          if (box != null) {
+            _pointerDownWorld = worldFromLocal(
+              box.globalToLocal(event.position),
+            );
+          }
         },
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapUp: (d) {
-            if (_menuRef != null) {
-              _closePortMenu();
-              return;
-            }
-            _onBackgroundTap(d.localPosition);
+        // The middle button pans, and has to be handled here: a GestureDetector
+        // only ever sees the primary one, so its drag callbacks never fire for
+        // this and there is nothing to conflict with.
+        onPointerMove: (event) {
+          if (event.buttons & kMiddleMouseButton == 0) return;
+          setState(() => _offset += event.delta);
+        },
+        onPointerSignal: _onPointerSignal,
+        onPointerPanZoomStart: _onPanZoomStart,
+        onPointerPanZoomUpdate: _onPanZoomUpdate,
+        child: MouseRegion(
+          onHover: (event) {
+            final box =
+                _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+            if (box == null) return;
+            final id = _edgeAt(
+              worldFromLocal(box.globalToLocal(event.position)),
+            );
+            if (id != _hoveredEdgeId) setState(() => _hoveredEdgeId = id);
           },
-          onPanStart: (d) {
-            // A drag on empty canvas selects. Space, the middle button and two
-            // fingers pan — three ways, because taking the plain drag away
-            // from panning would be unkind without them.
-            _dragPans = _panning;
-            if (_dragPans) return;
-            // Two fingers on a trackpad arrive here as a drag as well as a
-            // pan-zoom gesture. The pan-zoom half moves the view; this half is
-            // ignored outright, since a rubber band appearing under a
-            // scrolling cursor would be nobody's intent and panning here as
-            // well would take the canvas twice as far as the fingers did.
-            if (d.kind == PointerDeviceKind.trackpad) return;
-            setState(() {
-              _marqueeFrom =
-                  _pointerDownWorld ?? worldFromLocal(d.localPosition);
-              _marqueeTo = worldFromLocal(d.localPosition);
-            });
-          },
-          onPanUpdate: (d) {
-            if (_marqueeFrom != null) {
-              _extendMarqueeTo(d.globalPosition);
-              beginEdgePan(() => _extendMarqueeTo(d.globalPosition));
-              updateEdgePan(d.globalPosition);
-              return;
-            }
-            if (!_dragPans) return;
-            setState(() => _offset += d.delta);
-          },
-          onPanEnd: (_) {
-            endEdgePan();
-            _dragPans = false;
-            final from = _marqueeFrom;
-            final to = _marqueeTo;
-            if (from == null || to == null) return;
-            controller.selectNodes(_nodesWithin(Rect.fromPoints(from, to)));
-            setState(() {
-              _marqueeFrom = null;
-              _marqueeTo = null;
-            });
-          },
-          child: ClipRect(
-            child: Stack(
-              children: [
-            DecoratedBox(
-              decoration: BoxDecoration(color: OniColors.background),
-              child: CustomPaint(
-                painter: _GridPainter(offset: _offset, scale: _scale),
-                child: Transform(
-                  transform: Matrix4.identity()
-                    ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
-                    ..scaleByDouble(_scale, _scale, 1, 1),
-                  // The node layer is a large, real box shifted so that world
-                  // (0, 0) sits at its middle. Everything inside is placed at
-                  // world + canvasHalf, which cancels the shift, so screen and
-                  // world coordinates still line up exactly as before.
-                  child: UnboundedLayer(
-                  child: Transform.translate(
-                  offset: const Offset(-canvasHalf, -canvasHalf),
-                  child: SizedBox(
-                  width: canvasExtent,
-                  height: canvasExtent,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      // Sized zero, but a painter may draw anywhere; this keeps
-                      // the wires in the same world space as the nodes.
-                      Positioned(
-                        left: canvasHalf,
-                        top: canvasHalf,
-                        child: CustomPaint(
-                          size: Size.zero,
-                          painter: EdgePainter(
-                            pipeline: controller.pipeline,
-                            routing: routing,
-                            labels: labels,
-                            database: controller.database,
-                            solution: controller.solution,
-                            selectedEdgeId: selectedEdgeId,
-                            hoveredEdgeId: _hoveredEdgeId,
-                            scale: _scale,
-                            rateDisplay: widget.rateDisplay,
-                            pendingFrom: _pendingFromWorld(),
-                            pendingTo: _pendingWorld,
-                            pendingValid: _pendingWorld == null ||
-                                _portAt(_pendingWorld!) == null ||
-                                _isLegalTarget(_portAt(_pendingWorld!)!),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapUp: (d) {
+              if (_menuRef != null) {
+                _closePortMenu();
+                return;
+              }
+              _onBackgroundTap(d.localPosition);
+            },
+            onPanStart: (d) {
+              // A drag on empty canvas selects. Space, the middle button and two
+              // fingers pan — three ways, because taking the plain drag away
+              // from panning would be unkind without them.
+              _dragPans = _panning;
+              if (_dragPans) return;
+              // Two fingers on a trackpad arrive here as a drag as well as a
+              // pan-zoom gesture. The pan-zoom half moves the view; this half is
+              // ignored outright, since a rubber band appearing under a
+              // scrolling cursor would be nobody's intent and panning here as
+              // well would take the canvas twice as far as the fingers did.
+              if (d.kind == PointerDeviceKind.trackpad) return;
+              setState(() {
+                _marqueeFrom =
+                    _pointerDownWorld ?? worldFromLocal(d.localPosition);
+                _marqueeTo = worldFromLocal(d.localPosition);
+              });
+            },
+            onPanUpdate: (d) {
+              if (_marqueeFrom != null) {
+                _extendMarqueeTo(d.globalPosition);
+                beginEdgePan(() => _extendMarqueeTo(d.globalPosition));
+                updateEdgePan(d.globalPosition);
+                return;
+              }
+              if (!_dragPans) return;
+              setState(() => _offset += d.delta);
+            },
+            onPanEnd: (_) {
+              endEdgePan();
+              _dragPans = false;
+              final from = _marqueeFrom;
+              final to = _marqueeTo;
+              if (from == null || to == null) return;
+              controller.selectNodes(_nodesWithin(Rect.fromPoints(from, to)));
+              setState(() {
+                _marqueeFrom = null;
+                _marqueeTo = null;
+              });
+            },
+            child: ClipRect(
+              child: Stack(
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(color: OniColors.background),
+                    child: CustomPaint(
+                      painter: _GridPainter(offset: _offset, scale: _scale),
+                      child: Transform(
+                        transform: Matrix4.identity()
+                          ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
+                          ..scaleByDouble(_scale, _scale, 1, 1),
+                        // The node layer is a large, real box shifted so that world
+                        // (0, 0) sits at its middle. Everything inside is placed at
+                        // world + canvasHalf, which cancels the shift, so screen and
+                        // world coordinates still line up exactly as before.
+                        child: UnboundedLayer(
+                          child: Transform.translate(
+                            offset: const Offset(-canvasHalf, -canvasHalf),
+                            child: SizedBox(
+                              width: canvasExtent,
+                              height: canvasExtent,
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  // Sized zero, but a painter may draw anywhere; this keeps
+                                  // the wires in the same world space as the nodes.
+                                  Positioned(
+                                    left: canvasHalf,
+                                    top: canvasHalf,
+                                    child: CustomPaint(
+                                      size: Size.zero,
+                                      painter: EdgePainter(
+                                        pipeline: controller.pipeline,
+                                        routing: routing,
+                                        labels: labels,
+                                        database: controller.database,
+                                        solution: controller.solution,
+                                        selectedEdgeId: selectedEdgeId,
+                                        hoveredEdgeId: _hoveredEdgeId,
+                                        scale: _scale,
+                                        rateDisplay: widget.rateDisplay,
+                                        pendingFrom: _pendingFromWorld(),
+                                        pendingTo: _pendingWorld,
+                                        pendingValid:
+                                            _pendingWorld == null ||
+                                            _portAt(_pendingWorld!) == null ||
+                                            _isLegalTarget(
+                                              _portAt(_pendingWorld!)!,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  for (final node in controller.pipeline.nodes)
+                                    // A node naming a recipe this database no longer has
+                                    // cannot be drawn. The problems banner says so.
+                                    if (controller.specFor(node) != null)
+                                      Positioned(
+                                        left: node.x + canvasHalf,
+                                        top: node.y + canvasHalf,
+                                        child: RepaintBoundary(
+                                          child: _DraggableNode(
+                                            node: node,
+                                            controller: controller,
+                                            selected: selectedNodeIds.contains(
+                                              node.id,
+                                            ),
+                                            scale: _scale,
+                                            rateDisplay: widget.rateDisplay,
+                                            // Read when the click happens, not when the node
+                                            // was built — the key is not held at build time.
+                                            additive: () => _additive,
+                                            toWorld: worldFromGlobal,
+                                            onEdgePan: (reapply, at) {
+                                              beginEdgePan(reapply);
+                                              updateEdgePan(at);
+                                            },
+                                            onEdgePanEnd: endEdgePan,
+                                            onPortTap: _openPortMenu,
+                                            onPortDragStart: _onPortDragStart,
+                                            onPortDragUpdate: _onPortDragUpdate,
+                                            onPortDragEnd: _onPortDragEnd,
+                                            highlightPort: (ref) =>
+                                                _isLegalTarget(ref) ||
+                                                widget.pointingAt == ref,
+                                          ),
+                                        ),
+                                      ),
+                                  ?_marquee(),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                      for (final node in controller.pipeline.nodes)
-                        // A node naming a recipe this database no longer has
-                        // cannot be drawn. The problems banner says so.
-                        if (controller.specFor(node) != null)
-                        Positioned(
-                          left: node.x + canvasHalf,
-                          top: node.y + canvasHalf,
-                          child: _DraggableNode(
-                            node: node,
-                            controller: controller,
-                            selected: selectedNodeIds.contains(node.id),
-                            scale: _scale,
-                            rateDisplay: widget.rateDisplay,
-                            // Read when the click happens, not when the node
-                            // was built — the key is not held at build time.
-                            additive: () => _additive,
-                            toWorld: worldFromGlobal,
-                            onEdgePan: (reapply, at) {
-                              beginEdgePan(reapply);
-                              updateEdgePan(at);
-                            },
-                            onEdgePanEnd: endEdgePan,
-                            onPortTap: _openPortMenu,
-                            onPortDragStart: _onPortDragStart,
-                            onPortDragUpdate: _onPortDragUpdate,
-                            onPortDragEnd: _onPortDragEnd,
-                            highlightPort: (ref) =>
-                                _isLegalTarget(ref) ||
-                                widget.pointingAt == ref,
-                          ),
-                        ),
-                      ?_marquee(),
-                    ],
+                    ),
                   ),
-                  ),
-                  ),
-                  ),
-                ),
+                  _zoomControls(),
+                  if (controller.pipeline.nodes.isNotEmpty)
+                    Positioned(
+                      left: OniSpacing.md,
+                      bottom: OniSpacing.md,
+                      child: Minimap(
+                        controller: controller,
+                        visibleWorld: visibleWorldRect,
+                        onGoTo: centreOn,
+                      ),
+                    ),
+                  ?_portMenu(),
+                ],
               ),
-            ),
-            _zoomControls(),
-            if (controller.pipeline.nodes.isNotEmpty)
-              Positioned(
-                left: OniSpacing.md,
-                bottom: OniSpacing.md,
-                child: Minimap(
-                  controller: controller,
-                  visibleWorld: visibleWorldRect,
-                  onGoTo: centreOn,
-                ),
-              ),
-            ?_portMenu(),
-              ],
             ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -984,51 +1019,50 @@ class GraphCanvasState extends State<GraphCanvas>
   /// neither announces itself, and a canvas you cannot get out of when it is
   /// zoomed wrong is a trap.
   Widget _zoomControls() => Positioned(
-        right: OniSpacing.md,
-        bottom: OniSpacing.md,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: OniColors.surface.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(color: OniColors.border),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                OniButton(
-                  label: '−',
-                  compact: true,
-                  onPressed: () => zoomAtCentre(1 / 1.25),
-                ),
-                const SizedBox(width: 4),
-                GestureDetector(
-                  onTap: resetView,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: SizedBox(
-                      width: 52,
-                      child: Text(
-                        '${(_scale * 100).toStringAsFixed(0)} %',
-                        textAlign: TextAlign.center,
-                        style: OniType.numberSmall
-                            .copyWith(color: OniColors.text),
-                      ),
-                    ),
+    right: OniSpacing.md,
+    bottom: OniSpacing.md,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: OniColors.surface.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: OniColors.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            OniButton(
+              label: '−',
+              compact: true,
+              onPressed: () => zoomAtCentre(1 / 1.25),
+            ),
+            const SizedBox(width: 4),
+            GestureDetector(
+              onTap: resetView,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: SizedBox(
+                  width: 52,
+                  child: Text(
+                    '${(_scale * 100).toStringAsFixed(0)} %',
+                    textAlign: TextAlign.center,
+                    style: OniType.numberSmall.copyWith(color: OniColors.text),
                   ),
                 ),
-                const SizedBox(width: 4),
-                OniButton(
-                  label: '+',
-                  compact: true,
-                  onPressed: () => zoomAtCentre(1.25),
-                ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(width: 4),
+            OniButton(
+              label: '+',
+              compact: true,
+              onPressed: () => zoomAtCentre(1.25),
+            ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 
   /// The rubber band itself, drawn in world space alongside the nodes.
   Widget? _marquee() {
@@ -1153,57 +1187,59 @@ class _DraggableNodeState extends State<_DraggableNode> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        // A two-finger trackpad scroll is not a grab: without this it dragged
-        // whichever node happened to be under the cursor.
-        supportedDevices: kGrabDevices,
-        // Report the drag from where the pointer went *down*, not from where
-        // the gesture was finally recognised as a drag. Otherwise the first
-        // stretch of every drag — the distance the recogniser waits out before
-        // it commits — is lost, and the card trails the cursor by that much
-        // for the rest of the gesture.
-        dragStartBehavior: DragStartBehavior.down,
-        onTap: () => widget.controller
-            .selectNode(widget.node.id, additive: widget.additive()),
-        onPanStart: (d) {
-          // Dragging a node that is already part of a group takes the group
-          // with it; dragging any other node selects just that one first.
-          if (!widget.controller.isSelected(widget.node.id)) {
-            widget.controller.selectNode(widget.node.id);
-          }
-          _grabbedAt = widget.toWorld(d.globalPosition);
-          widget.controller.beginNodeDrag();
-        },
-        onPanUpdate: (d) {
-          _dragTo(d.globalPosition);
-          // Held against the edge, the view follows and the card keeps moving
-          // with it, so a node can be dragged somewhere off screen.
-          widget.onEdgePan(() => _dragTo(d.globalPosition), d.globalPosition);
-        },
-        onPanEnd: (_) {
-          widget.onEdgePanEnd();
-          widget.controller.endNodeDrag();
-        },
-        onPanCancel: () {
-          widget.onEdgePanEnd();
-          widget.controller.endNodeDrag();
-        },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.grab,
-          child: NodeWidget(
-            node: widget.node,
-            spec: widget.controller.specOf(widget.node),
-            controller: widget.controller,
-            selected: widget.selected,
-            rateDisplay: widget.rateDisplay,
-            onPortTap: widget.onPortTap,
-            onPortDragStart: widget.onPortDragStart,
-            onPortDragUpdate: widget.onPortDragUpdate,
-            onPortDragEnd: widget.onPortDragEnd,
-            highlightPort: widget.highlightPort,
-          ),
-        ),
-      );
+    behavior: HitTestBehavior.opaque,
+    // A two-finger trackpad scroll is not a grab: without this it dragged
+    // whichever node happened to be under the cursor.
+    supportedDevices: kGrabDevices,
+    // Report the drag from where the pointer went *down*, not from where
+    // the gesture was finally recognised as a drag. Otherwise the first
+    // stretch of every drag — the distance the recogniser waits out before
+    // it commits — is lost, and the card trails the cursor by that much
+    // for the rest of the gesture.
+    dragStartBehavior: DragStartBehavior.down,
+    onTap: () => widget.controller.selectNode(
+      widget.node.id,
+      additive: widget.additive(),
+    ),
+    onPanStart: (d) {
+      // Dragging a node that is already part of a group takes the group
+      // with it; dragging any other node selects just that one first.
+      if (!widget.controller.isSelected(widget.node.id)) {
+        widget.controller.selectNode(widget.node.id);
+      }
+      _grabbedAt = widget.toWorld(d.globalPosition);
+      widget.controller.beginNodeDrag();
+    },
+    onPanUpdate: (d) {
+      _dragTo(d.globalPosition);
+      // Held against the edge, the view follows and the card keeps moving
+      // with it, so a node can be dragged somewhere off screen.
+      widget.onEdgePan(() => _dragTo(d.globalPosition), d.globalPosition);
+    },
+    onPanEnd: (_) {
+      widget.onEdgePanEnd();
+      widget.controller.endNodeDrag();
+    },
+    onPanCancel: () {
+      widget.onEdgePanEnd();
+      widget.controller.endNodeDrag();
+    },
+    child: MouseRegion(
+      cursor: SystemMouseCursors.grab,
+      child: NodeWidget(
+        node: widget.node,
+        spec: widget.controller.specOf(widget.node),
+        controller: widget.controller,
+        selected: widget.selected,
+        rateDisplay: widget.rateDisplay,
+        onPortTap: widget.onPortTap,
+        onPortDragStart: widget.onPortDragStart,
+        onPortDragUpdate: widget.onPortDragUpdate,
+        onPortDragEnd: widget.onPortDragEnd,
+        highlightPort: widget.highlightPort,
+      ),
+    ),
+  );
 }
 
 /// A faint grid, so panning and zooming feel anchored to something.
