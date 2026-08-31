@@ -724,6 +724,24 @@ void main() {
       }
     });
 
+    test('and every one of them has a wild twin to switch to', () {
+      // The gap this closes was found by rendering the inspector for a Glo
+      // Squid and expecting the row of other ways to keep it, which correctly
+      // was not there: 37 of the 39 had a wild form and the two Aquatic ones
+      // did not. Nothing checked, because the rule was only ever written the
+      // other way round -- every wild critter matches its tame twin, which
+      // says nothing about a tame one with no twin at all.
+      final missing = [
+        for (final spec in db.processes)
+          if (spec.kind == ProcessKind.critter &&
+              !spec.tags.contains('wild') &&
+              db.process('${spec.id}_wild') == null)
+            spec.id,
+      ];
+      expect(missing, isEmpty,
+          reason: 'a critter you cannot choose to leave alone');
+    });
+
     test('a wild critter is its tame twin, laying a tenth as often', () {
       const services = {'grooming', 'shearing', 'milking'};
       final wild = db.processes.where(

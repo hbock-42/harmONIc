@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 31 August 2026 — Milking a Seaquine now gives you the ovolene
+
+A Seaquine had a milking line you could wire up and pay a Duplicant for,
+and it handed back nothing. Ovolene sat in the catalogue with nothing in
+the game able to make it, which is the same thing said from the other end.
+
+It is 100 kg a milking. That figure was thought unpublished when the
+Seaquine was written down, and it is on two pages.
+
+Both Aquatic critters can also be left wild now, like the other 37. An
+untamed one lays an egg every 60 cycles rather than every 6, eats what it
+always ate, and costs nobody any time.
+
 ## 31 August 2026 — Dragging a card on a big build got cheaper
 
 Every card on the canvas was being redrawn each time your hand moved one

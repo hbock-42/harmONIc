@@ -5736,6 +5736,44 @@
           "rate": 0.1
         }
       ],
+      "locomotion": "swimmer",
+      "family": "glo_squid"
+    },
+    {
+      "id": "glo_squid_wild",
+      "name": "Glo Squid (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — an egg every 60 cycles against every 6, which the wiki gives for both. Nobody milks it either, so there is no squid ink. What it eats and what it excretes are unchanged, as they are for every other wild twin here. UNVERIFIED to the same degree the tame one is: the abyssalite is a ratio rather than a published figure.",
+      "tags": [
+        "ranching",
+        "aquatic",
+        "wild",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "tublia_growth",
+          "direction": "input",
+          "rate": 0.0416666667
+        },
+        {
+          "item": "abyssalite",
+          "direction": "output",
+          "rate": 16.666667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "calamari",
+          "direction": "output",
+          "rate": 0.1
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "glo_squid",
       "locomotion": "swimmer"
     },
     {
@@ -9786,7 +9824,7 @@
       "id": "seaquine",
       "name": "Seaquine",
       "kind": "critter",
-      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime — the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. UNVERIFIED OUTPUT still: it is the only source of ovolene, through an Aquatic Milking Station, and nobody has published how much. Milking also halves its breeding, which this model has no way to show.",
+      "description": "3.1 kg of pearl a cycle becomes 12 kg of slime — the diet, read off the game files. This said carbon dioxide against that same 12 kg, which was the right number beside the wrong material. The ovolene is 100 kg a milking, which the Ovolene and Aquatic Milking Station pages both give; it was left out when only one of them had been read, so the app charged for the milking and handed back nothing, and ovolene was in the catalogue with nothing in the game able to make it. UNVERIFIED in one respect still: nobody publishes how often a critter can be milked, so this assumes once a cycle, which is what the Glo Squid beside it assumes. Milking also halves its breeding, which this model has no way to show.",
       "dupeLabourSecondsPerCycle": 12.0,
       "tags": [
         "ranching",
@@ -9816,6 +9854,12 @@
           "rate": 20.0
         },
         {
+          "item": "ovolene",
+          "direction": "output",
+          "rate": 166.666667,
+          "needs": "milking"
+        },
+        {
           "item": "egg",
           "direction": "output",
           "rate": 0.000278,
@@ -9827,6 +9871,44 @@
           "rate": 0.010417
         }
       ],
+      "locomotion": "swimmer",
+      "family": "seaquine"
+    },
+    {
+      "id": "seaquine_wild",
+      "name": "Seaquine (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — an egg every 60 cycles against every 6, which the wiki gives for both. No milking and so no ovolene; the wiki says outright that only a tamed one can be milked. It still eats pearl and still makes slime. UNVERIFIED to the same degree the tame one is: what it eats and what it makes are that one's figures, which are read off the game files rather than published.",
+      "tags": [
+        "ranching",
+        "aquatic",
+        "wild",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "pearl",
+          "direction": "input",
+          "rate": 5.166667
+        },
+        {
+          "item": "slime",
+          "direction": "output",
+          "rate": 20.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "output",
+          "rate": 0.010417
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "seaquine",
       "locomotion": "swimmer"
     },
     {

@@ -30,9 +30,10 @@ const Map<String, String> unusedOnPurpose = {
   'molten_zinc': 'and its gas: an Aquatic volcano product',
   'zinc_gas': 'the same, above its condensation point',
   'nectar': 'gathered from Aquatic flora this app does not model',
-  'ovolene': 'and its frozen form: a Seaquine product at a rate nobody has '
-      'published',
-  'frozen_ovolene': 'the same, solid',
+  // 'ovolene' was here, as "a Seaquine product at a rate nobody has
+  // published". Two pages publish it -- 100 kg a milking -- so the Seaquine
+  // makes it now and the note came out, which is what this list is for.
+  'frozen_ovolene': 'what ovolene freezes into',
   'frozen_mucin': 'a Frosty solid',
   'frozen_squid_ink': 'an Aquatic solid',
   'polluted_brine_ice': 'what polluted brine freezes into',
