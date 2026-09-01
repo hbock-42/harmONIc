@@ -8355,7 +8355,10 @@
         {
           "item": "water",
           "direction": "input",
-          "rate": 450
+          "rate": 450,
+          "alternatives": [
+            "mucin"
+          ]
         },
         {
           "item": "brackene",
@@ -8366,6 +8369,82 @@
       "build": {
         "raw_mineral": 400
       }
+    },
+    {
+      "id": "plant_pulverizer_sleet_wheat",
+      "name": "Plant Pulverizer (Sleet Wheat)",
+      "kind": "building",
+      "buildingId": "plant_pulverizer",
+      "description": "UNVERIFIED RATE: 10 Sleet Wheat Grain and 15 kg water make 25 kg of brackene, with the same 40 s batch assumed as the other recipes here. Mucin does instead of water, at the same weight.\n\nTwo of those figures are worked out rather than published. A grain weighs a kilogram: a domestic Sleet Wheat takes 18 cycles to grow and yields 18 grains, and the plant here makes a kilogram of grain a cycle — which the Frost Bun and Pepper Bread recipes agree with at 3 and 10 grains a loaf. And the output is 25 kg because everything else this building does conserves mass exactly: 2 + 18, 3 + 17, 25 + 75, and slime's 100 into 70 and 30. The wiki's own table gives this row as a per-plant yield instead, which is why it sat undone.",
+      "heatKdtuPerSecond": 2,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "tags": [
+        "refining",
+        "unverified"
+      ],
+      "build": {
+        "raw_mineral": 400
+      },
+      "ports": [
+        {
+          "item": "sleet_wheat_grain",
+          "direction": "input",
+          "rate": 250
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 375,
+          "alternatives": [
+            "mucin"
+          ]
+        },
+        {
+          "item": "brackene",
+          "direction": "output",
+          "rate": 625
+        }
+      ]
+    },
+    {
+      "id": "plant_pulverizer_pincha",
+      "name": "Plant Pulverizer (Pincha Peppernut)",
+      "kind": "building",
+      "buildingId": "plant_pulverizer",
+      "description": "UNVERIFIED RATE: 3 kg Pincha Peppernut and 17 kg water make 20 kg of brackene, with the same 40 s batch assumed as the other recipes here. Mucin does instead of water, at the same weight.\n\nThe input is published as a weight, so only the output is inferred, and it follows from this building conserving mass everywhere it says so: 3 and 17 make 20.",
+      "heatKdtuPerSecond": 2,
+      "dupeLabourSecondsPerCycle": 600,
+      "footprintWidth": 3,
+      "footprintHeight": 2,
+      "tags": [
+        "refining",
+        "unverified"
+      ],
+      "build": {
+        "raw_mineral": 400
+      },
+      "ports": [
+        {
+          "item": "pincha_peppernut",
+          "direction": "input",
+          "rate": 75
+        },
+        {
+          "item": "water",
+          "direction": "input",
+          "rate": 425,
+          "alternatives": [
+            "mucin"
+          ]
+        },
+        {
+          "item": "brackene",
+          "direction": "output",
+          "rate": 500
+        }
+      ]
     },
     {
       "id": "plant_pulverizer_slime",

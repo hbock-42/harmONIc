@@ -547,6 +547,12 @@ void main() {
         // The Musher mixes with water or, in the Aquatic pack, mucin.
         'microbe_musher_mush_bar.water',
         'microbe_musher_liceloaf.water',
+        // And the Plant Pulverizer takes either for its brackene, at the same
+        // weight -- which all three cards had said in words since they were
+        // written, while the ports offered only water.
+        'plant_pulverizer_nosh_bean.water',
+        'plant_pulverizer_sleet_wheat.water',
+        'plant_pulverizer_pincha.water',
         // And its grain is either grain, like everywhere else.
         'microbe_musher_berry_sludge.grain',
         'microbe_musher_berry_sludge_pikeapple.grain',

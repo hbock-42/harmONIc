@@ -8,6 +8,20 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 1 September 2026 — Two more crops make brackene, and mucin can do the pouring
+
+Sleet Wheat and Pincha Peppernut go through a Plant Pulverizer for
+brackene, the same as Nosh Beans. Both were left out because the wiki's
+own table gives their output as a yield per plant rather than a weight.
+
+Every recipe that building has balances to the gram, so the weights follow
+from what goes in: ten grains and 15 kg of water make 25 kg, three
+kilograms of peppernut and 17 kg make 20.
+
+And all three now accept mucin in place of water, which every one of their
+cards has said in words since it was written while the port took only
+water. If you keep Gildgo or Slogo, that is somewhere for it to go.
+
 ## 31 August 2026 — A declined grooming line now says what it costs
 
 Switching the grooming off shrinks a whole build by five, and the app

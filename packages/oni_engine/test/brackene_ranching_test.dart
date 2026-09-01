@@ -190,4 +190,95 @@ void main() {
     expect(PipelineSolver(db).solve(loose).dupeLabourSecondsPerCycle,
         closeTo(96, 1e-6));
   });
+
+  group('the three ways to pulverize a crop into brackene', () {
+    final ways = [
+      'plant_pulverizer_nosh_bean',
+      'plant_pulverizer_sleet_wheat',
+      'plant_pulverizer_pincha',
+    ];
+
+    test('each of them conserves mass, which is how two were worked out', () {
+      // The wiki's table gives the output as a weight for the Nosh Bean and as
+      // a per-plant yield for the other two, which is why they sat undone. But
+      // every row of that table whose numbers are all weights balances exactly
+      // -- 2 + 18 into 20, 25 + 75 into 100, 100 into 70 and 30 -- so the two
+      // missing outputs follow from the inputs.
+      // Only what has weight. This building sheds 2 kdtu/s as well, and heat
+      // is a port like any other -- counting it as mass was how the first
+      // version of this failed.
+      bool hasMass(Port port) => switch (db.itemOrThrow(port.itemId).category) {
+            ItemCategory.solid ||
+            ItemCategory.liquid ||
+            ItemCategory.gas =>
+              true,
+            _ => false,
+          };
+      for (final id in ways) {
+        final spec = db.processOrThrow(id);
+        final into = spec.inputs
+            .where(hasMass)
+            .fold(0.0, (sum, port) => sum + port.ratePerSecond);
+        final out = spec.outputs
+            .where(hasMass)
+            .fold(0.0, (sum, port) => sum + port.ratePerSecond);
+        expect(out, closeTo(into, 1e-9), reason: id);
+      }
+    });
+
+    test('and each takes mucin instead of water, as the cards all said', () {
+      for (final id in ways) {
+        final water = db
+            .processOrThrow(id)
+            .inputs
+            .firstWhere((p) => p.itemId == 'water');
+        expect(water.accepted, ['water', 'mucin'], reason: id);
+        expect(db.processOrThrow(id).description, contains('Mucin does'),
+            reason: id);
+      }
+    });
+
+    test('a Sleet Wheat grain weighs a kilogram, from three directions', () {
+      // Nothing publishes it. The plant takes 18 cycles and yields 18 grains,
+      // and the plant here makes 1.667 g/s -- a kilogram a cycle, so a grain a
+      // cycle. Two cooking recipes agree independently: a Frost Bun is three
+      // grains and this database spends 60 g/s on 20 g/s of bun, and Pepper
+      // Bread is ten to one at 200 against 20.
+      final plant = db.processOrThrow('sleet_wheat');
+      final grain =
+          plant.outputs.firstWhere((p) => p.itemId == 'sleet_wheat_grain');
+      expect(grain.ratePerSecond * 600, closeTo(1000, 1),
+          reason: 'a kilogram of grain a cycle');
+
+      double per(String recipe, String item) => db
+          .processOrThrow(recipe)
+          .inputs
+          .firstWhere((p) => p.itemId == item)
+          .ratePerSecond;
+      expect(per('electric_grill_frost_bun', 'sleet_wheat_grain'), 60);
+      expect(per('gas_range_pepper_bread', 'sleet_wheat_grain'), 200);
+
+      // Which makes the ten grains of the pulverizer recipe ten kilograms.
+      expect(per('plant_pulverizer_sleet_wheat', 'sleet_wheat_grain') * 40,
+          closeTo(10000, 1e-6),
+          reason: 'ten kilograms in a forty-second batch');
+    });
+
+    test('a crop can actually be run through to brackene', () {
+      final b = PipelineBuilder(db, name: 'wheat to brackene')
+        ..add('sleet_wheat', nodeId: 'field')
+        ..add('plant_pulverizer_sleet_wheat', nodeId: 'mill')
+        ..addSource('water', nodeId: 'w')
+        ..addSink('brackene')
+        ..connectItem('field', 'mill', 'sleet_wheat_grain')
+        ..connectItem('w', 'mill', 'water')
+        ..connectItem('mill', 'sink_brackene', 'brackene')
+        ..pinCount('mill', 1);
+      final s = PipelineSolver(db).solve(b.build());
+      expect(s.status, SolveStatus.solved);
+      // One mill wants 250 g/s of grain and a plant makes 1.667, so it takes
+      // a field of them -- which is the sort of thing the app exists to say.
+      expect(s.nodes['field']!.count, closeTo(250 / 1.666667, 1e-3));
+    });
+  });
 }
