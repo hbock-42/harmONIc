@@ -155,7 +155,31 @@ class OniField extends StatefulWidget {
   State<OniField> createState() => _OniFieldState();
 }
 
-class _OniFieldState extends State<OniField> {
+class _OniFieldState extends State<OniField>
+    implements TextSelectionGestureDetectorBuilderDelegate {
+  /// Selecting text with the mouse.
+  ///
+  /// [EditableText] draws a cursor and a selection and answers the keyboard,
+  /// and it does not listen to the mouse at all: double-clicking a word,
+  /// dragging across a line, triple-clicking to take the lot. Material's
+  /// TextField wraps it in this builder to get those, and this field was built
+  /// straight on EditableText to avoid Material — and so was built without
+  /// them. A click placed the caret and nothing else worked.
+  late final TextSelectionGestureDetectorBuilder _gestures =
+      TextSelectionGestureDetectorBuilder(delegate: this);
+
+  @override
+  final GlobalKey<EditableTextState> editableTextKey =
+      GlobalKey<EditableTextState>();
+
+  /// A hard press on a trackpad, which is an iPhone gesture and not a thing
+  /// anybody does to a planning tool on a desktop.
+  @override
+  bool get forcePressEnabled => false;
+
+  @override
+  bool get selectionEnabled => true;
+
   FocusNode? _owned;
   late FocusNode _focus = _resolveFocus();
 
@@ -189,8 +213,8 @@ class _OniFieldState extends State<OniField> {
     // A field takes a click and shows where the text will go; it is not a
     // button, so it is not a hand.
     cursor: SystemMouseCursors.text,
-    child: GestureDetector(
-      onTap: _focus.requestFocus,
+    child: _gestures.buildGestureDetector(
+      behavior: HitTestBehavior.translucent,
       child: Container(
         height: 30,
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -216,6 +240,11 @@ class _OniFieldState extends State<OniField> {
                       ),
                     ),
                   EditableText(
+                    key: editableTextKey,
+                    // The gesture detector above owns the pointer, which is
+                    // how a drag becomes a selection rather than the field
+                    // fighting it for the same events.
+                    rendererIgnoresPointer: true,
                     controller: widget.controller,
                     focusNode: _focus,
                     autofocus: widget.autofocus,

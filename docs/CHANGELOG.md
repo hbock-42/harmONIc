@@ -8,6 +8,16 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 2 September 2026 — Text fields answer the mouse
+
+Double-clicking a word in any field here did nothing, and so did dragging
+across a line to select it. A click placed the caret and that was the
+whole of it.
+
+Every field in the app is affected — the search box, a node's name, every
+number you type a rate into. Double-click, drag and triple-click all work
+now.
+
 ## 1 September 2026 — Two more crops make brackene, and mucin can do the pouring
 
 Sleet Wheat and Pincha Peppernut go through a Plant Pulverizer for
