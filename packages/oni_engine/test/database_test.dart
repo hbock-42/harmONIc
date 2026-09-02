@@ -360,7 +360,8 @@ void main() {
 
   group('critters', () {
     test('the ranching staples are present', () {
-      for (final id in ['hatch', 'sage_hatch', 'smooth_hatch', 'slickster',
+      for (final id in ['hatch', 'stone_hatch', 'sage_hatch', 'smooth_hatch',
+          'slickster',
           'puft', 'dense_puft', 'drecko', 'glossy_drecko', 'pacu',
           'gulp_fish', 'blowter']) {
         expect(db.process(id), isNotNull, reason: 'missing critter "$id"');
@@ -709,8 +710,11 @@ void main() {
     });
 
     test('the base-game roster is covered', () {
+      // Six picked by hand, which is exactly as complete as a hand-written
+      // list ever is: the Stone Hatch was missing from this database
+      // altogether and no roster check noticed, because none of them counts.
       for (final id in ['pip', 'pokeshell', 'gassy_moo', 'plug_slug',
-          'shove_vole', 'shine_bug']) {
+          'shove_vole', 'shine_bug', 'stone_hatch']) {
         expect(db.process(id), isNotNull, reason: 'missing critter "$id"');
         expect(db.processOrThrow(id).kind, ProcessKind.critter);
       }

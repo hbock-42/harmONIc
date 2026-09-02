@@ -160,7 +160,7 @@ void main() {
       // wild critter has no grooming port. Which is right, and worth pinning:
       // if the derivation ever caught them, all 39 would drop to a fifth of
       // their food overnight and read as a plausible-looking correction.
-      expect(wild, hasLength(39));
+      expect(wild, hasLength(40));
       for (final spec in wild) {
         expect(spec.baseHappiness, 0, reason: spec.id);
         expect(metabolismAt(spec.happinessWhen((_) => true)), 1,
@@ -183,7 +183,7 @@ void main() {
       // oversight.
       final tame = db.processes.where((s) =>
           s.kind == ProcessKind.critter && !s.tags.contains('wild'));
-      expect(tame, hasLength(39));
+      expect(tame, hasLength(40));
       final flat = [
         for (final spec in tame)
           if (spec.baseHappiness == 0) spec.id,

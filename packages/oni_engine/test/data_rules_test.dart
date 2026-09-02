@@ -185,12 +185,12 @@ void main() {
       for (final spec in critters) {
         byFamily[spec.family ?? spec.id] = spec.locomotion!;
       }
-      expect(byFamily, hasLength(39));
+      expect(byFamily, hasLength(40));
       final counts = <String, int>{};
       for (final how in byFamily.values) {
         counts[how] = (counts[how] ?? 0) + 1;
       }
-      expect(counts, {'walker': 22, 'flyer': 6, 'swimmer': 9, 'hoverer': 2});
+      expect(counts, {'walker': 23, 'flyer': 6, 'swimmer': 9, 'hoverer': 2});
     });
 
     test('five of them are amphibious, and all five walk', () {

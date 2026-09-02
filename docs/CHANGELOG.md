@@ -8,6 +8,18 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 2 September 2026 — The Stone Hatch was missing
+
+Three of the four Hatches were here and the Stone Hatch was not. It is
+now, tame and wild, alongside the Sage and the Smooth.
+
+On rock it is the same animal as an ordinary Hatch — 140 kg a cycle in,
+70 kg of coal out, an egg every 6 cycles groomed and every 60 wild. What
+it can do that a Hatch cannot is eat metal ore, and that is on the card
+rather than in the model: a critter eats by the calorie, so a different
+food is a different weight and a different recipe, and nobody publishes
+the weight for this one.
+
 ## 2 September 2026 — Text fields answer the mouse
 
 Double-clicking a word in any field here did nothing, and so did dragging

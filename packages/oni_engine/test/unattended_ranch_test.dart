@@ -103,12 +103,12 @@ void main() {
   });
 
   test('every critter that is groomed can be left ungroomed', () {
-    // Thirty-seven of them, and the figure is the same for all: it comes from
+    // Thirty-eight of them, and the figure is the same for all: it comes from
     // the happiness, not from the species.
     final groomed = db.processes.where((s) =>
         s.inputs.any((p) => p.itemId == 'grooming') &&
         s.outputs.any((p) => p.itemId == 'egg'));
-    expect(groomed, hasLength(37));
+    expect(groomed, hasLength(38));
     for (final spec in groomed) {
       final egg = spec.outputs.firstWhere((p) => p.itemId == 'egg');
       final grooming = spec.inputs.firstWhere((p) => p.itemId == 'grooming');

@@ -6302,6 +6302,84 @@
       "locomotion": "walker"
     },
     {
+      "id": "stone_hatch",
+      "name": "Stone Hatch",
+      "kind": "critter",
+      "description": "Eats 140 kg/cycle of raw mineral and turns half of it into coal, exactly as a Hatch does — the two are the same animal fed differently, and on rock alone there is nothing between them. Groomed: one egg every 6 cycles, and 12 s of Duplicant time per cycle to keep it that way. The meat figure is what it drops at the end of a 100-cycle life, spread across that life.\n\nWhat makes it worth keeping is the part not modelled here: a Stone Hatch also eats metal ore, which an ordinary Hatch will not, and turns that into coal too. It is left out for the reason the Hatch's own other foods are — a critter eats by the calorie, so a different food is a different weight and therefore a different recipe, and nobody publishes the weight for this one. The Smooth Hatch beside it eats 100 kg/cycle of ore where this eats 140 kg of rock, which is exactly how much those two figures can differ.",
+      "dupeLabourSecondsPerCycle": 12.0,
+      "tags": [
+        "ranching",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1,
+          "happiness": 5
+        },
+        {
+          "item": "raw_mineral",
+          "direction": "input",
+          "rate": 233.3333
+        },
+        {
+          "item": "coal",
+          "direction": "output",
+          "rate": 116.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278,
+          "happinessAt": 4
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "family": "stone_hatch",
+      "locomotion": "walker"
+    },
+    {
+      "id": "stone_hatch_wild",
+      "name": "Stone Hatch (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — an egg every 60 cycles against every 6. What it eats and what it produces are unchanged.",
+      "tags": [
+        "ranching",
+        "wild",
+        "verified"
+      ],
+      "ports": [
+        {
+          "item": "raw_mineral",
+          "direction": "input",
+          "rate": 233.3333
+        },
+        {
+          "item": "coal",
+          "direction": "output",
+          "rate": 116.6667
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "meat",
+          "direction": "output",
+          "rate": 0.033333
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "stone_hatch",
+      "locomotion": "walker"
+    },
+    {
       "id": "hot_polluted_oxygen_vent",
       "name": "Hot Polluted Oxygen Vent",
       "kind": "custom",
