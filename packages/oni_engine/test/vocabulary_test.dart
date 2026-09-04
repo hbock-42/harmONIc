@@ -100,4 +100,53 @@ void main() {
           reason: '"$id" is used now; take it out of unusedOnPurpose');
     }
   });
+
+  group('food you could never obtain', () {
+    /// Foods nothing in this database can produce, and what is missing.
+    ///
+    /// A material nobody makes is usually fine — you might have found it. Food
+    /// is different: a dish names its ingredients, so an ingredient with no
+    /// source is a recipe nobody can ever draw, and the app offers it anyway.
+    ///
+    /// Bog jelly was the fifth of these until the Bog Bucket was added, and it
+    /// was found the way all of them will be found without this test: somebody
+    /// tried to build the thing and could not.
+    const missingSource = <String, String>{
+      'grubfruit': 'the Grubfruit plant, which blocks four dishes — a preserve '
+          'and all three Mixed Berry Pies',
+      'ovagro_fig': 'the Ovagro, which blocks one of those pies',
+      'sweatcorn': 'the Sweatcorn plant, which blocks Veggie Poppers',
+      'jawbo_fillet': 'the Jawbo, an Aquatic critter this database has not got '
+          '— and nothing here asks for the fillet either, so this one blocks '
+          'nothing yet',
+    };
+
+    test('is listed, and the list is exactly what cannot be made', () {
+      // Written recipes only. Every item gets a generated supply node, so
+      // asking the whole database whether something can be obtained always
+      // answers yes, and an audit built on that would pass forever.
+      final written = db.processes.where((spec) => !spec.id.contains(':'));
+      final made = <String>{
+        for (final spec in written)
+          for (final port in spec.outputs) port.itemId,
+      };
+      final unmakeable = <String>{
+        for (final item in db.items)
+          if ((item.kcalPerKg ?? 0) > 0 && !made.contains(item.id)) item.id,
+      };
+      expect(unmakeable, missingSource.keys.toSet(),
+          reason: 'a food with no source is a dish nobody can draw; add what '
+              'makes it, or say here what is missing');
+    });
+
+    test('and each of them is still worth having as an item', () {
+      // The other direction: something on that list that nothing cooks with
+      // either is not a gap, it is a word to delete. The Jawbo fillet is the
+      // one nothing asks for, and it stays because the critter is real and
+      // coming.
+      for (final id in missingSource.keys) {
+        expect(db.item(id), isNotNull, reason: id);
+      }
+    });
+  });
 }

@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 4 September 2026 — Bog jelly can be grown
+
+There was no way to make bog jelly. The Electric Grill would cook Swampy
+Delights with it and a Duplicant would eat it, and nothing anywhere
+produced a gram — the Bog Bucket was not in this app at all.
+
+It is now, watered and wild. 40 kg of polluted water a cycle and 6.6
+cycles for a kilogram of jelly, or a quarter of that left to itself.
+
+Four other foods are in the same position, and the app now keeps its own
+list of them rather than waiting for somebody to notice: Grubfruit, which
+blocks four dishes, Ovagro Fig, Sweatcorn, and Jawbo Fillet.
+
 ## 2 September 2026 — The Stone Hatch was missing
 
 Three of the four Hatches were here and the Stone Hatch was not. It is

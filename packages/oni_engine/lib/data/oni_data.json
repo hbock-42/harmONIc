@@ -1711,6 +1711,52 @@
       }
     },
     {
+      "id": "bog_bucket",
+      "name": "Bog Bucket",
+      "kind": "plant",
+      "description": "40 kg/cycle of polluted water and 6.6 cycles for a harvest of one kilogram of bog jelly — the wiki gives that harvest as 1840 kcal, and bog jelly is 1840 kcal/kg, so it is a kilogram exactly.\n\nNothing here made bog jelly before this. The Electric Grill's Swampy Delights asked for it and the eating node existed, so the item was in the catalogue with no way in the game to obtain it.",
+      "tags": [
+        "farming",
+        "food",
+        "spacedout",
+        "verified"
+      ],
+      "family": "bog_bucket",
+      "ports": [
+        {
+          "item": "polluted_water",
+          "direction": "input",
+          "rate": 66.666667
+        },
+        {
+          "item": "bog_jelly",
+          "direction": "output",
+          "rate": 0.252525
+        }
+      ]
+    },
+    {
+      "id": "bog_bucket_wild",
+      "name": "Bog Bucket (wild)",
+      "kind": "plant",
+      "description": "Left to itself: no polluted water carried to it, and a quarter of the harvest. The wiki prints its growth as “6.6/26.4 cycles” without saying what the two figures are, and 26.4 is four times 6.6 — the same pair, and the same reading, as every other plant here.",
+      "tags": [
+        "farming",
+        "food",
+        "spacedout",
+        "wild",
+        "verified"
+      ],
+      "family": "bog_bucket",
+      "ports": [
+        {
+          "item": "bog_jelly",
+          "direction": "output",
+          "rate": 0.06313125
+        }
+      ]
+    },
+    {
       "id": "alveo_vera",
       "name": "Alveo Vera",
       "kind": "plant",

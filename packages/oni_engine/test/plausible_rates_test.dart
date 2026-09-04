@@ -16,6 +16,7 @@ const Map<String, String> tinyOnPurpose = {
   // grams a second is always small. It is the calories that are worth
   // anything: a kilogram of meal lice feeds most of a Duplicant for a day.
   'meal_lice': 'a crop, and crops are grams a second',
+  'bog_jelly': 'a kilogram every 6.6 cycles, which is 0.25 g/s and 1840 kcal',
   'bristle_berry': 'the same',
   'mushroom': 'the same',
   'lettuce': 'the same',

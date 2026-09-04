@@ -30,8 +30,21 @@ void main() {
   /// The palette's own list, which is long enough that a header far down it
   /// has not been built yet.
   Future<void> scrollTo(WidgetTester tester, String label) async {
-    for (var i = 0; i < 60; i++) {
-      if (inPalette(textLabel(label)).evaluate().isNotEmpty) return;
+    // Sixty 300-pixel drags was enough until it was not: "Water supply" sorts
+    // near the end of 214 supply rows, and two plants added elsewhere pushed
+    // it past the limit. The bound is only here so a label that never arrives
+    // fails instead of hanging.
+    for (var i = 0; i < 200; i++) {
+      if (inPalette(textLabel(label)).evaluate().isNotEmpty) {
+        // Built is not the same as on screen. A lazy list builds a little
+        // beyond the fold, so this used to stop with the row it was looking
+        // for sitting at the very bottom edge or just past it -- near enough
+        // to find, too far to tap. Two extra plants elsewhere in the list were
+        // enough to turn that into a failure.
+        await tester.ensureVisible(inPalette(textLabel(label)));
+        await tester.pumpAndSettle();
+        return;
+      }
       await tester.drag(
           inPalette(find.byType(ListView)), const Offset(0, -300));
       await tester.pump();
@@ -59,10 +72,25 @@ void main() {
     // The whole rest of the list fits above the fold only because 428 rows
     // are folded away: reaching SUPPLY at all is the point of the change.
     await scrollTo(tester, 'SUPPLY');
-    // Folded means folded: SUPPLY and OUTPUT are 428 rows between them, and
-    // both headers are on screen together with nothing in between.
-    expect(inPalette(textLabel('OUTPUT')), findsOneWidget);
-    expect(inPalette(textLabel('Water supply')), findsNothing);
+    // Folded means folded: there are 428 rows between SUPPLY and OUTPUT, and
+    // getting from one to the other takes a drag at most.
+    //
+    // It used to require both headers on screen at once, which was true until
+    // two plants were added somewhere above and pushed OUTPUT a row past the
+    // fold. The claim was never about them sharing a screen; it is that the
+    // rows between them are not there.
+    var drags = 0;
+    while (inPalette(textLabel('OUTPUT')).evaluate().isEmpty) {
+      drags++;
+      expect(drags, lessThanOrEqualTo(1),
+          reason: 'OUTPUT is more than one screen below SUPPLY, so something '
+              'between them is unfolded');
+      await tester.drag(
+          inPalette(find.byType(ListView)), const Offset(0, -300));
+      await tester.pump();
+    }
+    expect(inPalette(textLabel('Water supply')), findsNothing,
+        reason: 'and none of the folded rows was drawn on the way');
   });
 
   testWidgets('and open when the header is tapped', (tester) async {
