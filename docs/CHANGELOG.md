@@ -8,6 +8,17 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 6 September 2026 — Three crops nothing could grow
+
+Grubfruit, Sweatcorn and Plume Squash were all ingredients with no plant.
+The recipes that want them were in the palette and could not be built: a
+Grubfruit Preserve, all three Mixed Berry Pies, Veggie Poppers, Squash
+Fries — and a Bammoth, which eats the squash.
+
+All three plants are here now, farmed and wild. And a Plume Squash can be
+eaten on its own, which it could not before: it had no calorie figure, so
+nothing knew how to turn one into a meal.
+
 ## 4 September 2026 — Bog jelly can be grown
 
 There was no way to make bog jelly. The Electric Grill would cook Swampy

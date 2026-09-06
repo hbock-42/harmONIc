@@ -17,6 +17,9 @@ const Map<String, String> tinyOnPurpose = {
   // anything: a kilogram of meal lice feeds most of a Duplicant for a day.
   'meal_lice': 'a crop, and crops are grams a second',
   'bog_jelly': 'a kilogram every 6.6 cycles, which is 0.25 g/s and 1840 kcal',
+  'grubfruit': '8 kg every 8 cycles, and the least calorie-dense food there is',
+  'sweatcorn': 'a kilogram every 3 cycles',
+  'plume_squash': 'a kilogram every 9 cycles, and 4000 kcal of it',
   'bristle_berry': 'the same',
   'mushroom': 'the same',
   'lettuce': 'the same',

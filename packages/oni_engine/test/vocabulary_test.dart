@@ -112,10 +112,7 @@ void main() {
     /// was found the way all of them will be found without this test: somebody
     /// tried to build the thing and could not.
     const missingSource = <String, String>{
-      'grubfruit': 'the Grubfruit plant, which blocks four dishes — a preserve '
-          'and all three Mixed Berry Pies',
       'ovagro_fig': 'the Ovagro, which blocks one of those pies',
-      'sweatcorn': 'the Sweatcorn plant, which blocks Veggie Poppers',
       'jawbo_fillet': 'the Jawbo, an Aquatic critter this database has not got '
           '— and nothing here asks for the fillet either, so this one blocks '
           'nothing yet',

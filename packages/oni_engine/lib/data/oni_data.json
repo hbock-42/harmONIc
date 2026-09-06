@@ -1094,7 +1094,8 @@
       "category": "solid",
       "tags": [
         "frosty"
-      ]
+      ],
+      "kcalPerKg": 4000
     },
     {
       "id": "plywood",
@@ -1709,6 +1710,147 @@
       "build": {
         "cultivable_soil": 400
       }
+    },
+    {
+      "id": "grubfruit_plant",
+      "name": "Grubfruit Plant",
+      "kind": "plant",
+      "description": "10 kg/cycle of sulfur and eight cycles for a harvest the wiki gives as “8 kg or 2000 kcal of Grubfruit” — and grubfruit is 250 kcal/kg, so those two figures are the same one twice. No irrigation.\n\nThe tended form of the Spindly Grubfruit Plant beside it, which a Divergent turns into this. Nothing here grew grubfruit before, so a preserve and all three Mixed Berry Pies asked for an ingredient the game could not give you.",
+      "tags": [
+        "farming",
+        "food",
+        "spacedout",
+        "verified"
+      ],
+      "family": "grubfruit_plant",
+      "ports": [
+        {
+          "item": "sulfur",
+          "direction": "input",
+          "rate": 16.666667
+        },
+        {
+          "item": "grubfruit",
+          "direction": "output",
+          "rate": 1.6666666666666667
+        }
+      ]
+    },
+    {
+      "id": "grubfruit_plant_wild",
+      "name": "Grubfruit Plant (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody carries sulfur to it, so it takes none at all, and it ripens at a quarter of a farmed one's speed — the pair the wiki prints as “8/32 Cycles” being four times apart.",
+      "tags": [
+        "farming",
+        "food",
+        "spacedout",
+        "wild",
+        "verified"
+      ],
+      "family": "grubfruit_plant",
+      "ports": [
+        {
+          "item": "grubfruit",
+          "direction": "output",
+          "rate": 0.4166666666666667
+        }
+      ]
+    },
+    {
+      "id": "sweatcorn_stalk",
+      "name": "Sweatcorn Stalk",
+      "kind": "plant",
+      "description": "10 kg/cycle of peat — or coal, at the same weight — and three cycles for 800 kcal of sweatcorn, which at 800 kcal/kg is a kilogram. No irrigation is listed anywhere on its page, and fertiliser is the only input it names.\n\nIt also wants pollinating, which this app has no way to say.",
+      "tags": [
+        "farming",
+        "food",
+        "prehistoric",
+        "verified"
+      ],
+      "family": "sweatcorn_stalk",
+      "ports": [
+        {
+          "item": "peat",
+          "direction": "input",
+          "rate": 16.666667,
+          "alternatives": [
+            "coal"
+          ]
+        },
+        {
+          "item": "sweatcorn",
+          "direction": "output",
+          "rate": 0.5555555555555556
+        }
+      ]
+    },
+    {
+      "id": "sweatcorn_stalk_wild",
+      "name": "Sweatcorn Stalk (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody carries peat to it, so it takes none at all, and it ripens at a quarter of a farmed one's speed — the pair the wiki prints as “3/12 Cycles” being four times apart.",
+      "tags": [
+        "farming",
+        "food",
+        "prehistoric",
+        "wild",
+        "verified"
+      ],
+      "family": "sweatcorn_stalk",
+      "ports": [
+        {
+          "item": "sweatcorn",
+          "direction": "output",
+          "rate": 0.1388888888888889
+        }
+      ]
+    },
+    {
+      "id": "plume_squash_plant",
+      "name": "Plume Squash Plant",
+      "kind": "plant",
+      "description": "15 kg/cycle of ethanol and nine cycles for one Plume Squash of 4000 kcal, which at 4000 kcal/kg is a kilogram. It is the only plant here watered with ethanol.\n\nThe squash had no calorie figure until now, so nothing generated a way to eat it: the Deep Fryer would make Squash Fries of it and a Duplicant could not simply eat one.",
+      "tags": [
+        "farming",
+        "food",
+        "frosty",
+        "verified"
+      ],
+      "family": "plume_squash_plant",
+      "ports": [
+        {
+          "item": "ethanol",
+          "direction": "input",
+          "rate": 25.0
+        },
+        {
+          "item": "plume_squash",
+          "direction": "output",
+          "rate": 0.18518518518518517
+        }
+      ]
+    },
+    {
+      "id": "plume_squash_plant_wild",
+      "name": "Plume Squash Plant (wild)",
+      "kind": "plant",
+      "description": "Growing where it landed: nobody carries ethanol to it, so it takes none at all, and it ripens at a quarter of a farmed one's speed — the pair the wiki prints as “9/36 Cycles” being four times apart.",
+      "tags": [
+        "farming",
+        "food",
+        "frosty",
+        "wild",
+        "verified"
+      ],
+      "family": "plume_squash_plant",
+      "ports": [
+        {
+          "item": "plume_squash",
+          "direction": "output",
+          "rate": 0.046296296296296294
+        }
+      ]
     },
     {
       "id": "bog_bucket",

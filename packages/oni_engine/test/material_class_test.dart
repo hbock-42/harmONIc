@@ -553,6 +553,8 @@ void main() {
         'plant_pulverizer_nosh_bean.water',
         'plant_pulverizer_sleet_wheat.water',
         'plant_pulverizer_pincha.water',
+        // A Sweatcorn Stalk is fed peat or coal, 10 kg/cycle of either.
+        'sweatcorn_stalk.peat',
         // And its grain is either grain, like everywhere else.
         'microbe_musher_berry_sludge.grain',
         'microbe_musher_berry_sludge_pikeapple.grain',

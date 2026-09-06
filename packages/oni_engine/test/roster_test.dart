@@ -46,6 +46,9 @@ void main() {
     'Clampum': 'clampum',
     'Flue Coral': 'flue_coral',
     'Tublia': 'tublia',
+    'Grubfruit Plant': 'grubfruit_plant',
+    'Sweatcorn Stalk': 'sweatcorn_stalk',
+    'Plume Squash Plant': 'plume_squash_plant',
   };
 
   /// Left out on purpose, and why. A pipeline is a thing you can run again
@@ -85,11 +88,6 @@ void main() {
   /// Missing, and what depends on it. Each of these is wanted by a recipe this
   /// app already has, so the recipe cannot be drawn at all.
   const missing = <String, String>{
-    'Grubfruit Plant': 'grubfruit, wanted by a preserve and all three Mixed '
-        'Berry Pies',
-    'Plume Squash Plant': 'plume squash, wanted by Squash Fries and eaten by '
-        'the Bammoth',
-    'Sweatcorn Stalk': 'sweatcorn, wanted by Veggie Poppers',
     'Ovagro Node': 'ovagro fig, wanted by a Mixed Berry Pie',
     'Mimika Bud': 'mimillet, wanted by Toasted Mimillet',
     'Dew Dripper': 'dewdrip, eaten by the Dartle',
@@ -137,5 +135,72 @@ void main() {
       expect(modelled.containsKey(name), isFalse, reason: name);
     }
     expect(families, hasLength(modelled.length));
+  });
+
+  group('the three crops that were blocking recipes', () {
+    /// A crop's mass is its published calories divided by its calories a
+    /// kilogram. The wiki prints one or the other and sometimes both, and
+    /// where it prints both they agree -- a Grubfruit Plant drops "8 kg or
+    /// 2000 kcal" and grubfruit is 250 kcal/kg, which is the same fact twice.
+    void checkCrop(String plantId, String crop, double kcalPerHarvest,
+        double cycles) {
+      final spec = db.processOrThrow(plantId);
+      final out = spec.outputs.firstWhere((p) => p.itemId == crop);
+      final kcalPerKg = db.itemOrThrow(crop).kcalPerKg!;
+      final kg = kcalPerHarvest / kcalPerKg;
+      expect(out.ratePerSecond, closeTo(kg * 1000 / (cycles * 600), 1e-6),
+          reason: '$plantId yields $kg kg every $cycles cycles');
+    }
+
+    test('grow what the recipes were asking for', () {
+      checkCrop('grubfruit_plant', 'grubfruit', 2000, 8);
+      checkCrop('sweatcorn_stalk', 'sweatcorn', 800, 3);
+      checkCrop('plume_squash_plant', 'plume_squash', 4000, 9);
+    });
+
+    test('and the dishes can now actually be drawn', () {
+      // The point of all three. Each was an ingredient with no source, so the
+      // recipe was in the palette and unbuildable.
+      for (final recipe in [
+        'electric_grill_grubfruit_preserve',
+        'smoker_veggie_poppers',
+        'deep_fryer_squash_fries',
+      ]) {
+        final spec = db.processOrThrow(recipe);
+        for (final input in spec.inputs) {
+          final grown = db.processes.any((s) =>
+              !s.id.contains(':') &&
+              s.outputs.any((p) => p.itemId == input.itemId));
+          final dug = db.itemOrThrow(input.itemId).kcalPerKg == null;
+          expect(grown || dug, isTrue,
+              reason: '$recipe still wants ${input.itemId}, which nothing '
+                  'makes and nobody digs up');
+        }
+      }
+    });
+
+    test('a Bammoth can be fed, which needed the squash too', () {
+      // Not a dish: the Bammoth eats plume squash, so a ranch of them could
+      // not be drawn either.
+      final bammoth = db.processOrThrow('bammoth');
+      expect(bammoth.inputs.map((p) => p.itemId), contains('plume_squash'));
+      expect(
+          db.processes.any((s) =>
+              s.kind == ProcessKind.plant &&
+              s.outputs.any((p) => p.itemId == 'plume_squash')),
+          isTrue);
+    });
+
+    test('and a Plume Squash can be eaten raw, which it could not', () {
+      // It had no calorie figure at all, so no eating node was generated for
+      // it: the Deep Fryer would make Squash Fries and a Duplicant could not
+      // simply eat one.
+      expect(db.itemOrThrow('plume_squash').kcalPerKg, 4000);
+      expect(
+          db.processes.any((s) =>
+              s.inputs.any((p) => p.itemId == 'plume_squash') &&
+              s.outputs.any((p) => p.itemId == WellKnownItems.calories)),
+          isTrue);
+    });
   });
 }
