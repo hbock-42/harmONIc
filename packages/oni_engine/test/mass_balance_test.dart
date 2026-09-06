@@ -13,6 +13,8 @@ const Map<String, String> expectedImbalance = <String, String>{
   'petroleum_generator': 'likewise, and the rest leaves as power and heat',
   'peat_burner': 'likewise',
   'wood_heater': 'wood is burnt for heat, which is the point of it',
+  'wood_burner': 'and burnt for power in the one next to it: 1200 g/s in, '
+      '170 g/s of CO2 back',
   // The Kiln is lossy on purpose, and by a different amount for each fuel:
   // 125 kg of coal, 200 of wood or 300 of peat all come out as 100 kg of
   // refined carbon. Cheaper than heating it to 280 °C yourself, which is the

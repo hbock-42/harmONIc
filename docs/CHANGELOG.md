@@ -8,6 +8,15 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 6 September 2026 — The Wood Burner
+
+This app had a Wood Heater and no Wood Burner, which are two buildings:
+one burns wood for heat, the other burns it for 300 W. A base run off
+Arbor Trees could not be drawn at all.
+
+1200 g/s of wood for 300 W, 170 g/s of carbon dioxide and 9 kDTU/s. It
+takes lumber, gum wood or plywood.
+
 ## 6 September 2026 — The Jawbo, and rust you can farm
 
 The Smoker would smoke a Jawbo fillet and nothing in the game could give

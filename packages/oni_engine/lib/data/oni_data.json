@@ -12403,6 +12403,37 @@
       "family": "waterweed"
     },
     {
+      "id": "wood_burner",
+      "name": "Wood Burner",
+      "kind": "building",
+      "buildingId": "wood_burner",
+      "description": "1200 g/s of wood for 300 W, 170 g/s of carbon dioxide at 110 °C and 9 kDTU/s of heat. Takes any wood: lumber off an Arbor Tree, gum wood, or plywood.\n\nMost of the mass does not come back — 1200 g in and 170 g out — which is what burning something for power looks like and is the same trade the Coal Generator makes. Not to be confused with the Wood Heater beside it, which burns wood for the heat and no power, and which is what this app had instead of this for a long while.",
+      "tags": [
+        "power",
+        "verified"
+      ],
+      "powerWatts": -300,
+      "heatKdtuPerSecond": 9,
+      "footprintWidth": 2,
+      "footprintHeight": 2,
+      "build": {
+        "metal_ore": 800
+      },
+      "ports": [
+        {
+          "item": "wood",
+          "direction": "input",
+          "rate": 1200
+        },
+        {
+          "item": "carbon_dioxide",
+          "direction": "output",
+          "rate": 170,
+          "temperatureC": 110
+        }
+      ]
+    },
+    {
       "id": "wood_heater",
       "name": "Wood Heater",
       "kind": "building",
