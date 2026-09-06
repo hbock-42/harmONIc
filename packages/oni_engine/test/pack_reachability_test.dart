@@ -126,6 +126,10 @@ void main() {
       // Not a material at all — the time a Duplicant spends at a station, and
       // the only station modelled is the Aquatic one.
       'milking': 'a service, not a material',
+      // A base-game solid, found in the Rust biome and fed to the base-game
+      // Rust Deoxidizer. A Jawbo happens to be the only thing here that
+      // excretes it, and a Jawbo is Prehistoric.
+      'rust': 'base game, and mined rather than made',
     };
 
     final missing = <String>[];

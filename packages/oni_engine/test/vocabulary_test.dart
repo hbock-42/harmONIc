@@ -113,9 +113,6 @@ void main() {
     /// tried to build the thing and could not.
     const missingSource = <String, String>{
       'ovagro_fig': 'the Ovagro, which blocks one of those pies',
-      'jawbo_fillet': 'the Jawbo, an Aquatic critter this database has not got '
-          '— and nothing here asks for the fillet either, so this one blocks '
-          'nothing yet',
     };
 
     test('is listed, and the list is exactly what cannot be made', () {

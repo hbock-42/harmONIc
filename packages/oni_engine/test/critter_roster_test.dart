@@ -53,6 +53,7 @@ void main() {
     'Gildgo': 'gildgo',
     'Glo Squid': 'glo_squid',
     'Kelpole': 'kelpole',
+    'Jawbo': 'jawbo',
   };
 
   /// Two of ours are a feeding choice rather than a species, so they have no
@@ -75,8 +76,6 @@ void main() {
   /// kind of gap: three are species this app has never heard of, and the rest
   /// are morphs of species it does keep.
   const missingSpecies = <String, String>{
-    'Jawbo': 'an Aquatic fish whose fillet is already an item here -- the '
-        'Smoker asks for jawbo fillet and nothing can produce one',
     'Rhex': 'a Prehistoric critter, not modelled at all',
     'Lumb': 'the base form of the Blum Lumb, which is modelled without it',
   };
@@ -144,5 +143,50 @@ void main() {
         reason: 'nobody tends it, and the card already books no time for it');
     expect(kelpole.baseHappiness, 0,
         reason: 'so it is not a tamed critter and does not start glum');
+  });
+
+  group('the Jawbo, which the Smoker had been asking for', () {
+    test('makes the fillet nothing could make', () {
+      final smoker = db.processOrThrow('smoker_smoked_fish');
+      final catch_ = smoker.inputs.firstWhere((p) => p.id == 'catch');
+      expect(catch_.accepted, contains('jawbo_fillet'),
+          reason: 'the Smoker takes either fillet');
+      expect(
+          db.processes.any((s) =>
+              !s.id.contains(':') &&
+              s.outputs.any((p) => p.itemId == 'jawbo_fillet')),
+          isTrue,
+          reason: 'and now something makes one');
+    });
+
+    test('and is the only thing here that excretes rust', () {
+      // Which the base-game Rust Deoxidizer has been waiting for. It is still
+      // a base-game material you dig up -- the pack audit is told so -- but a
+      // ranch is now a way to keep making it.
+      final makers = [
+        for (final spec in db.processes)
+          if (!spec.id.contains(':') &&
+              spec.outputs.any((p) => p.itemId == 'rust'))
+            spec.family ?? spec.id,
+      ];
+      expect(makers.toSet(), {'jawbo'});
+      expect(db.processOrThrow('rust_deoxidizer').inputs.map((p) => p.itemId),
+          contains('rust'));
+    });
+
+    test('eats fillet because it cannot be shown eating a Pacu', () {
+      // The published sentence offers two diets -- "1 unit of Pacu, or 1,000
+      // kcal Fish Fillet" -- and only one of them is a flow. A critter eating
+      // another critter is not something this app can draw at all.
+      final jawbo = db.processOrThrow('jawbo');
+      final food = jawbo.inputs.firstWhere((p) => p.itemId == 'fish_fillet');
+      expect(food.ratePerSecond * 600 * db.itemOrThrow('fish_fillet').kcalPerKg!
+              / 1000, closeTo(1000, 1e-6),
+          reason: '1000 kcal a cycle, which at 1000 kcal/kg is a kilogram');
+      expect(jawbo.tags, contains('unverified'),
+          reason: 'because 60 kg of rust from a kilogram of fillet cannot be '
+              'the whole story, and the card says so');
+      expect(jawbo.description, contains('sixty times the mass'));
+    });
   });
 }

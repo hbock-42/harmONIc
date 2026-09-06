@@ -8,6 +8,19 @@ Every rate here comes from the game's wiki, and the entries say when one of them
 turned out to be wrong — because a planner that was wrong last week and does not
 admit it is worse than one that never claimed to be right.
 
+## 6 September 2026 — The Jawbo, and rust you can farm
+
+The Smoker would smoke a Jawbo fillet and nothing in the game could give
+you one, because the Jawbo was not here. It is now, groomed and wild.
+
+It also excretes rust — the only thing here that does — so a Rust
+Deoxidizer can be fed from a ranch instead of from whatever you dug up.
+
+One caveat is on the card rather than hidden: a Jawbo really eats a live
+Pacu, and this app cannot draw a critter eating a critter. It is fed the
+fillet the wiki quotes as equivalent, and the rust figure belongs to the
+Pacu, so a Jawbo ranch here reads generous.
+
 ## 6 September 2026 — Three crops nothing could grow
 
 Grubfruit, Sweatcorn and Plume Squash were all ingredients with no plant.

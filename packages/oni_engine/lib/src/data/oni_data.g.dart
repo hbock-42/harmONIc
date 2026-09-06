@@ -6416,6 +6416,88 @@ const String oniDataJson = r"""
       "family": "gum_palm"
     },
     {
+      "id": "jawbo",
+      "name": "Jawbo",
+      "kind": "critter",
+      "description": "“A Jawbo consumes 1 unit of Pacu, or 1,000 kcal Fish Fillet every cycle and excretes up to 60 kg/cycle of Rust.” That one sentence is the whole published recipe, and the fillet is the half of it this app can offer: eating a live Pacu is not a flow, and there is no way here to draw a critter eating another critter.\n\nUNVERIFIED, and in a particular way worth knowing. A kilogram of fillet in and 60 kg of rust out is sixty times the mass, which cannot be right on its own — the 60 kg surely belongs to the Pacu, which weighs a great deal more than the thousand calories of fillet it is quoted as equal to. The mass audit does not catch it, because a critter that lays eggs is exempt from weighing. So the rust figure is the published one against a diet this model cannot state, and a Jawbo ranch here will read generous.\n\nThe grooming time is not published either; 24 s a cycle is what the other large aquatic critters here take. It is the only source of rust in the game as modelled, which the Rust Deoxidizer has been waiting for.",
+      "dupeLabourSecondsPerCycle": 24.0,
+      "tags": [
+        "ranching",
+        "aquatic",
+        "prehistoric",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "grooming",
+          "direction": "input",
+          "rate": 1,
+          "happiness": 5
+        },
+        {
+          "item": "fish_fillet",
+          "direction": "input",
+          "rate": 1.6666666666666667
+        },
+        {
+          "item": "rust",
+          "direction": "output",
+          "rate": 100.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 0.000278,
+          "happinessAt": 4
+        },
+        {
+          "item": "jawbo_fillet",
+          "direction": "output",
+          "rate": 0.2
+        }
+      ],
+      "family": "jawbo",
+      "locomotion": "swimmer"
+    },
+    {
+      "id": "jawbo_wild",
+      "name": "Jawbo (wild)",
+      "kind": "critter",
+      "description": "Left untamed: nobody grooms it, so it costs no Duplicant time and lays a tenth as often — an egg every 60 cycles against every 6, which the wiki gives for both. It eats and excretes what a groomed one does. UNVERIFIED for the same reason its tame twin is: the rust is quoted against a diet of live Pacu that this model cannot state.",
+      "tags": [
+        "ranching",
+        "aquatic",
+        "prehistoric",
+        "wild",
+        "unverified"
+      ],
+      "ports": [
+        {
+          "item": "fish_fillet",
+          "direction": "input",
+          "rate": 1.6666666666666667
+        },
+        {
+          "item": "rust",
+          "direction": "output",
+          "rate": 100.0
+        },
+        {
+          "item": "egg",
+          "direction": "output",
+          "rate": 2.78e-05
+        },
+        {
+          "item": "jawbo_fillet",
+          "direction": "output",
+          "rate": 0.2
+        }
+      ],
+      "dupeLabourSecondsPerCycle": 0,
+      "family": "jawbo",
+      "locomotion": "swimmer"
+    },
+    {
       "id": "hatch",
       "name": "Hatch",
       "kind": "critter",

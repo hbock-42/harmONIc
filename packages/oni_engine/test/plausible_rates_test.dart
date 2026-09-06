@@ -30,6 +30,7 @@ const Map<String, String> tinyOnPurpose = {
   'meat': 'dropped once when a critter dies, spread over its whole life',
   'tough_meat': 'the same, for the bigger animals',
   'fish_fillet': 'the same, for the ones that swim',
+  'jawbo_fillet': 'the same again: 12 000 kcal dropped across a 100-cycle life',
   'raw_shellfish': 'the same, for the ones with shells',
   'calamari': 'the same, for the Glo Squid',
   'tallow': 'a Spigot Seal drops it on dying',
